@@ -1,6 +1,6 @@
 use openidconnect::{
-    core::{CoreClient, CoreProviderMetadata},
     ClientId, ClientSecret, EndpointMaybeSet, EndpointNotSet, EndpointSet, IssuerUrl,
+    core::{CoreClient, CoreProviderMetadata},
 };
 use ory_client::apis::configuration::Configuration;
 
@@ -87,24 +87,24 @@ pub trait CoreClientExt {
 
 /// Methods requiring a token endpoint. To anybody who ever reads this, I'm sorry. I'm so sorry.
 impl<
-        AC,
-        AD,
-        GC,
-        JE,
-        JS,
-        K,
-        P,
-        TE,
-        TR,
-        TIR,
-        RT,
-        TRE,
-        HasAuthUrl,
-        HasDeviceAuthUrl,
-        HasIntrospectionUrl,
-        HasRevocationUrl,
-        HasUserInfoUrl,
-    > CoreClientExt
+    AC,
+    AD,
+    GC,
+    JE,
+    JS,
+    K,
+    P,
+    TE,
+    TR,
+    TIR,
+    RT,
+    TRE,
+    HasAuthUrl,
+    HasDeviceAuthUrl,
+    HasIntrospectionUrl,
+    HasRevocationUrl,
+    HasUserInfoUrl,
+> CoreClientExt
     for openidconnect::Client<
         AC,
         AD,

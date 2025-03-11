@@ -1,0 +1,23 @@
+name: Install Rust
+description: Install Rust toolchain
+
+inputs:
+  components:
+    description: "Rust components to install"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: stable
+        components: ${{ inputs.components }}
+
+    - name: Install toolchain
+      shell: bash
+      run: rustup show active-toolchain || rustup toolchain install
