@@ -1,0 +1,52 @@
+[workspace]
+resolver = "2"
+members = ["extensions/*"]
+
+[workspace.package]
+edition = "2024"
+license = "Apache-2.0"
+homepage = "https://grafbase.com/extensions"
+keywords = ["grafbase"]
+repository = "https://github.com/grafbase/extensions"
+
+[profile.release]
+opt-level = "z"
+strip = true
+lto = true
+codegen-units = 1
+
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+panic = "deny"
+
+# Opt out of lints that have too many false positives or are yet to be addressed.
+bool-to-int-with-if = "allow"
+cast-possible-truncation = "allow"
+default-trait-access = "allow"
+derive-partial-eq-without-eq = "allow"
+doc-markdown = "allow"
+enum-glob-use = "allow"
+implicit-hasher = "allow"
+items-after-statements = "allow"
+into_iter_without_iter = "allow"
+iter_without_into_iter = "allow"
+large-digit-groups = "allow"
+let-underscore-untyped = "allow"
+let-with-type-underscore = "allow"
+manual-assert = "allow"
+map-unwrap-or = "allow"
+match-wildcard-for-single-variants = "allow"
+missing-errors-doc = "allow"
+missing-panics-doc = "allow"
+module-name-repetitions = "allow"
+must-use-candidate = "allow"
+needless-pass-by-value = "allow"
+redundant-closure-for-method-calls = "allow"
+single-match-else = "allow"
+struct-excessive-bools = "allow"
+struct-field-names = "allow"
+too-many-lines = "allow"
+unnecessary-fallible-conversions = "allow"
+unused-async = "allow"
+unused-self = "allow"
+wildcard-imports = "allow"
