@@ -1,0 +1,6 @@
+[profile.ci]
+# grafbase extension build test compile tons of stuff and thus a super slow.
+slow-timeout = { period = "3m", terminate-after = 6 }
+retries = 2
+failure-output = "immediate-final"
+fail-fast = false

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["extensions/*"]
+members = ["extensions/*", "test-matrix"]
 
 [workspace.package]
 edition = "2024"

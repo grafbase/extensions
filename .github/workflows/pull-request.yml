@@ -1,0 +1,79 @@
+name: pull-request
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-pull-request
+  cancel-in-progress: true
+
+jobs:
+  check-format:
+    runs-on: ubicloud-standard-2
+    env:
+      RUSTFLAGS: -D warnings
+    steps:
+      - name: Get Sources
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: ./.github/actions/install-rust
+        with:
+          components: clippy, rustfmt
+
+      - name: cargo fmt
+        shell: bash
+        run: |
+          cargo fmt --check
+
+      - name: cargo clippy
+        shell: bash
+        run: |
+          cargo clippy --locked
+
+  run-tests:
+    runs-on: ubicloud-standard-8
+    strategy:
+      matrix:
+        version:
+          - gateway: "0.29.0"
+            sdk: "0.8.0"
+            cli: "0.86.1"
+    env:
+      RUSTFLAGS: -D warnings
+    steps:
+      - name: Get Sources
+        uses: actions/checkout@v4
+
+      - name: Start Docker Services
+        shell: bash
+        run: |
+          docker compose up -d
+
+      - name: Install Rust
+        uses: ./.github/actions/install-rust
+
+      - name: Install cargo-nextest
+        uses: taiki-e/install-action@v2
+        with:
+          tool: nextest
+
+      - name: Install CLI
+        shell: bash
+        run: |
+
+      - name: Install Gateway
+        shell: bash
+        run: |
+
+      - name: Run Tests
+        shell: bash
+        run: |
+          curl -fsSL https://grafbase.com/downloads/cli | bash -s ${{ matrix.version.cli }}
+          curl -fsSL https://grafbase.com/downloads/gateway | bash -s ${{ matrix.version.gateway }}
+          mkdir -p /home/runner/.local/bin
+          mv /home/runner/.grafbase/bin/grafbase /home/runner/.local/bin/
+          mv /home/runner/.grafbase/bin/grafbase-gateway /home/runner/.local/bin/
+          echo $PATH
+          cargo run -p test-matrix -- --sdk-version ${{ matrix.version.sdk }}
