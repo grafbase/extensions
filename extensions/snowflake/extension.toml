@@ -1,6 +1,6 @@
 [extension]
 name = "snowflake"
-version = "0.1.0"
+version = "0.1.1"
 kind = "resolver"
 description = "Resolve GraphQL fields with Snowflake queries"
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/snowflake"
