@@ -51,6 +51,7 @@ async fn fetch_extension_version(name: &str, api_token: &str) -> anyhow::Result<
     let mut headers = HeaderMap::new();
     headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
     headers.insert(AUTHORIZATION, HeaderValue::from_str(&format!("Bearer {}", api_token))?);
+    headers.insert("x-grafbase-client-name", HeaderValue::from_static("Extension Publish"));
 
     let query = formatdoc! {r#"
         query ExtensionByName {{
