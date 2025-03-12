@@ -53,7 +53,7 @@ Define your REST endpoint in your subgraph definition:
 ```graphql
 extend schema
   @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
-  @link(url: "file:///absolute/path/to/extension/build", import: ["@restEndpoint", "@rest"])
+  @link(url: "https://grafbase.com/extensions/rest/0.3.4", import: ["@restEndpoint", "@rest"])
 
 @restEndpoint(
   name: "restCountries",
