@@ -31,7 +31,7 @@ fn main() -> anyhow::Result<()> {
             continue;
         };
 
-        if !args.sdk_version.iter().any(|version| sdk_version.matches(version)) {
+        if !args.sdk_version.is_empty() && !args.sdk_version.iter().any(|version| sdk_version.matches(version)) {
             continue;
         }
 
