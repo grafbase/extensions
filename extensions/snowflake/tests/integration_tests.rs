@@ -1,6 +1,18 @@
 use grafbase_sdk::test::{DynamicSchema, TestConfig, TestRunner};
 use wiremock::matchers;
 
+#[derive(serde::Deserialize, serde::Serialize)]
+struct Response {
+    data: Option<serde_json::Value>,
+    errors: Vec<Error>,
+}
+
+#[derive(serde::Deserialize, serde::Serialize)]
+struct Error {
+    message: String,
+    extensions: Option<serde_json::Value>,
+}
+
 #[tokio::test]
 async fn test_basic_responses() {
     let extension_path = std::env::current_dir().unwrap().join("build");
@@ -150,19 +162,11 @@ async fn test_basic_responses() {
         .mount(&mock_server)
         .await;
 
-    let result: serde_json::Value = runner
+    let result: Response = runner
         .graphql_query(r#"query { users(params: ["abcd"]) }"#)
         .send()
         .await
         .unwrap();
-
-    // panic!(
-    //     "{:#?}",
-
-    //     mock_server.received_requests().await.unwrap()[1]
-    //         .body_json::<serde_json::Value>()
-    //         .unwrap()
-    // );
 
     insta::assert_json_snapshot!(result, @r#"
     {

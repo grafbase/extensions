@@ -7,7 +7,7 @@ license = "Apache-2.0"
 [dependencies]
 base64 = "0.22.1"
 duration-str = "0.14.0"
-grafbase-sdk = "0.8.0"
+grafbase-sdk = "0.9.0"
 jwt-compact = { version = "0.8.0", features = [
     "clock",
     "rsa",
@@ -24,7 +24,7 @@ url = { version = "2.5.4", features = ["serde"] }
 crate-type = ["cdylib"]
 
 [dev-dependencies]
-grafbase-sdk = { version = "0.8.0", features = ["test-utils"] }
+grafbase-sdk = { version = "0.9.0", features = ["test-utils"] }
 indoc = "2.0.6"
 insta = { version = "1.42.2", features = ["json"] }
 openidconnect = "4.0.0"

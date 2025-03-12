@@ -6,6 +6,18 @@ use wiremock::{
     matchers::{body_json, header, method, path},
 };
 
+#[derive(serde::Deserialize, serde::Serialize)]
+struct Response {
+    data: Option<serde_json::Value>,
+    errors: Vec<Error>,
+}
+
+#[derive(serde::Deserialize, serde::Serialize)]
+struct Error {
+    message: String,
+    extensions: Option<serde_json::Value>,
+}
+
 fn subgraph(rest_endpoint: &str) -> ExtensionOnlySubgraph {
     let extension_path = std::env::current_dir().unwrap().join("build");
     let path_str = format!("file://{}", extension_path.display());
@@ -441,7 +453,7 @@ async fn faulty_response() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let result: Response = runner.graphql_query(query).send().await.unwrap();
 
     insta::assert_json_snapshot!(result, @r#"
     {
@@ -449,17 +461,6 @@ async fn faulty_response() {
       "errors": [
         {
           "message": "Invalid response from subgraph",
-          "locations": [
-            {
-              "line": 3,
-              "column": 5
-            }
-          ],
-          "path": [
-            "users",
-            0,
-            "id"
-          ],
           "extensions": {
             "code": "SUBGRAPH_INVALID_RESPONSE_ERROR"
           }
@@ -491,7 +492,7 @@ async fn internal_server_error() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let result: Response = runner.graphql_query(query).send().await.unwrap();
 
     insta::assert_json_snapshot!(result, @r#"
     {
@@ -579,7 +580,7 @@ async fn with_bad_jq() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let result: Response = runner.graphql_query(query).send().await.unwrap();
 
     insta::assert_json_snapshot!(result, @r#"
     {
