@@ -27,7 +27,7 @@ Build this extension manually and copy the artifacts to a location where the gat
 grafbase extension build
 ```
 
-The `build` directory contains the resulting wasm component and manifest file.
+The `build` directory contains the resulting Wasm component and manifest file.
 
 ```bash
 build/
