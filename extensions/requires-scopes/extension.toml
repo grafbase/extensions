@@ -3,5 +3,5 @@ name = "requires-scopes"
 version = "1.0.0"
 kind = "authorization"
 description = "@requiresScopes directive"
+repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/requires-scopes"
 license = "Apache-2.0"
-

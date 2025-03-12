@@ -1,1 +1,15 @@
-directive @requiresScopes(scopes: [[String!]!]!) on FIELD_DEFINITION | OBJECT | INTERFACE | SCALAR | ENUM
+"""
+The @requiresScopes directive restricts access to GraphQL fields or
+types based on the scopes provided.
+
+Fields or types marked with this directive will only be accessible
+if the requesting user has at least one of the scopes from each
+array in the provided nested array of scopes.
+
+For example, `@requiresScopes(scopes: [["read:posts"], ["admin", "editor"]])`
+requires that the user has both "read:posts" AND either "admin" OR "editor"
+scope to access the field or type.
+"""
+directive @requiresScopes(
+    scopes: [[String!]!]!
+) on FIELD_DEFINITION | OBJECT | INTERFACE | SCALAR | ENUM

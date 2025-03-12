@@ -1,1 +1,24 @@
+"""
+The @authenticated directive restricts access to the annotated
+resource, ensuring that only authenticated users can access it.
+
+When applied to a field, object, interface, enum, or scalar,
+this directive will validate that a valid authentication token
+is present in the request before allowing access.
+
+Example usage:
+```graphql
+type User {
+  id: ID!
+  # Only authenticated users can see email
+  email: String! @authenticated
+  name: String
+}
+
+# Or applied to an entire type
+type PrivateData @authenticated {
+  secretInformation: String!
+}
+```
+"""
 directive @authenticated on FIELD_DEFINITION | OBJECT | INTERFACE | ENUM | SCALAR
