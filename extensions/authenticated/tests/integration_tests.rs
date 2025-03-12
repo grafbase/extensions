@@ -42,19 +42,7 @@ async fn test_authenticated() {
         "#
     );
 
-    // The test configuration is built with the subgraph and networking enabled.
-    // You must have the CLI and Grafbase Gateway for this to work. If you do not have
-    // them in the PATH, you can specify the paths to the executables with the `.with_cli` and
-    // `.with_gateway` methods.
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
-        .enable_stdout()
-        .enable_stderr()
-        .build(config)
-        .unwrap();
-
-    // A runner for building the extension, and executing the Grafbase Gateway together
-    // with the subgraphs. The runner composes all subgraphs into a federated schema.
+    let config = TestConfig::builder().with_subgraph(subgraph).build(config).unwrap();
     let runner = TestRunner::new(config).await.unwrap();
 
     let token = OryHydraOpenIDProvider::default()
@@ -69,7 +57,6 @@ async fn test_authenticated() {
         .await
         .unwrap();
 
-    // The result is compared against a snapshot.
     insta::assert_json_snapshot!(result, @r#"
     {
       "data": {
@@ -103,7 +90,6 @@ async fn test_authenticated() {
         .await
         .unwrap();
 
-    // The result is compared against a snapshot.
     insta::assert_json_snapshot!(result, @r#"
     {
       "data": {

@@ -4,5 +4,4 @@ version = "1.0.0"
 kind = "authorization"
 description = "@authenticated directive"
 license = "Apache-2.0"
-
-
+repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/authenticated"

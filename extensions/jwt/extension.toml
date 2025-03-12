@@ -1,8 +1,9 @@
 [extension]
 name = "jwt"
-version = "0.2.1"
+version = "0.2.2"
 kind = "authentication"
 description = "JWT authentication extension."
+repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/jwt"
 license = "Apache-2.0"
 
 [permissions]

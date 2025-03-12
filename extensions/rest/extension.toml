@@ -1,8 +1,9 @@
 [extension]
 name = "rest"
-version = "0.3.3"
+version = "0.3.4"
 kind = "resolver"
 description = "Declarative REST resolver extension."
+repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/rest"
 license = "Apache-2.0"
 
 [directives]
