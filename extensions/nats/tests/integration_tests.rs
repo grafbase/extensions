@@ -9,6 +9,18 @@ use grafbase_sdk::test::{DynamicSchema, ExtensionOnlySubgraph, TestConfig, TestR
 use indoc::{formatdoc, indoc};
 use serde_json::json;
 
+#[derive(serde::Deserialize, serde::Serialize)]
+struct Response {
+    data: Option<serde_json::Value>,
+    errors: Vec<Error>,
+}
+
+#[derive(serde::Deserialize, serde::Serialize)]
+struct Error {
+    message: String,
+    extensions: Option<serde_json::Value>,
+}
+
 async fn nats_client() -> async_nats::Client {
     let opts = ConnectOptions::new().user_and_password("grafbase".to_string(), "grafbase".to_string());
     let addrs = vec!["nats://localhost:4222"];
@@ -544,7 +556,7 @@ async fn test_non_existing_stream() {
     "#};
 
     let subscription = runner
-        .graphql_subscription::<serde_json::Value>(query)
+        .graphql_subscription::<Response>(query)
         .unwrap()
         .subscribe()
         .await
@@ -645,7 +657,7 @@ async fn request_reply_timeout() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let result: Response = runner.graphql_query(query).send().await.unwrap();
     insta::assert_json_snapshot!(result, @r#"
     {
       "data": null,

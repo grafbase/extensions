@@ -8,7 +8,7 @@ fn main() -> anyhow::Result<()> {
     let args = args::Args::parse();
 
     let mut found_extensions = false;
-    let mut test_arguments = vec!["nextest".to_string(), "run".to_string()];
+    let mut test_arguments = vec!["nextest".to_string(), "run".to_string(), "--profile=ci".to_string()];
 
     for entry in fs::read_dir("./extensions")? {
         let Ok(entry) = entry else {
@@ -31,7 +31,7 @@ fn main() -> anyhow::Result<()> {
             continue;
         };
 
-        if !sdk_version.matches(&args.sdk_version) {
+        if !args.sdk_version.iter().any(|version| sdk_version.matches(version)) {
             continue;
         }
 
