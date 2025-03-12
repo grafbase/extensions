@@ -1,0 +1,36 @@
+name: Install Grafbase
+description: Install Grafbase toolchain
+
+inputs:
+  cli-version:
+    description: "CLI version to install"
+    required: false
+  gateway-version:
+    description: "Gateway version to install"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install CLI
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.cli-version }}" ]; then
+          curl -fsSL https://grafbase.com/downloads/cli | bash -s ${{ inputs.cli-version }}
+        else
+          curl -fsSL https://grafbase.com/downloads/cli | bash
+        fi
+
+    - name: Install Gateway
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.gateway-version }}" ]; then
+          curl -fsSL https://grafbase.com/downloads/gateway | bash -s ${{ inputs.gateway-version }}
+        else
+          curl -fsSL https://grafbase.com/downloads/gateway | bash
+        fi
+
+    - name: Set Path
+      shell: bash
+      run: |
+        echo "/home/runner/.grafbase/bin" >> $GITHUB_PATH

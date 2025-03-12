@@ -1,0 +1,29 @@
+name: Publish Extensions
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: publish-extensions
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: ./.github/actions/install-rust
+
+      - name: Install Grafbase
+        uses: ./.github/actions/install-grafbase
+
+      - name: Build and run publish-extensions
+        run: |
+          cargo run -p publish-extensions
+        env:
+          GRAFBASE_API_TOKEN: ${{ secrets.GRAFBASE_API_TOKEN }}

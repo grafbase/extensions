@@ -60,26 +60,18 @@ jobs:
       - name: Install Rust
         uses: ./.github/actions/install-rust
 
+      - name: Install Grafbase
+        uses: ./.github/actions/install-grafbase
+        with:
+          gateway-version: ${{ matrix.version.gateway }}
+          cli-version: ${{ matrix.version.cli }}
+
       - name: Install cargo-nextest
         uses: taiki-e/install-action@v2
         with:
           tool: nextest
 
-      - name: Install CLI
-        shell: bash
-        run: |
-
-      - name: Install Gateway
-        shell: bash
-        run: |
-
       - name: Run Tests
         shell: bash
         run: |
-          curl -fsSL https://grafbase.com/downloads/cli | bash -s ${{ matrix.version.cli }}
-          curl -fsSL https://grafbase.com/downloads/gateway | bash -s ${{ matrix.version.gateway }}
-          mkdir -p /home/runner/.local/bin
-          mv /home/runner/.grafbase/bin/grafbase /home/runner/.local/bin/
-          mv /home/runner/.grafbase/bin/grafbase-gateway /home/runner/.local/bin/
-          echo $PATH
           cargo run -p test-matrix -- --sdk-version ${{ join(matrix.version.sdk, ' --sdk-version ') }}

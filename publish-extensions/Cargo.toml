@@ -1,0 +1,22 @@
+[package]
+name = "publish-extensions"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+repository.workspace = true
+
+[dependencies]
+anyhow = "1.0.97"
+duct = "0.13.7"
+indoc = "2.0.6"
+reqwest = { version = "0.12.14", features = ["json", "rustls-tls"] }
+semver = { version = "1.0.26", features = ["serde"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+tokio = { version = "1.44.0", features = ["full"] }
+toml = "0.8.20"
+
+[lints]
+workspace = true
