@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://grafbase.com">
+  <a href="https://grafbase.com/extensions">
     <img alt="Grafbase extensions logo" src="https://github.com/user-attachments/assets/b4d8fd7c-8d10-4165-afe4-bb0810b20b5b" width="1000">
     <h3 align="center">Grafbase Extensions</h3>
   </a>
