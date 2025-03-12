@@ -10,12 +10,12 @@
 </p>
 
 <p align="center">
-  <a href="https://grafbase.com/extensions"><strong>Marketplace</strong></a>
+  <a href="https://grafbase.com/extensions"><strong>Marketplace</strong></a> ·
   <a href="https://grafbase.com/docs"><strong>Docs</strong></a> ·
-  <a href="https://crates.io/crates/grafbase-sdk"><strong>SDK</strong></a>
+  <a href="https://crates.io/crates/grafbase-sdk"><strong>SDK</strong></a> ·
   <a href="https://grafbase.com/cli"><strong>CLI</strong></a> ·
   <a href="https://grafbase.com/docs/self-hosted-gateway"><strong>Gateway</strong></a> ·
-  <a href="https://grafbase.com/community"><strong>Community</strong></a> ·
+  <a href="https://grafbase.com/community"><strong>Community</strong></a>
 </p>
 
 <p align="center">
