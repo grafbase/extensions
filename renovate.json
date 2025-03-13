@@ -30,7 +30,10 @@
       "groupName": "rust-dependencies-non-major",
       "commitMessageTopic": "rust crates",
       "semanticCommitType": "fix",
-      "semanticCommitScope": "deps",
+      "semanticCommitScope": "deps"
+    },
+    {
+      "matchManagers": ["cargo"],
       "rangeStrategy": "update-lockfile"
     },
     {
