@@ -14,7 +14,7 @@ Add the following to your Grafbase Gateway configuration file:
 
 ```toml
 [extensions.nats]
-version = "0.3"
+version = "0.4"
 ```
 
 Then run `grafbase extension install`. The extension will be installed in the `grafbase_extensions` directory. That directory must be present when the gateway is started.

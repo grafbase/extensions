@@ -1,6 +1,6 @@
 [extension]
 name = "requires-scopes"
-version = "1.0.2"
+version = "1.0.3"
 kind = "authorization"
 description = "Prevent access to elements in the query if the user doesn't have the right OAuth scopes"
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/requires-scopes"
