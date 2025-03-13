@@ -1,4 +1,4 @@
-# Authenticated
+# Authenticated extension
 
 Provides an `@authenticated` directive which prevents access to elements in the query when the user is not authenticated.
 

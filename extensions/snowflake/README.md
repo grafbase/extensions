@@ -1,6 +1,6 @@
 # Snowflake extension
 
-This Grafbase gateway extension allows you to execute SQL statements against a Snowflake database over the [Snowflake SQL API](https://docs.snowflake.com/en/developer-guide/sql-api/intro).
+This Grafbase Gateway extension allows you to execute SQL statements against a Snowflake database over the [Snowflake SQL API](https://docs.snowflake.com/en/developer-guide/sql-api/intro).
 
 ## Example usage
 

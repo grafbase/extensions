@@ -11,5 +11,5 @@ requires that the user has both "read:posts" AND either "admin" OR "editor"
 scope to access the field or type.
 """
 directive @requiresScopes(
-    scopes: [[String!]!]!
+  scpes: [[String!]!]!
 ) on FIELD_DEFINITION | OBJECT | INTERFACE | SCALAR | ENUM

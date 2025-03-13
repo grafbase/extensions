@@ -2,6 +2,6 @@
 name = "authenticated"
 version = "1.0.0"
 kind = "authorization"
-description = "@authenticated directive"
+description = "Prevent access to elements in the query when the user is not authenticated"
 license = "Apache-2.0"
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/authenticated"
