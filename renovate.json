@@ -32,6 +32,11 @@
       "semanticCommitType": "fix",
       "semanticCommitScope": "deps",
       "rangeStrategy": "update-lockfile"
+    },
+    {
+      "matchManagers": ["cargo"],
+      "matchFileNames": ["!(extensions/**)/Cargo.toml"],
+      "enabled": false
     }
   ]
 }
