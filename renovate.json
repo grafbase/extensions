@@ -1,27 +1,46 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended"
+  ],
   "lockFileMaintenance": {
     "enabled": false
   },
   "packageRules": [
     {
-      "matchPackageNames": ["ory-client"],
+      "matchPackageNames": [
+        "ory-client"
+      ],
       "enabled": false
     },
     {
-      "matchDatasources": ["docker"],
+      "matchDatasources": [
+        "docker"
+      ],
       "enabled": false
     },
     {
-      "matchPaths": ["extensions/**/Cargo.toml"],
+      "matchFileNames": [
+        "extensions/**/Cargo.toml"
+      ],
       "groupName": "extension-dependencies-non-major",
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "addLabels": ["extension-version-bump-needed"]
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
+      "addLabels": [
+        "extension-version-bump-needed"
+      ]
     },
     {
-      "matchFiles": ["Cargo.lock"],
-      "matchUpdateTypes": ["lockFileMaintenance"],
+      "matchFileNames": [
+        "Cargo.lock"
+      ],
+      "matchUpdateTypes": [
+        "lockFileMaintenance"
+      ],
       "enabled": false
     }
   ]
