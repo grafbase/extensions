@@ -1,47 +1,37 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
+  "extends": ["config:recommended"],
   "lockFileMaintenance": {
     "enabled": false
   },
   "packageRules": [
     {
-      "matchPackageNames": [
-        "ory-client"
-      ],
+      "matchPackageNames": ["ory-client"],
       "enabled": false
     },
     {
-      "matchDatasources": [
-        "docker"
-      ],
+      "matchDatasources": ["docker"],
       "enabled": false
     },
     {
-      "matchFileNames": [
-        "extensions/**/Cargo.toml"
-      ],
+      "matchFileNames": ["extensions/**/Cargo.toml"],
       "groupName": "extension-dependencies-non-major",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "addLabels": [
-        "extension-version-bump-needed"
-      ]
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "addLabels": ["extension-version-bump-needed"]
     },
     {
-      "matchFileNames": [
-        "Cargo.lock"
-      ],
-      "matchUpdateTypes": [
-        "lockFileMaintenance"
-      ],
+      "matchFileNames": ["Cargo.lock"],
+      "matchUpdateTypes": ["lockFileMaintenance"],
       "enabled": false
+    },
+    {
+      "matchManagers": ["cargo"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "rust-dependencies-non-major",
+      "commitMessageTopic": "rust crates",
+      "semanticCommitType": "fix",
+      "semanticCommitScope": "deps",
+      "rangeStrategy": "update-lockfile"
     }
   ]
 }
