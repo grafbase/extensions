@@ -10,12 +10,15 @@ concurrency:
 
 jobs:
   check-format:
-    runs-on: ubicloud-standard-2
+    runs-on: depot-ubuntu-24.04
     env:
       RUSTFLAGS: -D warnings
     steps:
       - name: Get Sources
         uses: actions/checkout@v4
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.7
 
       - name: Install Rust
         uses: ./.github/actions/install-rust
@@ -29,11 +32,13 @@ jobs:
 
       - name: cargo clippy
         shell: bash
+        env:
+          RUSTC_WRAPPER: sccache
         run: |
           cargo clippy --locked
 
   run-tests:
-    runs-on: ubicloud-standard-8
+    runs-on: depot-ubuntu-24.04-8
     strategy:
       matrix:
         version:
@@ -57,6 +62,9 @@ jobs:
         run: |
           docker compose up -d
 
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.7
+
       - name: Install Rust
         uses: ./.github/actions/install-rust
 
@@ -73,5 +81,7 @@ jobs:
 
       - name: Run Tests
         shell: bash
+        env:
+          RUSTC_WRAPPER: sccache
         run: |
           cargo run -p test-matrix -- --sdk-version ${{ join(matrix.version.sdk, ' --sdk-version ') }}
