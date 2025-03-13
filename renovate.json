@@ -11,11 +11,8 @@
       "enabled": false
     },
     {
-      "groupName": "dependencies-non-major",
-      "matchUpdateTypes": ["digest", "minor", "patch", "pin"]
-    },
-    {
-      "matchPaths": ["extensions/*/Cargo.toml"],
+      "matchPaths": ["extensions/**/Cargo.toml"],
+      "groupName": "extension-dependencies-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "addLabels": ["extension-version-bump-needed"]
     }
