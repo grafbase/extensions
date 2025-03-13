@@ -1,0 +1,83 @@
+name: Bump Extension Version
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  bump-version:
+    if: github.event.label.name == 'extension-version-bump-needed'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Find affected extension directories
+        id: find-dirs
+        run: |
+          DIRS=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }} | grep "extensions/.*/Cargo.toml" | xargs -L1 dirname | sort -u)
+          echo "Found directories: $DIRS"
+          echo "dirs<<EOF" >> $GITHUB_OUTPUT
+          echo "$DIRS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Bump extension versions
+        run: |
+          # Check if we found any directories
+          if [ -z "${{ steps.find-dirs.outputs.dirs }}" ]; then
+            echo "No extension directories found with changes"
+            exit 0
+          fi
+
+          # Process each directory
+          echo "${{ steps.find-dirs.outputs.dirs }}" | while read DIR; do
+            if [ -f "$DIR/extension.toml" ]; then
+              echo "Processing $DIR/extension.toml"
+              # Extract current version
+              CURRENT_VERSION=$(grep -oP 'version\s*=\s*"\K[^"]+' "$DIR/extension.toml")
+
+              # Split version into parts
+              IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+
+              # Increment patch version
+              VERSION_PARTS[2]=$((VERSION_PARTS[2] + 1))
+
+              # Join version parts back together
+              NEW_VERSION="${VERSION_PARTS[0]}.${VERSION_PARTS[1]}.${VERSION_PARTS[2]}"
+
+              # Update version in extension.toml
+              sed -i "s/version = \"$CURRENT_VERSION\"/version = \"$NEW_VERSION\"/" "$DIR/extension.toml"
+
+              echo "Updated $DIR/extension.toml from $CURRENT_VERSION to $NEW_VERSION"
+            fi
+          done
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "grafbase-extensions[bot]@users.noreply.github.com"
+          git config --local user.name "Extension Version Bot"
+          git add extensions/**/extension.toml
+          git commit -m "Bump extension versions for dependency updates" || echo "No changes to commit"
+          git push
+
+      - name: Remove label
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            try {
+              await github.rest.issues.removeLabel({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'extension-version-bump-needed'
+              });
+            } catch (error) {
+              console.log('Error removing label:', error);
+            }

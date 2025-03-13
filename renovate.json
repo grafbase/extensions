@@ -13,6 +13,11 @@
     {
       "groupName": "dependencies-non-major",
       "matchUpdateTypes": ["digest", "minor", "patch", "pin"]
+    },
+    {
+      "matchPaths": ["extensions/*/Cargo.toml"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "addLabels": ["extension-version-bump-needed"]
     }
   ]
 }
