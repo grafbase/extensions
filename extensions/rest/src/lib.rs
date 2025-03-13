@@ -2,7 +2,7 @@ mod selection_filter;
 mod types;
 
 use grafbase_sdk::{
-    Error, Extension, Headers, Resolver, ResolverExtension, Subscription,
+    Error, Headers, ResolverExtension, Subscription,
     host_io::http::{self, HttpRequest, Url},
     jq_selection::JqSelection,
     types::{Configuration, FieldDefinitionDirective, FieldInputs, FieldOutput, SchemaDirective},
@@ -15,8 +15,8 @@ struct RestExtension {
     jq_selection: JqSelection,
 }
 
-impl Extension for RestExtension {
-    fn new(schema_directives: Vec<SchemaDirective>, _: Configuration) -> Result<Self, Box<dyn std::error::Error>> {
+impl ResolverExtension for RestExtension {
+    fn new(schema_directives: Vec<SchemaDirective>, _: Configuration) -> Result<Self, Error> {
         let mut endpoints = Vec::<RestEndpoint>::new();
 
         for directive in schema_directives {
@@ -39,29 +39,13 @@ impl Extension for RestExtension {
             jq_selection: JqSelection::default(),
         })
     }
-}
 
-impl RestExtension {
-    pub fn get_endpoint(&self, name: &str, subgraph_name: &str) -> Option<&RestEndpoint> {
-        self.endpoints
-            .binary_search_by(|e| {
-                let by_name = e.args.name.as_str().cmp(name);
-                let by_subgraph = e.subgraph_name.as_str().cmp(subgraph_name);
-
-                by_name.then(by_subgraph)
-            })
-            .map(|i| &self.endpoints[i])
-            .ok()
-    }
-}
-
-impl Resolver for RestExtension {
     fn resolve_field(
         &mut self,
         headers: Headers,
         subgraph_name: &str,
         directive: FieldDefinitionDirective<'_>,
-        _: FieldInputs,
+        inputs: FieldInputs,
     ) -> Result<FieldOutput, Error> {
         let rest: Rest<'_> = directive
             .arguments()
@@ -104,26 +88,28 @@ impl Resolver for RestExtension {
             .json()
             .map_err(|e| format!("Error deserializing response: {e}"))?;
 
-        let mut results = FieldOutput::new();
-
         if !(data.is_object() || data.is_array()) {
-            results.push_value(data);
-            return Ok(results);
+            return Ok(FieldOutput::new(inputs, data)?);
         }
 
         let filtered = self
             .jq_selection
             .select(rest.selection, data)
-            .map_err(|e| format!("Error selecting result value: {e}"))?;
+            .map_err(|e| format!("Error selecting result value: {e}"))?
+            .collect::<Result<Vec<_>, _>>();
 
-        for result in filtered {
-            match result {
-                Ok(result) => results.push_value(result),
-                Err(e) => results.push_error(format!("Error parsing result value: {e}")),
+        Ok(match filtered {
+            Ok(filtered) => {
+                // TODO: We don't know whether a list of a single item is expected here...
+                // Need engine to help
+                if filtered.len() == 1 {
+                    FieldOutput::new(inputs, filtered.into_iter().next().unwrap())?
+                } else {
+                    FieldOutput::new(inputs, filtered)?
+                }
             }
-        }
-
-        Ok(results)
+            Err(error) => FieldOutput::error(inputs, format!("Failed to filter with selection: {}", error)),
+        })
     }
 
     fn resolve_subscription(
@@ -133,5 +119,19 @@ impl Resolver for RestExtension {
         _: FieldDefinitionDirective<'_>,
     ) -> Result<Box<dyn Subscription>, Error> {
         unreachable!()
+    }
+}
+
+impl RestExtension {
+    pub fn get_endpoint(&self, name: &str, subgraph_name: &str) -> Option<&RestEndpoint> {
+        self.endpoints
+            .binary_search_by(|e| {
+                let by_name = e.args.name.as_str().cmp(name);
+                let by_subgraph = e.subgraph_name.as_str().cmp(subgraph_name);
+
+                by_name.then(by_subgraph)
+            })
+            .map(|i| &self.endpoints[i])
+            .ok()
     }
 }
