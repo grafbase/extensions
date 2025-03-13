@@ -1,6 +1,6 @@
 [extension]
 name = "requires-scopes"
-version = "1.0.1"
+version = "1.0.2"
 kind = "authorization"
 description = "@requiresScopes directive"
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/requires-scopes"
