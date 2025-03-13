@@ -1,6 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
+  "lockFileMaintenance": {
+    "enabled": false
+  },
   "packageRules": [
     {
       "matchPackageNames": ["ory-client"],
@@ -15,6 +18,11 @@
       "groupName": "extension-dependencies-non-major",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "addLabels": ["extension-version-bump-needed"]
+    },
+    {
+      "matchFiles": ["Cargo.lock"],
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "enabled": false
     }
   ]
 }
