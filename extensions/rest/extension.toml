@@ -1,6 +1,6 @@
 [extension]
 name = "rest"
-version = "0.4.0"
+version = "0.4.1"
 kind = "resolver"
 description = "Declarative REST resolver extension."
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/rest"
