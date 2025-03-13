@@ -1,4 +1,4 @@
-# REST Extension
+# REST extension
 
 This is a REST extension for the Grafbase Gateway. It allows you to define REST endpoints and map them to GraphQL fields. It provides two directives:
 

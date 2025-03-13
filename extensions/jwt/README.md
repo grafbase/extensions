@@ -1,6 +1,6 @@
-# JWT Extension
+# JWT extension
 
-This is a proof of concept authentication extension for the Grafbase Gateway that implements the native JWT authentication mechanism as a WebAssembly component.
+This extension implements native JWT authentication for the Grafbase Gateway.
 
 ## Installing
 

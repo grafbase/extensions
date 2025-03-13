@@ -1,5 +1,5 @@
 extend schema
-    @link(url: "https://specs.grafbase.com/grafbase", import: ["JsonTemplate"])
+  @link(url: "https://specs.grafbase.com/grafbase", import: ["JsonTemplate"])
 
 """
 Run a statement against Snowflake. The bindings are optional. They can
@@ -10,6 +10,6 @@ of values (one for each column in the result set). In practice, [[JSON!]!]
 is a practical type for resolvers using this directive.
 """
 directive @snowflakeQuery(
-    sql: String!
-    bindings: JsonTemplate
+  sql: String!
+  bindings: JsonTemplate
 ) on FIELD_DEFINITION

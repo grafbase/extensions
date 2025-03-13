@@ -1,4 +1,4 @@
-# NATS Extension
+# NATS extension
 
 This is a NATS extension for the Grafbase Gateway. It allows you to publish and subscribe, use the NATS key-value store and use the NATS request-response system.
 
