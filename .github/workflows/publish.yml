@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   publish:
-    runs-on: ubicloud-standard-8
+    runs-on: depot-ubuntu-24.04-8
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
