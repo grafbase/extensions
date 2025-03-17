@@ -20,8 +20,10 @@ jobs:
 
       - name: Find affected extension directories
         id: find-dirs
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
-          DIRS=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }} | grep "extensions/.*/Cargo.toml" | xargs -L1 dirname | sort -u)
+          DIRS=$(git diff --name-only origin/$BASE_REF | grep "extensions/.*/Cargo.toml" | xargs -L1 dirname | sort -u)
           echo "Found directories: $DIRS"
           echo "dirs<<EOF" >> $GITHUB_OUTPUT
           echo "$DIRS" >> $GITHUB_OUTPUT
