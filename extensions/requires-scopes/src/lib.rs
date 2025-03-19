@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use grafbase_sdk::{
     AuthorizationExtension, Error, IntoQueryAuthorization,
     host::AuthorizationContext,
@@ -12,22 +10,13 @@ struct RequiresScopes;
 #[derive(serde::Deserialize)]
 struct Claims<'a> {
     #[serde(borrow)]
-    scope: Cow<'a, str>,
+    scope: &'a str,
 }
 
 #[derive(serde::Deserialize)]
 struct DirectiveArguments<'a> {
     #[serde(borrow)]
-    scopes: Vec<Vec<Scope<'a>>>,
-}
-
-#[derive(serde::Deserialize)]
-struct Scope<'a>(#[serde(borrow)] Cow<'a, str>);
-
-impl Scope<'_> {
-    fn as_str(&self) -> &str {
-        self.0.as_ref()
-    }
+    scopes: Vec<Vec<&'a str>>,
 }
 
 impl AuthorizationExtension for RequiresScopes {
@@ -57,7 +46,7 @@ impl AuthorizationExtension for RequiresScopes {
             let DirectiveArguments { scopes } = element.arguments::<DirectiveArguments>()?;
             let has_matching_scopes = scopes
                 .iter()
-                .any(|scopes| scopes.iter().all(|scope| token_scopes.contains(&scope.as_str())));
+                .any(|scopes| scopes.iter().all(|scope| token_scopes.contains(scope)));
 
             if !has_matching_scopes {
                 let error_id =
