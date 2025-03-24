@@ -30,6 +30,9 @@ jobs:
         run: |
           cargo fmt --check
 
+      - name: Install Protoc for the gRPC extension
+        uses: arduino/setup-protoc@v3
+
       - name: cargo clippy
         shell: bash
         env:
@@ -88,6 +91,9 @@ jobs:
         uses: taiki-e/install-action@v2
         with:
           tool: nextest
+
+      - name: Install Protoc for the gRPC extension
+        uses: arduino/setup-protoc@v3
 
       - name: Run Tests
         shell: bash
