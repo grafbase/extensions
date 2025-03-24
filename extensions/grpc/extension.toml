@@ -1,0 +1,17 @@
+[extension]
+name = "grpc"
+version = "0.1.0"
+kind = "resolver"
+description = "Let Grafbase Gateway communicate with your GRPC services."
+repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/grpc"
+license = "Apache-2.0"
+
+[permissions]
+network = true
+stdout = false
+stderr = false
+environment_variables = false
+
+[directives]
+definitions = "definitions.graphql"
+field_resolvers = ["grpcMethod"]
