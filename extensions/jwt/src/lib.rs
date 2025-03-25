@@ -2,12 +2,12 @@ mod types;
 
 use base64::Engine as _;
 use grafbase_sdk::{
-    AuthenticationExtension, Error, Headers,
+    AuthenticationExtension,
     host_io::{
         cache::{self, CachedItem},
         http::{self, HttpRequest},
     },
-    types::{Configuration, ErrorResponse, StatusCode, Token},
+    types::{Configuration, Error, ErrorResponse, GatewayHeaders, Token},
 };
 use jwt_compact::{Algorithm, AlgorithmExt, TimeOptions, UntrustedToken, jwk::JsonWebKey};
 use serde::de::DeserializeOwned;
@@ -25,9 +25,9 @@ impl AuthenticationExtension for Jwt {
         Ok(Self { config })
     }
 
-    fn authenticate(&mut self, headers: Headers) -> Result<Token, ErrorResponse> {
+    fn authenticate(&mut self, headers: &GatewayHeaders) -> Result<Token, ErrorResponse> {
         let Some(token_str) = headers.get(self.config.header_name()).and_then(|value| {
-            let stripped = value.strip_prefix(self.config.header_value_prefix());
+            let stripped = value.to_str().ok()?.strip_prefix(self.config.header_value_prefix());
             stripped.map(ToString::to_string)
         }) else {
             return Err(unauthorized());
@@ -40,7 +40,7 @@ impl AuthenticationExtension for Jwt {
 
             Ok(CachedItem::new(jwks, Some(self.config.poll_interval)))
         })
-        .map_err(|_| ErrorResponse::internal_server_error("Internal server error"))?;
+        .map_err(|_| ErrorResponse::internal_server_error())?;
 
         let token = UntrustedToken::new(&token_str).map_err(|_| unauthorized())?;
         let token = decode_token(jwks.keys, token).ok_or_else(unauthorized)?;
@@ -74,7 +74,7 @@ impl AuthenticationExtension for Jwt {
 }
 
 fn unauthorized() -> ErrorResponse {
-    ErrorResponse::new(StatusCode::UNAUTHORIZED).with_error("Unauthorized")
+    ErrorResponse::unauthorized().with_error("Unauthorized")
 }
 
 fn decode_token(jwks: Vec<Jwk<'_>>, untrusted_token: UntrustedToken<'_>) -> Option<jwt_compact::Token<CustomClaims>> {

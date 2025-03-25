@@ -37,6 +37,16 @@ jobs:
         run: |
           cargo clippy --locked
 
+      - uses: uncenter/setup-taplo@v1
+        with:
+          version: "0.9.3"
+
+      - name: taplo fmt check
+        shell: bash
+        run: |
+          taplo fmt --check
+          taplo check
+
   run-tests:
     runs-on: depot-ubuntu-24.04-8
     strategy:

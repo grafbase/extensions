@@ -3,8 +3,8 @@ use std::{cell::RefCell, rc::Rc};
 use grafbase_sdk::{
     host_io::pubsub::nats::{self, NatsSubscription},
     jq_selection::JqSelection,
-    types::SubscriptionOutput,
-    Error, Subscription,
+    types::{Error, SubscriptionOutput},
+    Subscription,
 };
 
 pub struct FilteredSubscription {

@@ -1,11 +1,12 @@
-mod selection_filter;
 mod types;
 
 use grafbase_sdk::{
-    Error, Headers, ResolverExtension, Subscription,
+    ResolverExtension,
     host_io::http::{self, HttpRequest, Url},
     jq_selection::JqSelection,
-    types::{Configuration, FieldDefinitionDirective, FieldInputs, FieldOutput, SchemaDirective},
+    types::{
+        Configuration, Error, FieldDefinitionDirective, FieldInputs, FieldOutputs, SchemaDirective, SubgraphHeaders,
+    },
 };
 use types::{Rest, RestEndpoint};
 
@@ -42,11 +43,11 @@ impl ResolverExtension for RestExtension {
 
     fn resolve_field(
         &mut self,
-        headers: Headers,
+        headers: SubgraphHeaders,
         subgraph_name: &str,
         directive: FieldDefinitionDirective<'_>,
         inputs: FieldInputs,
-    ) -> Result<FieldOutput, Error> {
+    ) -> Result<FieldOutputs, Error> {
         let rest: Rest<'_> = directive
             .arguments()
             .map_err(|e| format!("Could not parse directive arguments: {e}"))?;
@@ -69,8 +70,8 @@ impl ResolverExtension for RestExtension {
 
         let mut builder = HttpRequest::builder(url, rest.method.into());
 
-        for (key, value) in headers.entries() {
-            builder.push_header(key, value);
+        for (key, value) in headers.iter() {
+            builder.push_header(key.to_string(), value.to_str().unwrap().to_string());
         }
 
         let request = match rest.body() {
@@ -89,7 +90,7 @@ impl ResolverExtension for RestExtension {
             .map_err(|e| format!("Error deserializing response: {e}"))?;
 
         if !(data.is_object() || data.is_array()) {
-            return Ok(FieldOutput::new(inputs, data)?);
+            return Ok(FieldOutputs::new(inputs, data)?);
         }
 
         let filtered = self
@@ -103,22 +104,13 @@ impl ResolverExtension for RestExtension {
                 // TODO: We don't know whether a list of a single item is expected here...
                 // Need engine to help
                 if filtered.len() == 1 {
-                    FieldOutput::new(inputs, filtered.into_iter().next().unwrap())?
+                    FieldOutputs::new(inputs, filtered.into_iter().next().unwrap())?
                 } else {
-                    FieldOutput::new(inputs, filtered)?
+                    FieldOutputs::new(inputs, filtered)?
                 }
             }
-            Err(error) => FieldOutput::error(inputs, format!("Failed to filter with selection: {}", error)),
+            Err(error) => FieldOutputs::error(inputs, format!("Failed to filter with selection: {}", error)),
         })
-    }
-
-    fn resolve_subscription(
-        &mut self,
-        _: Headers,
-        _: &str,
-        _: FieldDefinitionDirective<'_>,
-    ) -> Result<Box<dyn Subscription>, Error> {
-        unreachable!()
     }
 }
 
