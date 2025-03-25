@@ -5,8 +5,10 @@ mod statements;
 
 use self::config::{Authentication, SnowflakeConfig};
 use grafbase_sdk::{
-    Error, Headers, ResolverExtension, Subscription,
-    types::{Configuration, FieldDefinitionDirective, FieldInputs, FieldOutput, SchemaDirective},
+    ResolverExtension,
+    types::{
+        Configuration, Error, FieldDefinitionDirective, FieldInputs, FieldOutputs, SchemaDirective, SubgraphHeaders,
+    },
 };
 
 #[derive(ResolverExtension)]
@@ -27,11 +29,11 @@ impl ResolverExtension for Snowflake {
 
     fn resolve_field(
         &mut self,
-        _headers: Headers,
+        _headers: SubgraphHeaders,
         _subgraph_name: &str,
         directive: FieldDefinitionDirective<'_>,
         inputs: FieldInputs,
-    ) -> Result<FieldOutput, Error> {
+    ) -> Result<FieldOutputs, Error> {
         match directive.name() {
             "snowflakeQuery" => {
                 let directives::SnowflakeQueryDirective { sql, bindings } = directive.arguments()?;
@@ -52,18 +54,9 @@ impl ResolverExtension for Snowflake {
                     )));
                 };
 
-                Ok(FieldOutput::new(inputs, data)?)
+                Ok(FieldOutputs::new(inputs, data)?)
             }
             other => Err(Error::new(format!("Unsupported directive \"{other}\""))),
         }
-    }
-
-    fn resolve_subscription(
-        &mut self,
-        _headers: Headers,
-        _subgraph_name: &str,
-        _directive: FieldDefinitionDirective<'_>,
-    ) -> Result<Box<dyn Subscription>, Error> {
-        unreachable!("No subscriptions support in the snowflake extension")
     }
 }

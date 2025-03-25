@@ -1,7 +1,6 @@
 use grafbase_sdk::{
-    AuthorizationExtension, Error, IntoQueryAuthorization,
-    host::AuthorizationContext,
-    types::{AuthorizationDecisions, Configuration, ErrorResponse, QueryElements},
+    AuthorizationExtension, IntoQueryAuthorization,
+    types::{AuthorizationDecisions, Configuration, Error, ErrorResponse, QueryElements, SubgraphHeaders, Token},
 };
 
 #[derive(AuthorizationExtension)]
@@ -26,10 +25,11 @@ impl AuthorizationExtension for RequiresScopes {
 
     fn authorize_query(
         &mut self,
-        ctx: AuthorizationContext,
+        _headers: &mut SubgraphHeaders,
+        token: Token,
         elements: QueryElements<'_>,
     ) -> Result<impl IntoQueryAuthorization, ErrorResponse> {
-        let Some(bytes) = ctx.token().into_bytes() else {
+        let Some(bytes) = token.into_bytes() else {
             // Anonymous user.
             return Ok(AuthorizationDecisions::deny_all("Not authorized"));
         };

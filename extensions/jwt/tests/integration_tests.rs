@@ -8,12 +8,7 @@ use indoc::formatdoc;
 
 fn config() -> String {
     formatdoc! {r#"
-        [[authentication.providers]]
-
-        [authentication.providers.extension]
-        extension = "jwt"
-
-        [authentication.providers.extension.config]
+        [extensions.jwt.config]
         url = "{JWKS_URI}"
     "#}
 }
@@ -137,12 +132,7 @@ async fn with_valid_token() {
 #[tokio::test]
 async fn test_different_header_location() {
     let config = formatdoc! {r#"
-        [[authentication.providers]]
-
-        [authentication.providers.extension]
-        extension = "jwt"
-
-        [authentication.providers.extension.config]
+        [extensions.jwt.config]
         url = "{JWKS_URI}"
         header_name = "X-My-JWT"
         header_value_prefix = "Bearer2 "
@@ -257,12 +247,7 @@ async fn test_wrong_provider() {
 #[tokio::test]
 async fn test_audience() {
     let config = formatdoc! {r#"
-        [[authentication.providers]]
-
-        [authentication.providers.extension]
-        extension = "jwt"
-
-        [authentication.providers.extension.config]
+        [extensions.jwt.config]
         url = "{JWKS_URI}"
         audience = "{AUDIENCE}"
     "#};

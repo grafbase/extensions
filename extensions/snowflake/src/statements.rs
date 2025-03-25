@@ -2,7 +2,7 @@ mod binding;
 mod response;
 
 use self::{binding::*, response::*};
-use grafbase_sdk::{Error, host_io::http};
+use grafbase_sdk::{host_io::http, types::Error};
 use std::collections::HashMap;
 
 impl crate::Snowflake {

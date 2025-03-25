@@ -7,27 +7,26 @@ homepage = "https://grafbase.com"
 keywords = ["graphql"]
 repository = "https://github.com/grafbase/grafbase"
 
-[dependencies]
-grafbase-sdk = { version = "0.9.0", features = ["jq-selection"] }
-http = "1"
-jaq-core = "2.1.1"
-jaq-json = { version = "1.1.1", features = ["serde_json"] }
-jaq-parse = "1.0.3"
-jaq-std = "2.1.0"
-serde = "1"
-serde_json = "1"
+[lints]
+workspace = true
 
 [lib]
 crate-type = ["cdylib"]
 
+[dependencies]
+grafbase-sdk = { workspace = true, features = ["jq-selection"] }
+http.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
 [dev-dependencies]
-grafbase-sdk = { version = "0.9.0", features = ["test-utils"] }
-indoc = "2.0.6"
-insta = { version = "1.42.2", features = ["json"] }
-serde_json = "1"
-tokio = { version = "1.43.0", features = [
+grafbase-sdk = { workspace = true, features = ["test-utils"] }
+indoc.workspace = true
+insta = { workspace = true, features = ["json"] }
+serde_json.workspace = true
+tokio = { workspace = true, features = [
     "rt-multi-thread",
     "macros",
     "test-util",
 ] }
-wiremock = "0.6.3"
+wiremock.workspace = true
