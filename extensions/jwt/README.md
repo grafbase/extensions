@@ -1,76 +1,57 @@
-# JWT extension
+# JWT
 
-This extension implements native JWT authentication for the Grafbase Gateway.
+This extension provides JWT authentication for the Grafbase Gateway.
 
 ## Installing
 
 Add the following to your Grafbase Gateway configuration file:
 
 ```toml
+# grafbase.toml
+
 [extensions.jwt]
 version = "0.2"
 ```
 
-Then run `grafbase extension install`. The extension will be installed in the `grafbase_extensions` directory. That directory must be present when the gateway is started.
-
-## Building from source
-
-Build this extension manually and copy the artifacts to a location where the gateway can find them.
+Run the install command before starting the gateway
 
 ```bash
-grafbase extension build
-```
-
-The `build` directory contains the resulting wasm component and manifest file.
-
-```bash
-build/
-├── extension.wasm
-└── manifest.json
-```
-
-In your gateway configuration, you can now load the extension from the `build` directory.
-
-```toml
-[extensions.jwt]
-path = "/path/to/build"
+grafbase extension install
 ```
 
 ## Configuration
 
-This extension acts as an authentication provider for the Grafbase Gateway. After adding it to the extensions section, configure it as an authentication provider.
-
 ```toml
-[[authentication.providers]]
+# grafbase.toml
 
-[authentication.providers.extension]
-extension = "jwt"
-
-[authentication.providers.extension.config]
+[extension.jwt.config]
+# == Required ==
+# URL to download the JWKS for signature validation.
 url = "https://example.com/.well-known/jwks.json"
-issuer = "example.com"
-audience = "my-project"
+
+# == Optional ==
+# Expected `iss` claim. By default it is NOT validated.
+# issuer = "example.com"
+
+# Expected `aud` claim. By default it is NOT validated.
+# audience = "my-project"
+
+# How long the JWKS will be cached, in seconds.
 poll_interval = 60
+# Header name from which to retrieve the JWT token.
 header_name = "Authorization"
+# Header value prefix to remove before parsing the JWT token.
 header_value_prefix = "Bearer "
 ```
 
-## Testing
+## Usage
 
-Compile the CLI and gateway binaries first in the workspace root:
+Once installed, the authentication extension will be automatically used by the Grafbase Gateway and reject non-authenticated requests.
+If you want anonymous users you should change the default authentication in you `grafbase.toml` to:
 
-```bash
-cargo build -p grafbase -p grafbase-gateway
-```
+```toml
+# grafbase.toml
 
-Start the needed docker services in the `extensions` directory:
-
-```bash
-docker compose up -d
-```
-
-Run the tests in this directory:
-
-```bash
-cargo test
+[authentication]
+default = "anonymous"
 ```
