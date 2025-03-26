@@ -5,6 +5,7 @@ Provides the `@requiresScopes` directive which prevents access to elements in th
 ## Install
 
 ```toml
+# grafbase.toml
 [extension.requires-scopes]
 version = "1.0"
 ```
@@ -18,6 +19,7 @@ grafbase extension install
 ## Usage
 
 ```graphql
+# subgraph schema
 extend schema
   @link(
     url: "https://grafbase.com/extensions/requires-scopes/1.0.0"

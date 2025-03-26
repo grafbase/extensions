@@ -5,6 +5,7 @@ Provides an `@authenticated` directive, for subgraphs, which prevents access to 
 ## Install
 
 ```toml
+# grafbase.toml
 [extension.authenticated]
 version = "1.0"
 ```
@@ -18,6 +19,7 @@ grafbase extension install
 ## Usage
 
 ```graphql
+# subgraph schema
 extend schema
   @link(
     url: "https://grafbase.com/extensions/authenticated/1.0.0"

@@ -1,6 +1,6 @@
 [extension]
 name = "authenticated"
-version = "1.0.2"
+version = "1.0.3"
 kind = "authorization"
 description = "Prevent access to elements in the query when the user is not authenticated"
 license = "Apache-2.0"
