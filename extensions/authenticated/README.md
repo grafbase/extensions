@@ -1,6 +1,6 @@
-# Authenticated extension
+# Authenticated
 
-Provides an `@authenticated` directive which prevents access to elements in the query when the user is not authenticated.
+Provides an `@authenticated` directive, for subgraphs, which prevents access to elements in the query when the user is not authenticated.
 
 ## Install
 
@@ -9,10 +9,20 @@ Provides an `@authenticated` directive which prevents access to elements in the 
 version = "1.0"
 ```
 
+Run the install command before starting the gateway
+
+```bash
+grafbase extension install
+```
+
 ## Usage
 
 ```graphql
-extend schema @link(url: "https://grafbase.com/extensions/authenticated/1.0.0", import: ["@authenticated"])
+extend schema
+  @link(
+    url: "https://grafbase.com/extensions/authenticated/1.0.0"
+    import: ["@authenticated"]
+  )
 
 type Query {
   public: String!
