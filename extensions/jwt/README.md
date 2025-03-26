@@ -8,7 +8,6 @@ Add the following to your Grafbase Gateway configuration file:
 
 ```toml
 # grafbase.toml
-
 [extensions.jwt]
 version = "0.2"
 ```
@@ -23,7 +22,6 @@ grafbase extension install
 
 ```toml
 # grafbase.toml
-
 [extension.jwt.config]
 # == Required ==
 # URL to download the JWKS for signature validation.
@@ -51,7 +49,18 @@ If you want anonymous users you should change the default authentication in you 
 
 ```toml
 # grafbase.toml
-
 [authentication]
 default = "anonymous"
 ```
+
+## Validation mechanism
+
+This extension validates JWT ([RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519)) tokens and verifies signatures using JWKs ([RFC 7517](https://datatracker.ietf.org/doc/html/rfc7517)) from `jwks.url`. The validation follows these steps:
+
+1. One of the specified JWK must match the JWT signature.
+2. If present, the `exp` claim must be a future timestamp, with a 60-second leeway.
+3. If present, the `nbf` claim must be a past timestamp, with a 60-second leeway.
+4. With a configured `issuer`, the `iss` claim must match the specified `issuer`.
+5. With a configured `audience`, the `aud` claim must match the specified `audience`. If the `aud` claim is an array, at least one of the audience `audience` must match.
+
+**Important**: Be sure to check with your authentication provider whether you must check `audience` and/or the `issuer`, you may accept JWT tokens that weren't intended for you service otherwise.
