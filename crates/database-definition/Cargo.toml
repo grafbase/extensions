@@ -1,0 +1,12 @@
+[package]
+name = "grafbase-database-definition"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+
+[dependencies]
+Inflector.workspace = true
+grafbase-sdk.workspace = true
+serde.workspace = true
+itertools.workspace = true
+indexmap.workspace = true

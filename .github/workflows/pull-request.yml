@@ -55,8 +55,8 @@ jobs:
     strategy:
       matrix:
         version:
-          - gateway: "0.35.0"
-            cli: "0.91.0"
+          - gateway: "0.36.0"
+            cli: "0.92.0"
     env:
       RUSTFLAGS: -D warnings
     steps:

@@ -1,0 +1,539 @@
+extend schema
+  @link(url: "https://specs.grafbase.com/grafbase", import: ["InputValueSet"])
+
+"""
+Defines a Postgres database connection to be used in the subgraph.
+
+A subgraph can only have one Postgres database connection. If needing
+multiple connections, create multiple subgraphs.
+"""
+directive @pgDatabase(
+  """
+  The name of the Postgres database
+  """
+  name: String!
+) on SCHEMA
+
+"""
+Defines a Postgres table mapping for a GraphQL object type
+"""
+directive @pgTable(
+  """
+  The name of the Postgres table
+  """
+  name: String!
+
+  """
+  The schema where the table is located, defaults to 'public'
+  """
+  schema: String! = "public"
+) on OBJECT
+
+"""
+Defines a Postgres key constraint (PRIMARY or UNIQUE) for a table
+"""
+directive @pgKey(
+  """
+  List of field names that comprise this key
+  """
+  fields: [String]!
+
+  """
+  Type of key constraint (PRIMARY or UNIQUE)
+  """
+  type: PgKeyType!
+) repeatable on OBJECT
+
+"""
+Defines a Postgres column mapping for a GraphQL field
+"""
+directive @pgColumn(
+  """
+  The name of the Postgres column
+  """
+  name: String!
+
+  """
+  The Postgres data type for this column
+  """
+  type: PgColumnType!
+
+  """
+  If the type is ENUM, this must be defined to an enum type
+  which is available in the database.
+  """
+  enumType: String
+
+  """
+  If the type is ENUM, and if the enum is in a different schema
+  than the column, this must be defined to point to a correct schema.
+  """
+  enumSchema: String
+) on FIELD_DEFINITION
+
+"""
+Types of Postgres key constraints
+"""
+enum PgKeyType {
+  """
+  Primary key constraint - uniquely identifies each record in the table
+  """
+  PRIMARY
+
+  """
+  Unique constraint - ensures all values in a column or combination of columns are distinct
+  """
+  UNIQUE
+}
+
+"""
+Defines a Postgres foreign key relationship between two tables
+"""
+directive @pgRelation(
+  """
+  The name of the relation - used to identify the relationship in the database
+  """
+  name: String!
+
+  """
+  Array of field names from the source table that form the foreign key. Must be defined exactly
+  on one side of the relation.
+  """
+  fields: [String!]
+
+  """
+  Array of field names from the target table being referenced. Must be defined exactly on
+  one side of the relation.
+  """
+  references: [String!]
+) on FIELD_DEFINITION
+
+"""
+Defines a Postgres enum type mapping for a GraphQL enum
+"""
+directive @pgEnum(
+  """
+  The name of the Postgres enum type
+  """
+  name: String!
+
+  """
+  The schema where the enum type is located, defaults to 'public'
+  """
+  schema: String! = "public"
+) on ENUM
+
+"""
+Defines a Postgres enum variant mapping for a GraphQL enum value
+"""
+directive @pgEnumVariant(
+  """
+  The name of the Postgres enum variant value
+  """
+  name: String!
+) on ENUM_VALUE
+
+"""
+Defines the type as a connection type, to be used with 1-n relations.
+"""
+directive @pgConnection(
+  """
+  The name of the type this mutation targets
+  """
+  type: String!
+) on OBJECT
+
+"""
+Defines the type as a mutation type, to be used as a mutation return value.
+"""
+directive @pgMutation(
+  """
+  The name of the type this mutation targets
+  """
+  type: String!
+) on OBJECT
+
+"""
+Defines the type to be an output for postgres RETURNING mutation.
+"""
+directive @pgReturning(
+  """
+  The name of the type to be returned after the mutation
+  """
+  type: String!
+) on OBJECT
+
+"""
+Directive to run a Postgres SELECT query for a field, returning at most one row
+"""
+directive @pgSelectOne on FIELD_DEFINITION
+
+"""
+Directive to run a Postgres SELECT query for a field, returning an array of rows
+"""
+directive @pgSelectMany on FIELD_DEFINITION
+
+"""
+Directive to run a Postgres INSERT query for a field, returning the inserted row
+"""
+directive @pgInsertOne on FIELD_DEFINITION
+
+"""
+Directive to run a Postgres INSERT query for a field, returning the inserted rows
+"""
+directive @pgInsertMany on FIELD_DEFINITION
+
+"""
+Directive to run a Postgres UPDATE query for a field, returning the updated row
+"""
+directive @pgUpdateOne on FIELD_DEFINITION
+
+"""
+Directive to run a Postgres UPDATE query for a field, returning the updated rows
+"""
+directive @pgUpdateMany on FIELD_DEFINITION
+
+"""
+Directive to run a Postgres DELETE query for a field, returning the deleted row
+"""
+directive @pgDeleteOne on FIELD_DEFINITION
+
+"""
+Directive to run a Postgres DELETE query for a field, returning the deleted rows
+"""
+directive @pgDeleteMany on FIELD_DEFINITION
+
+"""
+Postgres data types supported for column definitions
+"""
+enum PgColumnType {
+  """
+  2-byte signed integer, range: -32768 to +32767
+  """
+  SMALLINT
+
+  """
+  4-byte signed integer, range: -2147483648 to +2147483647
+  """
+  INTEGER
+
+  """
+  Alias for INTEGER
+  """
+  INT
+
+  """
+  8-byte signed integer, range: -9223372036854775808 to +9223372036854775807
+  """
+  BIGINT
+
+  """
+  Exact numeric with selectable precision
+  """
+  DECIMAL
+
+  """
+  Alias for DECIMAL
+  """
+  NUMERIC
+
+  """
+  4-byte floating-point number
+  """
+  REAL
+
+  """
+  8-byte floating-point number
+  """
+  DOUBLE_PRECISION
+
+  """
+  2-byte autoincrementing integer
+  """
+  SMALLSERIAL
+
+  """
+  4-byte autoincrementing integer
+  """
+  SERIAL
+
+  """
+  8-byte autoincrementing integer
+  """
+  BIGSERIAL
+
+  """
+  Variable-length character string with limit
+  """
+  VARCHAR
+
+  """
+  Fixed-length character string, blank padded
+  """
+  CHAR
+
+  """
+  Variable unlimited length character string
+  """
+  TEXT
+
+  """
+  Binary data ("byte array")
+  """
+  BYTEA
+
+  """
+  Date and time (without time zone)
+  """
+  TIMESTAMP
+
+  """
+  Date and time with time zone
+  """
+  TIMESTAMPTZ
+
+  """
+  Calendar date (year, month, day)
+  """
+  DATE
+
+  """
+  Time of day (without time zone)
+  """
+  TIME
+
+  """
+  Time of day with time zone
+  """
+  TIMETZ
+
+  """
+  Time interval
+  """
+  INTERVAL
+
+  """
+  Logical Boolean (true/false)
+  """
+  BOOLEAN
+
+  """
+  User-defined enumerated type
+  """
+  ENUM
+
+  """
+  Geometric point on a plane
+  """
+  POINT
+
+  """
+  Infinite geometric line
+  """
+  LINE
+
+  """
+  Geometric line segment
+  """
+  LSEG
+
+  """
+  Rectangular geometric box
+  """
+  BOX
+
+  """
+  Geometric path
+  """
+  PATH
+
+  """
+  Geometric polygon
+  """
+  POLYGON
+
+  """
+  Geometric circle
+  """
+  CIRCLE
+
+  """
+  IPv4 or IPv6 network address
+  """
+  CIDR
+
+  """
+  IPv4 or IPv6 host address
+  """
+  INET
+
+  """
+  MAC address (6 bytes)
+  """
+  MACADDR
+
+  """
+  MAC address (8 bytes, EUI-64 format)
+  """
+  MACADDR8
+
+  """
+  Currency amount
+  """
+  MONEY
+
+  """
+  Fixed-length bit string
+  """
+  BIT
+
+  """
+  Variable-length bit string
+  """
+  BIT_VARYING
+
+  """
+  Alias for BIT_VARYING
+  """
+  VARBIT
+
+  """
+  Text search document
+  """
+  TSVECTOR
+
+  """
+  Text search query
+  """
+  TSQUERY
+
+  """
+  Universally unique identifier
+  """
+  UUID
+
+  """
+  XML data
+  """
+  XML
+
+  """
+  Textual JSON data
+  """
+  JSON
+
+  """
+  Binary JSON data, decomposed
+  """
+  JSONB
+
+  """
+  Array of data type
+  """
+  ARRAY
+
+  """
+  User-defined composite type
+  """
+  COMPOSITE
+
+  """
+  Range of integers (4-byte)
+  """
+  INT4RANGE
+
+  """
+  Range of integers (8-byte)
+  """
+  INT8RANGE
+
+  """
+  Range of numeric values
+  """
+  NUMRANGE
+
+  """
+  Range of timestamp without time zone
+  """
+  TSRANGE
+
+  """
+  Range of timestamp with time zone
+  """
+  TSTZRANGE
+
+  """
+  Range of dates
+  """
+  DATERANGE
+
+  """
+  User-defined domain type
+  """
+  DOMAIN
+
+  """
+  Object identifier
+  """
+  OID
+
+  """
+  Function name
+  """
+  REGPROC
+
+  """
+  Function with argument types
+  """
+  REGPROCEDURE
+
+  """
+  Operator name
+  """
+  REGOPER
+
+  """
+  Operator with argument types
+  """
+  REGOPERATOR
+
+  """
+  Relation name
+  """
+  REGCLASS
+
+  """
+  Data type name
+  """
+  REGTYPE
+
+  """
+  Role name
+  """
+  REGROLE
+
+  """
+  Schema name
+  """
+  REGNAMESPACE
+
+  """
+  Text search configuration
+  """
+  REGCONFIG
+
+  """
+  Text search dictionary
+  """
+  REGDICTIONARY
+
+  """
+  Postgres Log Sequence Number
+  """
+  PG_LSN
+
+  """
+  An enum type. You must define the name of the enum.
+  """
+  ENUM
+}

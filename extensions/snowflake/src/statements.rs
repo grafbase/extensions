@@ -75,8 +75,6 @@ impl crate::Snowflake {
 
         let response = http::execute(&request).map_err(|err| Error::new(err.to_string()))?;
 
-        // eprintln!("{}", std::str::from_utf8(response.body()).unwrap());
-
         let body = serde_json::from_slice(response.body()).map_err(|err| Error::new(err.to_string()))?;
 
         Ok(body)
