@@ -1,7 +1,7 @@
 mod types;
 
 use grafbase_sdk::{
-    ResolverExtension,
+    FieldResolverExtension,
     host_io::http::{self, HttpRequest, Url},
     jq_selection::JqSelection,
     types::{
@@ -10,13 +10,13 @@ use grafbase_sdk::{
 };
 use types::{Rest, RestEndpoint};
 
-#[derive(ResolverExtension)]
+#[derive(FieldResolverExtension)]
 struct RestExtension {
     endpoints: Vec<RestEndpoint>,
     jq_selection: JqSelection,
 }
 
-impl ResolverExtension for RestExtension {
+impl FieldResolverExtension for RestExtension {
     fn new(schema_directives: Vec<SchemaDirective>, _: Configuration) -> Result<Self, Error> {
         let mut endpoints = Vec::<RestEndpoint>::new();
 

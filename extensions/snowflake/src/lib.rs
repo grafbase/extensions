@@ -5,19 +5,19 @@ mod statements;
 
 use self::config::{Authentication, SnowflakeConfig};
 use grafbase_sdk::{
-    ResolverExtension,
+    FieldResolverExtension,
     types::{
         Configuration, Error, FieldDefinitionDirective, FieldInputs, FieldOutputs, SchemaDirective, SubgraphHeaders,
     },
 };
 
-#[derive(ResolverExtension)]
+#[derive(FieldResolverExtension)]
 struct Snowflake {
     jwt: String,
     config: SnowflakeConfig,
 }
 
-impl ResolverExtension for Snowflake {
+impl FieldResolverExtension for Snowflake {
     fn new(_: Vec<SchemaDirective>, config: Configuration) -> Result<Self, Error> {
         let config: SnowflakeConfig = config.deserialize()?;
 

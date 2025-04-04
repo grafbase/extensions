@@ -43,7 +43,7 @@ impl AuthorizationExtension for RequiresScopes {
         let mut lazy_error_id = None;
 
         for element in elements {
-            let DirectiveArguments { scopes } = element.arguments::<DirectiveArguments>()?;
+            let DirectiveArguments { scopes } = element.directive_arguments::<DirectiveArguments>()?;
             let has_matching_scopes = scopes
                 .iter()
                 .any(|scopes| scopes.iter().all(|scope| token_scopes.contains(scope)));
