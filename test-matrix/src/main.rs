@@ -25,6 +25,7 @@ fn main() -> anyhow::Result<()> {
 
         test_arguments.push("-p".to_string());
         test_arguments.push(cargo_toml.name().to_string());
+
         found_extensions = true;
     }
 

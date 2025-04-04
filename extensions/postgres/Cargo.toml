@@ -1,0 +1,45 @@
+[package]
+name = "postgres-extension"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+
+[lib]
+name = "postgres_extension"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[features]
+default = []
+
+# Common dependencies for both WASI and native
+[dependencies]
+Inflector.workspace = true
+chrono.workspace = true
+grafbase-database-definition.workspace = true
+grafbase-sdk.workspace = true
+indexmap = { workspace = true, features = ["serde"] }
+itertools.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+sql-ast.workspace = true
+tracing.workspace = true
+tracing-subscriber = { workspace = true, features = ["json", "env-filter"] }
+
+[dev-dependencies]
+futures.workspace = true
+grafbase-postgres-introspection.workspace = true
+grafbase-sdk = { workspace = true, features = ["test-utils"] }
+indoc.workspace = true
+insta = { workspace = true, features = ["json"] }
+names.workspace = true
+serde_json.workspace = true
+sqlx = { workspace = true, features = [
+    "sqlx-postgres",
+    "json",
+    "runtime-tokio",
+    "tls-rustls-aws-lc-rs",
+    "tls-rustls-ring-native-roots",
+    "postgres",
+] }
+tokio = { workspace = true, features = ["rt-multi-thread", "macros", "test-util"] }

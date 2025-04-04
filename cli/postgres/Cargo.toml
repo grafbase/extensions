@@ -1,0 +1,29 @@
+[package]
+name = "grafbase-postgres"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+
+[dependencies]
+Inflector.workspace = true
+chrono.workspace = true
+clap = { workspace = true, features = ["derive", "env"] }
+indexmap = { workspace = true, features = ["serde"] }
+itertools.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+anyhow.workspace = true
+indoc.workspace = true
+tokio = { workspace = true, features = ["rt", "macros"] }
+grafbase-database-definition.workspace = true
+grafbase-postgres-introspection.workspace = true
+sqlx = { workspace = true, features = [
+    "sqlx-postgres",
+    "json",
+    "runtime-tokio",
+    "tls-rustls-aws-lc-rs",
+    "tls-rustls-ring-native-roots",
+    "postgres",
+] }
+semver = { version = "1.0.26", features = ["serde"] }
+url = { version = "2.5.4", features = ["serde"] }
