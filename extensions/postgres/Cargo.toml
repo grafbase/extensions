@@ -1,0 +1,25 @@
+[package]
+name = "postgres-extension"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+
+[lib]
+name = "postgres_extension"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[features]
+default = []
+
+# Common dependencies for both WASI and native
+[dependencies]
+Inflector.workspace = true
+chrono.workspace = true
+grafbase-database-definition.workspace = true
+grafbase-sdk.workspace = true
+indexmap = { workspace = true, features = ["serde"] }
+itertools.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+sql-ast.workspace = true
