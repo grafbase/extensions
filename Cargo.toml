@@ -53,20 +53,27 @@ wildcard-imports = "allow"
 
 [workspace.dependencies]
 async-nats = "0.40"
+async-stream = "0.3.6"
 base64 = "0.22.1"
+bytes = { version = "1.10.1", features = ["serde"] }
 chrono = "0.4.40"
 duration-str = "0.16.1"
 futures = "0.3"
+futures-util = "0.3.31"
 grafbase-sdk = "0.12.0"
 http = "1.3"
 indoc = "2.0.6"
 insta = { version = "1.42.2", features = ["json"] }
+jiff = "0.2.6"
 jwt-compact = "0.8.0"
 openidconnect = "4.0.0"
 ory-client = "=1.9.0"
 pem = "3.0.5"
 pkcs1 = "0.7.5"
 pkcs8 = "0.10.2"
+pretty_assertions = "1.4.1"
+prost = { version = "0.13.5", default-features = false, features = ["std"] }
+rand = "*"
 reqwest = "0.12.12"
 serde = "1.0.219"
 serde_json = "1"
@@ -74,6 +81,9 @@ serde_with = "3.12.0"
 sha2 = "0.10.8"
 strum = { version = "0.27.1", features = ["derive"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "test-util"] }
+tokio-stream = "0.1.17"
 toml = "0.8"
+tonic = "0.12.3"
+tonic-build = { version = "0.12.3", features = ["prost"] }
 url = { version = "2.5.4", features = ["serde"] }
 wiremock = "0.6.3"

@@ -1,0 +1,129 @@
+extend schema
+  @link(url: "https://specs.grafbase.com/grafbase", import: ["InputValueSet"])
+
+"""
+A method in a GRPC service.
+"""
+directive @grpcMethod(
+  """
+  The service the method belongs to. Services are defined with @protoServices and configured in gateway configuration.
+  """
+  service: String!
+  """
+  The name of the GRPC method.
+  """
+  method: String!
+  """
+  The selection on the field arguments that should be passed to the extension to construct and issue the gRPC request.
+
+  This can generally be ignored, since the default includes everything.
+  """
+  input: InputValueSet = "*"
+) on FIELD_DEFINITION
+
+"""
+Defines protocol buffer services.
+"""
+directive @protoServices(definitions: [ProtoServiceDefinition!]!) on SCHEMA
+
+input ProtoServiceDefinition {
+  """
+  The name of the service.
+  """
+  name: String!
+  """
+  The service's methods.
+  """
+  methods: [ProtoMethodDefinition!]!
+}
+
+input ProtoMethodDefinition {
+  """
+  The name of the method.
+  """
+  name: String!
+  """
+  The method's input type.
+  """
+  inputType: String!
+  """
+  The method's output type.
+  """
+  outputType: String!
+  """
+  Whether the method is server streaming. Server streaming methods can only be used in subscriptions.
+  """
+  serverStreaming: Boolean
+}
+
+"""
+Defines protocol buffer messages.
+"""
+directive @protoMessages(definitions: [ProtoMessageDefinition!]!) on SCHEMA
+
+"""
+A protocol buffers message. See @protoMessages.
+"""
+input ProtoMessageDefinition {
+  """
+  The name of the message.
+  """
+  name: String!
+  """
+  The message's fields.
+  """
+  fields: [ProtoFieldDefinition!]!
+}
+
+"""
+A field in a protocol buffers message. See @protoMessages.
+"""
+input ProtoFieldDefinition {
+  """
+  The field's name.
+  """
+  name: String!
+
+  """
+  The field's number.
+  """
+  number: Int!
+
+  """
+  Whether the field is repeated.
+  """
+  repeated: Boolean
+
+  """
+  The protocol buffer type of the field.
+  """
+  type: String!
+}
+
+directive @protoEnums(definitions: [ProtoEnumDefinition!]!) on SCHEMA
+
+input ProtoEnumDefinition {
+  """
+  The name of the enum.
+  """
+  name: String!
+
+  """
+  The enum's values.
+  """
+  values: [ProtoEnumValueDefinition!]!
+}
+
+directive @protoEnumValues(definitions: [ProtoEnumValueDefinition!]!) on SCHEMA
+
+input ProtoEnumValueDefinition {
+  """
+  The name of the enum value.
+  """
+  name: String!
+
+  """
+  The enum value's number.
+  """
+  number: Int!
+}

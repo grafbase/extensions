@@ -12,14 +12,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install CLI
-      shell: bash
-      run: |
-        if [ -n "${{ inputs.cli-version }}" ]; then
-          curl -fsSL https://grafbase.com/downloads/cli | bash -s ${{ inputs.cli-version }}
-        else
-          curl -fsSL https://grafbase.com/downloads/cli | bash
-        fi
+    - name: Install Grafbase CLI
+      uses: grafbase/install-grafbase-cli@v1
 
     - name: Install Gateway
       shell: bash

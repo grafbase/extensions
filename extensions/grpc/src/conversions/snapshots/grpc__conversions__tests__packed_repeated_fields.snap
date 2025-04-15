@@ -1,0 +1,13 @@
+---
+source: extensions/grpc/src/conversions/tests.rs
+expression: serialized
+---
+{
+  "f": [
+    [
+      3,
+      270,
+      86942
+    ]
+  ]
+}
