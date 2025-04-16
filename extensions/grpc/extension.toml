@@ -2,7 +2,7 @@
 name = "grpc"
 version = "0.1.0"
 kind = "resolver"
-description = "Let Grafbase Gateway communicate with your GRPC services."
+description = "Integrate the Grafbase Gateway communicate with your gRPC services declaratively."
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/grpc"
 license = "Apache-2.0"
 

@@ -6,7 +6,7 @@ The core directive is `@grpcMethod`. It can be used on any output field, like so
 
 ```graphql
 type Query {
-    getFeature(input: PointInput!): Feature @grpcMethod(service: "routeguide.RouteGuide", method: "GetFeature", input: "*")
+  getFeature(input: PointInput!): Feature @grpcMethod(service: "routeguide.RouteGuide", method: "GetFeature", input: "*")
 }
 ```
 
@@ -20,31 +20,31 @@ The service must also be defined on your GraphQL schema's schema definition, alo
 
 ```graphql
 extend schema
-    @link(url: "{path_str}", import: ["@grpcMethod", "@protoMessages", "@protoServices"])
-    @protoMessages(definitions: [
-      {
-        name: "Point"
-        fields: [
-          { name: "latitude", type: "int32", number: 1 }
-          { name: "longitude", type: "int32", number: 2 }
-        ]
-      },
-      {
-        name: "Feature"
-        fields: [
-          { name: "name", type: "string", number: 1 }
-          { name: "location", type: "Point", number: 2 }
-        ]
-      }
-    ])
-    @protoServices(definitions: [
-      {
-        name: "routeguide.RouteGuide"
-        methods: [
+  @link(url: "{path_str}", import: ["@grpcMethod", "@protoMessages", "@protoServices"])
+  @protoMessages(definitions: [
+    {
+      name: "Point"
+      fields: [
+        { name: "latitude", type: "int32", number: 1 }
+        { name: "longitude", type: "int32", number: 2 }
+      ]
+    },
+    {
+      name: "Feature"
+      fields: [
+        { name: "name", type: "string", number: 1 }
+        { name: "location", type: "Point", number: 2 }
+      ]
+    }
+  ])
+  @protoServices(definitions: [
+    {
+      name: "routeguide.RouteGuide"
+      methods: [
         { name: "GetFeature", inputType: "Point", outputType: "Feature" }
-        ]
-      }}
-    ])
+      ]
+    }}
+  ])
 ```
 
 As you can imagine, these definitions can get verbose over time. See the following section for the recommended approach to generating them.
