@@ -1,12 +1,8 @@
-use clap::Parser;
 use std::fs;
 
-mod args;
 mod cargo_toml;
 
 fn main() -> anyhow::Result<()> {
-    let args = args::Args::parse();
-
     let mut found_extensions = false;
     let mut test_arguments = vec!["nextest".to_string(), "run".to_string(), "--profile=ci".to_string()];
 
@@ -26,14 +22,6 @@ fn main() -> anyhow::Result<()> {
         };
 
         let cargo_toml = cargo_toml::parse(&cargo_toml)?;
-
-        let Some(sdk_version) = cargo_toml.grafbase_sdk_version() else {
-            continue;
-        };
-
-        if !args.sdk_version.is_empty() && !args.sdk_version.iter().any(|version| sdk_version.matches(version)) {
-            continue;
-        }
 
         test_arguments.push("-p".to_string());
         test_arguments.push(cargo_toml.name().to_string());

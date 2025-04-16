@@ -6091,9 +6091,7 @@ name = "test-matrix"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "clap",
  "duct",
- "semver 1.0.26",
  "serde",
  "toml",
 ]

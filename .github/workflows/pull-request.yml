@@ -55,15 +55,8 @@ jobs:
     strategy:
       matrix:
         version:
-          - gateway: "0.29.0"
-            sdk:
-              - "0.8.0"
-            cli: "0.86.1"
-          - gateway: "0.30.2"
-            sdk:
-              - "0.8.0"
-              - "0.9.0"
-            cli: "0.87.2"
+          - gateway: "0.34.0"
+            cli: "0.88.0"
     env:
       RUSTFLAGS: -D warnings
     steps:
@@ -99,5 +92,6 @@ jobs:
         shell: bash
         env:
           RUSTC_WRAPPER: sccache
+          RUST_BACKTRACE: 1
         run: |
-          cargo run -p test-matrix -- --sdk-version ${{ join(matrix.version.sdk, ' --sdk-version ') }}
+          cargo run -p test-matrix

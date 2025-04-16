@@ -93,7 +93,6 @@ async fn basic() {
 
     let config = TestConfig::builder()
         .with_subgraph(subgraph)
-        .with_gateway("/home/tom/src/gh/grafbase/grafbase/target/debug/grafbase-gateway")
         .enable_networking()
         .enable_stdout()
         .enable_stderr()
