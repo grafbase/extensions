@@ -1,4 +1,4 @@
-# JWT
+# JWT extension
 
 This extension provides JWT authentication for the Grafbase Gateway.
 

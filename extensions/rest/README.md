@@ -48,17 +48,13 @@ The extension provides two directives:
 - `@restEndpoint`, which you can repeat on the schema, defines a REST endpoint.
 - `@rest`, defined on a field, specifies which endpoint the field uses, which path and method it uses and how it selects data from the REST response.
 
-Define your REST endpoint in your subgraph definition:
+Define your REST endpoint in your subgraph schema:
 
 ```graphql
 extend schema
-  @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
-  @link(url: "https://grafbase.com/extensions/rest/0.3.4", import: ["@restEndpoint", "@rest"])
+  @link(url: "https://grafbase.com/extensions/rest/0.4.1", import: ["@restEndpoint", "@rest"])
 
-@restEndpoint(
-  name: "restCountries",
-  baseURL: "https://restcountries.com/v3.1"
-)
+@restEndpoint(name: "countries", baseURL: "https://restcountries.com/v3.1")
 ```
 
 The `@restEndpoint` takes a unique name per subgraph, which you must refer to in the corresponding `@rest` directives, and a `baseURL`.
@@ -71,13 +67,12 @@ type Country {
 }
 
 type Query {
-  listAllCountries: [Country!]! @rest(
-      method: GET
-      endpoint: "restCountries"
-      path: "/all"
-      selection: "[.[] | { name: .name.official }]"
-    )
-
+  countries: [Country!]! @rest(
+    method: GET,
+    endpoint: "countries",
+    path: "/all",
+    selection: "[.[] | { name: .name.official }]"
+  )
 }
 ```
 
@@ -162,7 +157,7 @@ To send dynamic data from the input arguments, add a selection to the body. The 
 ```graphql
 type Mutation {
   createCountry(input: Country!): Country! @rest(
-    endpoint: "restCountries",
+    endpoint: "countries",
     http: {
       method: POST,
       path: "/create"
@@ -177,7 +172,7 @@ You can also use static data in the body:
 ```graphql
 type Mutation {
   createCountry: Country! @rest(
-    endpoint: "restCountries",
+    endpoint: "countries",
     method: POST,
     path: "/create"
     body: { static: { name: "Georgia" } },
@@ -195,7 +190,7 @@ The path argument is used to specify the path to the REST endpoint. You can use 
 ```graphql
 type Mutation {
   getCountry(id: Int!): Country @rest(
-    endpoint: "restCountries",
+    endpoint: "countries",
     method: GET,
     path: "/fetch/{{ args.id }}"
     selection: "{ name: .name.official }"

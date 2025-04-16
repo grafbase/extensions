@@ -1,4 +1,4 @@
-# Requires Scopes
+# Requires Scopes extension
 
 Provides the `@requiresScopes` directive which prevents access to elements in the query if the user doesn't have the right OAuth scopes. It expects the authentication token to be in JSON, as provided by the [jwt](https://grafbase.com/extensions/jwt) extension, and have the scopes in OAuth2 format. So a `scope` claim with a list of scopes as a string separated by a space.
 
@@ -10,7 +10,7 @@ Provides the `@requiresScopes` directive which prevents access to elements in th
 version = "1.0"
 ```
 
-Run the install command before starting the gateway
+Install the extensions before starting the gateway:
 
 ```bash
 grafbase extension install
@@ -19,12 +19,8 @@ grafbase extension install
 ## Usage
 
 ```graphql
-# subgraph schema
 extend schema
-  @link(
-    url: "https://grafbase.com/extensions/requires-scopes/1.0.0"
-    import: ["@requiresScopes"]
-  )
+  @link(url: "https://grafbase.com/extensions/requires-scopes/1.0.5", import: ["@requiresScopes"])
 
 type Query {
   public: String!
