@@ -8,8 +8,7 @@ The `customLimit` query demonstrates how to use the `@snowflakeQuery` directive 
 
 ```graphql
 extend schema
-  @link(url: "https://specs.apollo.dev/federation/v2.7")
-  @link(url: "https://grafbase.com/extensions/snowflake/0.1.0", import: ["@snowflakeQuery"])
+  @link(url: "https://grafbase.com/extensions/snowflake/0.2.1", import: ["@snowflakeQuery"])
 
 scalar JSON
 
