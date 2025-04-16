@@ -1,0 +1,138 @@
+---
+source: extensions/grpc/tests/integration/tests.rs
+expression: "&features"
+---
+[
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("Patriots Path, Mendham, NJ 07945, USA"),
+                "location": Object {
+                    "latitude": Number(407838351),
+                    "longitude": Number(-746143763),
+                },
+            },
+        },
+    },
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("101 New Jersey 10, Whippany, NJ 07981, USA"),
+                "location": Object {
+                    "latitude": Number(408122808),
+                    "longitude": Number(-743999179),
+                },
+            },
+        },
+    },
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("U.S. 6, Shohola, PA 18458, USA"),
+                "location": Object {
+                    "latitude": Number(413628156),
+                    "longitude": Number(-749015468),
+                },
+            },
+        },
+    },
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("5 Conners Road, Kingston, NY 12401, USA"),
+                "location": Object {
+                    "latitude": Number(419999544),
+                    "longitude": Number(-740371136),
+                },
+            },
+        },
+    },
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("Mid Hudson Psychiatric Center, New Hampton, NY 10958, USA"),
+                "location": Object {
+                    "latitude": Number(414008389),
+                    "longitude": Number(-743951297),
+                },
+            },
+        },
+    },
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("287 Flugertown Road, Livingston Manor, NY 12758, USA"),
+                "location": Object {
+                    "latitude": Number(419611318),
+                    "longitude": Number(-746524769),
+                },
+            },
+        },
+    },
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("4001 Tremley Point Road, Linden, NJ 07036, USA"),
+                "location": Object {
+                    "latitude": Number(406109563),
+                    "longitude": Number(-742186778),
+                },
+            },
+        },
+    },
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("352 South Mountain Road, Wallkill, NY 12589, USA"),
+                "location": Object {
+                    "latitude": Number(416802456),
+                    "longitude": Number(-742370183),
+                },
+            },
+        },
+    },
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("Bailey Turn Road, Harriman, NY 10926, USA"),
+                "location": Object {
+                    "latitude": Number(412950425),
+                    "longitude": Number(-741077389),
+                },
+            },
+        },
+    },
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("193-199 Wawayanda Road, Hewitt, NJ 07421, USA"),
+                "location": Object {
+                    "latitude": Number(412144655),
+                    "longitude": Number(-743949739),
+                },
+            },
+        },
+    },
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("406-496 Ward Avenue, Pine Bush, NY 12566, USA"),
+                "location": Object {
+                    "latitude": Number(415736605),
+                    "longitude": Number(-742847522),
+                },
+            },
+        },
+    },
+    Object {
+        "data": Object {
+            "listFeatures": Object {
+                "name": String("162 Merrill Road, Highland Mills, NY 10930, USA"),
+                "location": Object {
+                    "latitude": Number(413843930),
+                    "longitude": Number(-740501726),
+                },
+            },
+        },
+    },
+]
