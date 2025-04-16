@@ -11,14 +11,14 @@ crate-type = ["cdylib"]
 base64.workspace = true
 bytes.workspace = true
 futures-util.workspace = true
-grafbase-sdk = { git = "https://github.com/grafbase/grafbase", branch = "main" }
+grafbase-sdk.workspace = true
 jiff.workspace = true
 prost.workspace = true
 serde.workspace = true
 
 [dev-dependencies]
 async-stream.workspace = true
-grafbase-sdk = { git = "https://github.com/grafbase/grafbase", branch = "main", features = [
+grafbase-sdk = { workspace = true, features = [
     "test-utils",
 ] }
 insta.workspace = true

@@ -1,6 +1,6 @@
 use std::{str::FromStr, time::Duration};
 
-use grafbase_sdk::host_io::pubsub::nats::{self, OffsetDateTime};
+use grafbase_sdk::host_io::nats::{self, OffsetDateTime};
 
 #[derive(Debug)]
 pub enum DirectiveKind {

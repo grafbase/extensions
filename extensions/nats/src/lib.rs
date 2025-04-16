@@ -6,23 +6,23 @@ use std::{cell::RefCell, collections::HashMap, rc::Rc, str::FromStr, time::Durat
 
 use config::AuthConfig;
 use grafbase_sdk::{
-    host_io::pubsub::nats::{self, NatsAuth, NatsClient, NatsStreamConfig},
+    host_io::nats::{self, NatsAuth, NatsClient, NatsStreamConfig},
     jq_selection::JqSelection,
     types::{
         Configuration, Error, FieldDefinitionDirective, FieldInputs, FieldOutputs, SchemaDirective, SubgraphHeaders,
     },
-    ResolverExtension, Subscription,
+    FieldResolverExtension, Subscription,
 };
 use subscription::FilteredSubscription;
 use types::{DirectiveKind, KeyValueAction, KeyValueArguments, PublishArguments, RequestArguments, SubscribeArguments};
 
-#[derive(ResolverExtension)]
+#[derive(FieldResolverExtension)]
 struct Nats {
     clients: HashMap<String, NatsClient>,
     jq_selection: Rc<RefCell<JqSelection>>,
 }
 
-impl ResolverExtension for Nats {
+impl FieldResolverExtension for Nats {
     fn new(_: Vec<SchemaDirective>, config: Configuration) -> Result<Self, Error> {
         let mut clients = HashMap::new();
         let config: config::NatsConfig = config.deserialize()?;
@@ -98,7 +98,7 @@ impl ResolverExtension for Nats {
         identifier.extend(subgraph_name.as_bytes());
         identifier.extend(directive.name().as_bytes());
         identifier.extend(directive.site().parent_type_name().as_bytes());
-        identifier.extend(directive.site().field_name().as_bytes());
+        identifier.extend(directive.site().name().as_bytes());
         identifier.extend(directive.arguments_bytes());
 
         Some(identifier)

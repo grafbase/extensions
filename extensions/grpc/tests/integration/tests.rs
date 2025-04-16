@@ -1,4 +1,4 @@
-use grafbase_sdk::test::{DynamicSchema, LogLevel, TestConfig, TestRunner};
+use grafbase_sdk::test::{DynamicSchema, TestConfig, TestRunner};
 use std::{net::SocketAddr, str::FromStr as _};
 use tokio_stream::StreamExt;
 
@@ -93,11 +93,9 @@ async fn basic() {
 
     let config = TestConfig::builder()
         .with_subgraph(subgraph)
-        .with_gateway("/home/tom/src/gh/grafbase/grafbase/target/debug/grafbase-gateway")
         .enable_networking()
         .enable_stdout()
         .enable_stderr()
-        .log_level(LogLevel::Debug)
         .build(config)
         .unwrap();
 

@@ -1,7 +1,7 @@
 use std::{cell::RefCell, rc::Rc};
 
 use grafbase_sdk::{
-    host_io::pubsub::nats::{self, NatsSubscription},
+    host_io::nats::{self, NatsSubscription},
     jq_selection::JqSelection,
     types::{Error, SubscriptionOutput},
     Subscription,
