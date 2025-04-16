@@ -20,7 +20,7 @@ The service must also be defined on your GraphQL schema's schema definition, alo
 
 ```graphql
 extend schema
-  @link(url: "{path_str}", import: ["@grpcMethod", "@protoMessages", "@protoServices"])
+  @link(url: "https://grafbase.com/extensions/grpc/0.1.0", import: ["@grpcMethod", "@protoMessages", "@protoServices"])
   @protoMessages(definitions: [
     {
       name: "Point"
