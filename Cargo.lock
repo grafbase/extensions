@@ -1541,7 +1541,7 @@ dependencies = [
 
 [[package]]
 name = "grpc"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "async-stream",
  "base64 0.22.1",

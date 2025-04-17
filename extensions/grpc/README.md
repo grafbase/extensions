@@ -1,6 +1,6 @@
 # gRPC extension
 
-This extension allows exposing gRPC services as part of your federated GraphQL graph. The extension assumes protocol buffer payloads for the communication between the Gateway and the gRPC services.
+This extension allows exposing gRPC services as part of your federated GraphQL API. The extension assumes protocol buffer payloads for the communication between the Gateway and the gRPC services.
 
 The core directive is `@grpcMethod`. It can be used on any output field, like so:
 
@@ -16,7 +16,7 @@ It takes the following arguments:
 - `method`: The name of the gRPC method.
 - `input`: The input type of the gRPC method. It can be `"*"` to use the whole input, or a specific transformation. See the docs for [InputValueSet](https://grafbase.com/docs/reference/extensions/grafbase-spec/v1.0#inputvalueset). It defaults to `"*"`.
 
-The service must also be defined on your GraphQL schema's schema definition, along with the required types:
+The service must also be defined on a schema definition, along with the required types:
 
 ```graphql
 extend schema
