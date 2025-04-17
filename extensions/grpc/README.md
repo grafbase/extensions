@@ -63,7 +63,7 @@ address = "{{ env.PRICING_SERVICE_URL }}"
 
 ## Generation of virtual subgraph schemas from Protobuf definitions
 
-Use the protobuf compiler plugin: `protoc-gen-grafbase-subgraph`. TODO.
+There is a companion tool to this extension, that can generate a subgraph schema for your gRPC services from the protocol buffer definitions: [protoc-gen-grafbase-subgraph](https://github.com/grafbase/grafbase/tree/main/crates/protoc-gen-grafbase-subgraph). See its [README](https://github.com/grafbase/grafbase/tree/main/crates/protoc-gen-grafbase-subgraph/README.md) for instructions on using it with `protoc` and `buf`.
 
 ## Conventions
 
