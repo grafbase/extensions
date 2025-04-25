@@ -2,6 +2,62 @@ use crate::PgTestApi;
 use indoc::indoc;
 
 #[tokio::test]
+async fn everything() {
+    let api = PgTestApi::new("", |api| async move {
+        let schema = indoc! {r#"
+            CREATE TABLE "User" (
+                id INT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL
+            )
+        "#};
+
+        api.execute_sql(schema).await;
+
+        let insert = indoc! {r#"
+            INSERT INTO "User" (id, name) VALUES (1, 'Musti'), (2, 'Naukio')
+        "#};
+
+        api.execute_sql(insert).await;
+    })
+    .await;
+
+    let runner = api.runner_spawn().await;
+
+    let query = indoc! {r"
+        query {
+          users {
+            edges { node { id name } }
+          }
+        }
+    "};
+
+    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "data": {
+        "users": {
+          "edges": [
+            {
+              "node": {
+                "id": 1,
+                "name": "Musti"
+              }
+            },
+            {
+              "node": {
+                "id": 2,
+                "name": "Naukio"
+              }
+            }
+          ]
+        }
+      }
+    }
+    "#);
+}
+
+#[tokio::test]
 async fn eq_pk() {
     let api = PgTestApi::new("", |api| async move {
         let schema = indoc! {r#"
