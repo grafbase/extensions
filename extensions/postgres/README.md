@@ -1,8 +1,8 @@
-# Grafbase Postgres Extension
+# Postgres extension
 
-This Postgres extension for the Grafbase Gateway acts as a complete virtual subgraph that you can compose into your federated schema.
+This extension allows you to integrate Postgres databases into your federated graph declaratively with GraphQL directives.
 
-Use the [`grafbase-postgres`](https://github.com/grafbase/extensions/tree/julius/ywmxqwoumunr/cli/postgres) introspection tool to generate a subgraph schema from your Postgres database. You can then compose this subgraph into your federated schema. Commit the generated schema to your repository and re-introspect the database periodically to keep the schema up-to-date.
+Use the [`grafbase-postgres`](https://github.com/grafbase/extensions/tree/main/cli/postgres) introspection tool to generate a subgraph schema from your Postgres database. You can then compose this subgraph into your federated schema. Commit the generated schema to your repository and re-introspect the database periodically to keep the schema up-to-date.
 
 The introspection process generates a complete set of types representing the data in your Postgres database, including entities, relationships, and scalar fields. Use these types to query and mutate data in your Postgres database via the Grafbase Gateway.
 
@@ -18,11 +18,11 @@ Generally, every operation executed through the extension generates exactly one 
 
 ### Introspection Tool (`grafbase-postgres`)
 
-Currently, you must compile the `grafbase-postgres` introspection tool from source (refer to its [repository](https://github.com/grafbase/extensions/tree/julius/ywmxqwoumunr/cli/postgres) for instructions). After successful compilation, copy the resulting binary to a directory in your system's `PATH`.
+Currently, you must compile the `grafbase-postgres` introspection tool from source (refer to its [repository](https://github.com/grafbase/extensions/tree/main/cli/postgres) for instructions). After successful compilation, copy the resulting binary to a directory in your system's `PATH`.
 
 *Future versions will offer easier installation, likely integrated with the Grafbase CLI.*
 
-### Building the Extension (Wasm)
+### Building the Extension
 
 To use the extension with the Grafbase Gateway, you first need to build the Wasm component.
 
@@ -39,14 +39,14 @@ To use the extension with the Grafbase Gateway, you first need to build the Wasm
 
 ### Gateway Configuration
 
-Configure your Grafbase Gateway to use the extension in your `grafbase.config.toml`.
+Configure your Grafbase Gateway to use the extension in your `grafbase.toml` configuration file.
 
-**Using a Published Version (Recommended when available):**
+**Using a Published Version:**
 
-Specify the desired version (replace `0.1` when newer versions are released):
+Specify the desired version of the Postgres extension:
 
 ```toml
-# grafbase.config.toml
+# grafbase.toml
 [extensions.postgres]
 version = "0.1"
 ```
@@ -56,7 +56,7 @@ version = "0.1"
 If you built the extension manually, point the gateway to the build directory:
 
 ```toml
-# grafbase.config.toml
+# grafbase.toml
 [extensions.postgres]
 path = "/path/to/your/build" # Update this path
 ```
@@ -102,10 +102,10 @@ PREBUILT_EXTENSION=1 cargo test
 
 ## Configuration
 
-Configure the Postgres extension within your `grafbase.config.toml` under the `[extensions.postgres.config]` section. See the [Grafbase Gateway configuration documentation](https://grafbase.com/docs/reference/gateway/configuration/extensions) for general extension configuration details.
+Configure the Postgres extension within your `grafbase.toml` under the `[extensions.postgres.config]` section. See the [Grafbase Gateway configuration documentation](https://grafbase.com/docs/reference/gateway/configuration/extensions) for general extension configuration details.
 
 ```toml
-# Example configuration within grafbase.config.toml
+# Example configuration within grafbase.toml
 [extensions.postgres]
   # version = "0.1" # Or path = "..."
 
@@ -132,7 +132,7 @@ max_lifetime_ms = 1800000
 
 ## Introspection
 
-Use the `grafbase-postgres introspect` command to generate a GraphQL schema definition (SDL) from your database:
+Use the `grafbase-postgres introspect` command to generate a GraphQL schema from your database:
 
 ```bash
 # Ensure grafbase-postgres is in your PATH
@@ -294,6 +294,6 @@ type Mutation {
 *   **Returning Data:** All mutations support a `returning` selection set, allowing you to fetch data about the affected rows within the same database transaction.
 *   **Performance:** Each mutation executes as a single SQL statement.
 
-### Supported PostgreSQL Versions
+### Supported Postgres Versions
 
-We primarily test against the latest stable PostgreSQL version. The extension relies on SQL features, particularly JSON/JSONB functions, available in PostgreSQL. Therefore, the minimum supported version is **PostgreSQL 9.4**.
+We primarily test against the latest stable Postgres version. The extension relies on SQL features, particularly JSON/JSONB functions, available in Postgres. Therefore, the minimum supported version is **Postgres 9.4**.
