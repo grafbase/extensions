@@ -1,16 +1,11 @@
 [package]
-name = "postgres-extension"
+name = "postgres"
 version = "0.1.0"
 edition = "2024"
 license = "Apache-2.0"
 
 [lib]
-name = "postgres_extension"
-path = "src/lib.rs"
 crate-type = ["cdylib"]
-
-[features]
-default = []
 
 # Common dependencies for both WASI and native
 [dependencies]
