@@ -858,7 +858,7 @@ async fn two_field_eq() {
 
     let query = indoc! {r#"
         query {
-          users(first: 10, filter: { name: { eq: "Musti" }, age: { eq: 11 } }) {
+          users(first: 10, filter: { ALL: [ { name: { eq: "Musti" } }, { age: { eq: 11 } } ] }) {
             edges { node { id name age } }
           }
         }

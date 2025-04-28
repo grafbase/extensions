@@ -5,6 +5,7 @@ mod delete_many;
 mod delete_one;
 mod find_many;
 mod find_one;
+mod lookup;
 mod query;
 mod update_many;
 mod update_one;
@@ -16,6 +17,7 @@ pub(super) fn execute(ctx: super::Context<'_>) -> Result<Data, SdkError> {
     match ctx.operation() {
         Operation::FindOne(table_id) => find_one::execute(ctx, table_id),
         Operation::FindMany(table_id) => find_many::execute(ctx, table_id),
+        Operation::Lookup(table_id) => lookup::execute(ctx, table_id),
         Operation::DeleteOne(table_id) => delete_one::execute(ctx, table_id),
         Operation::DeleteMany(table_id) => delete_many::execute(ctx, table_id),
         Operation::CreateOne(table_id) => create_one::execute(ctx, table_id),

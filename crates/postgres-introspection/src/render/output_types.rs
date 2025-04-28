@@ -32,12 +32,14 @@ fn render_connection<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
 
     r#type.push_field({
         let mut field = Field::new("edges", format!("[{}Edge!]!", table.client_name()));
+        field.push_directive(Directive::new("shareable"));
         field.set_description("A list of edges");
         field
     });
 
     r#type.push_field({
         let mut field = Field::new("pageInfo", "PageInfo!");
+        field.push_directive(Directive::new("shareable"));
         field.set_description("Information to aid in pagination");
         field
     });
@@ -51,12 +53,14 @@ fn render_edge<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
 
     r#type.push_field({
         let mut field = Field::new("node", format!("{}!", table.client_name()));
+        field.push_directive(Directive::new("shareable"));
         field.set_description("The item at the end of the edge");
         field
     });
 
     r#type.push_field({
         let mut field = Field::new("cursor", "String!");
+        field.push_directive(Directive::new("shareable"));
         field.set_description("A cursor for use in pagination");
         field
     });
@@ -126,12 +130,14 @@ fn render_mutation_types<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>, 
 
         r#type.push_field({
             let mut field = Field::new("returning", returning_type);
+            field.push_directive(Directive::new("shareable"));
             field.set_description("Returned item(s) from the mutation");
             field
         });
 
         r#type.push_field({
             let mut field = Field::new("rowCount", "Int!");
+            field.push_directive(Directive::new("shareable"));
             field.set_description("The number of rows mutated");
             field
         });
@@ -157,6 +163,11 @@ fn render_returning_type<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) 
 
     for column in table.columns() {
         let mut field = Field::new(column.client_name(), column.client_type(None).unwrap());
+
+        if column.is_part_of_a_key() {
+            field.push_directive(Directive::new("shareable"));
+        }
+
         field.set_description(format!("The value of the {} field", column.client_name()));
         r#type.push_field(field);
     }
@@ -169,28 +180,33 @@ fn render_page_info(rendered: &mut Schema<'_>) {
     let mut r#type = Type::new("PageInfo");
 
     r#type.set_description("Information about pagination in a collection of objects");
+    r#type.push_directive(Directive::new("shareable"));
 
     r#type.push_field({
         let mut field = Field::new("hasPreviousPage", "Boolean!");
         field.set_description("When paginating backwards, are there more items?");
+        field.push_directive(Directive::new("shareable"));
         field
     });
 
     r#type.push_field({
         let mut field = Field::new("hasNextPage", "Boolean!");
         field.set_description("When paginating forwards, are there more items?");
+        field.push_directive(Directive::new("shareable"));
         field
     });
 
     r#type.push_field({
         let mut field = Field::new("startCursor", "String!");
         field.set_description("The cursor of the first item in the page");
+        field.push_directive(Directive::new("shareable"));
         field
     });
 
     r#type.push_field({
         let mut field = Field::new("endCursor", "String!");
         field.set_description("The cursor of the last item in the page");
+        field.push_directive(Directive::new("shareable"));
         field
     });
 

@@ -86,6 +86,9 @@ fn map_operations(
                 "pgSelectOne" => {
                     database_definition.push_operation(field.id(), Operation::FindOne(table_id));
                 }
+                "pgLookup" => {
+                    database_definition.push_operation(field.id(), Operation::Lookup(table_id));
+                }
                 "pgInsertMany" => {
                     database_definition.push_operation(field.id(), Operation::CreateMany(table_id));
                 }

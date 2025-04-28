@@ -1058,18 +1058,6 @@ dependencies = [
 
 [[package]]
 name = "cynic-parser"
-version = "0.8.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86a21da88ae46f2be6a622880a72f968d05c50b5a797e525332d0c988f693f70"
-dependencies = [
- "ariadne",
- "indexmap 2.9.0",
- "lalrpop-util",
- "logos",
-]
-
-[[package]]
-name = "cynic-parser"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cbb0f21f2f8d3134c2e887a16564c165694231f48b6ae2769193299081ecf662"
@@ -1086,7 +1074,7 @@ version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e4fabdc974620ca12f644fd77636cbcfc92c2de48ab7e701735489c3b44ddf2b"
 dependencies = [
- "cynic-parser 0.9.1",
+ "cynic-parser",
  "cynic-parser-deser-macros",
 ]
 
@@ -1366,6 +1354,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "75030f3c4f45dafd7586dd6780965a8c7e8e285a5ecb86713e63a79c5b2766f3"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "enumflags2"
+version = "0.7.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ba2f4b465f5318854c6f8dd686ede6c0a9dc67d4b1ac241cf0eb51521a309147"
+dependencies = [
+ "enumflags2_derive",
+]
+
+[[package]]
+name = "enumflags2_derive"
+version = "0.7.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fc4caf64a58d7a6d65ab00639b046ff54399a39f5f2554728895ace4b297cd79"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.100",
 ]
 
 [[package]]
@@ -1763,9 +1771,9 @@ dependencies = [
 
 [[package]]
 name = "grafbase-sdk"
-version = "0.15.1"
+version = "0.15.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf077036389ca8aedfa267e734a3d8fc627afef7a9efef52c9b647e89a70b023"
+checksum = "2c581bcb9223959657828f69936216c9de792aefb1d40ba465ff870bc96942c8"
 dependencies = [
  "anyhow",
  "async-tungstenite",
@@ -1820,15 +1828,15 @@ dependencies = [
 
 [[package]]
 name = "grafbase-sdk-mock"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b42ec24b1e2964575e80bdeec4cfaf1bcd2a290db632099b620f21bbd115419"
+checksum = "e0f3a2c04a5481bd4437c8425aa2ab957d101884415d59ba3ab76fc4fef8e2f3"
 dependencies = [
  "anyhow",
  "async-graphql",
  "async-graphql-axum",
  "axum 0.8.3",
- "cynic-parser 0.8.7",
+ "cynic-parser",
  "grafbase-workspace-hack",
  "serde",
  "serde_json",
@@ -1844,11 +1852,12 @@ checksum = "ebfd7fd1a0e3427f3e6c9ef7bc4e0d2f05c9e94ecf859176cdf297212fe8f06e"
 
 [[package]]
 name = "graphql-composition"
-version = "0.7.0"
+version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "65f7438445ff2c1f00a226ec51ce764b4a6c634e550344935c4d61346c206673"
+checksum = "11ec3d30dc261df686cc46e212279e71a3e1b4de4f007dbc131db304dd621762"
 dependencies = [
- "cynic-parser 0.9.1",
+ "bitflags 2.9.0",
+ "cynic-parser",
  "cynic-parser-deser",
  "fixedbitset",
  "graphql-federated-graph",
@@ -1859,12 +1868,12 @@ dependencies = [
 
 [[package]]
 name = "graphql-federated-graph"
-version = "0.7.0"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e29530bfdd7322086524c5e6ade8c9e019c655d1808edc2290f6401a4598e667"
+checksum = "1d1acf641b57dacf508edbe21df9a23744d2d40d010a4c51b0902d374aa1019c"
 dependencies = [
  "bitflags 2.9.0",
- "cynic-parser 0.9.1",
+ "cynic-parser",
  "cynic-parser-deser",
  "grafbase-workspace-hack",
  "graphql-wrapping-types",
@@ -3513,6 +3522,7 @@ version = "0.1.0"
 dependencies = [
  "Inflector",
  "chrono",
+ "enumflags2",
  "futures",
  "grafbase-database-definition",
  "grafbase-postgres-introspection",

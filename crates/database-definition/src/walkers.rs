@@ -41,6 +41,17 @@ where
     }
 }
 
+impl<Id> Eq for Walker<'_, Id> where Id: Eq {}
+
+impl<Id> std::hash::Hash for Walker<'_, Id>
+where
+    Id: std::hash::Hash,
+{
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.id.hash(state);
+    }
+}
+
 impl<'a, Id> Walker<'a, Id>
 where
     Id: Copy,

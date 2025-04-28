@@ -1,8 +1,10 @@
 mod complex;
+mod lookup;
 mod simple;
 
 pub(super) use complex::MultipleFilterIterator;
 use grafbase_sdk::SdkError;
+pub(super) use lookup::LookupFilterIterator;
 pub(super) use simple::UniqueFilterIterator;
 
 use sql_ast::ast::ConditionTree;
@@ -11,6 +13,7 @@ use sql_ast::ast::ConditionTree;
 pub enum FilterIterator<'a> {
     Unique(UniqueFilterIterator<'a>),
     Multiple(MultipleFilterIterator<'a>),
+    Lookup(LookupFilterIterator<'a>),
 }
 
 impl<'a> Iterator for FilterIterator<'a> {
@@ -24,6 +27,7 @@ impl<'a> Iterator for FilterIterator<'a> {
                 None => None,
             },
             FilterIterator::Multiple(iterator) => iterator.next(),
+            FilterIterator::Lookup(iterator) => iterator.next(),
         }
     }
 }

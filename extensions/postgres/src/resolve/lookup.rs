@@ -1,34 +1,24 @@
-use grafbase_database_definition::TableId;
 use grafbase_sdk::{SdkError, types::Data};
 use sql_ast::renderer;
 
-use crate::{
-    context::{
-        Context,
-        selection_iterator::collection_args::{CollectionArgs, CollectionParameters},
-    },
-    resolve::query::select::SelectFlag,
-};
-
-use super::{builder::SelectBuilder, query};
+use crate::resolve::{builder::SelectBuilder, query};
 
 fn empty() -> Data {
     Data::Json(serde_json::to_vec(&serde_json::Value::Array(Vec::new())).unwrap())
 }
 
-pub(crate) fn execute(ctx: Context<'_>, table_id: TableId) -> Result<Data, SdkError> {
+pub(crate) fn execute(
+    ctx: crate::context::Context<'_>,
+    table_id: grafbase_database_definition::TableId,
+) -> Result<Data, SdkError> {
     let table = ctx.database_definition.walk(table_id);
     let mut builder = SelectBuilder::new(table, ctx.collection_selection(table)?, "root");
-    let collection_params = ctx.field.arguments::<CollectionParameters>(ctx.arguments)?;
 
-    let args = CollectionArgs::new(ctx.database_definition, table, collection_params)?;
-    builder.set_collection_args(args);
-
-    if let Ok(filter) = ctx.filter(table) {
-        builder.set_filter(filter);
+    if let Some(lookup_order) = ctx.lookup_order(table)? {
+        builder.set_lookup_order(lookup_order);
     }
 
-    let ast = query::select::build(builder, SelectFlag::Pagination.into())?;
+    let ast = query::lookup::build(builder)?;
     let query = renderer::postgres::render(ast);
 
     tracing::debug!("Executing query: {}", query);

@@ -46,8 +46,12 @@ impl fmt::Display for InputType<'_> {
         write!(f, "input {}", self.name)?;
 
         if !self.directives.is_empty() {
-            for directive in self.directives.iter() {
-                write!(f, " {directive} ")?;
+            for (i, directive) in self.directives.iter().enumerate() {
+                write!(f, " {directive}")?;
+
+                if i == self.directives.len() - 1 {
+                    write!(f, " ")?;
+                }
             }
         }
 

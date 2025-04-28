@@ -1,4 +1,5 @@
 mod aggregate_to_string;
+mod array_position;
 mod average;
 mod cast;
 mod coalesce;
@@ -21,6 +22,7 @@ mod unnest;
 mod upper;
 
 pub use aggregate_to_string::*;
+pub use array_position::*;
 pub use average::*;
 pub use cast::*;
 pub use coalesce::*;
@@ -42,14 +44,13 @@ pub use to_jsonb::*;
 pub use unnest::*;
 pub use upper::*;
 
-use super::Aliasable;
-use std::borrow::Cow;
+use super::{Alias, Aliasable};
 
 /// A database function definition
 #[derive(Debug, Clone, PartialEq)]
 pub struct Function<'a> {
     pub(crate) typ_: FunctionType<'a>,
-    pub(crate) alias: Option<Cow<'a, str>>,
+    pub(crate) alias: Option<Alias<'a>>,
 }
 
 impl Function<'_> {
@@ -85,10 +86,11 @@ pub(crate) enum FunctionType<'a> {
     JsonUnquote(JsonUnquote<'a>),
     RowToJson(RowToJson<'a>),
     ToJsonb(ToJsonb<'a>),
-    JsonbAgg(JsonbAgg<'a>),
+    JsonAgg(JsonAgg<'a>),
     Encode(Encode<'a>),
     JsonBuildObject(JsonBuildObject<'a>),
     Unnest(Unnest<'a>),
+    ArrayPosition(ArrayPosition<'a>),
 }
 
 impl<'a> Aliasable<'a> for Function<'a> {
@@ -96,7 +98,7 @@ impl<'a> Aliasable<'a> for Function<'a> {
 
     fn alias<T>(mut self, alias: T) -> Self::Target
     where
-        T: Into<Cow<'a, str>>,
+        T: Into<Alias<'a>>,
     {
         self.alias = Some(alias.into());
         self

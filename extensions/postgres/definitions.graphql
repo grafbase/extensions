@@ -170,8 +170,15 @@ directive @pgSelectOne on FIELD_DEFINITION
 
 """
 Directive to run a Postgres SELECT query for a field, returning an array of rows
+with pagination support
 """
 directive @pgSelectMany on FIELD_DEFINITION
+
+"""
+Directive to run a Postgres SELECT query for a field based on a unique
+or primary key for multi-subgraph entity joins.
+"""
+directive @pgLookup on FIELD_DEFINITION
 
 """
 Directive to run a Postgres INSERT query for a field, returning the inserted row

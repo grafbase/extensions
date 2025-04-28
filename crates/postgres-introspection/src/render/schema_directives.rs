@@ -20,6 +20,7 @@ pub fn render<'a>(database_definition: &'a DatabaseDefinition, extension_url: &'
             ArgumentValue::String("@pgEnumVariant".into()),
             ArgumentValue::String("@pgRelation".into()),
             ArgumentValue::String("@pgKey".into()),
+            ArgumentValue::String("@pgLookup".into()),
             ArgumentValue::String("@pgSelectOne".into()),
             ArgumentValue::String("@pgSelectMany".into()),
             ArgumentValue::String("@pgInsertOne".into()),
@@ -40,6 +41,49 @@ pub fn render<'a>(database_definition: &'a DatabaseDefinition, extension_url: &'
             ArgumentValue::MultiLineArray {
                 indent: "    ",
                 values: import,
+            },
+        ));
+
+        directive
+    });
+
+    rendered.push_directive({
+        let mut directive = Directive::new("link");
+        directive.render_multiline();
+
+        directive.push_argument(Argument::string(
+            "url",
+            "https://specs.grafbase.com/composite-schema/v1",
+        ));
+
+        directive.push_argument(Argument::new(
+            "import",
+            ArgumentValue::MultiLineArray {
+                indent: "    ",
+                values: vec![
+                    ArgumentValue::String("@lookup".into()),
+                    ArgumentValue::String("@key".into()),
+                ],
+            },
+        ));
+
+        directive
+    });
+
+    rendered.push_directive({
+        let mut directive = Directive::new("link");
+        directive.render_multiline();
+
+        directive.push_argument(Argument::string("url", "https://specs.apollo.dev/federation/v2.3"));
+
+        directive.push_argument(Argument::new(
+            "import",
+            ArgumentValue::MultiLineArray {
+                indent: "    ",
+                values: vec![
+                    ArgumentValue::String("@shareable".into()),
+                    ArgumentValue::String("@inaccessible".into()),
+                ],
             },
         ));
 

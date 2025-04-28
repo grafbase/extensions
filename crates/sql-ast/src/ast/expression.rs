@@ -3,7 +3,7 @@ use grafbase_sdk::host_io::postgres::types::DatabaseValue;
 use crate::ast::{Aliasable, Column, Comparable, Compare, ConditionTree, Function, Row, Select, SqlOp, Table, Values};
 
 use super::{
-    Case,
+    Alias, Case,
     compare::{JsonCompare, JsonType},
 };
 use std::borrow::Cow;
@@ -13,13 +13,25 @@ use std::borrow::Cow;
 #[derive(Debug, Clone, PartialEq)]
 pub struct Expression<'a> {
     pub kind: ExpressionKind<'a>,
-    pub alias: Option<Cow<'a, str>>,
+    pub alias: Option<Alias<'a>>,
 }
 
 impl<'a> Expression<'a> {
     pub fn value(value: DatabaseValue) -> Self {
         Self {
             kind: ExpressionKind::Parameterized(ParameterizedValue { value, enum_type: None }),
+            alias: None,
+        }
+    }
+
+    pub fn many_value(values: Vec<DatabaseValue>) -> Self {
+        Self {
+            kind: ExpressionKind::ManyParameterized(
+                values
+                    .into_iter()
+                    .map(|value| ParameterizedValue { value, enum_type: None })
+                    .collect(),
+            ),
             alias: None,
         }
     }
@@ -53,6 +65,8 @@ pub struct ParameterizedValue<'a> {
 pub enum ExpressionKind<'a> {
     /// Anything that we must parameterize before querying
     Parameterized(ParameterizedValue<'a>),
+    /// Multiple values that we must parameterize before querying.
+    ManyParameterized(Vec<ParameterizedValue<'a>>),
     /// Will be rendered as-is to the SQL statement. Carefully escape, if needed.
     Raw(&'a str),
     /// Will be rendered as-is, quoted, to the SQL statement. Carefully escape, if needed.
@@ -181,7 +195,7 @@ impl<'a> Aliasable<'a> for Expression<'a> {
 
     fn alias<T>(mut self, alias: T) -> Self::Target
     where
-        T: Into<Cow<'a, str>>,
+        T: Into<Alias<'a>>,
     {
         self.alias = Some(alias.into());
         self

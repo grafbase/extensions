@@ -1,4 +1,5 @@
 use grafbase_database_definition::{DatabaseDefinition, DatabaseType, RelationWalker, TableColumnWalker, TableWalker};
+use itertools::Itertools;
 
 use super::ast::{
     directive::{Argument, ArgumentValue, Directive},
@@ -166,6 +167,15 @@ fn render_column<'a>(render: &mut Type<'a>, table: TableWalker<'a>, column: Tabl
 }
 
 fn render_directives<'a>(render: &mut Type<'a>, default_schema: &str, table: TableWalker<'a>) {
+    for key in table.keys() {
+        let mut directive = Directive::new("key");
+
+        let fields = key.columns().map(|c| c.table_column().client_name()).join(" ");
+        directive.push_argument(Argument::string("fields", fields));
+
+        render.push_directive(directive);
+    }
+
     render.push_directive({
         let mut directive = Directive::new("pgTable");
         directive.push_argument(Argument::string("name", table.database_name()));

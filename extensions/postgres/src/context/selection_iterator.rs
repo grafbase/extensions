@@ -6,11 +6,12 @@ use grafbase_sdk::{
     SdkError,
     types::{Field, SelectionSet},
 };
-use sql_ast::ast::{self, Aliasable, Case, Column, Comparable, Expression, Select, jsonb_agg, raw_str};
+use sql_ast::ast::{self, Aliasable, Case, Column, Comparable, Expression, Select, json_agg, raw_str};
 use std::{borrow::Cow, collections::HashMap};
 
 use super::Context;
 
+#[derive(Clone)]
 pub struct SelectColumn<'a>(TableColumnWalker<'a>);
 
 impl<'a> SelectColumn<'a> {
@@ -49,6 +50,7 @@ impl<'a> SelectColumn<'a> {
     }
 }
 
+#[derive(Clone)]
 pub struct Unnest<'a>(TableColumnWalker<'a>, EnumWalker<'a>);
 
 impl<'a> Unnest<'a> {
@@ -64,7 +66,7 @@ impl<'a> Unnest<'a> {
         });
 
         let case = builder.r#else(Expression::from(unnest_col));
-        let aggregate = jsonb_agg(Expression::from(case), None, false).alias("json_array");
+        let aggregate = json_agg(Expression::from(case), None, false).alias("json_array");
 
         let mut column = Column::new(self.0.database_name());
 
@@ -72,7 +74,7 @@ impl<'a> Unnest<'a> {
             column = column.table(table_name);
         }
 
-        let expr = Expression::from(ast::unnest(column)).alias(format!("unnest_{}", self.0.database_name()));
+        let expr = Expression::from(ast::unnest(column, false)).alias(format!("unnest_{}", self.0.database_name()));
 
         let mut select = Select::from_table(expr);
         select.value(aggregate);
@@ -81,6 +83,7 @@ impl<'a> Unnest<'a> {
     }
 }
 
+#[derive(Clone)]
 pub enum TableSelection<'a> {
     /// Selects a single column.
     Column(SelectColumn<'a>),

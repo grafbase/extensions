@@ -85,6 +85,7 @@ pub struct DatabaseDefinition {
 pub enum Operation {
     FindOne(TableId),
     FindMany(TableId),
+    Lookup(TableId),
     DeleteOne(TableId),
     DeleteMany(TableId),
     CreateOne(TableId),

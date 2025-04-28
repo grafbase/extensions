@@ -284,7 +284,7 @@ async fn one_to_one_join_between_schemas_using_duplicate_table_names() {
 }
 
 #[tokio::test]
-async fn one_to_many_join_between_schemas() {
+async fn xxx_one_to_many_join_between_schemas() {
     let api = PgTestApi::new("", |api| async move {
         let private_schema = indoc! {r#"
             CREATE SCHEMA "private";

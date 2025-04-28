@@ -19,7 +19,7 @@ async fn table_with_generated_always_identity_primary_key() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -28,6 +28,7 @@ async fn table_with_generated_always_identity_primary_key() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -41,6 +42,20 @@ async fn table_with_generated_always_identity_primary_key() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -1180,6 +1195,16 @@ async fn table_with_generated_always_identity_primary_key() {
     }
 
     """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for User collections
     """
     input UserCollectionFilterInput {
@@ -1228,23 +1253,25 @@ async fn table_with_generated_always_identity_primary_key() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -1256,7 +1283,7 @@ async fn table_with_generated_always_identity_primary_key() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
     }
 
     """
@@ -1268,11 +1295,11 @@ async fn table_with_generated_always_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -1284,11 +1311,11 @@ async fn table_with_generated_always_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -1300,11 +1327,11 @@ async fn table_with_generated_always_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -1316,11 +1343,11 @@ async fn table_with_generated_always_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -1332,11 +1359,11 @@ async fn table_with_generated_always_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -1348,11 +1375,11 @@ async fn table_with_generated_always_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -1362,11 +1389,11 @@ async fn table_with_generated_always_identity_primary_key() {
       """
       The item at the end of the edge
       """
-      node: User!
+      node: User! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -1378,14 +1405,15 @@ async fn table_with_generated_always_identity_primary_key() {
       """
       A list of edges
       """
-      edges: [UserEdge!]!
+      edges: [UserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type User
+      @key(fields: "id")
       @pgTable(name: "users")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -1431,6 +1459,15 @@ async fn table_with_generated_always_identity_primary_key() {
         """
         orderBy: [UserOrderByInput!],
       ): UserConnection! @pgSelectMany
+      """
+      Lookup multiple users for subgraph joins
+      """
+      userLookup(
+        """
+        Filter users with an array of keys
+        """
+        lookup: UserManyLookupInput @inaccessible,
+      ): [User]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -1518,7 +1555,7 @@ async fn table_with_generated_by_default_identity_primary_key() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -1527,6 +1564,7 @@ async fn table_with_generated_by_default_identity_primary_key() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -1540,6 +1578,20 @@ async fn table_with_generated_by_default_identity_primary_key() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -2679,6 +2731,16 @@ async fn table_with_generated_by_default_identity_primary_key() {
     }
 
     """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for User collections
     """
     input UserCollectionFilterInput {
@@ -2733,23 +2795,25 @@ async fn table_with_generated_by_default_identity_primary_key() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -2761,7 +2825,7 @@ async fn table_with_generated_by_default_identity_primary_key() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
     }
 
     """
@@ -2773,11 +2837,11 @@ async fn table_with_generated_by_default_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -2789,11 +2853,11 @@ async fn table_with_generated_by_default_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -2805,11 +2869,11 @@ async fn table_with_generated_by_default_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -2821,11 +2885,11 @@ async fn table_with_generated_by_default_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -2837,11 +2901,11 @@ async fn table_with_generated_by_default_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -2853,11 +2917,11 @@ async fn table_with_generated_by_default_identity_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -2867,11 +2931,11 @@ async fn table_with_generated_by_default_identity_primary_key() {
       """
       The item at the end of the edge
       """
-      node: User!
+      node: User! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -2883,14 +2947,15 @@ async fn table_with_generated_by_default_identity_primary_key() {
       """
       A list of edges
       """
-      edges: [UserEdge!]!
+      edges: [UserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type User
+      @key(fields: "id")
       @pgTable(name: "users")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -2936,6 +3001,15 @@ async fn table_with_generated_by_default_identity_primary_key() {
         """
         orderBy: [UserOrderByInput!],
       ): UserConnection! @pgSelectMany
+      """
+      Lookup multiple users for subgraph joins
+      """
+      userLookup(
+        """
+        Filter users with an array of keys
+        """
+        lookup: UserManyLookupInput @inaccessible,
+      ): [User]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -3023,7 +3097,7 @@ async fn table_with_serial_primary_key() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -3032,6 +3106,7 @@ async fn table_with_serial_primary_key() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -3045,6 +3120,20 @@ async fn table_with_serial_primary_key() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -4184,6 +4273,16 @@ async fn table_with_serial_primary_key() {
     }
 
     """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for User collections
     """
     input UserCollectionFilterInput {
@@ -4238,23 +4337,25 @@ async fn table_with_serial_primary_key() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -4266,7 +4367,7 @@ async fn table_with_serial_primary_key() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
     }
 
     """
@@ -4278,11 +4379,11 @@ async fn table_with_serial_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -4294,11 +4395,11 @@ async fn table_with_serial_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -4310,11 +4411,11 @@ async fn table_with_serial_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -4326,11 +4427,11 @@ async fn table_with_serial_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -4342,11 +4443,11 @@ async fn table_with_serial_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -4358,11 +4459,11 @@ async fn table_with_serial_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -4372,11 +4473,11 @@ async fn table_with_serial_primary_key() {
       """
       The item at the end of the edge
       """
-      node: User!
+      node: User! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -4388,14 +4489,15 @@ async fn table_with_serial_primary_key() {
       """
       A list of edges
       """
-      edges: [UserEdge!]!
+      edges: [UserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type User
+      @key(fields: "id")
       @pgTable(name: "User")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -4441,6 +4543,15 @@ async fn table_with_serial_primary_key() {
         """
         orderBy: [UserOrderByInput!],
       ): UserConnection! @pgSelectMany
+      """
+      Lookup multiple users for subgraph joins
+      """
+      userLookup(
+        """
+        Filter users with an array of keys
+        """
+        lookup: UserManyLookupInput @inaccessible,
+      ): [User]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -4535,7 +4646,7 @@ async fn table_with_enum_field() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -4544,6 +4655,7 @@ async fn table_with_enum_field() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -4557,6 +4669,20 @@ async fn table_with_enum_field() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -5830,6 +5956,16 @@ async fn table_with_enum_field() {
     }
 
     """
+    Lookup input type for A objects for subgraph joins.
+    """
+    input AManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for A collections
     """
     input ACollectionFilterInput {
@@ -5896,23 +6032,25 @@ async fn table_with_enum_field() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -5924,7 +6062,7 @@ async fn table_with_enum_field() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
       """
       The value of the val field
       """
@@ -5940,11 +6078,11 @@ async fn table_with_enum_field() {
       """
       Returned item(s) from the mutation
       """
-      returning: AReturning
+      returning: AReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -5956,11 +6094,11 @@ async fn table_with_enum_field() {
       """
       Returned item(s) from the mutation
       """
-      returning: [AReturning]!
+      returning: [AReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -5972,11 +6110,11 @@ async fn table_with_enum_field() {
       """
       Returned item(s) from the mutation
       """
-      returning: AReturning
+      returning: AReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -5988,11 +6126,11 @@ async fn table_with_enum_field() {
       """
       Returned item(s) from the mutation
       """
-      returning: [AReturning]!
+      returning: [AReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -6004,11 +6142,11 @@ async fn table_with_enum_field() {
       """
       Returned item(s) from the mutation
       """
-      returning: AReturning
+      returning: AReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -6020,11 +6158,11 @@ async fn table_with_enum_field() {
       """
       Returned item(s) from the mutation
       """
-      returning: [AReturning]!
+      returning: [AReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -6034,11 +6172,11 @@ async fn table_with_enum_field() {
       """
       The item at the end of the edge
       """
-      node: A!
+      node: A! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -6050,14 +6188,15 @@ async fn table_with_enum_field() {
       """
       A list of edges
       """
-      edges: [AEdge!]!
+      edges: [AEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type A
+      @key(fields: "id")
       @pgTable(name: "A")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -6104,6 +6243,15 @@ async fn table_with_enum_field() {
         """
         orderBy: [AOrderByInput!],
       ): AConnection! @pgSelectMany
+      """
+      Lookup multiple as for subgraph joins
+      """
+      aLookup(
+        """
+        Filter as with an array of keys
+        """
+        lookup: AManyLookupInput @inaccessible,
+      ): [A]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -6191,7 +6339,7 @@ async fn table_with_int_primary_key() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -6200,6 +6348,7 @@ async fn table_with_int_primary_key() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -6213,6 +6362,20 @@ async fn table_with_int_primary_key() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -7352,6 +7515,16 @@ async fn table_with_int_primary_key() {
     }
 
     """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for User collections
     """
     input UserCollectionFilterInput {
@@ -7406,23 +7579,25 @@ async fn table_with_int_primary_key() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -7434,7 +7609,7 @@ async fn table_with_int_primary_key() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
     }
 
     """
@@ -7446,11 +7621,11 @@ async fn table_with_int_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -7462,11 +7637,11 @@ async fn table_with_int_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -7478,11 +7653,11 @@ async fn table_with_int_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -7494,11 +7669,11 @@ async fn table_with_int_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -7510,11 +7685,11 @@ async fn table_with_int_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -7526,11 +7701,11 @@ async fn table_with_int_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -7540,11 +7715,11 @@ async fn table_with_int_primary_key() {
       """
       The item at the end of the edge
       """
-      node: User!
+      node: User! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -7556,14 +7731,15 @@ async fn table_with_int_primary_key() {
       """
       A list of edges
       """
-      edges: [UserEdge!]!
+      edges: [UserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type User
+      @key(fields: "id")
       @pgTable(name: "User")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -7609,6 +7785,15 @@ async fn table_with_int_primary_key() {
         """
         orderBy: [UserOrderByInput!],
       ): UserConnection! @pgSelectMany
+      """
+      Lookup multiple users for subgraph joins
+      """
+      userLookup(
+        """
+        Filter users with an array of keys
+        """
+        lookup: UserManyLookupInput @inaccessible,
+      ): [User]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -7696,7 +7881,7 @@ async fn table_with_int_unique() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -7705,6 +7890,7 @@ async fn table_with_int_unique() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -7718,6 +7904,20 @@ async fn table_with_int_unique() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -8857,6 +9057,16 @@ async fn table_with_int_unique() {
     }
 
     """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for User collections
     """
     input UserCollectionFilterInput {
@@ -8911,23 +9121,25 @@ async fn table_with_int_unique() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -8939,7 +9151,7 @@ async fn table_with_int_unique() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
     }
 
     """
@@ -8951,11 +9163,11 @@ async fn table_with_int_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -8967,11 +9179,11 @@ async fn table_with_int_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -8983,11 +9195,11 @@ async fn table_with_int_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -8999,11 +9211,11 @@ async fn table_with_int_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -9015,11 +9227,11 @@ async fn table_with_int_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -9031,11 +9243,11 @@ async fn table_with_int_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -9045,11 +9257,11 @@ async fn table_with_int_unique() {
       """
       The item at the end of the edge
       """
-      node: User!
+      node: User! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -9061,14 +9273,15 @@ async fn table_with_int_unique() {
       """
       A list of edges
       """
-      edges: [UserEdge!]!
+      edges: [UserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type User
+      @key(fields: "id")
       @pgTable(name: "User")
       @pgKey(fields: ["id"], type: UNIQUE)
     {
@@ -9114,6 +9327,15 @@ async fn table_with_int_unique() {
         """
         orderBy: [UserOrderByInput!],
       ): UserConnection! @pgSelectMany
+      """
+      Lookup multiple users for subgraph joins
+      """
+      userLookup(
+        """
+        Filter users with an array of keys
+        """
+        lookup: UserManyLookupInput @inaccessible,
+      ): [User]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -9202,7 +9424,7 @@ async fn table_with_serial_primary_key_string_unique() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -9211,6 +9433,7 @@ async fn table_with_serial_primary_key_string_unique() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -9224,6 +9447,20 @@ async fn table_with_serial_primary_key_string_unique() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -10371,6 +10608,20 @@ async fn table_with_serial_primary_key_string_unique() {
     }
 
     """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'email' field
+      """
+      email: [String!] @inaccessible
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for User collections
     """
     input UserCollectionFilterInput {
@@ -10437,23 +10688,25 @@ async fn table_with_serial_primary_key_string_unique() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -10465,11 +10718,11 @@ async fn table_with_serial_primary_key_string_unique() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
       """
       The value of the email field
       """
-      email: String!
+      email: String! @shareable
     }
 
     """
@@ -10481,11 +10734,11 @@ async fn table_with_serial_primary_key_string_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -10497,11 +10750,11 @@ async fn table_with_serial_primary_key_string_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -10513,11 +10766,11 @@ async fn table_with_serial_primary_key_string_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -10529,11 +10782,11 @@ async fn table_with_serial_primary_key_string_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -10545,11 +10798,11 @@ async fn table_with_serial_primary_key_string_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -10561,11 +10814,11 @@ async fn table_with_serial_primary_key_string_unique() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -10575,11 +10828,11 @@ async fn table_with_serial_primary_key_string_unique() {
       """
       The item at the end of the edge
       """
-      node: User!
+      node: User! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -10591,14 +10844,16 @@ async fn table_with_serial_primary_key_string_unique() {
       """
       A list of edges
       """
-      edges: [UserEdge!]!
+      edges: [UserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type User
+      @key(fields: "email")
+      @key(fields: "id")
       @pgTable(name: "User")
       @pgKey(fields: ["email"], type: UNIQUE)
       @pgKey(fields: ["id"], type: PRIMARY)
@@ -10646,6 +10901,15 @@ async fn table_with_serial_primary_key_string_unique() {
         """
         orderBy: [UserOrderByInput!],
       ): UserConnection! @pgSelectMany
+      """
+      Lookup multiple users for subgraph joins
+      """
+      userLookup(
+        """
+        Filter users with an array of keys
+        """
+        lookup: UserManyLookupInput @inaccessible,
+      ): [User]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -10735,7 +10999,7 @@ async fn table_with_composite_primary_key() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -10744,6 +11008,7 @@ async fn table_with_composite_primary_key() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -10757,6 +11022,20 @@ async fn table_with_composite_primary_key() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -11914,6 +12193,16 @@ async fn table_with_composite_primary_key() {
     }
 
     """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select User by composite columns 'name, email'
+      """
+      nameEmail: [UserNameEmailInput!] @inaccessible
+    }
+
+    """
     Filter input type for User collections
     """
     input UserCollectionFilterInput {
@@ -11980,23 +12269,25 @@ async fn table_with_composite_primary_key() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -12008,11 +12299,11 @@ async fn table_with_composite_primary_key() {
       """
       The value of the name field
       """
-      name: String!
+      name: String! @shareable
       """
       The value of the email field
       """
-      email: String!
+      email: String! @shareable
     }
 
     """
@@ -12024,11 +12315,11 @@ async fn table_with_composite_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -12040,11 +12331,11 @@ async fn table_with_composite_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -12056,11 +12347,11 @@ async fn table_with_composite_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -12072,11 +12363,11 @@ async fn table_with_composite_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -12088,11 +12379,11 @@ async fn table_with_composite_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -12104,11 +12395,11 @@ async fn table_with_composite_primary_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -12118,11 +12409,11 @@ async fn table_with_composite_primary_key() {
       """
       The item at the end of the edge
       """
-      node: User!
+      node: User! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -12134,14 +12425,15 @@ async fn table_with_composite_primary_key() {
       """
       A list of edges
       """
-      edges: [UserEdge!]!
+      edges: [UserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type User
+      @key(fields: "name email")
       @pgTable(name: "User")
       @pgKey(fields: ["name", "email"], type: PRIMARY)
     {
@@ -12188,6 +12480,15 @@ async fn table_with_composite_primary_key() {
         """
         orderBy: [UserOrderByInput!],
       ): UserConnection! @pgSelectMany
+      """
+      Lookup multiple users for subgraph joins
+      """
+      userLookup(
+        """
+        Filter users with an array of keys
+        """
+        lookup: UserManyLookupInput @inaccessible,
+      ): [User]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -12285,7 +12586,7 @@ async fn two_schemas_same_table_name() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -12294,6 +12595,7 @@ async fn two_schemas_same_table_name() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -12307,6 +12609,20 @@ async fn two_schemas_same_table_name() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -13446,6 +13762,16 @@ async fn two_schemas_same_table_name() {
     }
 
     """
+    Lookup input type for PrivateUser objects for subgraph joins.
+    """
+    input PrivateUserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for PrivateUser collections
     """
     input PrivateUserCollectionFilterInput {
@@ -13518,6 +13844,16 @@ async fn two_schemas_same_table_name() {
     }
 
     """
+    Lookup input type for PublicUser objects for subgraph joins.
+    """
+    input PublicUserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for PublicUser collections
     """
     input PublicUserCollectionFilterInput {
@@ -13572,23 +13908,25 @@ async fn two_schemas_same_table_name() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -13600,7 +13938,7 @@ async fn two_schemas_same_table_name() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
     }
 
     """
@@ -13612,11 +13950,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: PrivateUserReturning
+      returning: PrivateUserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13628,11 +13966,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: [PrivateUserReturning]!
+      returning: [PrivateUserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13644,11 +13982,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: PrivateUserReturning
+      returning: PrivateUserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13660,11 +13998,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: [PrivateUserReturning]!
+      returning: [PrivateUserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13676,11 +14014,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: PrivateUserReturning
+      returning: PrivateUserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13692,11 +14030,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: [PrivateUserReturning]!
+      returning: [PrivateUserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13706,11 +14044,11 @@ async fn two_schemas_same_table_name() {
       """
       The item at the end of the edge
       """
-      node: PrivateUser!
+      node: PrivateUser! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -13722,11 +14060,11 @@ async fn two_schemas_same_table_name() {
       """
       A list of edges
       """
-      edges: [PrivateUserEdge!]!
+      edges: [PrivateUserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     """
@@ -13738,7 +14076,7 @@ async fn two_schemas_same_table_name() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
     }
 
     """
@@ -13750,11 +14088,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: PublicUserReturning
+      returning: PublicUserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13766,11 +14104,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: [PublicUserReturning]!
+      returning: [PublicUserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13782,11 +14120,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: PublicUserReturning
+      returning: PublicUserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13798,11 +14136,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: [PublicUserReturning]!
+      returning: [PublicUserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13814,11 +14152,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: PublicUserReturning
+      returning: PublicUserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13830,11 +14168,11 @@ async fn two_schemas_same_table_name() {
       """
       Returned item(s) from the mutation
       """
-      returning: [PublicUserReturning]!
+      returning: [PublicUserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -13844,11 +14182,11 @@ async fn two_schemas_same_table_name() {
       """
       The item at the end of the edge
       """
-      node: PublicUser!
+      node: PublicUser! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -13860,14 +14198,15 @@ async fn two_schemas_same_table_name() {
       """
       A list of edges
       """
-      edges: [PublicUserEdge!]!
+      edges: [PublicUserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type PrivateUser
+      @key(fields: "id")
       @pgTable(name: "User", schema: "private")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -13875,6 +14214,7 @@ async fn two_schemas_same_table_name() {
     }
 
     type PublicUser
+      @key(fields: "id")
       @pgTable(name: "User")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -13921,6 +14261,15 @@ async fn two_schemas_same_table_name() {
         orderBy: [PrivateUserOrderByInput!],
       ): PrivateUserConnection! @pgSelectMany
       """
+      Lookup multiple privateUsers for subgraph joins
+      """
+      privateUserLookup(
+        """
+        Filter privateUsers with an array of keys
+        """
+        lookup: PrivateUserManyLookupInput @inaccessible,
+      ): [PrivateUser]! @pgLookup @lookup @inaccessible
+      """
       Query a unique PublicUser
       """
       publicUser(
@@ -13958,6 +14307,15 @@ async fn two_schemas_same_table_name() {
         """
         orderBy: [PublicUserOrderByInput!],
       ): PublicUserConnection! @pgSelectMany
+      """
+      Lookup multiple publicUsers for subgraph joins
+      """
+      publicUserLookup(
+        """
+        Filter publicUsers with an array of keys
+        """
+        lookup: PublicUserManyLookupInput @inaccessible,
+      ): [PublicUser]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -14108,7 +14466,7 @@ async fn table_with_an_array_column() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -14117,6 +14475,7 @@ async fn table_with_an_array_column() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -14130,6 +14489,20 @@ async fn table_with_an_array_column() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -15273,6 +15646,16 @@ async fn table_with_an_array_column() {
     }
 
     """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for User collections
     """
     input UserCollectionFilterInput {
@@ -15339,23 +15722,25 @@ async fn table_with_an_array_column() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -15367,7 +15752,7 @@ async fn table_with_an_array_column() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
       """
       The value of the name field
       """
@@ -15383,11 +15768,11 @@ async fn table_with_an_array_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -15399,11 +15784,11 @@ async fn table_with_an_array_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -15415,11 +15800,11 @@ async fn table_with_an_array_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -15431,11 +15816,11 @@ async fn table_with_an_array_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -15447,11 +15832,11 @@ async fn table_with_an_array_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -15463,11 +15848,11 @@ async fn table_with_an_array_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -15477,11 +15862,11 @@ async fn table_with_an_array_column() {
       """
       The item at the end of the edge
       """
-      node: User!
+      node: User! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -15493,14 +15878,15 @@ async fn table_with_an_array_column() {
       """
       A list of edges
       """
-      edges: [UserEdge!]!
+      edges: [UserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type User
+      @key(fields: "id")
       @pgTable(name: "User")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -15547,6 +15933,15 @@ async fn table_with_an_array_column() {
         """
         orderBy: [UserOrderByInput!],
       ): UserConnection! @pgSelectMany
+      """
+      Lookup multiple users for subgraph joins
+      """
+      userLookup(
+        """
+        Filter users with an array of keys
+        """
+        lookup: UserManyLookupInput @inaccessible,
+      ): [User]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -15635,7 +16030,7 @@ async fn table_with_jsonb_column() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -15644,6 +16039,7 @@ async fn table_with_jsonb_column() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -15657,6 +16053,20 @@ async fn table_with_jsonb_column() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -16800,6 +17210,16 @@ async fn table_with_jsonb_column() {
     }
 
     """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for User collections
     """
     input UserCollectionFilterInput {
@@ -16866,23 +17286,25 @@ async fn table_with_jsonb_column() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -16894,7 +17316,7 @@ async fn table_with_jsonb_column() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
       """
       The value of the name field
       """
@@ -16910,11 +17332,11 @@ async fn table_with_jsonb_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -16926,11 +17348,11 @@ async fn table_with_jsonb_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -16942,11 +17364,11 @@ async fn table_with_jsonb_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -16958,11 +17380,11 @@ async fn table_with_jsonb_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -16974,11 +17396,11 @@ async fn table_with_jsonb_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -16990,11 +17412,11 @@ async fn table_with_jsonb_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -17004,11 +17426,11 @@ async fn table_with_jsonb_column() {
       """
       The item at the end of the edge
       """
-      node: User!
+      node: User! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -17020,14 +17442,15 @@ async fn table_with_jsonb_column() {
       """
       A list of edges
       """
-      edges: [UserEdge!]!
+      edges: [UserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type User
+      @key(fields: "id")
       @pgTable(name: "User")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -17074,6 +17497,15 @@ async fn table_with_jsonb_column() {
         """
         orderBy: [UserOrderByInput!],
       ): UserConnection! @pgSelectMany
+      """
+      Lookup multiple users for subgraph joins
+      """
+      userLookup(
+        """
+        Filter users with an array of keys
+        """
+        lookup: UserManyLookupInput @inaccessible,
+      ): [User]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -17162,7 +17594,7 @@ async fn table_with_json_column() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -17171,6 +17603,7 @@ async fn table_with_json_column() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -17184,6 +17617,20 @@ async fn table_with_json_column() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -18327,6 +18774,16 @@ async fn table_with_json_column() {
     }
 
     """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for User collections
     """
     input UserCollectionFilterInput {
@@ -18393,23 +18850,25 @@ async fn table_with_json_column() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -18421,7 +18880,7 @@ async fn table_with_json_column() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
       """
       The value of the name field
       """
@@ -18437,11 +18896,11 @@ async fn table_with_json_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -18453,11 +18912,11 @@ async fn table_with_json_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -18469,11 +18928,11 @@ async fn table_with_json_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -18485,11 +18944,11 @@ async fn table_with_json_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -18501,11 +18960,11 @@ async fn table_with_json_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -18517,11 +18976,11 @@ async fn table_with_json_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -18531,11 +18990,11 @@ async fn table_with_json_column() {
       """
       The item at the end of the edge
       """
-      node: User!
+      node: User! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -18547,14 +19006,15 @@ async fn table_with_json_column() {
       """
       A list of edges
       """
-      edges: [UserEdge!]!
+      edges: [UserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type User
+      @key(fields: "id")
       @pgTable(name: "User")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -18601,6 +19061,15 @@ async fn table_with_json_column() {
         """
         orderBy: [UserOrderByInput!],
       ): UserConnection! @pgSelectMany
+      """
+      Lookup multiple users for subgraph joins
+      """
+      userLookup(
+        """
+        Filter users with an array of keys
+        """
+        lookup: UserManyLookupInput @inaccessible,
+      ): [User]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -18701,7 +19170,7 @@ async fn two_tables_with_single_column_foreign_key() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -18710,6 +19179,7 @@ async fn two_tables_with_single_column_foreign_key() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -18723,6 +19193,20 @@ async fn two_tables_with_single_column_foreign_key() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -19878,6 +20362,16 @@ async fn two_tables_with_single_column_foreign_key() {
     }
 
     """
+    Lookup input type for Blog objects for subgraph joins.
+    """
+    input BlogManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for Blog collections
     """
     input BlogCollectionFilterInput {
@@ -19994,6 +20488,16 @@ async fn two_tables_with_single_column_foreign_key() {
     }
 
     """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for User collections
     """
     input UserCollectionFilterInput {
@@ -20064,23 +20568,25 @@ async fn two_tables_with_single_column_foreign_key() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -20092,7 +20598,7 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
       """
       The value of the title field
       """
@@ -20116,11 +20622,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: BlogReturning
+      returning: BlogReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20132,11 +20638,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [BlogReturning]!
+      returning: [BlogReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20148,11 +20654,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: BlogReturning
+      returning: BlogReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20164,11 +20670,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [BlogReturning]!
+      returning: [BlogReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20180,11 +20686,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: BlogReturning
+      returning: BlogReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20196,11 +20702,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [BlogReturning]!
+      returning: [BlogReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20210,11 +20716,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       The item at the end of the edge
       """
-      node: Blog!
+      node: Blog! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -20226,11 +20732,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       A list of edges
       """
-      edges: [BlogEdge!]!
+      edges: [BlogEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     """
@@ -20242,7 +20748,7 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
       """
       The value of the name field
       """
@@ -20258,11 +20764,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20274,11 +20780,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20290,11 +20796,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20306,11 +20812,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20322,11 +20828,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning
+      returning: UserReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20338,11 +20844,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]!
+      returning: [UserReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -20352,11 +20858,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       The item at the end of the edge
       """
-      node: User!
+      node: User! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -20368,14 +20874,15 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       A list of edges
       """
-      edges: [UserEdge!]!
+      edges: [UserEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type Blog
+      @key(fields: "id")
       @pgTable(name: "Blog")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -20387,6 +20894,7 @@ async fn two_tables_with_single_column_foreign_key() {
     }
 
     type User
+      @key(fields: "id")
       @pgTable(name: "User")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -20460,6 +20968,15 @@ async fn two_tables_with_single_column_foreign_key() {
         orderBy: [BlogOrderByInput!],
       ): BlogConnection! @pgSelectMany
       """
+      Lookup multiple blogs for subgraph joins
+      """
+      blogLookup(
+        """
+        Filter blogs with an array of keys
+        """
+        lookup: BlogManyLookupInput @inaccessible,
+      ): [Blog]! @pgLookup @lookup @inaccessible
+      """
       Query a unique User
       """
       user(
@@ -20497,6 +21014,15 @@ async fn two_tables_with_single_column_foreign_key() {
         """
         orderBy: [UserOrderByInput!],
       ): UserConnection! @pgSelectMany
+      """
+      Lookup multiple users for subgraph joins
+      """
+      userLookup(
+        """
+        Filter users with an array of keys
+        """
+        lookup: UserManyLookupInput @inaccessible,
+      ): [User]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -20644,7 +21170,7 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -20653,6 +21179,7 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -20666,6 +21193,20 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -21805,6 +22346,16 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
     }
 
     """
+    Lookup input type for VisibleTable objects for subgraph joins.
+    """
+    input VisibleTableManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [String!] @inaccessible
+    }
+
+    """
     Filter input type for VisibleTable collections
     """
     input VisibleTableCollectionFilterInput {
@@ -21859,23 +22410,25 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -21887,7 +22440,7 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
       """
       The value of the id field
       """
-      id: String!
+      id: String! @shareable
     }
 
     """
@@ -21899,11 +22452,11 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
       """
       Returned item(s) from the mutation
       """
-      returning: VisibleTableReturning
+      returning: VisibleTableReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -21915,11 +22468,11 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
       """
       Returned item(s) from the mutation
       """
-      returning: [VisibleTableReturning]!
+      returning: [VisibleTableReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -21931,11 +22484,11 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
       """
       Returned item(s) from the mutation
       """
-      returning: VisibleTableReturning
+      returning: VisibleTableReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -21947,11 +22500,11 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
       """
       Returned item(s) from the mutation
       """
-      returning: [VisibleTableReturning]!
+      returning: [VisibleTableReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -21963,11 +22516,11 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
       """
       Returned item(s) from the mutation
       """
-      returning: VisibleTableReturning
+      returning: VisibleTableReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -21979,11 +22532,11 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
       """
       Returned item(s) from the mutation
       """
-      returning: [VisibleTableReturning]!
+      returning: [VisibleTableReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -21993,11 +22546,11 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
       """
       The item at the end of the edge
       """
-      node: VisibleTable!
+      node: VisibleTable! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -22009,14 +22562,15 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
       """
       A list of edges
       """
-      edges: [VisibleTableEdge!]!
+      edges: [VisibleTableEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type VisibleTable
+      @key(fields: "id")
       @pgTable(name: "visible_table")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -22062,6 +22616,15 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
         """
         orderBy: [VisibleTableOrderByInput!],
       ): VisibleTableConnection! @pgSelectMany
+      """
+      Lookup multiple visibleTables for subgraph joins
+      """
+      visibleTableLookup(
+        """
+        Filter visibleTables with an array of keys
+        """
+        lookup: VisibleTableManyLookupInput @inaccessible,
+      ): [VisibleTable]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -22172,7 +22735,7 @@ async fn issue_november_2023() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -22181,6 +22744,7 @@ async fn issue_november_2023() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -22194,6 +22758,20 @@ async fn issue_november_2023() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -23593,6 +24171,16 @@ async fn issue_november_2023() {
     }
 
     """
+    Lookup input type for Network objects for subgraph joins.
+    """
+    input NetworkManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for Network collections
     """
     input NetworkCollectionFilterInput {
@@ -23682,6 +24270,16 @@ async fn issue_november_2023() {
       Select by the 'id' field
       """
       id: Int
+    }
+
+    """
+    Lookup input type for Project objects for subgraph joins.
+    """
+    input ProjectManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
     }
 
     """
@@ -23779,23 +24377,25 @@ async fn issue_november_2023() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -23807,7 +24407,7 @@ async fn issue_november_2023() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
     }
 
     """
@@ -23819,11 +24419,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: NetworkReturning
+      returning: NetworkReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -23835,11 +24435,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: [NetworkReturning]!
+      returning: [NetworkReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -23851,11 +24451,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: NetworkReturning
+      returning: NetworkReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -23867,11 +24467,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: [NetworkReturning]!
+      returning: [NetworkReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -23883,11 +24483,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: NetworkReturning
+      returning: NetworkReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -23899,11 +24499,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: [NetworkReturning]!
+      returning: [NetworkReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -23913,11 +24513,11 @@ async fn issue_november_2023() {
       """
       The item at the end of the edge
       """
-      node: Network!
+      node: Network! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -23929,11 +24529,11 @@ async fn issue_november_2023() {
       """
       A list of edges
       """
-      edges: [NetworkEdge!]!
+      edges: [NetworkEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     """
@@ -23945,7 +24545,7 @@ async fn issue_november_2023() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
       """
       The value of the accessMode field
       """
@@ -23969,11 +24569,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: ProjectReturning
+      returning: ProjectReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -23985,11 +24585,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: [ProjectReturning]!
+      returning: [ProjectReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -24001,11 +24601,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: ProjectReturning
+      returning: ProjectReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -24017,11 +24617,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: [ProjectReturning]!
+      returning: [ProjectReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -24033,11 +24633,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: ProjectReturning
+      returning: ProjectReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -24049,11 +24649,11 @@ async fn issue_november_2023() {
       """
       Returned item(s) from the mutation
       """
-      returning: [ProjectReturning]!
+      returning: [ProjectReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -24063,11 +24663,11 @@ async fn issue_november_2023() {
       """
       The item at the end of the edge
       """
-      node: Project!
+      node: Project! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -24079,14 +24679,15 @@ async fn issue_november_2023() {
       """
       A list of edges
       """
-      edges: [ProjectEdge!]!
+      edges: [ProjectEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type Network
+      @key(fields: "id")
       @pgTable(name: "networks")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -24120,6 +24721,7 @@ async fn issue_november_2023() {
     }
 
     type Project
+      @key(fields: "id")
       @pgTable(name: "projects")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -24170,6 +24772,15 @@ async fn issue_november_2023() {
         orderBy: [NetworkOrderByInput!],
       ): NetworkConnection! @pgSelectMany
       """
+      Lookup multiple networks for subgraph joins
+      """
+      networkLookup(
+        """
+        Filter networks with an array of keys
+        """
+        lookup: NetworkManyLookupInput @inaccessible,
+      ): [Network]! @pgLookup @lookup @inaccessible
+      """
       Query a unique Project
       """
       project(
@@ -24207,6 +24818,15 @@ async fn issue_november_2023() {
         """
         orderBy: [ProjectOrderByInput!],
       ): ProjectConnection! @pgSelectMany
+      """
+      Lookup multiple projects for subgraph joins
+      """
+      projectLookup(
+        """
+        Filter projects with an array of keys
+        """
+        lookup: ProjectManyLookupInput @inaccessible,
+      ): [Project]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -24362,7 +24982,7 @@ async fn table_with_comment() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -24371,6 +24991,7 @@ async fn table_with_comment() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -24384,6 +25005,20 @@ async fn table_with_comment() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -25523,6 +26158,16 @@ async fn table_with_comment() {
     }
 
     """
+    Lookup input type for CommentedTable objects for subgraph joins.
+    """
+    input CommentedTableManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for CommentedTable collections
     """
     input CommentedTableCollectionFilterInput {
@@ -25577,23 +26222,25 @@ async fn table_with_comment() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -25605,7 +26252,7 @@ async fn table_with_comment() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
     }
 
     """
@@ -25617,11 +26264,11 @@ async fn table_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: CommentedTableReturning
+      returning: CommentedTableReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -25633,11 +26280,11 @@ async fn table_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: [CommentedTableReturning]!
+      returning: [CommentedTableReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -25649,11 +26296,11 @@ async fn table_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: CommentedTableReturning
+      returning: CommentedTableReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -25665,11 +26312,11 @@ async fn table_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: [CommentedTableReturning]!
+      returning: [CommentedTableReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -25681,11 +26328,11 @@ async fn table_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: CommentedTableReturning
+      returning: CommentedTableReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -25697,11 +26344,11 @@ async fn table_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: [CommentedTableReturning]!
+      returning: [CommentedTableReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -25711,11 +26358,11 @@ async fn table_with_comment() {
       """
       The item at the end of the edge
       """
-      node: CommentedTable!
+      node: CommentedTable! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -25727,17 +26374,18 @@ async fn table_with_comment() {
       """
       A list of edges
       """
-      edges: [CommentedTableEdge!]!
+      edges: [CommentedTableEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     """
     This is a table comment.
     """
     type CommentedTable
+      @key(fields: "id")
       @pgTable(name: "commented_table")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -25783,6 +26431,15 @@ async fn table_with_comment() {
         """
         orderBy: [CommentedTableOrderByInput!],
       ): CommentedTableConnection! @pgSelectMany
+      """
+      Lookup multiple commentedTables for subgraph joins
+      """
+      commentedTableLookup(
+        """
+        Filter commentedTables with an array of keys
+        """
+        lookup: CommentedTableManyLookupInput @inaccessible,
+      ): [CommentedTable]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -25877,7 +26534,7 @@ async fn table_with_commented_column() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -25886,6 +26543,7 @@ async fn table_with_commented_column() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -25899,6 +26557,20 @@ async fn table_with_commented_column() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -27042,6 +27714,16 @@ async fn table_with_commented_column() {
     }
 
     """
+    Lookup input type for CommentedColumnTable objects for subgraph joins.
+    """
+    input CommentedColumnTableManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for CommentedColumnTable collections
     """
     input CommentedColumnTableCollectionFilterInput {
@@ -27108,23 +27790,25 @@ async fn table_with_commented_column() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -27136,7 +27820,7 @@ async fn table_with_commented_column() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
       """
       The value of the data field
       """
@@ -27152,11 +27836,11 @@ async fn table_with_commented_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: CommentedColumnTableReturning
+      returning: CommentedColumnTableReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -27168,11 +27852,11 @@ async fn table_with_commented_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [CommentedColumnTableReturning]!
+      returning: [CommentedColumnTableReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -27184,11 +27868,11 @@ async fn table_with_commented_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: CommentedColumnTableReturning
+      returning: CommentedColumnTableReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -27200,11 +27884,11 @@ async fn table_with_commented_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [CommentedColumnTableReturning]!
+      returning: [CommentedColumnTableReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -27216,11 +27900,11 @@ async fn table_with_commented_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: CommentedColumnTableReturning
+      returning: CommentedColumnTableReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -27232,11 +27916,11 @@ async fn table_with_commented_column() {
       """
       Returned item(s) from the mutation
       """
-      returning: [CommentedColumnTableReturning]!
+      returning: [CommentedColumnTableReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -27246,11 +27930,11 @@ async fn table_with_commented_column() {
       """
       The item at the end of the edge
       """
-      node: CommentedColumnTable!
+      node: CommentedColumnTable! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -27262,14 +27946,15 @@ async fn table_with_commented_column() {
       """
       A list of edges
       """
-      edges: [CommentedColumnTableEdge!]!
+      edges: [CommentedColumnTableEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type CommentedColumnTable
+      @key(fields: "id")
       @pgTable(name: "commented_column_table")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -27319,6 +28004,15 @@ async fn table_with_commented_column() {
         """
         orderBy: [CommentedColumnTableOrderByInput!],
       ): CommentedColumnTableConnection! @pgSelectMany
+      """
+      Lookup multiple commentedColumnTables for subgraph joins
+      """
+      commentedColumnTableLookup(
+        """
+        Filter commentedColumnTables with an array of keys
+        """
+        lookup: CommentedColumnTableManyLookupInput @inaccessible,
+      ): [CommentedColumnTable]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -27419,7 +28113,7 @@ async fn enum_with_comment() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -27428,6 +28122,7 @@ async fn enum_with_comment() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -27441,6 +28136,20 @@ async fn enum_with_comment() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -28716,6 +29425,16 @@ async fn enum_with_comment() {
     }
 
     """
+    Lookup input type for UsesCommentedEnum objects for subgraph joins.
+    """
+    input UsesCommentedEnumManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for UsesCommentedEnum collections
     """
     input UsesCommentedEnumCollectionFilterInput {
@@ -28782,23 +29501,25 @@ async fn enum_with_comment() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -28810,7 +29531,7 @@ async fn enum_with_comment() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
       """
       The value of the val field
       """
@@ -28826,11 +29547,11 @@ async fn enum_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: UsesCommentedEnumReturning
+      returning: UsesCommentedEnumReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -28842,11 +29563,11 @@ async fn enum_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UsesCommentedEnumReturning]!
+      returning: [UsesCommentedEnumReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -28858,11 +29579,11 @@ async fn enum_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: UsesCommentedEnumReturning
+      returning: UsesCommentedEnumReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -28874,11 +29595,11 @@ async fn enum_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UsesCommentedEnumReturning]!
+      returning: [UsesCommentedEnumReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -28890,11 +29611,11 @@ async fn enum_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: UsesCommentedEnumReturning
+      returning: UsesCommentedEnumReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -28906,11 +29627,11 @@ async fn enum_with_comment() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UsesCommentedEnumReturning]!
+      returning: [UsesCommentedEnumReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -28920,11 +29641,11 @@ async fn enum_with_comment() {
       """
       The item at the end of the edge
       """
-      node: UsesCommentedEnum!
+      node: UsesCommentedEnum! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -28936,14 +29657,15 @@ async fn enum_with_comment() {
       """
       A list of edges
       """
-      edges: [UsesCommentedEnumEdge!]!
+      edges: [UsesCommentedEnumEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type UsesCommentedEnum
+      @key(fields: "id")
       @pgTable(name: "uses_commented_enum")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -28990,6 +29712,15 @@ async fn enum_with_comment() {
         """
         orderBy: [UsesCommentedEnumOrderByInput!],
       ): UsesCommentedEnumConnection! @pgSelectMany
+      """
+      Lookup multiple usesCommentedEnums for subgraph joins
+      """
+      usesCommentedEnumLookup(
+        """
+        Filter usesCommentedEnums with an array of keys
+        """
+        lookup: UsesCommentedEnumManyLookupInput @inaccessible,
+      ): [UsesCommentedEnum]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -29095,7 +29826,7 @@ async fn table_with_commented_foreign_key() {
     insta::assert_snapshot!(&result, @r#"
     extend schema
       @link(
-        url: "https://grafbase.com/extensions/postgres/0.1.0",
+        url: "https://grafbase.com/extensions/postgres/0.1.1",
         import: [
           "@pgDatabase",
           "@pgTable",
@@ -29104,6 +29835,7 @@ async fn table_with_commented_foreign_key() {
           "@pgEnumVariant",
           "@pgRelation",
           "@pgKey",
+          "@pgLookup",
           "@pgSelectOne",
           "@pgSelectMany",
           "@pgInsertOne",
@@ -29117,6 +29849,20 @@ async fn table_with_commented_foreign_key() {
           "@pgReturning",
           "PgKeyType",
           "PgColumnType"
+        ]
+      )
+      @link(
+        url: "https://specs.grafbase.com/composite-schema/v1",
+        import: [
+          "@lookup",
+          "@key"
+        ]
+      )
+      @link(
+        url: "https://specs.apollo.dev/federation/v2.3",
+        import: [
+          "@shareable",
+          "@inaccessible"
         ]
       )
       @pgDatabase(name: "default")
@@ -30264,6 +31010,16 @@ async fn table_with_commented_foreign_key() {
     }
 
     """
+    Lookup input type for PostFkComment objects for subgraph joins.
+    """
+    input PostFkCommentManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for PostFkComment collections
     """
     input PostFkCommentCollectionFilterInput {
@@ -30352,6 +31108,16 @@ async fn table_with_commented_foreign_key() {
     }
 
     """
+    Lookup input type for UserFkComment objects for subgraph joins.
+    """
+    input UserFkCommentManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
     Filter input type for UserFkComment collections
     """
     input UserFkCommentCollectionFilterInput {
@@ -30410,23 +31176,25 @@ async fn table_with_commented_foreign_key() {
     """
     Information about pagination in a collection of objects
     """
-    type PageInfo {
+    type PageInfo
+      @shareable
+    {
       """
       When paginating backwards, are there more items?
       """
-      hasPreviousPage: Boolean!
+      hasPreviousPage: Boolean! @shareable
       """
       When paginating forwards, are there more items?
       """
-      hasNextPage: Boolean!
+      hasNextPage: Boolean! @shareable
       """
       The cursor of the first item in the page
       """
-      startCursor: String!
+      startCursor: String! @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String!
+      endCursor: String! @shareable
     }
 
     """
@@ -30438,7 +31206,7 @@ async fn table_with_commented_foreign_key() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
       """
       The value of the userId field
       """
@@ -30454,11 +31222,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: PostFkCommentReturning
+      returning: PostFkCommentReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30470,11 +31238,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [PostFkCommentReturning]!
+      returning: [PostFkCommentReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30486,11 +31254,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: PostFkCommentReturning
+      returning: PostFkCommentReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30502,11 +31270,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [PostFkCommentReturning]!
+      returning: [PostFkCommentReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30518,11 +31286,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: PostFkCommentReturning
+      returning: PostFkCommentReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30534,11 +31302,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [PostFkCommentReturning]!
+      returning: [PostFkCommentReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30548,11 +31316,11 @@ async fn table_with_commented_foreign_key() {
       """
       The item at the end of the edge
       """
-      node: PostFkComment!
+      node: PostFkComment! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -30564,11 +31332,11 @@ async fn table_with_commented_foreign_key() {
       """
       A list of edges
       """
-      edges: [PostFkCommentEdge!]!
+      edges: [PostFkCommentEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     """
@@ -30580,7 +31348,7 @@ async fn table_with_commented_foreign_key() {
       """
       The value of the id field
       """
-      id: Int!
+      id: Int! @shareable
     }
 
     """
@@ -30592,11 +31360,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserFkCommentReturning
+      returning: UserFkCommentReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30608,11 +31376,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserFkCommentReturning]!
+      returning: [UserFkCommentReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30624,11 +31392,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserFkCommentReturning
+      returning: UserFkCommentReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30640,11 +31408,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserFkCommentReturning]!
+      returning: [UserFkCommentReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30656,11 +31424,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: UserFkCommentReturning
+      returning: UserFkCommentReturning @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30672,11 +31440,11 @@ async fn table_with_commented_foreign_key() {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserFkCommentReturning]!
+      returning: [UserFkCommentReturning]! @shareable
       """
       The number of rows mutated
       """
-      rowCount: Int!
+      rowCount: Int! @shareable
     }
 
     """
@@ -30686,11 +31454,11 @@ async fn table_with_commented_foreign_key() {
       """
       The item at the end of the edge
       """
-      node: UserFkComment!
+      node: UserFkComment! @shareable
       """
       A cursor for use in pagination
       """
-      cursor: String!
+      cursor: String! @shareable
     }
 
     """
@@ -30702,14 +31470,15 @@ async fn table_with_commented_foreign_key() {
       """
       A list of edges
       """
-      edges: [UserFkCommentEdge!]!
+      edges: [UserFkCommentEdge!]! @shareable
       """
       Information to aid in pagination
       """
-      pageInfo: PageInfo!
+      pageInfo: PageInfo! @shareable
     }
 
     type PostFkComment
+      @key(fields: "id")
       @pgTable(name: "Post_fk_comment")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -30722,6 +31491,7 @@ async fn table_with_commented_foreign_key() {
     }
 
     type UserFkComment
+      @key(fields: "id")
       @pgTable(name: "User_fk_comment")
       @pgKey(fields: ["id"], type: PRIMARY)
     {
@@ -30797,6 +31567,15 @@ async fn table_with_commented_foreign_key() {
         orderBy: [PostFkCommentOrderByInput!],
       ): PostFkCommentConnection! @pgSelectMany
       """
+      Lookup multiple postFkComments for subgraph joins
+      """
+      postFkCommentLookup(
+        """
+        Filter postFkComments with an array of keys
+        """
+        lookup: PostFkCommentManyLookupInput @inaccessible,
+      ): [PostFkComment]! @pgLookup @lookup @inaccessible
+      """
       Query a unique UserFkComment
       """
       userFkComment(
@@ -30834,6 +31613,15 @@ async fn table_with_commented_foreign_key() {
         """
         orderBy: [UserFkCommentOrderByInput!],
       ): UserFkCommentConnection! @pgSelectMany
+      """
+      Lookup multiple userFkComments for subgraph joins
+      """
+      userFkCommentLookup(
+        """
+        Filter userFkComments with an array of keys
+        """
+        lookup: UserFkCommentManyLookupInput @inaccessible,
+      ): [UserFkComment]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
