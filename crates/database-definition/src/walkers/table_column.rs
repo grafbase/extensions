@@ -104,6 +104,13 @@ impl<'a> TableColumnWalker<'a> {
         !matches!(self.identity_generation(), Some(IdentityGeneration::Always))
     }
 
+    /// True, if the column is part of any key in the table (primary, unique, foreign).
+    pub fn is_part_of_a_key(self) -> bool {
+        self.table()
+            .keys()
+            .any(|k| k.columns().any(|c| c.table_column().id() == self.id()))
+    }
+
     fn identity_generation(self) -> Option<IdentityGeneration> {
         self.get().identity_generation()
     }

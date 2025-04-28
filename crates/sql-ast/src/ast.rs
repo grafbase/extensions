@@ -1,5 +1,6 @@
 //! An abstract syntax tree for SQL queries.
 
+mod alias;
 mod case;
 mod column;
 mod common_table_expression;
@@ -22,6 +23,7 @@ mod table;
 mod update;
 mod values;
 
+pub use alias::*;
 pub use case::Case;
 pub use column::Column;
 pub use common_table_expression::CommonTableExpression;

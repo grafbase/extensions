@@ -4,6 +4,7 @@ use crate::ast::{Expression, Function, FunctionType};
 #[derive(Debug, Clone, PartialEq)]
 pub struct Unnest<'a> {
     pub(crate) expression: Box<Expression<'a>>,
+    pub(crate) with_ordinality: bool,
 }
 
 /// Creates an `UNNEST` function call.
@@ -12,12 +13,13 @@ pub struct Unnest<'a> {
 /// single column, and maps are unnested into two columns (key, value).
 /// Used mainly in PostgreSQL, but some other databases might support standard
 /// compliant `UNNEST` or similar functions.
-pub fn unnest<'a, E>(expression: E) -> Function<'a>
+pub fn unnest<'a, E>(expression: E, with_ordinality: bool) -> Function<'a>
 where
     E: Into<Expression<'a>>,
 {
     let fun = Unnest {
         expression: Box::new(expression.into()),
+        with_ordinality,
     };
 
     fun.into()

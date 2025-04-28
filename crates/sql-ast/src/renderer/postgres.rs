@@ -4,9 +4,9 @@ use std::{borrow::Cow, fmt::Write};
 use grafbase_sdk::host_io::postgres::{self as sdk, types::DatabaseType};
 
 use crate::ast::{
-    self, Average, Column, CommonTableExpression, Compare, Concat, ConditionTree, Delete, Encode, EncodeFormat,
-    Expression, ExpressionKind, Function, FunctionType, Grouping, Insert, Join, JoinData, JsonBuildObject, JsonCompare,
-    JsonExtract, JsonExtractFirstArrayElem, JsonExtractLastArrayElem, JsonType, JsonUnquote, JsonbAgg, OnConflict,
+    self, Alias, Average, Column, CommonTableExpression, Compare, Concat, ConditionTree, Delete, Encode, EncodeFormat,
+    Expression, ExpressionKind, Function, FunctionType, Grouping, Insert, Join, JoinData, JsonAgg, JsonBuildObject,
+    JsonCompare, JsonExtract, JsonExtractFirstArrayElem, JsonExtractLastArrayElem, JsonType, JsonUnquote, OnConflict,
     Order, Ordering, ParameterizedValue, Query, Row, Select, SqlOp, Table, TableType, ToJsonb, Update, Values,
 };
 
@@ -447,8 +447,8 @@ impl Renderer {
         self.write(")");
     }
 
-    fn visit_jsonb_agg(&mut self, json_agg: JsonbAgg<'_>) {
-        self.write("jsonb_agg(");
+    fn visit_json_agg(&mut self, json_agg: JsonAgg<'_>) {
+        self.write("json_agg(");
 
         if json_agg.distinct {
             self.write("DISTINCT ");
@@ -583,14 +583,14 @@ impl Renderer {
                     match &table.typ {
                         TableType::Query(_) | TableType::Values(_) => match table.alias {
                             Some(ref alias) => {
-                                self.surround_with(C_BACKTICK_OPEN, C_BACKTICK_CLOSE, |ref mut s| s.write(alias));
+                                self.surround_with(C_BACKTICK_OPEN, C_BACKTICK_CLOSE, |ref mut s| s.write(&alias.name));
                                 self.write(".*");
                             }
                             None => self.write("*"),
                         },
                         TableType::Table(_) => match table.alias.clone() {
                             Some(ref alias) => {
-                                self.surround_with(C_BACKTICK_OPEN, C_BACKTICK_CLOSE, |ref mut s| s.write(alias));
+                                self.surround_with(C_BACKTICK_OPEN, C_BACKTICK_CLOSE, |ref mut s| s.write(&alias.name));
                                 self.write(".*");
                             }
                             None => {
@@ -600,7 +600,7 @@ impl Renderer {
                         },
                         TableType::JoinedTable(jt) => match table.alias.clone() {
                             Some(ref alias) => {
-                                self.surround_with(C_BACKTICK_OPEN, C_BACKTICK_CLOSE, |ref mut s| s.write(alias));
+                                self.surround_with(C_BACKTICK_OPEN, C_BACKTICK_CLOSE, |ref mut s| s.write(&alias.name));
                                 self.write(".*");
                             }
                             None => {
@@ -725,10 +725,10 @@ impl Renderer {
 
     /// A helper for delimiting an identifier, surrounding every part with `C_BACKTICK`
     /// and delimiting the values with a `.`
-    fn delimited_identifiers(&mut self, parts: &[&str]) {
+    fn delimited_identifiers<'a>(&mut self, parts: impl ExactSizeIterator<Item = &'a str>) {
         let len = parts.len();
 
-        for (i, part) in parts.iter().enumerate() {
+        for (i, part) in parts.enumerate() {
             self.surround_with_backticks(part);
 
             if i < (len - 1) {
@@ -818,6 +818,17 @@ impl Renderer {
             ExpressionKind::ConditionTree(tree) => self.visit_conditions(tree),
             ExpressionKind::Compare(compare) => self.visit_compare(compare),
             ExpressionKind::Parameterized(val) => self.substitute_value(val),
+            ExpressionKind::ManyParameterized(vals) => {
+                let length = vals.len();
+
+                for (i, val) in vals.into_iter().enumerate() {
+                    self.substitute_value(val);
+
+                    if i < length - 1 {
+                        self.write(", ");
+                    }
+                }
+            }
             ExpressionKind::Column(column) => self.visit_column(*column),
             ExpressionKind::Row(row) => self.visit_row(row),
             ExpressionKind::Selection(selection) => {
@@ -839,9 +850,7 @@ impl Renderer {
         }
 
         if let Some(alias) = value.alias {
-            self.write(" AS ");
-
-            self.delimited_identifiers(&[&*alias]);
+            self.visit_alias(alias);
         };
     }
 
@@ -868,15 +877,15 @@ impl Renderer {
     fn visit_table(&mut self, table: Table<'_>, include_alias: bool) {
         match table.typ {
             TableType::Table(table_name) => match table.database {
-                Some(database) => self.delimited_identifiers(&[&*database, &*table_name]),
-                None => self.delimited_identifiers(&[&*table_name]),
+                Some(database) => self.delimited_identifiers([&*database, &*table_name].into_iter()),
+                None => self.delimited_identifiers([&*table_name].into_iter()),
             },
             TableType::Values(values) => self.visit_values(values),
             TableType::Query(select) => self.surround_with("(", ")", |ref mut s| s.visit_select(*select)),
             TableType::JoinedTable(jt) => {
                 match table.database {
-                    Some(database) => self.delimited_identifiers(&[&*database, &*jt.0]),
-                    None => self.delimited_identifiers(&[&*jt.0]),
+                    Some(database) => self.delimited_identifiers([&*database, &*jt.0].into_iter()),
+                    None => self.delimited_identifiers([&*jt.0].into_iter()),
                 }
                 self.visit_joins(jt.1)
             }
@@ -887,9 +896,7 @@ impl Renderer {
 
         if include_alias {
             if let Some(alias) = table.alias {
-                self.write(" AS ");
-
-                self.delimited_identifiers(&[&*alias]);
+                self.visit_alias(alias);
             };
         }
     }
@@ -900,14 +907,13 @@ impl Renderer {
             Some(table) => {
                 self.visit_table(table, false);
                 self.write(".");
-                self.delimited_identifiers(&[&*column.name]);
+                self.delimited_identifiers([&*column.name].into_iter());
             }
-            _ => self.delimited_identifiers(&[&*column.name]),
+            _ => self.delimited_identifiers([&*column.name].into_iter()),
         };
 
         if let Some(alias) = column.alias {
-            self.write(" AS ");
-            self.delimited_identifiers(&[&*alias]);
+            self.visit_alias(alias);
         }
     }
 
@@ -1304,8 +1310,16 @@ impl Renderer {
             FunctionType::JsonUnquote(unquote) => {
                 self.visit_json_unquote(unquote);
             }
+            FunctionType::ArrayPosition(pos) => {
+                self.write("ARRAY_POSITION");
+                self.surround_with("(", ")", |s| {
+                    s.visit_expression(pos.array);
+                    s.write(",");
+                    s.visit_expression(pos.column);
+                });
+            }
             FunctionType::ToJsonb(to_jsonb) => self.visit_to_jsonb(to_jsonb),
-            FunctionType::JsonbAgg(json_agg) => self.visit_jsonb_agg(json_agg),
+            FunctionType::JsonAgg(json_agg) => self.visit_json_agg(json_agg),
             FunctionType::Encode(encode) => self.visit_encode(encode),
             FunctionType::JsonBuildObject(encode) => self.visit_json_build_object(encode),
             FunctionType::Unnest(unnest) => self.visit_unnest(unnest),
@@ -1315,8 +1329,28 @@ impl Renderer {
         };
 
         if let Some(alias) = fun.alias {
-            self.write(" AS ");
-            self.delimited_identifiers(&[&*alias]);
+            self.visit_alias(alias);
+        }
+    }
+
+    fn visit_alias(&mut self, alias: Alias<'_>) {
+        self.write(" AS ");
+
+        self.surround_with("\"", "\"", |t| {
+            t.write(alias.name);
+        });
+
+        if !alias.columns.is_empty() {
+            self.surround_with("(", ")", |t| {
+                let len = alias.columns.len();
+                for (i, column) in alias.columns.into_iter().enumerate() {
+                    t.visit_column(column);
+
+                    if i < len - 1 {
+                        t.write(",");
+                    }
+                }
+            });
         }
     }
 
@@ -1341,5 +1375,9 @@ impl Renderer {
         self.surround_with("(", ")", |s| {
             s.visit_expression(*unnest.expression);
         });
+
+        if unnest.with_ordinality {
+            self.write(" WITH ORDINALITY");
+        }
     }
 }

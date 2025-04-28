@@ -74,8 +74,6 @@ async fn two_identity_always() {
         }
     "};
 
-    println!("{mutation}");
-
     let response = runner
         .graphql_query::<serde_json::Value>(mutation)
         .send()

@@ -58,6 +58,7 @@ pub struct Argument<'a> {
     name: Cow<'a, str>,
     value: ArgumentValue<'a>,
     description: Option<Cow<'a, str>>,
+    directives: Vec<Directive<'a>>,
 }
 
 impl<'a> Argument<'a> {
@@ -66,6 +67,7 @@ impl<'a> Argument<'a> {
             name: name.into(),
             value,
             description: None,
+            directives: Vec::new(),
         }
     }
 
@@ -81,6 +83,10 @@ impl<'a> Argument<'a> {
         self.description = Some(description.into());
     }
 
+    pub fn push_directive(&mut self, directive: Directive<'a>) {
+        self.directives.push(directive);
+    }
+
     pub fn has_description(&self) -> bool {
         self.description.is_some()
     }
@@ -93,7 +99,14 @@ impl fmt::Display for Argument<'_> {
             writeln!(f, "{description}")?;
             writeln!(f, r#"""""#)?;
         }
-        write!(f, "{}: {}", self.name, self.value)
+
+        write!(f, "{}: {}", self.name, self.value)?;
+
+        for directive in &self.directives {
+            write!(f, " {}", directive)?;
+        }
+
+        Ok(())
     }
 }
 

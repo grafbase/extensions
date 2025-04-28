@@ -44,6 +44,7 @@ pub async fn introspect(conn: &mut sqlx::PgConnection, opts: IntrospectionOption
         database_definition,
         opts.extension_url,
         opts.default_schema,
+        opts.database_name,
     ))
 }
 

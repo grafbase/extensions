@@ -1,4 +1,4 @@
-use super::Aliasable;
+use super::{Alias, Aliasable};
 use crate::ast::{Expression, ExpressionKind, Table};
 use std::borrow::Cow;
 
@@ -7,7 +7,7 @@ use std::borrow::Cow;
 pub struct Column<'a> {
     pub name: Cow<'a, str>,
     pub(crate) table: Option<Table<'a>>,
-    pub(crate) alias: Option<Cow<'a, str>>,
+    pub(crate) alias: Option<Alias<'a>>,
 }
 
 /// Defines a default value for a `Column`.
@@ -53,7 +53,7 @@ impl<'a> Aliasable<'a> for Column<'a> {
 
     fn alias<T>(mut self, alias: T) -> Self::Target
     where
-        T: Into<Cow<'a, str>>,
+        T: Into<Alias<'a>>,
     {
         self.alias = Some(alias.into());
         self

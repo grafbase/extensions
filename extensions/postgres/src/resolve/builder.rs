@@ -2,6 +2,7 @@ use std::borrow::Cow;
 
 use crate::context::{
     filter::FilterIterator,
+    order::LookupOrderIterator,
     selection_iterator::{SelectionIterator, collection_args::CollectionArgs},
 };
 use grafbase_database_definition::{RelationWalker, TableWalker};
@@ -15,6 +16,7 @@ pub struct SelectBuilder<'a> {
     collection_args: Option<CollectionArgs>,
     field_name: Cow<'static, str>,
     relation: Option<RelationWalker<'a>>,
+    lookup_order: Option<LookupOrderIterator<'a>>,
 }
 
 impl<'a> SelectBuilder<'a> {
@@ -32,6 +34,7 @@ impl<'a> SelectBuilder<'a> {
             collection_args: None,
             field_name: field_name.into(),
             relation: None,
+            lookup_order: None,
         }
     }
 
@@ -52,6 +55,11 @@ impl<'a> SelectBuilder<'a> {
         self.relation = Some(relation);
     }
 
+    /// Sets the order of an entity lookup.
+    pub fn set_lookup_order(&mut self, lookup: LookupOrderIterator<'a>) {
+        self.lookup_order = Some(lookup);
+    }
+
     /// The name of the table we're selecting from.
     pub fn table(&self) -> TableWalker<'a> {
         self.table
@@ -64,7 +72,7 @@ impl<'a> SelectBuilder<'a> {
 
     /// How we name the result of this query. Set to `root` if generating the main query,
     /// and to the name of the relation field if creating a select for a join.
-    pub fn field_name(&self) -> &str {
+    pub fn field_name(&'a self) -> &'a str {
         &self.field_name
     }
 
@@ -76,6 +84,11 @@ impl<'a> SelectBuilder<'a> {
     /// The `WHERE` statement for this select.
     pub fn filter(&self) -> Option<FilterIterator<'a>> {
         self.filter.clone()
+    }
+
+    /// The order of an entity lookup, if set.
+    pub fn lookup_order(&self) -> Option<LookupOrderIterator<'a>> {
+        self.lookup_order.clone()
     }
 
     /// If selecting for a join, this should have the definition of the relation we're

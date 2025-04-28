@@ -5,13 +5,14 @@ mod delete_one;
 mod find_many;
 mod find_one;
 mod introspection;
+mod lookup_many;
 mod update_many;
 mod update_one;
 
 use std::{cell::RefCell, fmt::Display, path::Path, sync::Arc};
 
 use grafbase_postgres_introspection::IntrospectionOptions;
-use grafbase_sdk::test::{DynamicSchema, TestConfig, TestRunner};
+use grafbase_sdk::test::{DynamicSchema, DynamicSubgraph, TestConfig, TestRunner};
 use indoc::formatdoc;
 use names::{Generator, Name};
 use sqlx::PgPool;
@@ -47,6 +48,7 @@ static BASE_CONNECTION_STRING: &str = "postgres://postgres:grafbase@localhost:54
 struct Inner {
     pool: PgPool,
     config: String,
+    subgraphs: Vec<DynamicSubgraph>,
 }
 
 #[derive(Clone)]
@@ -56,6 +58,14 @@ struct PgTestApi {
 
 impl PgTestApi {
     async fn new<F, U>(config: impl Display, init: F) -> Self
+    where
+        F: FnOnce(PgTestApi) -> U,
+        U: Future<Output = ()>,
+    {
+        Self::new_with_subgraphs(config, Vec::new(), init).await
+    }
+
+    async fn new_with_subgraphs<F, U>(config: impl Display, subgraphs: Vec<DynamicSubgraph>, init: F) -> Self
     where
         F: FnOnce(PgTestApi) -> U,
         U: Future<Output = ()>,
@@ -88,7 +98,13 @@ impl PgTestApi {
         "#};
 
         let pool = PgPool::connect(&database_url).await.unwrap();
-        let inner = Arc::new(Inner { pool, config });
+
+        let inner = Arc::new(Inner {
+            pool,
+            config,
+            subgraphs,
+        });
+
         let this = Self { inner };
 
         init(this.clone()).await;
@@ -99,11 +115,16 @@ impl PgTestApi {
     async fn runner_spawn(&self) -> TestRunner {
         let extension_path = std::env::current_dir().unwrap().join("build");
         let schema = self.introspect_local_extension(&extension_path).await;
+
         let schema = DynamicSchema::builder(schema)
             .into_extension_only_subgraph("test", &extension_path)
             .unwrap();
 
         let mut config = TestConfig::builder().with_subgraph(schema);
+
+        for subgraph in &self.inner.subgraphs {
+            config = config.with_subgraph(subgraph.clone());
+        }
 
         if std::env::var("PREBUILT_EXTENSION").is_ok() {
             config = config.with_extension("./build");
@@ -114,7 +135,7 @@ impl PgTestApi {
             .enable_stderr()
             .enable_stdout()
             .enable_environment_variables()
-            .log_level(grafbase_sdk::test::LogLevel::WasiDebug)
+            .log_level(grafbase_sdk::test::LogLevel::EngineDebug)
             .build(&self.inner.config)
             .unwrap();
 
@@ -132,7 +153,7 @@ impl PgTestApi {
             &mut conn,
             IntrospectionOptions {
                 database_name: "default",
-                extension_url: "https://grafbase.com/extensions/postgres/0.1.0",
+                extension_url: "https://grafbase.com/extensions/postgres/0.1.1",
                 default_schema: "public",
             },
         )

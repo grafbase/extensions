@@ -431,7 +431,7 @@ async fn eq_two_fields() {
 
     let mutation = indoc! {r#"
         mutation {
-          userDeleteMany(filter: { name: { eq: "Musti" }, age: { eq: 12 } }) {
+          userDeleteMany(filter: { ALL: [ { name: { eq: "Musti" } }, { age: { eq: 12 } } ] }) {
             returning { id name age }
           }
         }

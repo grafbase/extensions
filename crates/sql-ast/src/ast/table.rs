@@ -1,16 +1,6 @@
-use super::{ExpressionKind, Join, JoinData};
+use super::{Alias, Aliasable, ExpressionKind, Join, JoinData};
 use crate::ast::{Expression, Select, Values};
 use std::borrow::Cow;
-
-/// An object that can be aliased.
-pub trait Aliasable<'a> {
-    type Target;
-
-    /// Alias table for usage elsewhere in the query.
-    fn alias<T>(self, alias: T) -> Self::Target
-    where
-        T: Into<Cow<'a, str>>;
-}
 
 #[derive(Clone, Debug, PartialEq)]
 /// Either an identifier or a nested query.
@@ -26,7 +16,7 @@ pub enum TableType<'a> {
 #[derive(Clone, Debug)]
 pub struct Table<'a> {
     pub typ: TableType<'a>,
-    pub alias: Option<Cow<'a, str>>,
+    pub alias: Option<Alias<'a>>,
     pub database: Option<Cow<'a, str>>,
 }
 
@@ -255,7 +245,7 @@ impl<'a> Aliasable<'a> for Table<'a> {
 
     fn alias<T>(mut self, alias: T) -> Self::Target
     where
-        T: Into<Cow<'a, str>>,
+        T: Into<Alias<'a>>,
     {
         self.alias = Some(alias.into());
         self

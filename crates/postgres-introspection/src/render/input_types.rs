@@ -39,20 +39,26 @@ const ARRAYS: &[(&str, &str)] = &[
 
 static NUMERIC_SCALARS: &[&str] = &["BigInt", "Float", "Decimal", "Int"];
 
-pub fn render<'a>(database_definition: &'a DatabaseDefinition, rendered: &mut Schema<'a>) {
+pub fn render<'a>(database_definition: &'a DatabaseDefinition, prefix: Option<&str>, rendered: &mut Schema<'a>) {
     render_scalar_inputs(database_definition, rendered);
 
     for table in database_definition.tables().filter(|t| t.allowed_in_client()) {
         render_order_input(rendered, table);
-        render_fetch_input(rendered, table);
+        render_lookup_input(rendered, table);
+        render_many_lookup_input(rendered, table);
         render_filter_input(rendered, table);
-        render_create_input(rendered, table);
-        render_update_input(rendered, table);
+        render_create_input(rendered, prefix, table);
+        render_update_input(rendered, prefix, table);
     }
 }
 
-fn render_update_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
-    let mut mutation_input = InputType::new(format!("{}UpdateInput", table.client_name()));
+fn render_update_input<'a>(rendered: &mut Schema<'a>, prefix: Option<&str>, table: TableWalker<'a>) {
+    let type_name = match prefix {
+        Some(prefix) => format!("{}_{}_UpdateInput", prefix, table.client_name()).to_pascal_case(),
+        None => format!("{}UpdateInput", table.client_name()),
+    };
+
+    let mut mutation_input = InputType::new(type_name);
     mutation_input.set_description(format!("Input for updating an existing {}", table.client_name()));
 
     for column in table.columns() {
@@ -76,8 +82,12 @@ fn render_update_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
     rendered.push_input(mutation_input);
 }
 
-fn render_create_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
-    let type_name = format!("{}CreateInput", table.client_name());
+fn render_create_input<'a>(rendered: &mut Schema<'a>, prefix: Option<&str>, table: TableWalker<'a>) {
+    let type_name = match prefix {
+        Some(prefix) => format!("{}_{}_CreateInput", prefix, table.client_name()).to_pascal_case(),
+        None => format!("{}CreateInput", table.client_name()),
+    };
+
     let mut mutation_input = InputType::new(type_name);
 
     mutation_input.set_description(format!("Input for creating a new {}", table.client_name()));
@@ -109,12 +119,70 @@ fn render_create_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
     rendered.push_input(mutation_input);
 }
 
+fn render_many_lookup_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
+    let type_name = format!("{}ManyLookupInput", table.client_name());
+    let mut input = InputType::new(type_name.clone());
+
+    input.push_directive(Directive::new("oneOf"));
+    input.push_directive(Directive::new("inaccessible"));
+
+    input.set_description(format!(
+        "Lookup input type for {} objects for subgraph joins.",
+        table.client_name()
+    ));
+
+    for key in table.keys() {
+        if key.columns().count() == 1 {
+            let column = key.columns().next().unwrap().table_column();
+
+            input.push_field({
+                let type_name = column.client_base_type().unwrap();
+                let mut field = Field::new(column.client_name(), format!("[{}!]", type_name));
+
+                field.push_directive(Directive::new("inaccessible"));
+                field.set_description(format!("Select by the '{}' field", column.client_name()));
+
+                field
+            });
+        } else {
+            let type_name = format!(
+                "{}_{}_Input",
+                table.client_name(),
+                key.columns().map(|c| c.table_column().client_name()).join("_")
+            )
+            .to_pascal_case();
+
+            let type_name = format!("[{}!]", type_name);
+
+            input.push_field({
+                let field_name = key
+                    .columns()
+                    .map(|c| c.table_column().client_name())
+                    .join("_")
+                    .to_camel_case();
+
+                let mut field = Field::new(field_name, type_name);
+                field.push_directive(Directive::new("inaccessible"));
+
+                field.set_description(format!(
+                    "Select {} by composite columns '{}'",
+                    table.client_name(),
+                    key.columns().map(|c| c.table_column().client_name()).join(", ")
+                ));
+
+                field
+            });
+        }
+    }
+
+    rendered.push_input(input);
+}
+
 fn render_filter_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
-    let type_name = format!("{}FilterInput", table.client_name());
-    let mut filter_input = InputType::new(type_name.clone());
+    let filter_name = format!("{}FilterInput", table.client_name());
+    let mut filter_input = InputType::new(filter_name.clone());
 
     filter_input.set_description(format!("Filter input type for {} objects.", table.client_name()));
-
     filter_input.push_directive(Directive::new("oneOf"));
 
     for column in table.columns() {
@@ -138,7 +206,7 @@ fn render_filter_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
     collection_input.set_description(format!("Filter input type for {} collections", table.client_name()));
 
     collection_input.push_field({
-        let mut field = Field::new("contains", type_name.clone());
+        let mut field = Field::new("contains", filter_name.clone());
         field.set_description("The object is related to an object with the given fields");
         field
     });
@@ -183,7 +251,7 @@ fn render_filter_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
         ("ANY", "At least one of the filters must match"),
     ] {
         filter_input.push_field({
-            let mut field = Field::new(*op, format!("[{}]", type_name.clone()));
+            let mut field = Field::new(*op, format!("[{}]", filter_name.clone()));
             field.set_description(*desc);
             field
         });
@@ -192,8 +260,10 @@ fn render_filter_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
     rendered.push_input(filter_input);
 }
 
-fn render_fetch_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
-    let mut filter_input = InputType::new(format!("{}LookupInput", table.client_name()));
+fn render_lookup_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
+    let lookup_name = format!("{}LookupInput", table.client_name());
+
+    let mut filter_input = InputType::new(lookup_name);
     filter_input.set_description(format!("Input type to select a unique {}", table.client_name()));
 
     filter_input.push_directive(Directive::new("oneOf"));

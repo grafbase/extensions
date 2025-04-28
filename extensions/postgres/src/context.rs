@@ -1,10 +1,13 @@
 pub mod create_input;
 pub mod filter;
+pub mod order;
 pub mod selection_iterator;
 pub mod update_input;
 
+use std::collections::HashMap;
+
 use create_input::{CreateInputIterator, CreateInputParameters, CreateManyInputParameters};
-use filter::{FilterIterator, MultipleFilterIterator, UniqueFilterIterator};
+use filter::{FilterIterator, LookupFilterIterator, MultipleFilterIterator, UniqueFilterIterator};
 use grafbase_database_definition::{
     DatabaseDefinition, DatabaseType, EnumWalker, Operation, TableColumnWalker, TableWalker,
 };
@@ -16,8 +19,9 @@ use grafbase_sdk::{
     },
     types::{ArgumentValues, Field},
 };
+use order::LookupOrderIterator;
 use selection_iterator::SelectionIterator;
-use serde_json::Value;
+use serde_json::{Map, Value};
 use update_input::UpdateInputIterator;
 
 #[derive(Clone, Copy)]
@@ -29,13 +33,18 @@ pub struct Context<'a> {
     pub(super) field: Field<'a>,
 }
 
-#[derive(Debug, Clone, serde::Deserialize)]
-struct Filter {
-    filter: Option<serde_json::Map<String, Value>>,
+#[derive(serde::Deserialize, Debug, Clone)]
+#[serde(untagged)]
+enum InputManyFilter {
+    Filter {
+        filter: Map<String, serde_json::Value>,
+    },
+    Lookup {
+        lookup: HashMap<String, Vec<serde_json::Value>>,
+    },
 }
-
 #[derive(Debug, Clone, serde::Deserialize)]
-struct Lookup {
+struct FilterUnique {
     lookup: serde_json::Map<String, Value>,
 }
 
@@ -49,16 +58,15 @@ impl<'a> Context<'a> {
     }
 
     pub fn collection_selection(self, table: TableWalker<'a>) -> Result<SelectionIterator<'a>, SdkError> {
-        let field = self
-            .field
-            .selection_set()
-            .fields()
-            .find(|f| {
-                self.database_definition
-                    .get_name_for_field_definition(f.definition_id())
-                    == Some("edges")
-            })
-            .ok_or_else(|| SdkError::from("edges field not defined in selection"))?
+        let Some(edges) = self.field.selection_set().fields().find(|f| {
+            self.database_definition
+                .get_name_for_field_definition(f.definition_id())
+                == Some("edges")
+        }) else {
+            return SelectionIterator::new(self, table, self.field, self.field.selection_set());
+        };
+
+        let field = edges
             .selection_set()
             .fields()
             .find(|f| {
@@ -99,7 +107,7 @@ impl<'a> Context<'a> {
     }
 
     pub(crate) fn unique_filter(self, table: TableWalker<'a>) -> Result<FilterIterator<'a>, SdkError> {
-        let filter = self.field.arguments::<Lookup>(self.arguments)?;
+        let filter = self.field.arguments::<FilterUnique>(self.arguments)?;
         let iterator = UniqueFilterIterator::new(self, table, filter.lookup);
 
         Ok(FilterIterator::Unique(iterator))
@@ -127,17 +135,32 @@ impl<'a> Context<'a> {
         Ok(Some(iterator))
     }
 
-    /// A complex `user(filter: { id: { eq: 1 } })` filter.
+    /// A complex `user(filter: { id: { eq: 1 } })` filter, or a
+    /// lookup filter `user(lookup: { id: [1, 2, 3] })`.
     pub fn filter(&'a self, table: TableWalker<'a>) -> Result<FilterIterator<'a>, SdkError> {
-        let filter_map = self
-            .field
-            .arguments::<Filter>(self.arguments)?
-            .filter
-            .unwrap_or_default();
+        let filter = self.field.arguments::<InputManyFilter>(self.arguments)?;
 
-        let iterator = MultipleFilterIterator::new(self, table, filter_map);
+        match filter {
+            InputManyFilter::Filter { filter } => {
+                let iterator = MultipleFilterIterator::new(self, table, filter);
+                Ok(FilterIterator::Multiple(iterator))
+            }
+            InputManyFilter::Lookup { lookup } => {
+                let iterator = LookupFilterIterator::new(self, table, lookup);
+                Ok(FilterIterator::Lookup(iterator))
+            }
+        }
+    }
 
-        Ok(FilterIterator::Multiple(iterator))
+    /// Parses the `lookup` argument if present and creates a `LookupOrderIterator`
+    /// to preserve the order of results based on the input lookup values.
+    /// Returns `Ok(None)` if the `lookup` argument is not present or not the correct variant.
+    pub fn lookup_order(&self, table: TableWalker<'a>) -> Result<Option<LookupOrderIterator>, SdkError> {
+        let InputManyFilter::Lookup { lookup } = self.field.arguments::<InputManyFilter>(self.arguments)? else {
+            return Ok(None);
+        };
+
+        Ok(Some(LookupOrderIterator::new(self, table, lookup)))
     }
 }
 

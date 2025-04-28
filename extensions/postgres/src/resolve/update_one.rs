@@ -27,8 +27,6 @@ pub(crate) fn execute(ctx: Context<'_>, table_id: TableId) -> Result<Data, SdkEr
             None => serde_json::Value::Null,
         };
 
-        println!("{result}");
-
         let row_count = if result.is_null() { 0 } else { 1 };
 
         let data = serde_json::json!({
