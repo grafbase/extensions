@@ -36,9 +36,20 @@ url = "https://example.com/.well-known/jwks.json"
 
 # How long the JWKS will be cached, in seconds.
 poll_interval = 60
+
 # Header name from which to retrieve the JWT token.
-header_name = "Authorization"
+# header_name = "Authorization"
 # Header value prefix to remove before parsing the JWT token.
+# header_value_prefix = "Bearer "
+
+# Or use a Cookie name
+# cookie_name = "my-cookie"
+```
+
+If neither a header nor a cookie is specified, the extension will default to the following:
+
+```toml
+header_name = "Authorization"
 header_value_prefix = "Bearer "
 ```
 

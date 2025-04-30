@@ -169,6 +169,67 @@ async fn test_different_header_location() {
 }
 
 #[tokio::test]
+async fn test_cookie_name_location() {
+    let config = formatdoc! {r#"
+        [extensions.jwt.config]
+        url = "{JWKS_URI}"
+        cookie_name = "my_jwt"
+    "#};
+
+    let config = TestConfig::builder()
+        .with_subgraph(subgraph())
+        .enable_networking()
+        .build(config)
+        .unwrap();
+
+    let runner = TestRunner::new(config).await.unwrap();
+
+    let token = OryHydraOpenIDProvider::default()
+        .create_client()
+        .await
+        .get_access_token_with_client_credentials(&[])
+        .await;
+
+    let result: serde_json::Value = runner
+        .graphql_query("query { hi }")
+        .with_header(
+            "Cookie",
+            &format!("name=value; name2=value2; my_jwt={token}; name3=value3"),
+        )
+        .send()
+        .await
+        .unwrap();
+
+    insta::assert_json_snapshot!(result, @r#"
+    {
+      "data": {
+        "hi": "hello"
+      }
+    }
+    "#);
+
+    let result: serde_json::Value = runner
+        .graphql_query("query { hi }")
+        .with_header("Cookie", "name=value; name2=value2; name3=value3")
+        .send()
+        .await
+        .unwrap();
+
+    insta::assert_json_snapshot!(result, @r#"
+    {
+      "errors": [
+        {
+          "message": "Unauthorized",
+          "extensions": {
+            "code": "UNAUTHENTICATED"
+          }
+        }
+      ]
+    }
+    "#);
+}
+
+#[tokio::test]
 async fn test_tampered_jwt() {
     let config = TestConfig::builder()
         .with_subgraph(subgraph())
