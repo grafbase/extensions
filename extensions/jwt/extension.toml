@@ -1,8 +1,8 @@
 [extension]
 name = "jwt"
-version = "0.2.8"
+version = "1.0.0"
 kind = "authentication"
-description = "JWT authentication extension."
+description = "Restrict access to your graph with JWT"
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/jwt"
 license = "Apache-2.0"
 

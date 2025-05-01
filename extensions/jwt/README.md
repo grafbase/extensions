@@ -9,7 +9,7 @@ Add the following to your Grafbase Gateway configuration file:
 ```toml
 # grafbase.toml
 [extensions.jwt]
-version = "0.2"
+version = "1"
 ```
 
 Run the install command before starting the gateway
