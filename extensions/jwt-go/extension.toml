@@ -1,0 +1,10 @@
+[extension]
+name = "jwt"
+version = "1.0.0"
+kind = "authentication"
+description = "Restrict access to your graph with JWT (Go implementation)"
+repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/jwt-go"
+license = "Apache-2.0"
+
+[permissions]
+network = true

@@ -1,0 +1,30 @@
+# .gitignore file for jwt extension
+
+# Go specific ignores
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.sum
+
+# Output of the go coverage tool
+*.coverprofile
+
+# macOS specific ignores
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows specific ignores
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Extension specific ignores
+/build
+/dist
+.env
+*.wasm
