@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.9
+        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad # v0.0.9
 
       - name: Install Rust
         uses: ./.github/actions/install-rust
@@ -31,7 +31,7 @@ jobs:
           cargo fmt --check
 
       - name: Install Protoc for the gRPC extension
-        uses: arduino/setup-protoc@v3
+        uses: arduino/setup-protoc@f4d5893b897028ff5739576ea0409746887fa536 # v3
 
       - name: cargo clippy
         shell: bash
@@ -40,7 +40,7 @@ jobs:
         run: |
           cargo clippy --locked
 
-      - uses: uncenter/setup-taplo@v1
+      - uses: uncenter/setup-taplo@4f203fdb4f3b1e289c8382cf90d8397d2338df2e # v1.0.8
         with:
           version: "0.9.3"
 
@@ -81,7 +81,7 @@ jobs:
           cli-version: ${{ matrix.version.cli }}
 
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@ab3728c7ba6948b9b429627f4d55a68842b27f18 # v2
         with:
           tool: nextest
 
