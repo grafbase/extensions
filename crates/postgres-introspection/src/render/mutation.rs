@@ -12,12 +12,18 @@ pub fn render<'a>(database_definition: &'a DatabaseDefinition, prefix: Option<&s
     let mut mutation = Type::new("Mutation");
 
     for table in database_definition.tables().filter(|t| t.allowed_in_client()) {
+        if !table.mutations_allowed() {
+            continue;
+        }
+
         render_create_mutations(&mut mutation, prefix, table);
         render_update_mutations(&mut mutation, prefix, table);
         render_delete_mutations(&mut mutation, prefix, table);
     }
 
-    rendered.push_type(mutation);
+    if mutation.has_fields() {
+        rendered.push_type(mutation);
+    }
 }
 
 fn render_delete_mutations<'a>(mutation: &mut Type<'a>, prefix: Option<&str>, table: TableWalker<'a>) {

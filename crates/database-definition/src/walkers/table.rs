@@ -2,7 +2,7 @@ use super::{
     RelationWalker, Walker, forward_relation::ForwardRelationWalker, key::KeyWalker, table_column::TableColumnWalker,
 };
 use crate::{
-    KeyId, RelationId, StringId, Table, TableColumnId, TableId,
+    KeyId, RelationId, RelationKind, StringId, Table, TableColumnId, TableId,
     ids::{BackRelationId, ForwardRelationId},
 };
 
@@ -48,6 +48,13 @@ impl<'a> TableWalker<'a> {
     /// and at least one unique constraint that contains columns of supported type.
     pub fn allowed_in_client(self) -> bool {
         self.columns().next().is_some() && self.keys().next().is_some()
+    }
+
+    /// Check if mutations are allowed for this table. Mutations are typically
+    /// allowed only for standard tables (`RelationKind::Relation`), not views or
+    /// materialized views.
+    pub fn mutations_allowed(self) -> bool {
+        matches!(self.relation_kind(), RelationKind::Relation)
     }
 
     /// A special unique index that acts as the primary key of the column.
@@ -129,6 +136,11 @@ impl<'a> TableWalker<'a> {
     /// The description of the table, if any.
     pub fn description(self) -> Option<&'a str> {
         self.get().description().map(|id| self.get_name(id))
+    }
+
+    /// The kind of the relation: table, view, materialized view.
+    pub fn relation_kind(&self) -> RelationKind {
+        self.get().kind()
     }
 
     fn get(self) -> &'a Table<StringId> {

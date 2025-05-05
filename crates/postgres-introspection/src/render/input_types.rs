@@ -47,8 +47,11 @@ pub fn render<'a>(database_definition: &'a DatabaseDefinition, prefix: Option<&s
         render_lookup_input(rendered, table);
         render_many_lookup_input(rendered, table);
         render_filter_input(rendered, table);
-        render_create_input(rendered, prefix, table);
-        render_update_input(rendered, prefix, table);
+
+        if table.mutations_allowed() {
+            render_create_input(rendered, prefix, table);
+            render_update_input(rendered, prefix, table);
+        }
     }
 }
 

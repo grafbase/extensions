@@ -1,3 +1,5 @@
+mod views;
+
 use crate::PgTestApi;
 use indoc::indoc;
 
@@ -41,7 +43,8 @@ async fn table_with_generated_always_identity_primary_key() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -1577,7 +1580,8 @@ async fn table_with_generated_by_default_identity_primary_key() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -3119,7 +3123,8 @@ async fn table_with_serial_primary_key() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -4668,7 +4673,8 @@ async fn table_with_enum_field() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -6361,7 +6367,8 @@ async fn table_with_int_primary_key() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -7903,7 +7910,8 @@ async fn table_with_int_unique() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -9446,7 +9454,8 @@ async fn table_with_serial_primary_key_string_unique() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -11021,7 +11030,8 @@ async fn table_with_composite_primary_key() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -12608,7 +12618,8 @@ async fn two_schemas_same_table_name() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -14488,7 +14499,8 @@ async fn table_with_an_array_column() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -16052,7 +16064,8 @@ async fn table_with_jsonb_column() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -17616,7 +17629,8 @@ async fn table_with_json_column() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -19192,7 +19206,8 @@ async fn two_tables_with_single_column_foreign_key() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -21192,7 +21207,8 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -22757,7 +22773,8 @@ async fn issue_november_2023() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -25004,7 +25021,8 @@ async fn table_with_comment() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -26556,7 +26574,8 @@ async fn table_with_commented_column() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -28135,7 +28154,8 @@ async fn enum_with_comment() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(
@@ -29848,7 +29868,8 @@ async fn table_with_commented_foreign_key() {
           "@pgMutation",
           "@pgReturning",
           "PgKeyType",
-          "PgColumnType"
+          "PgColumnType",
+          "PgRelationType"
         ]
       )
       @link(

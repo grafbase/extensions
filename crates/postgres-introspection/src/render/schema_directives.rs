@@ -34,6 +34,7 @@ pub fn render<'a>(database_definition: &'a DatabaseDefinition, extension_url: &'
             ArgumentValue::String("@pgReturning".into()),
             ArgumentValue::String("PgKeyType".into()),
             ArgumentValue::String("PgColumnType".into()),
+            ArgumentValue::String("PgRelationType".into()),
         ];
 
         directive.push_argument(Argument::new(

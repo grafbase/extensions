@@ -1,13 +1,14 @@
+use anyhow::Context;
 use args::IntrospectCommand;
-use grafbase_postgres_introspection::IntrospectionOptions;
 use sqlx::{Connection, PgConnection};
 
 mod args;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> anyhow::Result<()> {
-    let args = args::parse();
+    dotenv::dotenv()?;
 
+    let args = args::parse();
     let mut conn = PgConnection::connect(&args.database_url).await?;
 
     match args.command {
@@ -20,18 +21,11 @@ async fn main() -> anyhow::Result<()> {
 }
 
 async fn introspect(conn: &mut PgConnection, cmd: IntrospectCommand) -> anyhow::Result<()> {
-    let opts = IntrospectionOptions {
-        database_name: &cmd.database_name,
-        extension_url: &cmd.extension_url(),
-        default_schema: &cmd.default_schema,
-    };
+    let config = std::fs::read_to_string(&cmd.config).context("could not read the configuration file")?;
+    let config = toml::from_str(&config)?;
+    let sdl = grafbase_postgres_introspection::introspect(conn, config).await?;
 
-    let sdl = grafbase_postgres_introspection::introspect(conn, opts).await?;
-
-    match cmd.output_file {
-        Some(path) => std::fs::write(path, sdl)?,
-        None => println!("{sdl}"),
-    }
+    println!("{sdl}");
 
     Ok(())
 }

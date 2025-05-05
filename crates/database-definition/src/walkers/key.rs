@@ -10,11 +10,6 @@ impl<'a> KeyWalker<'a> {
         self.walk(self.get().table_id())
     }
 
-    /// The constraint name.
-    pub fn name(self) -> &'a str {
-        self.get_name(self.get().name())
-    }
-
     /// The columns defining the unique value.
     pub fn columns(self) -> impl ExactSizeIterator<Item = KeyColumnWalker<'a>> + 'a {
         let range = super::range_for_key(&self.database_definition.key_columns, self.id, |column| column.key_id());

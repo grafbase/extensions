@@ -39,3 +39,4 @@ sqlx = { workspace = true, features = [
     "postgres",
 ] }
 tokio = { workspace = true, features = ["rt-multi-thread", "macros", "test-util"] }
+toml.workspace = true

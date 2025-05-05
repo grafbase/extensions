@@ -1,5 +1,6 @@
 mod joins;
 mod types;
+mod views;
 
 use indoc::indoc;
 

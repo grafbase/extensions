@@ -8,22 +8,20 @@ use super::ast::{
 
 pub fn render<'a>(database_definition: &'a DatabaseDefinition, default_schema: &'a str, rendered: &mut Schema<'a>) {
     rendered.push_enum({
-        {
-            let mut r#enum = Enum::new("OrderDirection");
-            r#enum.set_description("Specifies the direction for ordering results.");
+        let mut r#enum = Enum::new("OrderDirection");
+        r#enum.set_description("Specifies the direction for ordering results.");
 
-            for (variant, description) in [
-                ("ASC", "Specifies an ascending order for a given orderBy argument."),
-                ("DESC", "Specifies a descending order for a given orderBy argument."),
-            ] {
-                let mut variant = EnumVariant::new(variant);
-                variant.set_description(description);
+        for (variant, description) in [
+            ("ASC", "Specifies an ascending order for a given orderBy argument."),
+            ("DESC", "Specifies a descending order for a given orderBy argument."),
+        ] {
+            let mut variant = EnumVariant::new(variant);
+            variant.set_description(description);
 
-                r#enum.push_variant(variant);
-            }
-
-            r#enum
+            r#enum.push_variant(variant);
         }
+
+        r#enum
     });
 
     for r#enum in database_definition.enums() {

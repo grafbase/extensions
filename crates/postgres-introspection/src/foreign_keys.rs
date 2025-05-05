@@ -1,10 +1,26 @@
-use grafbase_database_definition::{DatabaseDefinition, ForeignKey, ForeignKeyColumn};
+use std::collections::HashMap;
+
+use anyhow::bail;
+use grafbase_database_definition::{DatabaseDefinition, ForeignKey, ForeignKeyColumn, SchemaId};
 use sqlx::{PgConnection, Row};
+
+use crate::config::{Config, RelationConfig};
 
 pub(crate) async fn introspect_database(
     conn: &mut PgConnection,
+    config: &Config,
     database_definition: &mut DatabaseDefinition,
 ) -> anyhow::Result<()> {
+    introspect_sql(conn, database_definition).await?;
+    introspect_overrides(config, database_definition)?;
+
+    Ok(())
+}
+
+async fn introspect_sql(
+    conn: &mut PgConnection,
+    database_definition: &mut DatabaseDefinition,
+) -> Result<(), anyhow::Error> {
     let query = indoc::indoc! {r#"
         SELECT "constraint".conname               AS constraint_name,           -- 0
                "constraint".schema                AS constrained_schema,        -- 1
@@ -107,6 +123,118 @@ pub(crate) async fn introspect_database(
 
         let column = ForeignKeyColumn::new(foreign_key_id, constrained_column_id, referenced_column_id);
         database_definition.push_foreign_key_column(column);
+    }
+
+    Ok(())
+}
+
+fn introspect_overrides(config: &Config, database_definition: &mut DatabaseDefinition) -> anyhow::Result<()> {
+    for (schema, schema_config) in &config.schemas {
+        let Some(constrained_schema_id) = database_definition.get_schema_id(schema) else {
+            bail!("Could not find {schema} schema from the database. Check your configuration.")
+        };
+
+        for (view_name, view_config) in &schema_config.views {
+            override_relations(
+                database_definition,
+                constrained_schema_id,
+                view_name,
+                &view_config.relations,
+            )?;
+        }
+
+        for (table_name, table_config) in &schema_config.tables {
+            override_relations(
+                database_definition,
+                constrained_schema_id,
+                table_name,
+                &table_config.relations,
+            )?;
+        }
+    }
+
+    Ok(())
+}
+
+fn override_relations(
+    database_definition: &mut DatabaseDefinition,
+    constrained_schema_id: SchemaId,
+    table_name: &str,
+    relations: &HashMap<String, RelationConfig>,
+) -> anyhow::Result<()> {
+    let Some(constrained_table_id) = database_definition.get_table_id(constrained_schema_id, table_name) else {
+        bail!("Table `{table_name}` not found in relation configuration.")
+    };
+
+    for (relation, relation_config) in relations.iter() {
+        let referenced_schema_id = match database_definition.get_schema_id(&relation_config.referenced_schema) {
+            Some(id) => id,
+            None => {
+                bail!(
+                    "Schema `{}` not found in relation configuration.",
+                    relation_config.referenced_schema
+                );
+            }
+        };
+
+        let referenced_table_id =
+            match database_definition.get_table_id(referenced_schema_id, &relation_config.referenced_table) {
+                Some(id) => id,
+                None => {
+                    bail!(
+                        "Table `{}` not found in relation configuration.",
+                        relation_config.referenced_table
+                    );
+                }
+            };
+
+        let mut column_ids = Vec::new();
+
+        for (constrained, referenced) in relation_config
+            .referencing_columns
+            .iter()
+            .zip(&relation_config.referenced_columns)
+        {
+            let constrained_column_id = match database_definition.get_table_column_id(constrained_table_id, constrained)
+            {
+                Some(id) => id,
+                None => {
+                    bail!(
+                        "Column `{}` not found in table `{}` in the relation configuration.",
+                        constrained,
+                        relation_config.referenced_table
+                    );
+                }
+            };
+
+            let referenced_column_id = match database_definition.get_table_column_id(referenced_table_id, referenced) {
+                Some(id) => id,
+                None => {
+                    bail!(
+                        "Column `{}` not found in table `{}` in the relation configuration.",
+                        referenced,
+                        relation_config.referenced_table
+                    );
+                }
+            };
+
+            column_ids.push((constrained_column_id, referenced_column_id));
+        }
+
+        let (foreign_key_id, _, _) = database_definition.push_foreign_key(ForeignKey::new(
+            relation.clone(),
+            constrained_schema_id,
+            constrained_table_id,
+            referenced_table_id,
+        ));
+
+        for (constrained_column_id, referenced_column_id) in column_ids {
+            database_definition.push_foreign_key_column(ForeignKeyColumn::new(
+                foreign_key_id,
+                constrained_column_id,
+                referenced_column_id,
+            ));
+        }
     }
 
     Ok(())

@@ -9,7 +9,27 @@ pub struct Table<T> {
     pub(super) client_name: T,
     pub(super) client_field_name: T,
     pub(super) client_field_name_plural: T,
+    pub(super) kind: RelationKind,
     pub(super) description: Option<T>,
+}
+
+#[derive(serde::Deserialize, Debug, Clone, Copy, Default, PartialEq)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum RelationKind {
+    #[default]
+    Relation,
+    View,
+    MaterializedView,
+}
+
+impl RelationKind {
+    pub fn client_name(self) -> &'static str {
+        match self {
+            RelationKind::Relation => "RELATION",
+            RelationKind::View => "VIEW",
+            RelationKind::MaterializedView => "MATERIALIZED_VIEW",
+        }
+    }
 }
 
 impl<T> Copy for Table<T> where T: Copy {}
@@ -34,10 +54,14 @@ impl<T> Table<T> {
     pub fn set_description(&mut self, description: T) {
         self.description = Some(description);
     }
+
+    pub(crate) fn kind(&self) -> RelationKind {
+        self.kind
+    }
 }
 
 impl Table<String> {
-    pub fn new(schema_id: SchemaId, database_name: String, client_name: Option<String>) -> Self {
+    pub fn new(schema_id: SchemaId, database_name: String, kind: RelationKind, client_name: Option<String>) -> Self {
         let client_name = client_name.unwrap_or_else(|| database_name.to_pascal_case().to_singular());
         let client_field_name = client_name.to_camel_case();
         let client_field_name_plural = client_field_name.to_plural();
@@ -48,6 +72,7 @@ impl Table<String> {
             client_name,
             client_field_name,
             client_field_name_plural,
+            kind,
             description: None,
         }
     }

@@ -1,4 +1,6 @@
-use grafbase_database_definition::{DatabaseDefinition, DatabaseType, RelationWalker, TableColumnWalker, TableWalker};
+use grafbase_database_definition::{
+    DatabaseDefinition, DatabaseType, RelationKind, RelationWalker, TableColumnWalker, TableWalker,
+};
 use itertools::Itertools;
 
 use super::ast::{
@@ -182,6 +184,10 @@ fn render_directives<'a>(render: &mut Type<'a>, default_schema: &str, table: Tab
 
         if table.schema() != default_schema {
             directive.push_argument(Argument::string("schema", table.schema()));
+        }
+
+        if table.relation_kind() != RelationKind::Relation {
+            directive.push_argument(Argument::constant("kind", table.relation_kind().client_name()));
         }
 
         directive

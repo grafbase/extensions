@@ -1,22 +1,14 @@
+use config::Config;
 use grafbase_database_definition::DatabaseDefinition;
 
 mod columns;
+pub mod config;
 mod enums;
 mod foreign_keys;
 mod keys;
 mod render;
 mod schemas;
 mod tables;
-
-/// Options for Postgres introspection.
-pub struct IntrospectionOptions<'a> {
-    /// Name of the database to introspect.
-    pub database_name: &'a str,
-    /// URL of the extension to use.
-    pub extension_url: &'a str,
-    /// Default schema to use and omit from the SDL output.
-    pub default_schema: &'a str,
-}
 
 /// Introspects a PostgreSQL database schema.
 ///
@@ -28,23 +20,23 @@ pub struct IntrospectionOptions<'a> {
 ///
 /// * `conn` - A mutable reference to an active PostgreSQL connection.
 /// * `opts` - Options for customizing the introspection process.
-pub async fn introspect(conn: &mut sqlx::PgConnection, opts: IntrospectionOptions<'_>) -> anyhow::Result<String> {
-    let mut database_definition = DatabaseDefinition::new(opts.database_name.to_string());
+pub async fn introspect(conn: &mut sqlx::PgConnection, config: Config) -> anyhow::Result<String> {
+    let mut database_definition = DatabaseDefinition::new(config.database_name.clone());
 
     schemas::introspect_database(conn, &mut database_definition).await?;
     enums::introspect_database(conn, &mut database_definition).await?;
     tables::introspect_database(conn, &mut database_definition).await?;
-    columns::introspect_database(conn, &mut database_definition).await?;
-    foreign_keys::introspect_database(conn, &mut database_definition).await?;
-    keys::introspect_database(conn, &mut database_definition).await?;
+    columns::introspect_database(conn, &config, &mut database_definition).await?;
+    foreign_keys::introspect_database(conn, &config, &mut database_definition).await?;
+    keys::introspect_database(conn, &config, &mut database_definition).await?;
 
     database_definition.finalize();
 
     Ok(render::to_sdl(
         database_definition,
-        opts.extension_url,
-        opts.default_schema,
-        opts.database_name,
+        &config.extension_url,
+        &config.default_schema,
+        &config.database_name,
     ))
 }
 

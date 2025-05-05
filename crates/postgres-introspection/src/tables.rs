@@ -1,4 +1,4 @@
-use grafbase_database_definition::{DatabaseDefinition, Table};
+use grafbase_database_definition::{DatabaseDefinition, RelationKind, Table};
 use sqlx::{PgConnection, Row};
 
 pub(crate) async fn introspect_database(
@@ -9,13 +9,19 @@ pub(crate) async fn introspect_database(
         SELECT
           pg_class.relname AS name,
           pg_namespace.nspname AS schema,
-          pg_description.description AS description
+          pg_description.description AS description,
+          pg_class.relkind AS relation_kind
         FROM pg_class
         INNER JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
         LEFT JOIN pg_description ON pg_description.objoid = pg_class.oid AND pg_description.objsubid = 0
-        WHERE pg_class.relkind = 'r' -- r = relation, e.g. a table
+        WHERE pg_class.relkind IN ('r', 'v', 'm')
         AND pg_namespace.nspname <> ALL ( $1 )
-        ORDER BY schema, name;
+        ORDER BY CASE pg_class.relkind
+            WHEN 'r' THEN 1
+            ELSE 2
+          END,
+          schema,
+          name;
     "#};
 
     let rows = sqlx::query(query)
@@ -28,7 +34,14 @@ pub(crate) async fn introspect_database(
             continue;
         };
 
-        let mut table = Table::<String>::new(schema_id, row.get(0), None);
+        let kind = match row.get::<i8, _>(3) as u8 as char {
+            'r' => RelationKind::Relation,
+            'v' => RelationKind::View,
+            'm' => RelationKind::MaterializedView,
+            _ => unreachable!(),
+        };
+
+        let mut table = Table::<String>::new(schema_id, row.get(0), kind, None);
 
         if let Some(description) = row.get(2) {
             table.set_description(description);

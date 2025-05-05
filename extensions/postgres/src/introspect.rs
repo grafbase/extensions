@@ -7,7 +7,7 @@ mod tables;
 
 use std::collections::HashMap;
 
-use grafbase_database_definition::{DatabaseDefinition, KeyType, ScalarKind};
+use grafbase_database_definition::{DatabaseDefinition, KeyType, RelationKind, ScalarKind};
 use grafbase_sdk::types::SubgraphSchema;
 
 #[derive(Debug, Clone, serde::Deserialize)]
@@ -21,6 +21,8 @@ pub struct PgDatabase {
 pub struct PgTable {
     pub name: String,
     pub schema: String,
+    #[serde(default)]
+    pub kind: RelationKind,
 }
 
 #[derive(Debug, Clone, serde::Deserialize)]
