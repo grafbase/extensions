@@ -18,9 +18,9 @@ Generally, every operation executed through the extension generates exactly one 
 
 ### Introspection Tool (`grafbase-postgres`)
 
-Currently, you must compile the `grafbase-postgres` introspection tool from source (refer to its [repository](https://github.com/grafbase/extensions/tree/main/cli/postgres) for instructions). After successful compilation, copy the resulting binary to a directory in your system's `PATH`.
+The extension provides a command-line tool for introspecting your Postgres database and generating a subgraph schema. Find the installation and usage instructions from the [repository](https://github.com/grafbase/extensions/tree/main/cli/postgres).
 
-*Future versions will offer easier installation, likely integrated with the Grafbase CLI.*
+The introspection tool is highly recommended for **automating schema generation**. It simplifies the process of creating a subgraph schema from your Postgres database.
 
 ### Building the Extension
 

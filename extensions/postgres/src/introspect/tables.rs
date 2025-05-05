@@ -23,7 +23,13 @@ pub(crate) fn introspect_sdl(schema: &SubgraphSchema<'_>, database_definition: &
             continue;
         };
 
-        let table = Table::<String>::new(schema_id, pg_table.name, Some(definition.name().to_string()));
+        let table = Table::<String>::new(
+            schema_id,
+            pg_table.name,
+            pg_table.kind,
+            Some(definition.name().to_string()),
+        );
+
         let table_id = database_definition.push_table(table);
 
         for field in definition.fields() {

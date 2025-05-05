@@ -1208,6 +1208,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "dotenv"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
+
+[[package]]
 name = "dotenvy"
 version = "0.15.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1737,12 +1743,13 @@ dependencies = [
 
 [[package]]
 name = "grafbase-postgres"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "Inflector",
  "anyhow",
  "chrono",
  "clap 4.5.37",
+ "dotenv",
  "grafbase-database-definition",
  "grafbase-postgres-introspection",
  "indexmap 2.9.0",
@@ -1753,6 +1760,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "tokio",
+ "toml",
  "url",
 ]
 
@@ -1766,6 +1774,7 @@ dependencies = [
  "indenter",
  "indoc",
  "itertools 0.14.0",
+ "serde",
  "sqlx",
 ]
 
@@ -3537,6 +3546,7 @@ dependencies = [
  "sql-ast",
  "sqlx",
  "tokio",
+ "toml",
  "tracing",
  "tracing-subscriber",
 ]

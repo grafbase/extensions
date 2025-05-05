@@ -12,9 +12,11 @@ pub fn render<'a>(database_definition: &'a DatabaseDefinition, rendered: &mut Sc
     render_page_info(rendered);
 
     for table in database_definition.tables().filter(|t| t.allowed_in_client()) {
-        let returning_type = render_returning_type(rendered, table);
+        if table.mutations_allowed() {
+            let returning_type = render_returning_type(rendered, table);
+            render_mutation_types(rendered, table, returning_type);
+        }
 
-        render_mutation_types(rendered, table, returning_type);
         render_edge(rendered, table);
         render_connection(rendered, table);
     }

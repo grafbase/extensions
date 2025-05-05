@@ -31,7 +31,7 @@ use interner::StringInterner;
 pub use key::{Key, KeyType};
 pub use key_column::KeyColumn;
 use relations::Relations;
-pub use table::Table;
+pub use table::{RelationKind, Table};
 pub use table_column::{IdentityGeneration, TableColumn};
 pub use r#type::{ColumnType, DatabaseType, EnumType, ScalarKind, ScalarType};
 pub use walkers::{EnumWalker, KeyWalker, RelationWalker, TableColumnWalker, TableWalker, Walker};
@@ -198,6 +198,7 @@ impl DatabaseDefinition {
             client_name: self.interner.intern(table.client_name()),
             client_field_name: self.interner.intern(table.client_field_name()),
             client_field_name_plural: self.interner.intern(table.client_field_name_plural()),
+            kind: table.kind,
             description: table.description.map(|desc| self.interner.intern(&desc)),
         });
 

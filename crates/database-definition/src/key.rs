@@ -35,10 +35,6 @@ impl Key<String> {
 }
 
 impl Key<StringId> {
-    pub(crate) fn name(&self) -> StringId {
-        self.constraint_name
-    }
-
     pub(crate) fn r#type(&self) -> KeyType {
         self.r#type
     }

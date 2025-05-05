@@ -11,7 +11,7 @@ mod update_one;
 
 use std::{cell::RefCell, fmt::Display, path::Path, sync::Arc};
 
-use grafbase_postgres_introspection::IntrospectionOptions;
+use grafbase_postgres_introspection::config::Config;
 use grafbase_sdk::test::{DynamicSchema, DynamicSubgraph, TestConfig, TestRunner};
 use indoc::formatdoc;
 use names::{Generator, Name};
@@ -142,39 +142,76 @@ impl PgTestApi {
         TestRunner::new(config).await.unwrap()
     }
 
+    async fn runner_spawn_with_config(&self, toml_config: &str) -> TestRunner {
+        let extension_path = std::env::current_dir().unwrap().join("build");
+        let extension_url = format!("file://{}", extension_path.display());
+        let toml_config = format!("extension_url = \"{extension_url}\"\n\n{toml_config}");
+
+        let config = toml::from_str(&toml_config).unwrap();
+        let schema = self.introspect_inner(config).await;
+
+        let schema = DynamicSchema::builder(schema)
+            .into_extension_only_subgraph("test", &extension_path)
+            .unwrap();
+
+        let mut config = TestConfig::builder().with_subgraph(schema);
+
+        for subgraph in &self.inner.subgraphs {
+            config = config.with_subgraph(subgraph.clone());
+        }
+
+        if std::env::var("PREBUILT_EXTENSION").is_ok() {
+            config = config.with_extension("./build");
+        }
+
+        let config = config
+            .enable_networking()
+            .enable_stderr()
+            .enable_stdout()
+            .enable_environment_variables()
+            .log_level(grafbase_sdk::test::LogLevel::EngineDebug)
+            .build(&self.inner.config)
+            .unwrap();
+
+        TestRunner::new(config).await.unwrap()
+    }
+
     async fn execute_sql(&self, sql: &str) {
         sqlx::query(sql).execute(&self.inner.pool).await.unwrap();
     }
 
-    async fn introspect(&self) -> String {
-        let mut conn = self.inner.pool.acquire().await.unwrap();
+    async fn introspect_with_config(&self, toml_str: &str) -> String {
+        let config = toml::from_str(toml_str).unwrap();
+        self.introspect_inner(config).await
+    }
 
-        grafbase_postgres_introspection::introspect(
-            &mut conn,
-            IntrospectionOptions {
-                database_name: "default",
-                extension_url: "https://grafbase.com/extensions/postgres/0.1.1",
-                default_schema: "public",
-            },
-        )
+    async fn introspect(&self) -> String {
+        self.introspect_inner(Config {
+            database_name: String::from("default"),
+            extension_url: String::from("https://grafbase.com/extensions/postgres/0.1.1"),
+            default_schema: String::from("public"),
+            schemas: Default::default(),
+        })
         .await
-        .unwrap()
     }
 
     async fn introspect_local_extension(&self, extension_path: &Path) -> String {
-        let mut conn = self.inner.pool.acquire().await.unwrap();
-
         let extension_url = format!("file://{}", extension_path.display());
 
-        grafbase_postgres_introspection::introspect(
-            &mut conn,
-            IntrospectionOptions {
-                database_name: "default",
-                extension_url: &extension_url,
-                default_schema: "public",
-            },
-        )
+        self.introspect_inner(Config {
+            database_name: String::from("default"),
+            extension_url,
+            default_schema: String::from("public"),
+            schemas: Default::default(),
+        })
         .await
-        .unwrap()
+    }
+
+    async fn introspect_inner(&self, config: Config) -> String {
+        let mut conn = self.inner.pool.acquire().await.unwrap();
+
+        grafbase_postgres_introspection::introspect(&mut conn, config)
+            .await
+            .unwrap()
     }
 }

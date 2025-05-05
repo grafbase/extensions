@@ -23,10 +23,12 @@ cargo install --path .
 
 - `DATABASE_URL` - Connection string to your PostgreSQL database
 
+If the current directory has a `.env` file stored with the `DATABASE_URL` environment variable, it will be used as the default value for the `--database-url` option.
+
 ### Basic Command
 
 ```bash
-grafbase-postgres --database-url "postgres://username:password@localhost:5432/mydatabase" introspect --extension-version 1.0.0 --database-name mydb
+grafbase-postgres --database-url "postgres://username:password@localhost:5432/mydatabase" introspect --config grafbase-postgres.toml
 ```
 
 ### Command Options
@@ -37,32 +39,26 @@ grafbase-postgres --database-url "postgres://username:password@localhost:5432/my
 
 #### Introspect Command
 
-- `-o, --output-file <PATH>` - Write the SDL output to a file instead of stdout
-- `-d, --database-name <NAME>` - Name for the database in the GraphQL SDL (default: "default")
-- `-s, --default-schema <SCHEMA>` - Default schema to use (will be omitted from definitions) (default: "public")
-- `-u, --extension-url <URL>` - URL to the Grafbase PostgreSQL extension
-- `-v, --extension-version <VERSION>` - Version of the Grafbase PostgreSQL extension (semver)
-
-**Note**: Either `--extension-url` or `--extension-version` must be provided.
+- `-c, --config <PATH>` - Specify configuration file for introspection. Defaults to `./grafbase-postgres.toml` if not provided.
 
 ## Examples
 
 ### Output SDL to Terminal
 
 ```bash
-grafbase-postgres --database-url "postgres://user:pass@localhost:5432/mydb" introspect --extension-version 1.0.0
+grafbase-postgres \
+    --database-url "postgres://user:pass@localhost:5432/mydb" \
+    introspect \
+    --config grafbase-postgres.toml
 ```
 
 ### Save SDL to a File
 
 ```bash
-grafbase-postgres --database-url "postgres://user:pass@localhost:5432/mydb" introspect --extension-version 1.0.0 --output-file schema.graphql
-```
-
-### Use a Custom Database Name and Schema
-
-```bash
-grafbase-postgres --database-url "postgres://user:pass@localhost:5432/mydb" introspect --extension-version 1.0.0 --database-name production --default-schema app
+grafbase-postgres \
+    --database-url "postgres://user:pass@localhost:5432/mydb" \
+    introspect \
+    --config grafbase-postgres.toml > schema.graphql
 ```
 
 ## What Gets Introspected
@@ -70,6 +66,7 @@ grafbase-postgres --database-url "postgres://user:pass@localhost:5432/mydb" intr
 The following database objects are introspected:
 - Schemas
 - Tables
+- Views (normal and materialized)
 - Columns (including data types and constraints)
 - Primary keys and unique constraints
 - Foreign keys (relationships between tables)
@@ -84,15 +81,79 @@ The tool:
 4. Renders the definition as GraphQL SDL
 5. Outputs the SDL to stdout or a file
 
-## Advanced Usage
+## Configuration
 
-### Using a Custom Extension URL
+Configure the introspection command using a TOML configuration file. Include these essential settings:
 
-If you need to use a custom extension URL instead of the official version:
+```toml
+# The URL of the extension, which appears at the top of the GraphQL SDL.
+extension_url = "https://grafbase.com/extensions/postgres/0.3.0"
 
-```bash
-grafbase-postgres --database-url "postgres://user:pass@localhost:5432/mydb" introspect --extension-url "https://example.com/my-postgres-extension"
+# The default schema, which we'll omit from the SDL output.
+# Defaults to "public" if you don't specify it
+default_schema = "public"
+
+# The name of the database the virtual subgraph should use. This
+# maps to a Postgres database name in your gateway configuration.
+# Defaults to "default" if you don't specify it
+database_name = "default"
 ```
+
+### Exposing Views
+
+PostgreSQL views require additional configuration because the information schema doesn't provide details about unique constraints, nullability, or relations. To make a view visible in your GraphQL SDL, you must define at least one unique key.
+
+#### Unique Key Definitions
+
+```toml
+[schemas.public.views.my_view]
+# The order of columns matters - match the order in the underlying query/table.
+# Define compound keys like this:
+unique_keys = [["user_name", "user_id"]]
+
+# structure: schemas.<schema_name>.views.<view_name>.columns.<column_name>
+[schemas.public.views.my_view.columns.user_name]
+# Defaults to true if you omit this setting
+nullable = false
+# Define a single-column unique key here. Defaults to false if omitted.
+unique = false
+# Customize the GraphQL field name:
+rename = "name_user"
+# Add a description that appears as a comment in the GraphQL schema:
+description = "The name of the user"
+
+[schemas.public.views.my_view.columns.user_id]
+nullable = false
+```
+
+The introspection will fail if you reference any non-existent schemas, views, or columns.
+
+#### Relation Definitions
+
+```toml
+# structure: schemas.<schema_name>.views.<view_name>.relations.<relation_name>
+[schemas.public.views.my_view.relations.my_view_to_my_table]
+# The schema containing the referenced table or view.
+# Defaults to "public" if omitted. Must exist.
+referenced_schema = "public"
+
+# Specify either a table or view. Must exist.
+referenced_table = "my_table"
+
+# List columns in the view that reference columns in the target
+# table or view.
+#
+# Introspection fails if these columns don't exist.
+referencing_columns = ["user_id", "user_name"]
+
+# List columns in the target table or view that your view
+# references.
+#
+# Introspection fails if these columns don't exist.
+referenced_columns = ["id", "name"]
+```
+
+Define these relations in your config file to enable joins to and from your views.
 
 ## License
 

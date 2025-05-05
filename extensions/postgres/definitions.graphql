@@ -24,6 +24,11 @@ directive @pgTable(
   name: String!
 
   """
+  The type of Postgres relation being mapped. Defaults to RELATION (table).
+  """
+  kind: PgRelationType = RELATION
+
+  """
   The schema where the table is located, defaults to 'public'
   """
   schema: String! = "public"
@@ -84,6 +89,24 @@ enum PgKeyType {
   Unique constraint - ensures all values in a column or combination of columns are distinct
   """
   UNIQUE
+}
+
+"""
+The type of Postgres relation being mapped.
+"""
+enum PgRelationType {
+  """
+  A standard database table.
+  """
+  RELATION
+  """
+  A database view.
+  """
+  VIEW
+  """
+  A materialized database view.
+  """
+  MATERIALIZED_VIEW
 }
 
 """

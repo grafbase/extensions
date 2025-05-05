@@ -22,6 +22,10 @@ impl<'a> Type<'a> {
         }
     }
 
+    pub fn has_fields(&self) -> bool {
+        !self.fields.is_empty()
+    }
+
     pub fn push_directive(&mut self, directive: Directive<'a>) {
         self.directives.push(directive);
     }
