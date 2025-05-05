@@ -8,6 +8,10 @@ This CLI tool connects to a PostgreSQL database, introspects its schema (tables,
 
 ## Installation
 
+Download a binary for your platform from the [releases page](https://github.com/grafbase/extensions/releases?q=grafbase-postgres&expanded=true).
+
+Or build from source:
+
 ```bash
 # From source
 cargo install --path .

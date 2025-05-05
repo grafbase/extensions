@@ -1,0 +1,277 @@
+name: Release CLI Extensions
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cli/**/Cargo.toml"
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+
+jobs:
+  check-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Rust
+        uses: ./.github/actions/install-rust
+
+      - name: Find extensions with version changes
+        id: set-matrix
+        run: |
+          echo "Checking for CLI extensions with version changes..."
+
+          # Initialize matrix JSON
+          MATRIX="{\"include\":[]}"
+
+          # Find all CLI extension directories
+          for EXT_DIR in cli/*/; do
+            if [ -f "${EXT_DIR}Cargo.toml" ]; then
+              # Extract extension name and current version
+              EXT_NAME=$(grep -m 1 -oP 'name\s*=\s*"\K[^"]+' "${EXT_DIR}Cargo.toml")
+              CURRENT_VERSION=$(grep -m 1 -oP 'version\s*=\s*"\K[^"]+' "${EXT_DIR}Cargo.toml")
+
+              echo "Found extension: $EXT_NAME, version: $CURRENT_VERSION"
+
+              # Check if this version already exists as a release
+              LATEST_TAG=$(gh release list --repo ${{ github.repository }} --limit 100 | grep "^${EXT_NAME}-v" | head -n 1 | awk '{print $1}' || echo "")
+              LATEST_VERSION=${LATEST_TAG#${EXT_NAME}-v}
+
+              echo "Latest released version: $LATEST_VERSION"
+
+              # If no release exists or current version is newer, add to matrix
+              if [ -z "$LATEST_VERSION" ] || [ "$(printf '%s\n' "$LATEST_VERSION" "$CURRENT_VERSION" | sort -V | head -n1)" != "$CURRENT_VERSION" ]; then
+                echo "New version detected for $EXT_NAME: $CURRENT_VERSION"
+                MATRIX=$(echo $MATRIX | jq -c '.include += [{"extension": "'$EXT_NAME'", "version": "'$CURRENT_VERSION'", "path": "'${EXT_DIR%/}'"}]')
+              else
+                echo "No new version for $EXT_NAME"
+              fi
+            fi
+          done
+
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          echo "Extensions to release: $MATRIX"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  darwin:
+    needs: check-versions
+    if: ${{ fromJson(needs.check-versions.outputs.matrix).include[0] }}
+    runs-on: depot-macos-latest
+    strategy:
+      matrix:
+        target:
+          - aarch64-apple-darwin
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: ./.github/actions/install-rust
+
+      - name: Add targets
+        run: |
+          rustup target add ${{ matrix.target }}
+
+      - name: Create artifact directory
+        run: mkdir -p artifacts
+
+      - name: Build for macOS
+        run: |
+          extensions=$(echo '${{ toJSON(fromJson(needs.check-versions.outputs.matrix).include) }}' | jq -c '.')
+          for ext in $(echo "${extensions}" | jq -r '.[] | @base64'); do
+            _jq() {
+              echo ${ext} | base64 --decode | jq -r ${1}
+            }
+
+            extension=$(_jq '.extension')
+            path=$(_jq '.path')
+
+            echo "Building ${extension} at path ${path}"
+            cargo build --release --target ${{ matrix.target }} -p $extension
+
+            cp "target/${{ matrix.target }}/release/${extension}" "artifacts/${extension}-${{ matrix.target }}"
+          done
+
+      - name: Upload macOS binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-${{ matrix.target }}-binaries
+          path: artifacts/*
+          retention-days: 1
+
+  windows:
+    needs: check-versions
+    if: ${{ fromJson(needs.check-versions.outputs.matrix).include[0] }}
+    runs-on: depot-windows-2022-8
+    steps:
+      - name: Get sources
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: ./.github/actions/install-rust
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad # v0.0.9
+
+      - name: Build Windows binaries
+        run: |
+          $extensions = '${{ toJSON(fromJson(needs.check-versions.outputs.matrix).include) }}' | ConvertFrom-Json
+
+          # Create artifacts directory if it doesn't exist
+          if (!(Test-Path -Path artifacts)) {
+            New-Item -ItemType Directory -Force -Path artifacts
+          }
+
+          foreach ($ext in $extensions) {
+            Write-Host "Building $($ext.extension) at path $($ext.path)"
+            Push-Location $ext.path
+            cargo build --release
+            Pop-Location
+
+            # Copy binary to artifacts directory
+            Copy-Item "target/release/$($ext.extension).exe" -Destination "artifacts/$($ext.extension)-x86_64-pc-windows-msvc.exe"
+          }
+        shell: pwsh
+        env:
+          RUSTC_WRAPPER: sccache
+
+      - name: Upload Windows binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-binaries
+          path: artifacts/*.exe
+          retention-days: 1
+
+  linux:
+    needs: check-versions
+    if: ${{ fromJson(needs.check-versions.outputs.matrix).include[0] }}
+    strategy:
+      fail-fast: false
+      matrix:
+        archs:
+          [
+            {
+              runner: depot-ubuntu-24.04-8,
+              target: x86_64-unknown-linux-musl,
+              platform: linux,
+            },
+            {
+              runner: depot-ubuntu-24.04-arm-8,
+              target: aarch64-unknown-linux-musl,
+              platform: linux-arm,
+            },
+          ]
+    runs-on: ${{ matrix.archs.runner }}
+    steps:
+      - name: Get sources
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: ./.github/actions/install-rust
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad # v0.0.9
+
+      - name: Install musl tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools
+        if: contains(matrix.archs.target, 'musl')
+
+      - name: Build Linux binaries
+        run: |
+          extensions=$(echo '${{ toJSON(fromJson(needs.check-versions.outputs.matrix).include) }}' | jq -c '.')
+
+          mkdir -p artifacts
+
+          for ext in $(echo "${extensions}" | jq -r '.[] | @base64'); do
+            _jq() {
+              echo ${ext} | base64 --decode | jq -r ${1}
+            }
+
+            extension=$(_jq '.extension')
+            path=$(_jq '.path')
+
+            echo "Building ${extension} at path ${path}"
+
+            rustup target add ${{ matrix.archs.target }}
+            cargo build --release --target ${{ matrix.archs.target }} -p $extension
+
+            cp "target/${{ matrix.archs.target }}/release/${extension}" "artifacts/${extension}-${{ matrix.archs.target }}"
+          done
+        env:
+          RUSTC_WRAPPER: sccache
+
+      - name: Upload Linux binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.archs.target }}-binaries
+          path: artifacts/*
+          retention-days: 1
+
+  create-release:
+    needs: [check-versions, darwin, windows, linux]
+    if: ${{ fromJson(needs.check-versions.outputs.matrix).include[0] }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.check-versions.outputs.matrix) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create artifacts directory
+        run: mkdir -p flat_artifacts
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Flatten artifact directory structure
+        run: |
+          # Copy all binaries for current extension to flat_artifacts directory
+          find artifacts -type f -name "${{ matrix.extension }}*" -exec cp {} flat_artifacts/ \;
+          ls -la flat_artifacts/
+
+      - name: Generate changelog
+        run: |
+          echo "# ${{ matrix.extension }} v${{ matrix.version }}" > changelog.md
+          echo "" >> changelog.md
+          echo "Released on $(date +'%Y-%m-%d')" >> changelog.md
+          echo "" >> changelog.md
+
+          # Add a list of changes since last release if available
+          if gh release view ${{ matrix.extension }}-v$(echo ${{ matrix.version }} | awk -F. '{print $1"."$2"."$3-1}') &> /dev/null; then
+            echo "## Changes since last release" >> changelog.md
+            echo "" >> changelog.md
+            git log --pretty=format:"* %s" ${{ matrix.extension }}-v$(echo ${{ matrix.version }} | awk -F. '{print $1"."$2"."$3-1}')..HEAD --  ${{ matrix.path }} >> changelog.md
+          else
+            echo "## Initial release" >> changelog.md
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ matrix.extension }}-v${{ matrix.version }}
+          name: ${{ matrix.extension }} v${{ matrix.version }}
+          body_path: ./changelog.md
+          draft: false
+          prerelease: false
+          files: flat_artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
