@@ -172,3 +172,53 @@ async fn serial_id() {
     }
     "#);
 }
+
+#[tokio::test]
+async fn disabling_mutations() {
+    let api = PgTestApi::new("", |api| async move {
+        let schema = indoc! {r#"
+            CREATE TABLE "User" (
+                id INT PRIMARY KEY
+            )
+        "#};
+
+        api.execute_sql(schema).await;
+    })
+    .await;
+
+    let config = indoc! {r#"
+        enable_mutations = false
+    "#};
+
+    let runner = api.runner_spawn_with_config(config).await;
+
+    let mutation = indoc! {r"
+        mutation {
+          userCreate(input: { id: 1 }) {
+            returning {
+              id
+            }
+            rowCount
+          }
+        }
+    "};
+
+    let response = runner
+        .graphql_query::<serde_json::Value>(mutation)
+        .send()
+        .await
+        .unwrap();
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "errors": [
+        {
+          "message": "Mutations are not defined on this schema.",
+          "extensions": {
+            "code": "OPERATION_VALIDATION_ERROR"
+          }
+        }
+      ]
+    }
+    "#);
+}

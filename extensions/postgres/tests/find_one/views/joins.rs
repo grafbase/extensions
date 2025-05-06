@@ -304,7 +304,7 @@ async fn one_to_many_join_between_schemas() {
 }
 
 #[tokio::test]
-async fn xxx_one_to_one_join_child_side() {
+async fn one_to_one_join_child_side() {
     let api = PgTestApi::new("", |api| async move {
         let user_table = indoc! {r#"
             CREATE TABLE "User" (

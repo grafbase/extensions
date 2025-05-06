@@ -1,24 +1,38 @@
 use grafbase_database_definition::{DatabaseDefinition, TableWalker};
 use inflector::Inflector;
 
-use super::ast::{
-    directive::{Argument, Directive},
-    field::Field,
-    schema::Schema,
-    r#type::Type,
+use crate::config::Config;
+
+use super::{
+    EnabledOperations,
+    ast::{
+        directive::{Argument, Directive},
+        field::Field,
+        schema::Schema,
+        r#type::Type,
+    },
 };
 
-pub fn render<'a>(database_definition: &'a DatabaseDefinition, rendered: &mut Schema<'a>) {
-    render_page_info(rendered);
+pub fn render<'a>(
+    database_definition: &'a DatabaseDefinition,
+    config: &Config,
+    operations: EnabledOperations,
+    rendered: &mut Schema<'a>,
+) {
+    if operations.has_queries {
+        render_page_info(rendered);
+    }
 
     for table in database_definition.tables().filter(|t| t.allowed_in_client()) {
-        if table.mutations_allowed() {
+        if config.mutations_allowed(table) {
             let returning_type = render_returning_type(rendered, table);
             render_mutation_types(rendered, table, returning_type);
         }
 
-        render_edge(rendered, table);
-        render_connection(rendered, table);
+        if config.queries_allowed(table) {
+            render_edge(rendered, table);
+            render_connection(rendered, table);
+        }
     }
 }
 

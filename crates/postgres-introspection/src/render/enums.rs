@@ -1,28 +1,38 @@
 use grafbase_database_definition::DatabaseDefinition;
 
-use super::ast::{
-    directive::{Argument, Directive},
-    r#enum::{Enum, EnumVariant},
-    schema::Schema,
+use super::{
+    EnabledOperations,
+    ast::{
+        directive::{Argument, Directive},
+        r#enum::{Enum, EnumVariant},
+        schema::Schema,
+    },
 };
 
-pub fn render<'a>(database_definition: &'a DatabaseDefinition, default_schema: &'a str, rendered: &mut Schema<'a>) {
-    rendered.push_enum({
-        let mut r#enum = Enum::new("OrderDirection");
-        r#enum.set_description("Specifies the direction for ordering results.");
+pub fn render<'a>(
+    database_definition: &'a DatabaseDefinition,
+    default_schema: &'a str,
+    operations: &EnabledOperations,
+    rendered: &mut Schema<'a>,
+) {
+    if operations.has_queries {
+        rendered.push_enum({
+            let mut r#enum = Enum::new("OrderDirection");
+            r#enum.set_description("Specifies the direction for ordering results.");
 
-        for (variant, description) in [
-            ("ASC", "Specifies an ascending order for a given orderBy argument."),
-            ("DESC", "Specifies a descending order for a given orderBy argument."),
-        ] {
-            let mut variant = EnumVariant::new(variant);
-            variant.set_description(description);
+            for (variant, description) in [
+                ("ASC", "Specifies an ascending order for a given orderBy argument."),
+                ("DESC", "Specifies a descending order for a given orderBy argument."),
+            ] {
+                let mut variant = EnumVariant::new(variant);
+                variant.set_description(description);
 
-            r#enum.push_variant(variant);
-        }
+                r#enum.push_variant(variant);
+            }
 
-        r#enum
-    });
+            r#enum
+        });
+    }
 
     for r#enum in database_definition.enums() {
         let mut render = Enum::new(r#enum.client_name());

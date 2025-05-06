@@ -111,6 +111,150 @@ async fn view_with_int_unique() {
     }
 
     """
+    Specifies the ordering for User results.
+    """
+    input UserOrderByInput @oneOf {
+      """
+      Order users by id
+      """
+      id: OrderDirection
+    }
+
+    """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Input type to select a unique User
+    """
+    input UserLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for User collections
+    """
+    input UserCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: UserFilterInput
+    }
+
+    """
+    Filter input type for User objects.
+    """
+    input UserFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [UserFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [UserFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [UserFilterInput]
+    }
+
+    """
+    Input for creating a new User
+    """
+    input UserCreateInput {
+      """
+      Set field value for id
+      """
+      id: Int!
+    }
+
+    """
+    Input for updating an existing User
+    """
+    input UserUpdateInput {
+      """
+      Update field value for id
+      """
+      id: IntUpdateInput
+    }
+
+    """
+    Specifies the ordering for FilteredUser results.
+    """
+    input FilteredUserOrderByInput @oneOf {
+      """
+      Order filteredUsers by id
+      """
+      id: OrderDirection
+    }
+
+    """
+    Lookup input type for FilteredUser objects for subgraph joins.
+    """
+    input FilteredUserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Input type to select a unique FilteredUser
+    """
+    input FilteredUserLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for FilteredUser collections
+    """
+    input FilteredUserCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: FilteredUserFilterInput
+    }
+
+    """
+    Filter input type for FilteredUser objects.
+    """
+    input FilteredUserFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [FilteredUserFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [FilteredUserFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [FilteredUserFilterInput]
+    }
+
+    """
     Search filter input for String type.
     """
     input StringFilterInput @oneOf {
@@ -1188,150 +1332,6 @@ async fn view_with_int_unique() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
-    }
-
-    """
-    Specifies the ordering for User results.
-    """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Filter input type for User collections
-    """
-    input UserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: UserFilterInput
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [UserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [UserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [UserFilterInput]
-    }
-
-    """
-    Input for creating a new User
-    """
-    input UserCreateInput {
-      """
-      Set field value for id
-      """
-      id: Int!
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      """
-      Update field value for id
-      """
-      id: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for FilteredUser results.
-    """
-    input FilteredUserOrderByInput @oneOf {
-      """
-      Order filteredUsers by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Input type to select a unique FilteredUser
-    """
-    input FilteredUserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for FilteredUser objects for subgraph joins.
-    """
-    input FilteredUserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Filter input type for FilteredUser collections
-    """
-    input FilteredUserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: FilteredUserFilterInput
-    }
-
-    """
-    Filter input type for FilteredUser objects.
-    """
-    input FilteredUserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [FilteredUserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [FilteredUserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [FilteredUserFilterInput]
     }
 
     """
@@ -1816,6 +1816,150 @@ async fn materialized_view_with_int_unique() {
     }
 
     """
+    Specifies the ordering for User results.
+    """
+    input UserOrderByInput @oneOf {
+      """
+      Order users by id
+      """
+      id: OrderDirection
+    }
+
+    """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Input type to select a unique User
+    """
+    input UserLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for User collections
+    """
+    input UserCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: UserFilterInput
+    }
+
+    """
+    Filter input type for User objects.
+    """
+    input UserFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [UserFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [UserFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [UserFilterInput]
+    }
+
+    """
+    Input for creating a new User
+    """
+    input UserCreateInput {
+      """
+      Set field value for id
+      """
+      id: Int!
+    }
+
+    """
+    Input for updating an existing User
+    """
+    input UserUpdateInput {
+      """
+      Update field value for id
+      """
+      id: IntUpdateInput
+    }
+
+    """
+    Specifies the ordering for FilteredUser results.
+    """
+    input FilteredUserOrderByInput @oneOf {
+      """
+      Order filteredUsers by id
+      """
+      id: OrderDirection
+    }
+
+    """
+    Lookup input type for FilteredUser objects for subgraph joins.
+    """
+    input FilteredUserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Input type to select a unique FilteredUser
+    """
+    input FilteredUserLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for FilteredUser collections
+    """
+    input FilteredUserCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: FilteredUserFilterInput
+    }
+
+    """
+    Filter input type for FilteredUser objects.
+    """
+    input FilteredUserFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [FilteredUserFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [FilteredUserFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [FilteredUserFilterInput]
+    }
+
+    """
     Search filter input for String type.
     """
     input StringFilterInput @oneOf {
@@ -2893,150 +3037,6 @@ async fn materialized_view_with_int_unique() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
-    }
-
-    """
-    Specifies the ordering for User results.
-    """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Filter input type for User collections
-    """
-    input UserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: UserFilterInput
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [UserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [UserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [UserFilterInput]
-    }
-
-    """
-    Input for creating a new User
-    """
-    input UserCreateInput {
-      """
-      Set field value for id
-      """
-      id: Int!
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      """
-      Update field value for id
-      """
-      id: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for FilteredUser results.
-    """
-    input FilteredUserOrderByInput @oneOf {
-      """
-      Order filteredUsers by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Input type to select a unique FilteredUser
-    """
-    input FilteredUserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for FilteredUser objects for subgraph joins.
-    """
-    input FilteredUserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Filter input type for FilteredUser collections
-    """
-    input FilteredUserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: FilteredUserFilterInput
-    }
-
-    """
-    Filter input type for FilteredUser objects.
-    """
-    input FilteredUserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [FilteredUserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [FilteredUserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [FilteredUserFilterInput]
     }
 
     """
@@ -3530,6 +3530,202 @@ async fn view_with_composite_key() {
     }
 
     """
+    Specifies the ordering for User results.
+    """
+    input UserOrderByInput @oneOf {
+      """
+      Order users by name
+      """
+      name: OrderDirection
+      """
+      Order users by emailAddress
+      """
+      emailAddress: OrderDirection
+    }
+
+    """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select User by composite columns 'name, emailAddress'
+      """
+      nameEmailAddress: [UserNameEmailAddressInput!] @inaccessible
+    }
+
+    """
+    Input type to select a unique User with multiple fields
+    """
+    input UserNameEmailAddressInput {
+      """
+      Select by the 'name' field
+      """
+      name: String!
+      """
+      Select by the 'emailAddress' field
+      """
+      emailAddress: String!
+    }
+
+    """
+    Input type to select a unique User
+    """
+    input UserLookupInput @oneOf {
+      """
+      Select User by composite columns 'name, emailAddress'
+      """
+      nameEmailAddress: UserNameEmailAddressInput
+    }
+
+    """
+    Filter input type for User collections
+    """
+    input UserCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: UserFilterInput
+    }
+
+    """
+    Filter input type for User objects.
+    """
+    input UserFilterInput @oneOf {
+      """
+      Filter by the given name
+      """
+      name: StringFilterInput
+      """
+      Filter by the given emailAddress
+      """
+      emailAddress: StringFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [UserFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [UserFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [UserFilterInput]
+    }
+
+    """
+    Input for creating a new User
+    """
+    input UserCreateInput {
+      """
+      Set field value for name
+      """
+      name: String!
+      """
+      Set field value for emailAddress
+      """
+      emailAddress: String!
+    }
+
+    """
+    Input for updating an existing User
+    """
+    input UserUpdateInput {
+      """
+      Update field value for name
+      """
+      name: StringUpdateInput
+      """
+      Update field value for emailAddress
+      """
+      emailAddress: StringUpdateInput
+    }
+
+    """
+    Specifies the ordering for FilteredUser results.
+    """
+    input FilteredUserOrderByInput @oneOf {
+      """
+      Order filteredUsers by name
+      """
+      name: OrderDirection
+      """
+      Order filteredUsers by emailAddress
+      """
+      emailAddress: OrderDirection
+    }
+
+    """
+    Lookup input type for FilteredUser objects for subgraph joins.
+    """
+    input FilteredUserManyLookupInput @oneOf @inaccessible {
+      """
+      Select FilteredUser by composite columns 'name, emailAddress'
+      """
+      nameEmailAddress: [FilteredUserNameEmailAddressInput!] @inaccessible
+    }
+
+    """
+    Input type to select a unique FilteredUser with multiple fields
+    """
+    input FilteredUserNameEmailAddressInput {
+      """
+      Select by the 'name' field
+      """
+      name: String!
+      """
+      Select by the 'emailAddress' field
+      """
+      emailAddress: String!
+    }
+
+    """
+    Input type to select a unique FilteredUser
+    """
+    input FilteredUserLookupInput @oneOf {
+      """
+      Select FilteredUser by composite columns 'name, emailAddress'
+      """
+      nameEmailAddress: FilteredUserNameEmailAddressInput
+    }
+
+    """
+    Filter input type for FilteredUser collections
+    """
+    input FilteredUserCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: FilteredUserFilterInput
+    }
+
+    """
+    Filter input type for FilteredUser objects.
+    """
+    input FilteredUserFilterInput @oneOf {
+      """
+      Filter by the given name
+      """
+      name: StringFilterInput
+      """
+      Filter by the given emailAddress
+      """
+      emailAddress: StringFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [FilteredUserFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [FilteredUserFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [FilteredUserFilterInput]
+    }
+
+    """
     Search filter input for String type.
     """
     input StringFilterInput @oneOf {
@@ -4607,202 +4803,6 @@ async fn view_with_composite_key() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
-    }
-
-    """
-    Specifies the ordering for User results.
-    """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by name
-      """
-      name: OrderDirection
-      """
-      Order users by emailAddress
-      """
-      emailAddress: OrderDirection
-    }
-
-    """
-    Input type to select a unique User with multiple fields
-    """
-    input UserNameEmailAddressInput {
-      """
-      Select by the 'name' field
-      """
-      name: String!
-      """
-      Select by the 'emailAddress' field
-      """
-      emailAddress: String!
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select User by composite columns 'name, emailAddress'
-      """
-      nameEmailAddress: UserNameEmailAddressInput
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select User by composite columns 'name, emailAddress'
-      """
-      nameEmailAddress: [UserNameEmailAddressInput!] @inaccessible
-    }
-
-    """
-    Filter input type for User collections
-    """
-    input UserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: UserFilterInput
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
-      """
-      Filter by the given name
-      """
-      name: StringFilterInput
-      """
-      Filter by the given emailAddress
-      """
-      emailAddress: StringFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [UserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [UserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [UserFilterInput]
-    }
-
-    """
-    Input for creating a new User
-    """
-    input UserCreateInput {
-      """
-      Set field value for name
-      """
-      name: String!
-      """
-      Set field value for emailAddress
-      """
-      emailAddress: String!
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      """
-      Update field value for name
-      """
-      name: StringUpdateInput
-      """
-      Update field value for emailAddress
-      """
-      emailAddress: StringUpdateInput
-    }
-
-    """
-    Specifies the ordering for FilteredUser results.
-    """
-    input FilteredUserOrderByInput @oneOf {
-      """
-      Order filteredUsers by name
-      """
-      name: OrderDirection
-      """
-      Order filteredUsers by emailAddress
-      """
-      emailAddress: OrderDirection
-    }
-
-    """
-    Input type to select a unique FilteredUser with multiple fields
-    """
-    input FilteredUserNameEmailAddressInput {
-      """
-      Select by the 'name' field
-      """
-      name: String!
-      """
-      Select by the 'emailAddress' field
-      """
-      emailAddress: String!
-    }
-
-    """
-    Input type to select a unique FilteredUser
-    """
-    input FilteredUserLookupInput @oneOf {
-      """
-      Select FilteredUser by composite columns 'name, emailAddress'
-      """
-      nameEmailAddress: FilteredUserNameEmailAddressInput
-    }
-
-    """
-    Lookup input type for FilteredUser objects for subgraph joins.
-    """
-    input FilteredUserManyLookupInput @oneOf @inaccessible {
-      """
-      Select FilteredUser by composite columns 'name, emailAddress'
-      """
-      nameEmailAddress: [FilteredUserNameEmailAddressInput!] @inaccessible
-    }
-
-    """
-    Filter input type for FilteredUser collections
-    """
-    input FilteredUserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: FilteredUserFilterInput
-    }
-
-    """
-    Filter input type for FilteredUser objects.
-    """
-    input FilteredUserFilterInput @oneOf {
-      """
-      Filter by the given name
-      """
-      name: StringFilterInput
-      """
-      Filter by the given emailAddress
-      """
-      emailAddress: StringFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [FilteredUserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [FilteredUserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [FilteredUserFilterInput]
     }
 
     """
@@ -5307,6 +5307,260 @@ async fn view_with_relation_from_view_to_table() {
     }
 
     """
+    Specifies the ordering for Blog results.
+    """
+    input BlogOrderByInput @oneOf {
+      """
+      Order blogs by id
+      """
+      id: OrderDirection
+      """
+      Order blogs by authorId
+      """
+      authorId: OrderDirection
+      """
+      Order Blog results by FilteredUser fields
+      """
+      filteredUser: FilteredUserOrderByInput
+    }
+
+    """
+    Lookup input type for Blog objects for subgraph joins.
+    """
+    input BlogManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Input type to select a unique Blog
+    """
+    input BlogLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for Blog collections
+    """
+    input BlogCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: BlogFilterInput
+    }
+
+    """
+    Filter input type for Blog objects.
+    """
+    input BlogFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      Filter by the given authorId
+      """
+      authorId: IntFilterInput
+      """
+      Filter by the related FilteredUser object
+      """
+      filteredUser: FilteredUserFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [BlogFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [BlogFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [BlogFilterInput]
+    }
+
+    """
+    Input for creating a new Blog
+    """
+    input BlogCreateInput {
+      """
+      Set field value for id
+      """
+      id: Int!
+      """
+      Set field value for authorId
+      """
+      authorId: Int!
+    }
+
+    """
+    Input for updating an existing Blog
+    """
+    input BlogUpdateInput {
+      """
+      Update field value for id
+      """
+      id: IntUpdateInput
+      """
+      Update field value for authorId
+      """
+      authorId: IntUpdateInput
+    }
+
+    """
+    Specifies the ordering for User results.
+    """
+    input UserOrderByInput @oneOf {
+      """
+      Order users by id
+      """
+      id: OrderDirection
+    }
+
+    """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Input type to select a unique User
+    """
+    input UserLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for User collections
+    """
+    input UserCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: UserFilterInput
+    }
+
+    """
+    Filter input type for User objects.
+    """
+    input UserFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [UserFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [UserFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [UserFilterInput]
+    }
+
+    """
+    Input for creating a new User
+    """
+    input UserCreateInput {
+      """
+      Set field value for id
+      """
+      id: Int!
+    }
+
+    """
+    Input for updating an existing User
+    """
+    input UserUpdateInput {
+      """
+      Update field value for id
+      """
+      id: IntUpdateInput
+    }
+
+    """
+    Specifies the ordering for FilteredUser results.
+    """
+    input FilteredUserOrderByInput @oneOf {
+      """
+      Order filteredUsers by id
+      """
+      id: OrderDirection
+    }
+
+    """
+    Lookup input type for FilteredUser objects for subgraph joins.
+    """
+    input FilteredUserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Input type to select a unique FilteredUser
+    """
+    input FilteredUserLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for FilteredUser collections
+    """
+    input FilteredUserCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: FilteredUserFilterInput
+    }
+
+    """
+    Filter input type for FilteredUser objects.
+    """
+    input FilteredUserFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      Filter by the related Blog objects
+      """
+      blogs: BlogCollectionFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [FilteredUserFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [FilteredUserFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [FilteredUserFilterInput]
+    }
+
+    """
     Search filter input for String type.
     """
     input StringFilterInput @oneOf {
@@ -6384,260 +6638,6 @@ async fn view_with_relation_from_view_to_table() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
-    }
-
-    """
-    Specifies the ordering for Blog results.
-    """
-    input BlogOrderByInput @oneOf {
-      """
-      Order blogs by id
-      """
-      id: OrderDirection
-      """
-      Order blogs by authorId
-      """
-      authorId: OrderDirection
-      """
-      Order Blog results by FilteredUser fields
-      """
-      filteredUser: FilteredUserOrderByInput
-    }
-
-    """
-    Input type to select a unique Blog
-    """
-    input BlogLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for Blog objects for subgraph joins.
-    """
-    input BlogManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Filter input type for Blog collections
-    """
-    input BlogCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: BlogFilterInput
-    }
-
-    """
-    Filter input type for Blog objects.
-    """
-    input BlogFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      Filter by the given authorId
-      """
-      authorId: IntFilterInput
-      """
-      Filter by the related FilteredUser object
-      """
-      filteredUser: FilteredUserFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [BlogFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [BlogFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [BlogFilterInput]
-    }
-
-    """
-    Input for creating a new Blog
-    """
-    input BlogCreateInput {
-      """
-      Set field value for id
-      """
-      id: Int!
-      """
-      Set field value for authorId
-      """
-      authorId: Int!
-    }
-
-    """
-    Input for updating an existing Blog
-    """
-    input BlogUpdateInput {
-      """
-      Update field value for id
-      """
-      id: IntUpdateInput
-      """
-      Update field value for authorId
-      """
-      authorId: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for User results.
-    """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Filter input type for User collections
-    """
-    input UserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: UserFilterInput
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [UserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [UserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [UserFilterInput]
-    }
-
-    """
-    Input for creating a new User
-    """
-    input UserCreateInput {
-      """
-      Set field value for id
-      """
-      id: Int!
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      """
-      Update field value for id
-      """
-      id: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for FilteredUser results.
-    """
-    input FilteredUserOrderByInput @oneOf {
-      """
-      Order filteredUsers by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Input type to select a unique FilteredUser
-    """
-    input FilteredUserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for FilteredUser objects for subgraph joins.
-    """
-    input FilteredUserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Filter input type for FilteredUser collections
-    """
-    input FilteredUserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: FilteredUserFilterInput
-    }
-
-    """
-    Filter input type for FilteredUser objects.
-    """
-    input FilteredUserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      Filter by the related Blog objects
-      """
-      blogs: BlogCollectionFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [FilteredUserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [FilteredUserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [FilteredUserFilterInput]
     }
 
     """
@@ -7423,6 +7423,268 @@ async fn view_with_relation_from_table_to_view() {
     }
 
     """
+    Specifies the ordering for Blog results.
+    """
+    input BlogOrderByInput @oneOf {
+      """
+      Order blogs by id
+      """
+      id: OrderDirection
+      """
+      Order blogs by authorId
+      """
+      authorId: OrderDirection
+      """
+      Order Blog results by User fields
+      """
+      user: UserOrderByInput
+    }
+
+    """
+    Lookup input type for Blog objects for subgraph joins.
+    """
+    input BlogManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Input type to select a unique Blog
+    """
+    input BlogLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for Blog collections
+    """
+    input BlogCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: BlogFilterInput
+    }
+
+    """
+    Filter input type for Blog objects.
+    """
+    input BlogFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      Filter by the given authorId
+      """
+      authorId: IntFilterInput
+      """
+      Filter by the related User object
+      """
+      user: UserFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [BlogFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [BlogFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [BlogFilterInput]
+    }
+
+    """
+    Input for creating a new Blog
+    """
+    input BlogCreateInput {
+      """
+      Set field value for id
+      """
+      id: Int!
+      """
+      Set field value for authorId
+      """
+      authorId: Int!
+    }
+
+    """
+    Input for updating an existing Blog
+    """
+    input BlogUpdateInput {
+      """
+      Update field value for id
+      """
+      id: IntUpdateInput
+      """
+      Update field value for authorId
+      """
+      authorId: IntUpdateInput
+    }
+
+    """
+    Specifies the ordering for User results.
+    """
+    input UserOrderByInput @oneOf {
+      """
+      Order users by id
+      """
+      id: OrderDirection
+    }
+
+    """
+    Lookup input type for User objects for subgraph joins.
+    """
+    input UserManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Input type to select a unique User
+    """
+    input UserLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for User collections
+    """
+    input UserCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: UserFilterInput
+    }
+
+    """
+    Filter input type for User objects.
+    """
+    input UserFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      Filter by the related Blog objects
+      """
+      blogs: BlogCollectionFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [UserFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [UserFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [UserFilterInput]
+    }
+
+    """
+    Input for creating a new User
+    """
+    input UserCreateInput {
+      """
+      Set field value for id
+      """
+      id: Int!
+    }
+
+    """
+    Input for updating an existing User
+    """
+    input UserUpdateInput {
+      """
+      Update field value for id
+      """
+      id: IntUpdateInput
+    }
+
+    """
+    Specifies the ordering for FilteredBlog results.
+    """
+    input FilteredBlogOrderByInput @oneOf {
+      """
+      Order filteredBlogs by id
+      """
+      id: OrderDirection
+      """
+      Order filteredBlogs by authorId
+      """
+      authorId: OrderDirection
+    }
+
+    """
+    Lookup input type for FilteredBlog objects for subgraph joins.
+    """
+    input FilteredBlogManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Input type to select a unique FilteredBlog
+    """
+    input FilteredBlogLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for FilteredBlog collections
+    """
+    input FilteredBlogCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: FilteredBlogFilterInput
+    }
+
+    """
+    Filter input type for FilteredBlog objects.
+    """
+    input FilteredBlogFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      Filter by the given authorId
+      """
+      authorId: IntFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [FilteredBlogFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [FilteredBlogFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [FilteredBlogFilterInput]
+    }
+
+    """
     Search filter input for String type.
     """
     input StringFilterInput @oneOf {
@@ -8500,268 +8762,6 @@ async fn view_with_relation_from_table_to_view() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
-    }
-
-    """
-    Specifies the ordering for Blog results.
-    """
-    input BlogOrderByInput @oneOf {
-      """
-      Order blogs by id
-      """
-      id: OrderDirection
-      """
-      Order blogs by authorId
-      """
-      authorId: OrderDirection
-      """
-      Order Blog results by User fields
-      """
-      user: UserOrderByInput
-    }
-
-    """
-    Input type to select a unique Blog
-    """
-    input BlogLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for Blog objects for subgraph joins.
-    """
-    input BlogManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Filter input type for Blog collections
-    """
-    input BlogCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: BlogFilterInput
-    }
-
-    """
-    Filter input type for Blog objects.
-    """
-    input BlogFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      Filter by the given authorId
-      """
-      authorId: IntFilterInput
-      """
-      Filter by the related User object
-      """
-      user: UserFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [BlogFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [BlogFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [BlogFilterInput]
-    }
-
-    """
-    Input for creating a new Blog
-    """
-    input BlogCreateInput {
-      """
-      Set field value for id
-      """
-      id: Int!
-      """
-      Set field value for authorId
-      """
-      authorId: Int!
-    }
-
-    """
-    Input for updating an existing Blog
-    """
-    input BlogUpdateInput {
-      """
-      Update field value for id
-      """
-      id: IntUpdateInput
-      """
-      Update field value for authorId
-      """
-      authorId: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for User results.
-    """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Filter input type for User collections
-    """
-    input UserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: UserFilterInput
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      Filter by the related Blog objects
-      """
-      blogs: BlogCollectionFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [UserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [UserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [UserFilterInput]
-    }
-
-    """
-    Input for creating a new User
-    """
-    input UserCreateInput {
-      """
-      Set field value for id
-      """
-      id: Int!
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      """
-      Update field value for id
-      """
-      id: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for FilteredBlog results.
-    """
-    input FilteredBlogOrderByInput @oneOf {
-      """
-      Order filteredBlogs by id
-      """
-      id: OrderDirection
-      """
-      Order filteredBlogs by authorId
-      """
-      authorId: OrderDirection
-    }
-
-    """
-    Input type to select a unique FilteredBlog
-    """
-    input FilteredBlogLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for FilteredBlog objects for subgraph joins.
-    """
-    input FilteredBlogManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Filter input type for FilteredBlog collections
-    """
-    input FilteredBlogCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: FilteredBlogFilterInput
-    }
-
-    """
-    Filter input type for FilteredBlog objects.
-    """
-    input FilteredBlogFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      Filter by the given authorId
-      """
-      authorId: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [FilteredBlogFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [FilteredBlogFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [FilteredBlogFilterInput]
     }
 
     """

@@ -106,22 +106,103 @@ default_schema = "public"
 # maps to a Postgres database name in your gateway configuration.
 # Defaults to "default" if you don't specify it
 database_name = "default"
+
+# Enable mutations (write operations) globally for the whole database.
+# Defaults to true if you omit this setting.
+enable_mutations = true
+
+# Enable queries (read operations) globally for the whole database.
+# Defaults to true if you omit this setting.
+enable_queries = true
+
+# Configure schemas for this database. Key-value from schema name to configuration.
+schemas = {}
 ```
 
-### Exposing Views
+### Schema Configuration
+
+```toml
+[schemas.public]
+
+# Enable mutations (write operations) globally for the whole schema.
+# Takes precedence over the global setting. Defaults to true if you omit this setting.
+enable_mutations = true
+
+# Enable queries (read operations) globally for the whole database.
+# Takes precedence over the global setting. Defaults to true if you omit this setting.
+enable_queries = true
+
+# Configure views for this schema.
+views = {}
+
+# Configure tables for this schema. Key-value from table name to configuration.
+tables = {}
+```
+
+### Table Configuration
+
+```toml
+[schemas.public.tables.users]
+
+# Enable mutations (write operations) for the table.
+# Takes precedence over the global and schema settings.
+# Defaults to true if you omit this setting.
+enable_mutations = true
+
+# Enable queries (read operations) for the table.
+# Takes precedence over the global and schema settings.
+# Defaults to true if you omit this setting.
+enable_queries = true
+
+# Table relations are always calculated from the database foreign keys.
+# In cases like with table to view relations this is not possible, and
+# you can define them manually from this map. Key/value from relation name
+# to config.
+relations = {}
+```
+
+### View Configuration
 
 PostgreSQL views require additional configuration because the information schema doesn't provide details about unique constraints, nullability, or relations. To make a view visible in your GraphQL SDL, you must define at least one unique key.
+
+```toml
+[schemas.public.views.restricted_users]
+
+# Enable queries (read operations) for the the view.
+# Takes precedence over the global and schema settings.
+# Defaults to true if you omit this setting.
+enable_queries = true
+
+# Even if the underlying table has unique constraints, the database does not
+# show them for the view presenting the data. Single column keys you can configure
+# better through the columns map, but use this for compound keys.
+# An array of arrays. Each array is a collection of columns forming the key. Order
+# of the columns matter.
+unique_keys = []
+
+# The database does not have information on the nullability, or uniqueness
+# of view columns. You can define column settings manually from this map.
+# Key/value from column name to config.
+columns = {}
+
+# Views do not have foreign keys mapped to them, as tables do. You
+# can define relations manualy from this map.
+# Key/value from relation name to config.
+relations = {}
+```
 
 #### Unique Key Definitions
 
 ```toml
 [schemas.public.views.my_view]
+
 # The order of columns matters - match the order in the underlying query/table.
 # Define compound keys like this:
 unique_keys = [["user_name", "user_id"]]
 
 # structure: schemas.<schema_name>.views.<view_name>.columns.<column_name>
 [schemas.public.views.my_view.columns.user_name]
+
 # Defaults to true if you omit this setting
 nullable = false
 # Define a single-column unique key here. Defaults to false if omitted.
@@ -142,6 +223,7 @@ The introspection will fail if you reference any non-existent schemas, views, or
 ```toml
 # structure: schemas.<schema_name>.views.<view_name>.relations.<relation_name>
 [schemas.public.views.my_view.relations.my_view_to_my_table]
+
 # The schema containing the referenced table or view.
 # Defaults to "public" if omitted. Must exist.
 referenced_schema = "public"
