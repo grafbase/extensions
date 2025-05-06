@@ -25,6 +25,15 @@ cargo install --path .
 
 If the current directory has a `.env` file stored with the `DATABASE_URL` environment variable, it will be used as the default value for the `--database-url` option.
 
+Provide all required TLS parameters directly in the connection string. For TLS connections, add parameters like:
+
+- `sslmode=verify-full`
+- `sslrootcert=/path/to/ca.crt`
+- `sslcert=/path/to/client.crt`
+- `sslkey=/path/to/client.key`
+
+Find example certificate files in our [test setup repository](https://github.com/grafbase/extensions/tree/main/docker/postgres-mtls/certs).
+
 ### Basic Command
 
 ```bash
