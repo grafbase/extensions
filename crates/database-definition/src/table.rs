@@ -30,6 +30,10 @@ impl RelationKind {
             RelationKind::MaterializedView => "MATERIALIZED_VIEW",
         }
     }
+
+    pub fn is_view(self) -> bool {
+        !matches!(self, RelationKind::Relation)
+    }
 }
 
 impl<T> Copy for Table<T> where T: Copy {}

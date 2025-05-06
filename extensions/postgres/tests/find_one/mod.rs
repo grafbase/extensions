@@ -422,3 +422,57 @@ async fn mtls() {
     }
     "#);
 }
+
+#[tokio::test]
+async fn disabling_queries() {
+    let api = PgTestApi::new("", |api| async move {
+        let schema = indoc! {r#"
+            CREATE TABLE "users" (
+                id INT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL
+            )
+        "#};
+
+        api.execute_sql(schema).await;
+
+        let insert = indoc! {r#"
+            INSERT INTO "users" (id, name) VALUES (1, 'Musti'), (2, 'Naukio')
+        "#};
+
+        api.execute_sql(insert).await;
+    })
+    .await;
+
+    let config = indoc! {r#"
+        enable_queries = false
+    "#};
+
+    let runner = api.runner_spawn_with_config(config).await;
+
+    let query = indoc! {r"
+        query {
+          user(lookup: { id: 1 }) { id name }
+        }
+    "};
+
+    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "errors": [
+        {
+          "message": "Query does not have a field named 'user'.",
+          "locations": [
+            {
+              "line": 2,
+              "column": 3
+            }
+          ],
+          "extensions": {
+            "code": "OPERATION_VALIDATION_ERROR"
+          }
+        }
+      ]
+    }
+    "#);
+}

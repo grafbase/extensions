@@ -1,6 +1,8 @@
 use grafbase_database_definition::DatabaseDefinition;
 use inflector::Inflector;
 
+use crate::config::Config;
+
 use super::ast::{
     directive::{Argument, Directive},
     field::Field,
@@ -8,10 +10,19 @@ use super::ast::{
     r#type::Type,
 };
 
-pub fn render<'a>(database_definition: &'a DatabaseDefinition, prefix: Option<&str>, rendered: &mut Schema<'a>) {
+pub fn render<'a>(
+    database_definition: &'a DatabaseDefinition,
+    config: &Config,
+    prefix: Option<&str>,
+    rendered: &mut Schema<'a>,
+) {
     let mut query = Type::new("Query");
 
     for table in database_definition.tables().filter(|t| t.allowed_in_client()) {
+        if !config.queries_allowed(table) {
+            continue;
+        }
+
         let field_name = match prefix {
             Some(prefix) => format!("{}_{}", prefix, table.client_name()).to_camel_case(),
             None => table.client_name().to_camel_case(),
@@ -116,5 +127,7 @@ pub fn render<'a>(database_definition: &'a DatabaseDefinition, prefix: Option<&s
         query.push_field(field);
     }
 
-    rendered.push_type(query);
+    if query.has_fields() {
+        rendered.push_type(query);
+    }
 }

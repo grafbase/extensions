@@ -264,6 +264,8 @@ impl PgTestApi {
             extension_url: String::from("https://grafbase.com/extensions/postgres/0.1.1"),
             default_schema: String::from("public"),
             schemas: Default::default(),
+            enable_mutations: true,
+            enable_queries: true,
         })
         .await
     }
@@ -276,6 +278,8 @@ impl PgTestApi {
             extension_url,
             default_schema: String::from("public"),
             schemas: Default::default(),
+            enable_mutations: true,
+            enable_queries: true,
         })
         .await
     }

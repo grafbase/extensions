@@ -4,9 +4,12 @@ use grafbase_database_definition::{DatabaseDefinition, TableWalker};
 use inflector::Inflector;
 use itertools::Itertools;
 
-use crate::render::ast::{directive::Directive, field::Field, input::InputType};
+use crate::{
+    config::Config,
+    render::ast::{directive::Directive, field::Field, input::InputType},
+};
 
-use super::ast::schema::Schema;
+use super::{EnabledOperations, ast::schema::Schema};
 
 const SCALARS: &[&str] = &[
     "String", "BigInt", "Int", "Float", "Boolean", "Decimal", "Bytes", "JSON",
@@ -39,20 +42,32 @@ const ARRAYS: &[(&str, &str)] = &[
 
 static NUMERIC_SCALARS: &[&str] = &["BigInt", "Float", "Decimal", "Int"];
 
-pub fn render<'a>(database_definition: &'a DatabaseDefinition, prefix: Option<&str>, rendered: &mut Schema<'a>) {
-    render_scalar_inputs(database_definition, rendered);
-
+pub fn render<'a>(
+    database_definition: &'a DatabaseDefinition,
+    config: &Config,
+    operations: &mut EnabledOperations,
+    prefix: Option<&str>,
+    rendered: &mut Schema<'a>,
+) {
     for table in database_definition.tables().filter(|t| t.allowed_in_client()) {
-        render_order_input(rendered, table);
+        if config.queries_allowed(table) {
+            operations.has_queries = true;
+            render_order_input(rendered, table);
+            render_many_lookup_input(rendered, table);
+        }
+
         render_lookup_input(rendered, table);
-        render_many_lookup_input(rendered, table);
         render_filter_input(rendered, table);
 
-        if table.mutations_allowed() {
+        if config.mutations_allowed(table) {
+            operations.has_mutations = true;
+
             render_create_input(rendered, prefix, table);
             render_update_input(rendered, prefix, table);
         }
     }
+
+    render_scalar_inputs(database_definition, operations, rendered);
 }
 
 fn render_update_input<'a>(rendered: &mut Schema<'a>, prefix: Option<&str>, table: TableWalker<'a>) {
@@ -370,11 +385,18 @@ fn render_order_input<'a>(rendered: &mut Schema<'a>, table: TableWalker<'a>) {
     rendered.push_input(order_input);
 }
 
-fn render_scalar_inputs<'a>(database_definition: &'a DatabaseDefinition, rendered: &mut Schema<'a>) {
+fn render_scalar_inputs<'a>(
+    database_definition: &'a DatabaseDefinition,
+    operations: &EnabledOperations,
+    rendered: &mut Schema<'a>,
+) {
     for scalar in SCALARS {
         rendered.push_input(create_scalar_filters(scalar));
-        rendered.push_input(create_scalar_update_input(scalar));
-        rendered.push_input(create_array_update_type(scalar));
+
+        if operations.has_mutations {
+            rendered.push_input(create_scalar_update_input(scalar));
+            rendered.push_input(create_array_update_type(scalar));
+        }
     }
 
     for (return_type, scalar) in ARRAYS {
@@ -386,8 +408,11 @@ fn render_scalar_inputs<'a>(database_definition: &'a DatabaseDefinition, rendere
 
         let array_type = format!("[{}]", r#enum.client_name());
         rendered.push_input(create_scalar_array_filters(r#enum.client_name(), array_type));
-        rendered.push_input(create_scalar_update_input(r#enum.client_name()));
-        rendered.push_input(create_array_update_type(r#enum.client_name()));
+
+        if operations.has_mutations {
+            rendered.push_input(create_scalar_update_input(r#enum.client_name()));
+            rendered.push_input(create_array_update_type(r#enum.client_name()));
+        }
     }
 }
 

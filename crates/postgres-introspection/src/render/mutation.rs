@@ -1,6 +1,8 @@
 use grafbase_database_definition::{DatabaseDefinition, TableWalker};
 use inflector::Inflector;
 
+use crate::config::Config;
+
 use super::ast::{
     directive::{Argument, Directive},
     field::Field,
@@ -8,11 +10,16 @@ use super::ast::{
     r#type::Type,
 };
 
-pub fn render<'a>(database_definition: &'a DatabaseDefinition, prefix: Option<&str>, rendered: &mut Schema<'a>) {
+pub fn render<'a>(
+    database_definition: &'a DatabaseDefinition,
+    config: &Config,
+    prefix: Option<&str>,
+    rendered: &mut Schema<'a>,
+) {
     let mut mutation = Type::new("Mutation");
 
     for table in database_definition.tables().filter(|t| t.allowed_in_client()) {
-        if !table.mutations_allowed() {
+        if !config.mutations_allowed(table) {
             continue;
         }
 

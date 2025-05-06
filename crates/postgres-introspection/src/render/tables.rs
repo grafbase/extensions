@@ -3,14 +3,22 @@ use grafbase_database_definition::{
 };
 use itertools::Itertools;
 
-use super::ast::{
-    directive::{Argument, ArgumentValue, Directive},
-    field::Field,
-    schema::Schema,
-    r#type::Type,
+use super::{
+    EnabledOperations,
+    ast::{
+        directive::{Argument, ArgumentValue, Directive},
+        field::Field,
+        schema::Schema,
+        r#type::Type,
+    },
 };
 
-pub fn render<'a>(database_definition: &'a DatabaseDefinition, default_schema: &str, rendered: &mut Schema<'a>) {
+pub fn render<'a>(
+    database_definition: &'a DatabaseDefinition,
+    default_schema: &str,
+    operations: EnabledOperations,
+    rendered: &mut Schema<'a>,
+) {
     for table in database_definition.tables().filter(|t| t.allowed_in_client()) {
         let mut render = Type::new(table.client_name());
         render_directives(&mut render, default_schema, table);
@@ -19,8 +27,12 @@ pub fn render<'a>(database_definition: &'a DatabaseDefinition, default_schema: &
             render_column(&mut render, table, column);
         }
 
-        for relation in table.relations() {
-            render_relation(&mut render, relation);
+        // we do not do nested mutations, so we do not need to render relation
+        // fields if no queries are allowed
+        if operations.has_queries {
+            for relation in table.relations() {
+                render_relation(&mut render, relation);
+            }
         }
 
         if let Some(description) = table.description() {
