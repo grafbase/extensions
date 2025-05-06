@@ -10,7 +10,6 @@ Generally, every operation executed through the extension generates exactly one 
 
 **Note:** This extension is currently under development. Known missing features include:
 
-*   TLS support for database connections
 *   Support for types from Postgres extensions (e.g., PostGIS)
 *   Real pagination cursors and page info (currently returns dummy values)
 
@@ -130,30 +129,20 @@ acquire_timeout_ms = 30000
 max_lifetime_ms = 1800000
 ```
 
+## TLS
+
+Provide all required TLS parameters directly in the connection string. For TLS connections, add parameters like:
+
+- `sslmode=verify-full`
+- `sslrootcert=/path/to/ca.crt`
+- `sslcert=/path/to/client.crt`
+- `sslkey=/path/to/client.key`
+
+Find example certificate files in our [test setup repository](https://github.com/grafbase/extensions/tree/main/docker/postgres-mtls/certs).
+
 ## Introspection
 
-Use the `grafbase-postgres introspect` command to generate a GraphQL schema from your database:
-
-```bash
-# Ensure grafbase-postgres is in your PATH
-# Replace connection details and version as needed
-grafbase-postgres \
-    -d "postgres://postgres:grafbase@localhost:5432/postgres" \
-    introspect \
-    -v 0.1.0 > subgraph.graphql
-```
-
-This command generates a GraphQL schema (`subgraph.graphql` in this example). You can then publish this schema as a virtual subgraph to your federated graph using the [Grafbase CLI `publish` command](https://grafbase.com/docs/reference/grafbase-cli/publish):
-
-```bash
-# Replace with your graph details
-grafbase publish \
-    --name postgres \
-    my-org/my-graph@main \
-    -m "Add postgres subgraph" \
-    --virtual \
-    --schema subgraph.graphql
-```
+📚 Find complete documentation in the [`grafbase-postgres`](https://github.com/grafbase/extensions/tree/main/cli/postgres) repository.
 
 ## Generated Schema (Queries and Types)
 

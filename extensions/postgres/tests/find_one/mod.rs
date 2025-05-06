@@ -380,3 +380,45 @@ async fn by_compound_unique() {
     }
     "#);
 }
+
+#[tokio::test]
+async fn mtls() {
+    let api = PgTestApi::new_mtls("", |api| async move {
+        let schema = indoc! {r#"
+            CREATE TABLE "users" (
+                id INT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL
+            )
+        "#};
+
+        api.execute_sql(schema).await;
+
+        let insert = indoc! {r#"
+            INSERT INTO "users" (id, name) VALUES (1, 'Musti'), (2, 'Naukio')
+        "#};
+
+        api.execute_sql(insert).await;
+    })
+    .await;
+
+    let runner = api.runner_spawn().await;
+
+    let query = indoc! {r"
+        query {
+          user(lookup: { id: 1 }) { id name }
+        }
+    "};
+
+    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "data": {
+        "user": {
+          "id": 1,
+          "name": "Musti"
+        }
+      }
+    }
+    "#);
+}
