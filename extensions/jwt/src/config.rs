@@ -7,7 +7,7 @@ pub(crate) struct Config {
     pub url: Url,
     pub poll_interval: Duration,
     pub issuer: Option<String>,
-    pub audience: Option<String>,
+    pub audience: Option<Vec<String>>,
     pub locations: Vec<Location>,
 }
 
@@ -57,12 +57,14 @@ impl<'de> serde::Deserialize<'de> for Config {
     }
 }
 
+#[serde_with::serde_as]
 #[derive(Debug, serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 struct TomlConfig {
     url: Url,
     issuer: Option<String>,
-    audience: Option<String>,
+    #[serde_as(deserialize_as = "Option<serde_with::OneOrMany<_>>")]
+    audience: Option<Vec<String>>,
     #[serde(default = "default_poll_interval", deserialize_with = "deserialize_duration")]
     poll_interval: Duration,
     header_name: Option<String>,

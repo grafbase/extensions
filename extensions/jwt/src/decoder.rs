@@ -38,8 +38,8 @@ impl<'a> Decoder<'a> {
         }
 
         if let Some(expected) = self.config.audience.as_ref() {
-            let audience = token.claims().custom.audience.as_ref()?;
-            if audience.iter().all(|aud| aud != expected) {
+            let aud_claims = token.claims().custom.audience.as_ref()?;
+            if aud_claims.iter().all(|claim| !expected.contains(claim)) {
                 return None;
             }
         }
