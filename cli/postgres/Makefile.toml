@@ -1,0 +1,40 @@
+[tasks.bump]
+description = "Bump version in Cargo.toml and install.sh (Usage: cargo make bump-version VERSION=x.y.z)"
+script_runner = "@shell"
+script = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+VERSION=${@}
+
+# Check if VERSION parameter is provided
+if [ -z "${VERSION}" ]; then
+  echo "Error: Please provide a version number using VERSION=x.y.z"
+  exit 1
+fi
+
+# Validate version format (x.y.z)
+if ! [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "Error: Version must be in format x.y.z where x, y, and z are numbers"
+  exit 1
+fi
+
+# Detect OS for sed compatibility
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # macOS requires an empty string with -i
+  SED_CMD="sed -i ''"
+else
+  # Linux version
+  SED_CMD="sed -i"
+fi
+
+# Update version in Cargo.toml
+$SED_CMD "s/^version = \"[0-9]*\.[0-9]*\.[0-9]*\"/version = \"${VERSION}\"/" Cargo.toml
+echo "Updated version in Cargo.toml to ${VERSION}"
+
+# Update LATEST_VERSION in install.sh
+$SED_CMD "s/^LATEST_VERSION=\"[0-9]*\.[0-9]*\.[0-9]*\"/LATEST_VERSION=\"${VERSION}\"/" install.sh
+echo "Updated LATEST_VERSION in install.sh to ${VERSION}"
+
+echo "Version bump complete!"
+'''
