@@ -3,7 +3,7 @@ mod hydra;
 use std::collections::HashMap;
 
 use grafbase_sdk::test::{DynamicSchema, DynamicSubgraph, TestConfig, TestRunner};
-use hydra::{AUDIENCE, CoreClientExt, JWKS_URI, OryHydraOpenIDProvider};
+use hydra::{AUDIENCE, CoreClientExt, JWKS_URI, OTHER_AUDIENCE, OryHydraOpenIDProvider, THIRD_AUDIENCE};
 use indoc::formatdoc;
 
 fn config() -> String {
@@ -306,19 +306,12 @@ async fn test_wrong_provider() {
 }
 
 #[tokio::test]
-async fn test_audience() {
+async fn test_single_audience() {
     let config = formatdoc! {r#"
         [extensions.jwt.config]
         url = "{JWKS_URI}"
         audience = "{AUDIENCE}"
     "#};
-
-    let token = OryHydraOpenIDProvider::default()
-        .create_client()
-        .await
-        .get_access_token_with_client_credentials(&[("audience", AUDIENCE)])
-        .await;
-
     let config = TestConfig::builder()
         .with_subgraph(subgraph())
         .enable_networking()
@@ -327,13 +320,18 @@ async fn test_audience() {
 
     let runner = TestRunner::new(config).await.unwrap();
 
+    // -- CORRECT AUDIENCE --
+    let token = OryHydraOpenIDProvider::default()
+        .create_client()
+        .await
+        .get_access_token_with_client_credentials(&[("audience", AUDIENCE)])
+        .await;
     let result: serde_json::Value = runner
         .graphql_query("query { hi }")
         .with_header("Authorization", &format!("Bearer {token}"))
         .send()
         .await
         .unwrap();
-
     insta::assert_json_snapshot!(result, @r#"
     {
       "data": {
@@ -342,19 +340,189 @@ async fn test_audience() {
     }
     "#);
 
+    // -- MULTIPLE AUDIENCES --
     let token = OryHydraOpenIDProvider::default()
         .create_client()
         .await
-        .get_access_token_with_client_credentials(&[])
+        .get_access_token_with_client_credentials(&[("audience", &format!("{AUDIENCE} {OTHER_AUDIENCE}"))])
         .await;
-
     let result: serde_json::Value = runner
         .graphql_query("query { hi }")
         .with_header("Authorization", &format!("Bearer {token}"))
         .send()
         .await
         .unwrap();
+    insta::assert_json_snapshot!(result, @r#"
+    {
+      "data": {
+        "hi": "hello"
+      }
+    }
+    "#);
 
+    // -- INCORRECT AUDIENCE --
+    let token = OryHydraOpenIDProvider::default()
+        .create_client()
+        .await
+        .get_access_token_with_client_credentials(&[("audience", OTHER_AUDIENCE)])
+        .await;
+    let result: serde_json::Value = runner
+        .graphql_query("query { hi }")
+        .with_header("Authorization", &format!("Bearer {token}"))
+        .send()
+        .await
+        .unwrap();
+    insta::assert_json_snapshot!(result, @r#"
+    {
+      "errors": [
+        {
+          "message": "Unauthorized",
+          "extensions": {
+            "code": "UNAUTHENTICATED"
+          }
+        }
+      ]
+    }
+    "#);
+
+    // -- MISSING AUDIENCE --
+    let token = OryHydraOpenIDProvider::default()
+        .create_client()
+        .await
+        .get_access_token_with_client_credentials(&[])
+        .await;
+    let result: serde_json::Value = runner
+        .graphql_query("query { hi }")
+        .with_header("Authorization", &format!("Bearer {token}"))
+        .send()
+        .await
+        .unwrap();
+    insta::assert_json_snapshot!(result, @r#"
+    {
+      "errors": [
+        {
+          "message": "Unauthorized",
+          "extensions": {
+            "code": "UNAUTHENTICATED"
+          }
+        }
+      ]
+    }
+    "#);
+}
+
+#[tokio::test]
+async fn test_multiple_audience() {
+    let config = formatdoc! {r#"
+        [extensions.jwt.config]
+        url = "{JWKS_URI}"
+        audience = ["{AUDIENCE}", "{OTHER_AUDIENCE}"]
+    "#};
+    let config = TestConfig::builder()
+        .with_subgraph(subgraph())
+        .enable_networking()
+        .build(config)
+        .unwrap();
+
+    let runner = TestRunner::new(config).await.unwrap();
+
+    // -- CORRECT AUDIENCE --
+    let token = OryHydraOpenIDProvider::default()
+        .create_client()
+        .await
+        .get_access_token_with_client_credentials(&[("audience", AUDIENCE)])
+        .await;
+    let result: serde_json::Value = runner
+        .graphql_query("query { hi }")
+        .with_header("Authorization", &format!("Bearer {token}"))
+        .send()
+        .await
+        .unwrap();
+    insta::assert_json_snapshot!(result, @r#"
+    {
+      "data": {
+        "hi": "hello"
+      }
+    }
+    "#);
+
+    // -- MULTIPLE AUDIENCES --
+    let token = OryHydraOpenIDProvider::default()
+        .create_client()
+        .await
+        .get_access_token_with_client_credentials(&[("audience", &format!("{AUDIENCE} {OTHER_AUDIENCE}"))])
+        .await;
+    let result: serde_json::Value = runner
+        .graphql_query("query { hi }")
+        .with_header("Authorization", &format!("Bearer {token}"))
+        .send()
+        .await
+        .unwrap();
+    insta::assert_json_snapshot!(result, @r#"
+    {
+      "data": {
+        "hi": "hello"
+      }
+    }
+    "#);
+
+    // -- OTHER AUDIENCE --
+    let token = OryHydraOpenIDProvider::default()
+        .create_client()
+        .await
+        .get_access_token_with_client_credentials(&[("audience", OTHER_AUDIENCE)])
+        .await;
+    let result: serde_json::Value = runner
+        .graphql_query("query { hi }")
+        .with_header("Authorization", &format!("Bearer {token}"))
+        .send()
+        .await
+        .unwrap();
+    insta::assert_json_snapshot!(result, @r#"
+    {
+      "data": {
+        "hi": "hello"
+      }
+    }
+    "#);
+
+    // -- INCORRECT AUDIENCE --
+    let token = OryHydraOpenIDProvider::default()
+        .create_client()
+        .await
+        .get_access_token_with_client_credentials(&[("audience", THIRD_AUDIENCE)])
+        .await;
+    let result: serde_json::Value = runner
+        .graphql_query("query { hi }")
+        .with_header("Authorization", &format!("Bearer {token}"))
+        .send()
+        .await
+        .unwrap();
+    insta::assert_json_snapshot!(result, @r#"
+    {
+      "errors": [
+        {
+          "message": "Unauthorized",
+          "extensions": {
+            "code": "UNAUTHENTICATED"
+          }
+        }
+      ]
+    }
+    "#);
+
+    // -- MISSING AUDIENCE --
+    let token = OryHydraOpenIDProvider::default()
+        .create_client()
+        .await
+        .get_access_token_with_client_credentials(&[])
+        .await;
+    let result: serde_json::Value = runner
+        .graphql_query("query { hi }")
+        .with_header("Authorization", &format!("Bearer {token}"))
+        .send()
+        .await
+        .unwrap();
     insta::assert_json_snapshot!(result, @r#"
     {
       "errors": [

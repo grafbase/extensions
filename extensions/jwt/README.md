@@ -32,7 +32,11 @@ url = "https://example.com/.well-known/jwks.json"
 # issuer = "example.com"
 
 # Expected `aud` claim. By default it is NOT validated.
+# If a list is provided, only one of those audience must match.
+# Note that `aud` claim can be an array in all cases in the JWT and only one of the `aud` claims
+# must match an audience defined here.
 # audience = "my-project"
+# audience = ["my-project", "my-other-name"]
 
 # How long the JWKS will be cached, in seconds.
 poll_interval = 60

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.0] - 2025-05-01
+
+- Support for an array in `audience` configuration.
+- Better configuration de-serialization errors.
+
 ## [1.0.0] - 2025-05-01
 
 - No changes.
