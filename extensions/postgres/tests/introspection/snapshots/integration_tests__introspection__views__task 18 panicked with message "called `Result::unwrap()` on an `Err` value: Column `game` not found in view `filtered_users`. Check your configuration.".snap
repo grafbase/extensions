@@ -1,5 +1,0 @@
----
-source: extensions/postgres/tests/introspection/views.rs
-expression: "r#\"\"#"
----
-
