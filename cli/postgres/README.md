@@ -13,7 +13,7 @@ This CLI tool connects to a PostgreSQL database, introspects its schema (tables,
 You can install the latest version with a single command:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/grafbase/grafbase/main/extensions/cli/postgres/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/grafbase/extensions/refs/heads/main/cli/postgres/install.sh | bash
 ```
 
 This will automatically detect your system, download the appropriate binary, and install it to `~/.grafbase/bin`.
