@@ -48,10 +48,13 @@ impl Config {
         };
 
         let Some(table_config) = schema_config.tables.get(table.database_name()) else {
-            return schema_config.enable_mutations;
+            return schema_config.enable_mutations.unwrap_or(self.enable_mutations);
         };
 
-        table_config.enable_mutations
+        table_config
+            .enable_mutations
+            .or(schema_config.enable_mutations)
+            .unwrap_or(self.enable_mutations)
     }
 
     /// Determines whether queries (read operations) are allowed for the specified table.
@@ -62,16 +65,22 @@ impl Config {
 
         if table.relation_kind().is_view() {
             let Some(view_config) = schema_config.views.get(table.database_name()) else {
-                return schema_config.enable_queries;
+                return schema_config.enable_queries.unwrap_or(self.enable_queries);
             };
 
-            view_config.enable_queries
+            view_config
+                .enable_queries
+                .or(schema_config.enable_queries)
+                .unwrap_or(self.enable_queries)
         } else {
             let Some(table_config) = schema_config.tables.get(table.database_name()) else {
-                return schema_config.enable_queries;
+                return schema_config.enable_queries.unwrap_or(self.enable_queries);
             };
 
-            table_config.enable_queries
+            table_config
+                .enable_queries
+                .or(schema_config.enable_queries)
+                .unwrap_or(self.enable_queries)
         }
     }
 }
@@ -91,11 +100,9 @@ fn default_default_schema() -> String {
 #[serde(deny_unknown_fields)]
 pub struct SchemaConfig {
     /// Determines whether mutations (write operations) are enabled for this schema.
-    #[serde(default = "default_enable_mutations")]
-    pub enable_mutations: bool,
+    pub enable_mutations: Option<bool>,
     /// Determines whether queries (read operations) are enabled for this schema.
-    #[serde(default = "default_enable_queries")]
-    pub enable_queries: bool,
+    pub enable_queries: Option<bool>,
     /// Configuration details for each view within the database, keyed by view name.
     #[serde(default)]
     pub views: HashMap<String, ViewConfig>,
@@ -108,11 +115,9 @@ pub struct SchemaConfig {
 #[serde(deny_unknown_fields)]
 pub struct TableConfig {
     /// Determines whether mutations (write operations) are enabled for this table.
-    #[serde(default = "default_enable_mutations")]
-    pub enable_mutations: bool,
+    pub enable_mutations: Option<bool>,
     /// Determines whether queries (read operations) are enabled for this table.
-    #[serde(default = "default_enable_queries")]
-    pub enable_queries: bool,
+    pub enable_queries: Option<bool>,
     /// Configuration details for relationships originating from this view, keyed by relationship name.
     #[serde(default)]
     pub relations: HashMap<String, RelationConfig>,
@@ -123,11 +128,9 @@ pub struct TableConfig {
 #[serde(deny_unknown_fields)]
 pub struct ViewConfig {
     /// Determines whether mutations (write operations) are enabled for this table.
-    #[serde(default = "default_enable_mutations")]
-    pub enable_mutations: bool,
+    pub enable_mutations: Option<bool>,
     /// Determines whether queries (read operations) are enabled for this table.
-    #[serde(default = "default_enable_queries")]
-    pub enable_queries: bool,
+    pub enable_queries: Option<bool>,
     /// Optional list of unique key constraints, where each constraint is a list of column names.
     pub unique_keys: Option<Vec<Vec<String>>>,
     /// Configuration details for each column within the relation, keyed by column name.
