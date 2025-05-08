@@ -9,6 +9,7 @@ pub const ISSUER: &str = "http://127.0.0.1:4444";
 pub const JWKS_URI: &str = "http://127.0.0.1:4444/.well-known/jwks.json";
 pub const AUDIENCE: &str = "integration-tests";
 pub const OTHER_AUDIENCE: &str = "other-audience";
+pub const THIRD_AUDIENCE: &str = "third-audience";
 const HYDRA_ADMIN_URL: &str = "http://127.0.0.1:4445";
 // Second provider
 pub const ISSUER_2: &str = "http://127.0.0.1:4454";
@@ -53,7 +54,7 @@ impl OryHydraOpenIDProvider {
                 access_token_strategy: Some("jwt".into()),
                 grant_types: Some(vec!["client_credentials".into()]),
                 // Allowed audiences
-                audience: Some(vec![AUDIENCE.into(), OTHER_AUDIENCE.into()]),
+                audience: Some(vec![AUDIENCE.into(), OTHER_AUDIENCE.into(), THIRD_AUDIENCE.into()]),
                 // Allowed scopes
                 scope: Some(format!("{READ_SCOPE} {WRITE_SCOPE}")),
                 ..ory_client::models::OAuth2Client::new()
