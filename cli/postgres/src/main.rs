@@ -21,7 +21,12 @@ async fn main() -> anyhow::Result<()> {
 }
 
 async fn introspect(conn: &mut PgConnection, cmd: IntrospectCommand) -> anyhow::Result<()> {
-    let config = std::fs::read_to_string(&cmd.config).context(concat!(
+    // Prevent path traversal attacks by rejecting paths containing '..'
+    let path = std::path::Path::new(&cmd.config);
+    if path.components().any(|c| c == std::path::Component::ParentDir) {
+        anyhow::bail!("Invalid input: {}", path.display());
+    }
+    let config = std::fs::read_to_string(path).context(concat!(
         "Could not find a configuration file. Please provide a valid path ",
         "with --config, or make sure file ./grafbase-postgres.toml exists."
     ))?;
