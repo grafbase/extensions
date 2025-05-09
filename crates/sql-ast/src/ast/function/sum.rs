@@ -21,7 +21,7 @@ where
 impl<'a> From<Sum<'a>> for Function<'a> {
     fn from(value: Sum<'a>) -> Self {
         Self {
-            typ_: FunctionType::Sum(value),
+            r#type: FunctionType::Sum(value),
             alias: None,
         }
     }

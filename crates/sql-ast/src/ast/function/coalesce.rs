@@ -23,7 +23,7 @@ where
 impl<'a> From<Coalesce<'a>> for Function<'a> {
     fn from(value: Coalesce<'a>) -> Self {
         Self {
-            typ_: FunctionType::Coalesce(value),
+            r#type: FunctionType::Coalesce(value),
             alias: None,
         }
     }

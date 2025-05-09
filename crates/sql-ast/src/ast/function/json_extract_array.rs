@@ -20,7 +20,7 @@ where
 impl<'a> From<JsonExtractLastArrayElem<'a>> for Function<'a> {
     fn from(value: JsonExtractLastArrayElem<'a>) -> Self {
         Self {
-            typ_: FunctionType::JsonExtractLastArrayElem(value),
+            r#type: FunctionType::JsonExtractLastArrayElem(value),
             alias: None,
         }
     }
@@ -46,7 +46,7 @@ where
 impl<'a> From<JsonExtractFirstArrayElem<'a>> for Function<'a> {
     fn from(value: JsonExtractFirstArrayElem<'a>) -> Self {
         Self {
-            typ_: FunctionType::JsonExtractFirstArrayElem(value),
+            r#type: FunctionType::JsonExtractFirstArrayElem(value),
             alias: None,
         }
     }

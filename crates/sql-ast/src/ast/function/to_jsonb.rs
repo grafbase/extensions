@@ -17,7 +17,7 @@ pub fn to_jsonb<'a>(table: impl Into<Table<'a>>) -> Function<'a> {
 impl<'a> From<ToJsonb<'a>> for Function<'a> {
     fn from(value: ToJsonb<'a>) -> Self {
         Self {
-            typ_: super::FunctionType::ToJsonb(value),
+            r#type: super::FunctionType::ToJsonb(value),
             alias: None,
         }
     }

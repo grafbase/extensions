@@ -125,7 +125,7 @@ impl<'a> SelectionIterator<'a> {
         if let Ok(params) = field.arguments::<CollectionParameters>(ctx.arguments) {
             for order_input in &params.order_by {
                 for field_name in order_input.field.keys() {
-                    if selection_columns.contains_key(field_name.as_str()) {
+                    if selection_columns.contains_key(dbg!(field_name.as_str())) {
                         continue;
                     }
 
@@ -230,7 +230,7 @@ impl<'a> Iterator for SelectionIterator<'a> {
 
             // `userCollection { edges { node { field } } }`, the selection part.
             //
-            let selection_field = selection_field
+            let selection_set = selection_field
                 .selection_set()
                 .fields()
                 .find(|f| {
@@ -248,9 +248,8 @@ impl<'a> Iterator for SelectionIterator<'a> {
                         .get_name_for_field_definition(f.definition_id())
                         == Some("node")
                 })
-                .unwrap();
-
-            let selection_set = selection_field.selection_set();
+                .unwrap()
+                .selection_set();
 
             let iterator = match Self::new(self.ctx, relation.referenced_table(), selection_field, selection_set) {
                 Ok(iterator) => iterator,

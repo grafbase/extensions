@@ -78,7 +78,7 @@ impl<'a> Context<'a> {
 
         let selection = field.selection_set();
 
-        SelectionIterator::new(self, table, field, selection)
+        SelectionIterator::new(self, table, self.field, selection)
     }
 
     pub(crate) fn create_input(&'a self, table: TableWalker<'a>) -> Result<CreateInputIterator<'a>, SdkError> {

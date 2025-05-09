@@ -1,4 +1,6 @@
-use crate::ast::{Column, IntoOrderDefinition, Over};
+use crate::ast::{Column, Expression, IntoOrderDefinition, Over};
+
+use super::{Function, FunctionType};
 
 #[derive(Debug, Default, Clone, PartialEq)]
 /// A window function that assigns a sequential integer
@@ -24,6 +26,21 @@ impl<'a> RowNumber<'a> {
     {
         self.over.partitioning.push(partition.into());
         self
+    }
+}
+
+impl<'a> From<RowNumber<'a>> for Function<'a> {
+    fn from(row_number: RowNumber<'a>) -> Self {
+        Function {
+            r#type: FunctionType::RowNumber(row_number),
+            alias: None,
+        }
+    }
+}
+
+impl<'a> From<RowNumber<'a>> for Expression<'a> {
+    fn from(row_number: RowNumber<'a>) -> Self {
+        Expression::from(Function::from(row_number))
     }
 }
 

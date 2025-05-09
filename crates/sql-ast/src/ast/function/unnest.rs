@@ -28,7 +28,7 @@ where
 impl<'a> From<Unnest<'a>> for Function<'a> {
     fn from(value: Unnest<'a>) -> Self {
         Self {
-            typ_: FunctionType::Unnest(value),
+            r#type: FunctionType::Unnest(value),
             alias: None,
         }
     }

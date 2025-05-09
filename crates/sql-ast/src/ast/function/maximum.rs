@@ -19,7 +19,7 @@ where
 impl<'a> From<Maximum<'a>> for Function<'a> {
     fn from(value: Maximum<'a>) -> Self {
         Self {
-            typ_: FunctionType::Maximum(value),
+            r#type: FunctionType::Maximum(value),
             alias: None,
         }
     }

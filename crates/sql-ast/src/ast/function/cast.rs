@@ -23,7 +23,7 @@ where
 impl<'a> From<Cast<'a>> for Function<'a> {
     fn from(value: Cast<'a>) -> Self {
         Self {
-            typ_: FunctionType::Cast(value),
+            r#type: FunctionType::Cast(value),
             alias: None,
         }
     }

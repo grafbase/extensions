@@ -22,7 +22,7 @@ where
 impl<'a> From<Concat<'a>> for Function<'a> {
     fn from(value: Concat<'a>) -> Self {
         Self {
-            typ_: FunctionType::Concat(value),
+            r#type: FunctionType::Concat(value),
             alias: None,
         }
     }

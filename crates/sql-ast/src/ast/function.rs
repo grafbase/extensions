@@ -7,6 +7,7 @@ mod concat;
 mod count;
 mod encode;
 mod json_agg;
+mod json_build_array;
 mod json_build_object;
 mod json_extract;
 mod json_extract_array;
@@ -30,6 +31,7 @@ pub use concat::*;
 pub use count::*;
 pub use encode::*;
 pub use json_agg::*;
+pub use json_build_array::*;
 pub use json_build_object::*;
 pub use json_extract::*;
 pub(crate) use json_extract_array::*;
@@ -49,14 +51,14 @@ use super::{Alias, Aliasable};
 /// A database function definition
 #[derive(Debug, Clone, PartialEq)]
 pub struct Function<'a> {
-    pub(crate) typ_: FunctionType<'a>,
+    pub(crate) r#type: FunctionType<'a>,
     pub(crate) alias: Option<Alias<'a>>,
 }
 
 impl Function<'_> {
     pub fn returns_json(&self) -> bool {
         matches!(
-            self.typ_,
+            self.r#type,
             FunctionType::RowToJson(_)
                 | FunctionType::JsonExtract(_)
                 | FunctionType::JsonExtractLastArrayElem(_)
@@ -91,6 +93,8 @@ pub(crate) enum FunctionType<'a> {
     JsonBuildObject(JsonBuildObject<'a>),
     Unnest(Unnest<'a>),
     ArrayPosition(ArrayPosition<'a>),
+    JsonBuildArray(JsonBuildArray<'a>),
+    RowNumber(RowNumber<'a>),
 }
 
 impl<'a> Aliasable<'a> for Function<'a> {

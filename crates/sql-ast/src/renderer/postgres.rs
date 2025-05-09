@@ -5,9 +5,10 @@ use grafbase_sdk::host_io::postgres::{self as sdk, types::DatabaseType};
 
 use crate::ast::{
     self, Alias, Average, Column, CommonTableExpression, Compare, Concat, ConditionTree, Delete, Encode, EncodeFormat,
-    Expression, ExpressionKind, Function, FunctionType, Grouping, Insert, Join, JoinData, JsonAgg, JsonBuildObject,
-    JsonCompare, JsonExtract, JsonExtractFirstArrayElem, JsonExtractLastArrayElem, JsonType, JsonUnquote, OnConflict,
-    Order, Ordering, ParameterizedValue, Query, Row, Select, SqlOp, Table, TableType, ToJsonb, Update, Values,
+    Expression, ExpressionKind, Function, FunctionType, Grouping, Insert, Join, JoinData, JsonAgg, JsonBuildArray,
+    JsonBuildObject, JsonCompare, JsonExtract, JsonExtractFirstArrayElem, JsonExtractLastArrayElem, JsonType,
+    JsonUnquote, OnConflict, Order, Ordering, ParameterizedValue, Query, Row, Select, SqlOp, Table, TableType, ToJsonb,
+    Update, Values,
 };
 
 const C_BACKTICK_OPEN: &str = "\"";
@@ -437,6 +438,21 @@ impl Renderer {
             });
 
             self.write(", ");
+            self.visit_expression(expression);
+
+            if i < (values_length - 1) {
+                self.write(",");
+            }
+        }
+
+        self.write(")");
+    }
+
+    fn visit_json_build_array(&mut self, json_build_array: JsonBuildArray<'_>) {
+        self.write("json_build_array(");
+
+        let values_length = json_build_array.expressions.len();
+        for (i, expression) in json_build_array.expressions.into_iter().enumerate() {
             self.visit_expression(expression);
 
             if i < (values_length - 1) {
@@ -1247,7 +1263,7 @@ impl Renderer {
     }
 
     fn visit_function(&mut self, fun: Function<'_>) {
-        match fun.typ_ {
+        match fun.r#type {
             FunctionType::Count(fun_count) => {
                 if fun_count.exprs.is_empty() {
                     self.write("COUNT(*)");
@@ -1322,7 +1338,9 @@ impl Renderer {
             FunctionType::JsonAgg(json_agg) => self.visit_json_agg(json_agg),
             FunctionType::Encode(encode) => self.visit_encode(encode),
             FunctionType::JsonBuildObject(encode) => self.visit_json_build_object(encode),
+            FunctionType::JsonBuildArray(encode) => self.visit_json_build_array(encode),
             FunctionType::Unnest(unnest) => self.visit_unnest(unnest),
+            FunctionType::RowNumber(row_number) => self.visit_row_number(row_number),
             FunctionType::Concat(concat) => {
                 self.visit_concat(concat);
             }
@@ -1379,5 +1397,33 @@ impl Renderer {
         if unnest.with_ordinality {
             self.write(" WITH ORDINALITY");
         }
+    }
+
+    fn visit_row_number(&mut self, row_number: ast::RowNumber<'_>) {
+        self.write("ROW_NUMBER() OVER ");
+
+        self.surround_with("(", ")", |this| {
+            let partitioning = row_number.over.partitioning;
+            let ordering = row_number.over.ordering;
+
+            if !partitioning.is_empty() {
+                let len = partitioning.len();
+
+                this.write("PARTITION BY ");
+
+                for (i, column) in partitioning.into_iter().enumerate() {
+                    this.visit_column(column);
+
+                    if i < len - 1 {
+                        this.write(", ");
+                    }
+                }
+
+                this.write(" ");
+            }
+
+            this.write("ORDER BY ");
+            this.visit_ordering(ordering);
+        });
     }
 }
