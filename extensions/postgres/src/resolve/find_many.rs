@@ -2,12 +2,9 @@ use grafbase_database_definition::TableId;
 use grafbase_sdk::{SdkError, types::Data};
 use sql_ast::renderer;
 
-use crate::{
-    context::{
-        Context,
-        selection_iterator::collection_args::{CollectionArgs, CollectionParameters},
-    },
-    resolve::query::select::SelectFlag,
+use crate::context::{
+    Context,
+    selection_iterator::collection_args::{CollectionArgs, CollectionParameters},
 };
 
 use super::{builder::SelectBuilder, query};
@@ -18,17 +15,16 @@ fn empty() -> Data {
 
 pub(crate) fn execute(ctx: Context<'_>, table_id: TableId) -> Result<Data, SdkError> {
     let table = ctx.database_definition.walk(table_id);
-    let mut builder = SelectBuilder::new(table, ctx.collection_selection(table)?, "root");
+    let mut builder = SelectBuilder::new(table, ctx.collection_selection(table)?, "node");
     let collection_params = ctx.field.arguments::<CollectionParameters>(ctx.arguments)?;
 
     let args = CollectionArgs::new(ctx.database_definition, table, collection_params)?;
-    builder.set_collection_args(args);
 
     if let Ok(filter) = ctx.filter(table) {
         builder.set_filter(filter);
     }
 
-    let ast = query::select::build(builder, SelectFlag::Pagination.into())?;
+    let ast = query::select::pagination::build(builder, args)?;
     let query = renderer::postgres::render(ast);
 
     tracing::debug!("Executing query: {}", query);

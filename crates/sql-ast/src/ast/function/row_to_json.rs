@@ -25,7 +25,7 @@ where
 impl<'a> From<RowToJson<'a>> for Function<'a> {
     fn from(value: RowToJson<'a>) -> Self {
         Self {
-            typ_: FunctionType::RowToJson(value),
+            r#type: FunctionType::RowToJson(value),
             alias: None,
         }
     }

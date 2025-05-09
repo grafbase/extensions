@@ -1041,11 +1041,11 @@ async fn globally_disabled_mutations() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -4230,11 +4230,11 @@ async fn disable_mutations_per_schema() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -5926,11 +5926,11 @@ async fn disable_queries_per_schema() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -7805,11 +7805,11 @@ async fn disable_mutations_per_table() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -9840,11 +9840,11 @@ async fn disable_queries_per_table() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -11892,11 +11892,11 @@ async fn schema_mutations_setting_takes_precedence_over_global_setting() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -13590,11 +13590,11 @@ async fn schema_queries_setting_takes_precedence_over_global_setting() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -15387,11 +15387,11 @@ async fn table_mutations_setting_takes_precedence_over_global_setting() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -17085,11 +17085,11 @@ async fn table_queries_setting_takes_precedence_over_global_setting() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -18969,11 +18969,11 @@ async fn table_mutations_setting_takes_precedence_over_schema_setting() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -21009,11 +21009,11 @@ async fn table_queries_setting_takes_precedence_over_schema_setting() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -21938,6 +21938,90 @@ async fn disable_queries_globally_for_views() {
     """
     input LoserUpdateInput {
       _: Boolean
+    }
+
+    """
+    Input type to select a unique Meow
+    """
+    input MeowLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for Meow collections
+    """
+    input MeowCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: MeowFilterInput
+    }
+
+    """
+    Filter input type for Meow objects.
+    """
+    input MeowFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [MeowFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [MeowFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [MeowFilterInput]
+    }
+
+    """
+    Input type to select a unique Woof
+    """
+    input WoofLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for Woof collections
+    """
+    input WoofCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: WoofFilterInput
+    }
+
+    """
+    Filter input type for Woof objects.
+    """
+    input WoofFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [WoofFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [WoofFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [WoofFilterInput]
     }
 
     """
@@ -23252,6 +23336,22 @@ async fn disable_queries_globally_for_views() {
       id: Int! @pgColumn(name: "id", type: INT)
     }
 
+    type Meow
+      @key(fields: "id")
+      @pgTable(name: "meow", schema: "a", kind: VIEW)
+      @pgKey(fields: ["id"], type: UNIQUE)
+    {
+      id: Int! @pgColumn(name: "id", type: INT)
+    }
+
+    type Woof
+      @key(fields: "id")
+      @pgTable(name: "woof", schema: "b", kind: VIEW)
+      @pgKey(fields: ["id"], type: UNIQUE)
+    {
+      id: Int! @pgColumn(name: "id", type: INT)
+    }
+
     type Mutation {
       """
       Create a single User
@@ -23663,6 +23763,110 @@ async fn disable_queries_per_view() {
     """
     input LoserUpdateInput {
       _: Boolean
+    }
+
+    """
+    Specifies the ordering for Meow results.
+    """
+    input MeowOrderByInput @oneOf {
+      """
+      Order meows by id
+      """
+      id: OrderDirection
+    }
+
+    """
+    Lookup input type for Meow objects for subgraph joins.
+    """
+    input MeowManyLookupInput @oneOf @inaccessible {
+      """
+      Select by the 'id' field
+      """
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Input type to select a unique Meow
+    """
+    input MeowLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for Meow collections
+    """
+    input MeowCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: MeowFilterInput
+    }
+
+    """
+    Filter input type for Meow objects.
+    """
+    input MeowFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [MeowFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [MeowFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [MeowFilterInput]
+    }
+
+    """
+    Input type to select a unique Woof
+    """
+    input WoofLookupInput @oneOf {
+      """
+      Select by the 'id' field
+      """
+      id: Int
+    }
+
+    """
+    Filter input type for Woof collections
+    """
+    input WoofCollectionFilterInput {
+      """
+      The object is related to an object with the given fields
+      """
+      contains: WoofFilterInput
+    }
+
+    """
+    Filter input type for Woof objects.
+    """
+    input WoofFilterInput @oneOf {
+      """
+      Filter by the given id
+      """
+      id: IntFilterInput
+      """
+      All of the filters must match
+      """
+      ALL: [WoofFilterInput]
+      """
+      None of the filters must match
+      """
+      NONE: [WoofFilterInput]
+      """
+      At least one of the filters must match
+      """
+      ANY: [WoofFilterInput]
     }
 
     """
@@ -24762,11 +24966,11 @@ async fn disable_queries_per_view() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -25045,6 +25249,36 @@ async fn disable_queries_per_view() {
       pageInfo: PageInfo! @shareable
     }
 
+    """
+    An edge in a connection. Contains the node and its cursor
+    """
+    type MeowEdge {
+      """
+      The item at the end of the edge
+      """
+      node: Meow! @shareable
+      """
+      A cursor for use in pagination
+      """
+      cursor: String! @shareable
+    }
+
+    """
+    The connection type for Meow
+    """
+    type MeowConnection
+      @pgConnection(type: "Meow")
+    {
+      """
+      A list of edges
+      """
+      edges: [MeowEdge!]! @shareable
+      """
+      Information to aid in pagination
+      """
+      pageInfo: PageInfo! @shareable
+    }
+
     type User
       @key(fields: "id")
       @pgTable(name: "users", schema: "a")
@@ -25057,6 +25291,22 @@ async fn disable_queries_per_view() {
       @key(fields: "id")
       @pgTable(name: "losers", schema: "b")
       @pgKey(fields: ["id"], type: PRIMARY)
+    {
+      id: Int! @pgColumn(name: "id", type: INT)
+    }
+
+    type Meow
+      @key(fields: "id")
+      @pgTable(name: "meow", schema: "a", kind: VIEW)
+      @pgKey(fields: ["id"], type: UNIQUE)
+    {
+      id: Int! @pgColumn(name: "id", type: INT)
+    }
+
+    type Woof
+      @key(fields: "id")
+      @pgTable(name: "woof", schema: "b", kind: VIEW)
+      @pgKey(fields: ["id"], type: UNIQUE)
     {
       id: Int! @pgColumn(name: "id", type: INT)
     }
@@ -25156,6 +25406,53 @@ async fn disable_queries_per_view() {
         """
         lookup: LoserManyLookupInput @inaccessible,
       ): [Loser]! @pgLookup @lookup @inaccessible
+      """
+      Query a unique Meow
+      """
+      meow(
+        """
+        Input for unique Meow lookup
+        """
+        lookup: MeowLookupInput!,
+      ): Meow @pgSelectOne
+      """
+      Query and paginate multiple meows
+      """
+      meows(
+        """
+        Filter for Meow
+        """
+        filter: MeowFilterInput,
+        """
+        Limit the number of results, from the beginning
+        """
+        first: Int,
+        """
+        Limit the number of results, from the end
+        """
+        last: Int,
+        """
+        Cursor for pagination, select items before the cursor. Use together with `last`.
+        """
+        before: String,
+        """
+        Cursor for pagination, select items after the cursor. Use together with `first`.
+        """
+        after: String,
+        """
+        Order the results by selected fields
+        """
+        orderBy: [MeowOrderByInput!],
+      ): MeowConnection! @pgSelectMany
+      """
+      Lookup multiple meows for subgraph joins
+      """
+      meowLookup(
+        """
+        Filter meows with an array of keys
+        """
+        lookup: MeowManyLookupInput @inaccessible,
+      ): [Meow]! @pgLookup @lookup @inaccessible
     }
 
     type Mutation {

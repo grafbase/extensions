@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use anyhow::bail;
 use grafbase_database_definition::{DatabaseDefinition, ForeignKey, ForeignKeyColumn, SchemaId};
@@ -160,7 +160,7 @@ fn override_relations(
     database_definition: &mut DatabaseDefinition,
     constrained_schema_id: SchemaId,
     table_name: &str,
-    relations: &HashMap<String, RelationConfig>,
+    relations: &BTreeMap<String, RelationConfig>,
 ) -> anyhow::Result<()> {
     let Some(constrained_table_id) = database_definition.get_table_id(constrained_schema_id, table_name) else {
         bail!("Table `{table_name}` not found in relation configuration.")

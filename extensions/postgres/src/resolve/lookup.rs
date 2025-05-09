@@ -12,7 +12,7 @@ pub(crate) fn execute(
     table_id: grafbase_database_definition::TableId,
 ) -> Result<Data, SdkError> {
     let table = ctx.database_definition.walk(table_id);
-    let mut builder = SelectBuilder::new(table, ctx.collection_selection(table)?, "root");
+    let mut builder = SelectBuilder::new(table, ctx.selection(table)?, "root");
 
     if let Some(lookup_order) = ctx.lookup_order(table)? {
         builder.set_lookup_order(lookup_order);

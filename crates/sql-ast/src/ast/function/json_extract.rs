@@ -29,7 +29,7 @@ where
 impl<'a> From<JsonExtract<'a>> for Function<'a> {
     fn from(value: JsonExtract<'a>) -> Self {
         Self {
-            typ_: FunctionType::JsonExtract(value),
+            r#type: FunctionType::JsonExtract(value),
             alias: None,
         }
     }

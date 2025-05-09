@@ -9,7 +9,7 @@ use grafbase_sdk::{
 use sql_ast::ast::{self, Aliasable, Case, Column, Comparable, Expression, Select, json_agg, raw_str};
 use std::{borrow::Cow, collections::HashMap};
 
-use super::Context;
+use super::{Context, PageInfo};
 
 #[derive(Clone)]
 pub struct SelectColumn<'a>(TableColumnWalker<'a>);
@@ -93,7 +93,7 @@ pub enum TableSelection<'a> {
     /// Joins a unique row with a nested selection.
     JoinUnique(RelationWalker<'a>, SelectionIterator<'a>),
     /// Joins a collection of rows with a nested selection.
-    JoinMany(RelationWalker<'a>, SelectionIterator<'a>, CollectionArgs),
+    JoinMany(RelationWalker<'a>, SelectionIterator<'a>, CollectionArgs<'a>),
 }
 
 /// An iterator over a GraphQL selection. Returns either a column or a
@@ -101,60 +101,109 @@ pub enum TableSelection<'a> {
 #[derive(Clone)]
 pub struct SelectionIterator<'a> {
     ctx: Context<'a>,
-    selection: SelectionSet<'a>,
+    selection: Option<SelectionSet<'a>>,
     extra_columns: Vec<TableColumnWalker<'a>>,
     index: usize,
     extra_column_index: usize,
+    page_info: Option<PageInfo>,
+    needs_cursor: bool,
+    selects_cursor: bool,
+    selects_edges: bool,
+    selects_nodes: bool,
 }
 
 impl<'a> SelectionIterator<'a> {
-    pub fn new(
+    pub fn edges(
         ctx: Context<'a>,
         table: TableWalker<'a>,
         field: Field<'a>,
-        selection: SelectionSet<'a>,
+        selection: Option<SelectionSet<'a>>,
+    ) -> Result<Self, SdkError> {
+        let edges = selection.and_then(|s| {
+            s.fields()
+                .find(|f| ctx.database_definition.get_name_for_field_definition(f.definition_id()) == Some("edges"))
+                .map(|f| f.selection_set())
+        });
+
+        let node = edges.and_then(|s| {
+            s.fields()
+                .find(|f| ctx.database_definition.get_name_for_field_definition(f.definition_id()) == Some("node"))
+                .map(|f| f.selection_set())
+        });
+
+        let mut this = Self::unique(ctx, table, field, node)?;
+
+        let page_info = field
+            .selection_set()
+            .fields()
+            .find(|f| ctx.database_definition.get_name_for_field_definition(f.definition_id()) == Some("pageInfo"));
+
+        if let Some(page_info) = page_info {
+            this.page_info = Some(PageInfo::new(ctx.database_definition, page_info.selection_set()));
+        }
+
+        let cursor = edges.filter(|s| {
+            s.fields()
+                .any(|f| ctx.database_definition.get_name_for_field_definition(f.definition_id()) == Some("cursor"))
+        });
+
+        this.needs_cursor = this.page_info.map(|i| i.needs_cursor()).unwrap_or(false) || cursor.is_some();
+        this.selects_cursor = cursor.is_some();
+        this.selects_edges = edges.is_some();
+        this.selects_nodes = node.is_some();
+
+        Ok(this)
+    }
+
+    pub fn unique(
+        ctx: Context<'a>,
+        table: TableWalker<'a>,
+        field: Field<'a>,
+        selection: Option<SelectionSet<'a>>,
     ) -> Result<Self, SdkError> {
         let mut extra_columns = Vec::new();
 
-        let selection_columns: HashMap<_, _> = selection
-            .fields()
-            .flat_map(|f| ctx.database_definition.column_for_field_definition(f.definition_id()))
-            .map(|c| (c.client_name(), c))
-            .collect();
+        if let Some(selection) = selection {
+            let selection_columns: HashMap<_, _> = selection
+                .fields()
+                .flat_map(|f| ctx.database_definition.column_for_field_definition(f.definition_id()))
+                .map(|c| (c.client_name(), c))
+                .collect();
 
-        if let Ok(params) = field.arguments::<CollectionParameters>(ctx.arguments) {
-            for order_input in &params.order_by {
-                for field_name in order_input.field.keys() {
-                    if selection_columns.contains_key(field_name.as_str()) {
-                        continue;
+            if let Ok(params) = field.arguments::<CollectionParameters>(ctx.arguments) {
+                for order_input in &params.order_by {
+                    for field_name in order_input.field.keys() {
+                        if selection_columns.contains_key(field_name.as_str()) {
+                            continue;
+                        }
+
+                        let column = ctx
+                            .database_definition
+                            .find_column_for_client_field(field_name, table.id())
+                            .ok_or_else(|| {
+                                SdkError::from(format!(
+                                    "ordering type {} with non-existing field {}",
+                                    table.client_name(),
+                                    field_name
+                                ))
+                            })?;
+
+                        extra_columns.push(column);
                     }
-
-                    let column = ctx
-                        .database_definition
-                        .find_column_for_client_field(field_name, table.id())
-                        .ok_or_else(|| {
-                            SdkError::from(format!(
-                                "ordering type {} with non-existing field {}",
-                                table.client_name(),
-                                field_name
-                            ))
-                        })?;
-
-                    extra_columns.push(column);
                 }
-            }
-        };
+            };
 
-        for column in table.implicit_ordering_key().unwrap().columns() {
-            if selection_columns.contains_key(column.table_column().client_name()) {
-                continue;
-            }
+            for column in table.implicit_ordering_key().unwrap().columns() {
+                if selection_columns.contains_key(column.table_column().client_name()) {
+                    continue;
+                }
 
-            if extra_columns.contains(&column.table_column()) {
-                continue;
-            }
+                if extra_columns.contains(&column.table_column()) {
+                    continue;
+                }
 
-            extra_columns.push(column.table_column());
+                extra_columns.push(column.table_column());
+            }
         }
 
         Ok(Self {
@@ -163,7 +212,32 @@ impl<'a> SelectionIterator<'a> {
             extra_columns,
             index: 0,
             extra_column_index: 0,
+            page_info: None,
+            needs_cursor: false,
+            selects_cursor: false,
+            selects_edges: false,
+            selects_nodes: false,
         })
+    }
+
+    pub fn page_info(&self) -> Option<PageInfo> {
+        self.page_info
+    }
+
+    pub fn needs_cursor(&self) -> bool {
+        self.needs_cursor
+    }
+
+    pub fn selects_cursor(&self) -> bool {
+        self.selects_cursor
+    }
+
+    pub fn selects_edges(&self) -> bool {
+        self.selects_edges
+    }
+
+    pub fn selects_nodes(&self) -> bool {
+        self.selects_nodes
     }
 }
 
@@ -171,7 +245,9 @@ impl<'a> Iterator for SelectionIterator<'a> {
     type Item = Result<TableSelection<'a>, SdkError>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let Some(selection_field) = self.selection.fields().nth(self.index) else {
+        let selection = self.selection?;
+
+        let Some(selection_field) = selection.fields().nth(self.index) else {
             let extra = self.extra_columns.get(self.extra_column_index);
             self.extra_column_index += 1;
 
@@ -213,7 +289,12 @@ impl<'a> Iterator for SelectionIterator<'a> {
             // The other side has a unique constraint, so our join must return at most one row.
             let selection_set = selection_field.selection_set();
 
-            let iterator = match Self::new(self.ctx, relation.referenced_table(), selection_field, selection_set) {
+            let iterator = match Self::unique(
+                self.ctx,
+                relation.referenced_table(),
+                selection_field,
+                Some(selection_set),
+            ) {
                 Ok(iterator) => iterator,
                 Err(err) => return Some(Err(err)),
             };
@@ -230,29 +311,14 @@ impl<'a> Iterator for SelectionIterator<'a> {
 
             // `userCollection { edges { node { field } } }`, the selection part.
             //
-            let selection_field = selection_field
-                .selection_set()
-                .fields()
-                .find(|f| {
-                    self.ctx
-                        .database_definition
-                        .get_name_for_field_definition(f.definition_id())
-                        == Some("edges")
-                })
-                .unwrap()
-                .selection_set()
-                .fields()
-                .find(|f| {
-                    self.ctx
-                        .database_definition
-                        .get_name_for_field_definition(f.definition_id())
-                        == Some("node")
-                })
-                .unwrap();
-
             let selection_set = selection_field.selection_set();
 
-            let iterator = match Self::new(self.ctx, relation.referenced_table(), selection_field, selection_set) {
+            let iterator = match Self::edges(
+                self.ctx,
+                relation.referenced_table(),
+                selection_field,
+                Some(selection_set),
+            ) {
                 Ok(iterator) => iterator,
                 Err(error) => return Some(Err(error)),
             };

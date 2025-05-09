@@ -1351,11 +1351,11 @@ async fn view_with_int_unique() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -3056,11 +3056,11 @@ async fn materialized_view_with_int_unique() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -4822,11 +4822,11 @@ async fn view_with_composite_key() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -6657,11 +6657,11 @@ async fn view_with_relation_from_view_to_table() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -8781,11 +8781,11 @@ async fn view_with_relation_from_table_to_view() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """

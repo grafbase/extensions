@@ -46,6 +46,8 @@ pub enum Compare<'a> {
     Any(Box<Expression<'a>>),
     /// ALL (`left`)
     All(Box<Expression<'a>>),
+    /// `left` IS NOT DISTINCT FROM `right`
+    IsNotDistinctFrom(Box<Expression<'a>>, Box<Expression<'a>>),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -99,6 +101,12 @@ pub trait Comparable<'a> {
 
     /// Tests if both sides are not the same value.
     fn not_equals<T>(self, comparison: T) -> Compare<'a>
+    where
+        T: Into<Expression<'a>>;
+
+    /// Tests if both sides are not the same value (NULLs are equal).
+    #[allow(clippy::wrong_self_convention)]
+    fn is_not_distinct_from<T>(self, comparison: T) -> Compare<'a>
     where
         T: Into<Expression<'a>>;
 
@@ -194,26 +202,6 @@ pub trait Comparable<'a> {
     where
         T: Into<Expression<'a>>;
 
-    /// Tests if the JSON array starts with a value.
-    fn json_array_begins_with<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>;
-
-    /// Tests if the JSON array does not start with a value.
-    fn json_array_not_begins_with<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>;
-
-    /// Tests if the JSON array ends with a value.
-    fn json_array_ends_into<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>;
-
-    /// Tests if the JSON array does not end with a value.
-    fn json_array_not_ends_into<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>;
-
     /// Tests if the JSON value is of a certain type.
     fn json_type_equals<T>(self, json_type: T) -> Compare<'a>
     where
@@ -258,6 +246,16 @@ where
         let col: Column<'a> = self.into();
         let val: Expression<'a> = col.into();
         val.not_equals(comparison)
+    }
+
+    fn is_not_distinct_from<T>(self, comparison: T) -> Compare<'a>
+    where
+        T: Into<Expression<'a>>,
+    {
+        let col: Column<'a> = self.into();
+        let val: Expression<'a> = col.into();
+
+        val.is_not_distinct_from(comparison)
     }
 
     fn less_than<T>(self, comparison: T) -> Compare<'a>
@@ -416,46 +414,6 @@ where
         let val: Expression<'a> = col.into();
 
         val.json_array_not_contains(item)
-    }
-
-    fn json_array_begins_with<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let col: Column<'a> = self.into();
-        let val: Expression<'a> = col.into();
-
-        val.json_array_begins_with(item)
-    }
-
-    fn json_array_not_begins_with<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let col: Column<'a> = self.into();
-        let val: Expression<'a> = col.into();
-
-        val.json_array_not_begins_with(item)
-    }
-
-    fn json_array_ends_into<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let col: Column<'a> = self.into();
-        let val: Expression<'a> = col.into();
-
-        val.json_array_ends_into(item)
-    }
-
-    fn json_array_not_ends_into<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let col: Column<'a> = self.into();
-        let val: Expression<'a> = col.into();
-
-        val.json_array_not_ends_into(item)
     }
 
     fn json_type_equals<T>(self, json_type: T) -> Compare<'a>

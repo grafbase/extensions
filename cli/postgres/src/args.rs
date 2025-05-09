@@ -5,6 +5,7 @@ use clap::{Parser, Subcommand};
 #[derive(Parser, Debug)]
 #[command(name = "grafbase-postgres")]
 #[command(about = "Grafbase Postgres Extension")]
+#[command(version)]
 pub struct Args {
     /// Connection string to the database
     #[arg(short, long, env = "DATABASE_URL")]

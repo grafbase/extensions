@@ -1,6 +1,6 @@
 use grafbase_database_definition::TableWalker;
 use serde::Deserialize;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 /// Returns the default value for enable_queries configuration.
 fn default_enable_queries() -> bool {
@@ -33,7 +33,7 @@ pub struct Config {
     pub extension_url: String,
     /// Configuration details for each schema within the database, keyed by schema name.
     #[serde(default)]
-    pub schemas: HashMap<String, SchemaConfig>,
+    pub schemas: BTreeMap<String, SchemaConfig>,
 }
 
 impl Config {
@@ -105,10 +105,10 @@ pub struct SchemaConfig {
     pub enable_queries: Option<bool>,
     /// Configuration details for each view within the database, keyed by view name.
     #[serde(default)]
-    pub views: HashMap<String, ViewConfig>,
+    pub views: BTreeMap<String, ViewConfig>,
     /// Configuration overrides for each table within the schema, keyed by table name.
     #[serde(default)]
-    pub tables: HashMap<String, TableConfig>,
+    pub tables: BTreeMap<String, TableConfig>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -120,7 +120,7 @@ pub struct TableConfig {
     pub enable_queries: Option<bool>,
     /// Configuration details for relationships originating from this view, keyed by relationship name.
     #[serde(default)]
-    pub relations: HashMap<String, RelationConfig>,
+    pub relations: BTreeMap<String, RelationConfig>,
 }
 
 /// Represents the configuration settings for a specific database relation (e.g., a view).
@@ -135,10 +135,10 @@ pub struct ViewConfig {
     pub unique_keys: Option<Vec<Vec<String>>>,
     /// Configuration details for each column within the relation, keyed by column name.
     #[serde(default)]
-    pub columns: HashMap<String, ColumnConfig>,
+    pub columns: BTreeMap<String, ColumnConfig>,
     /// Configuration details for relationships originating from this view, keyed by relationship name.
     #[serde(default)]
-    pub relations: HashMap<String, RelationConfig>,
+    pub relations: BTreeMap<String, RelationConfig>,
 }
 
 /// Represents the configuration for a specific column within a view.

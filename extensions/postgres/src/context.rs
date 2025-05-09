@@ -17,7 +17,7 @@ use grafbase_sdk::{
         self,
         types::{DatabaseType as _, DatabaseValue},
     },
-    types::{ArgumentValues, Field},
+    types::{ArgumentValues, Field, SelectionSet},
 };
 use order::LookupOrderIterator;
 use selection_iterator::SelectionIterator;
@@ -48,37 +48,76 @@ struct FilterUnique {
     lookup: serde_json::Map<String, Value>,
 }
 
+#[derive(Clone, Copy)]
+pub struct PageInfo {
+    has_next_page: bool,
+    has_previous_page: bool,
+    start_cursor: bool,
+    end_cursor: bool,
+}
+
+impl PageInfo {
+    pub fn new(database_definition: &DatabaseDefinition, inner: SelectionSet<'_>) -> Self {
+        let has_next_page = inner
+            .fields()
+            .any(|f| database_definition.get_name_for_field_definition(f.definition_id()) == Some("hasNextPage"));
+
+        let has_previous_page = inner
+            .fields()
+            .any(|f| database_definition.get_name_for_field_definition(f.definition_id()) == Some("hasPreviousPage"));
+
+        let start_cursor = inner
+            .fields()
+            .any(|f| database_definition.get_name_for_field_definition(f.definition_id()) == Some("startCursor"));
+
+        let end_cursor = inner
+            .fields()
+            .any(|f| database_definition.get_name_for_field_definition(f.definition_id()) == Some("endCursor"));
+
+        Self {
+            has_next_page,
+            has_previous_page,
+            start_cursor,
+            end_cursor,
+        }
+    }
+
+    pub fn selects_has_next_page(&self) -> bool {
+        self.has_next_page
+    }
+
+    pub fn selects_has_previous_page(&self) -> bool {
+        self.has_previous_page
+    }
+
+    pub fn selects_start_cursor(&self) -> bool {
+        self.start_cursor
+    }
+
+    pub fn selects_end_cursor(&self) -> bool {
+        self.end_cursor
+    }
+
+    pub fn needs_cursor(&self) -> bool {
+        self.selects_start_cursor() || self.selects_end_cursor()
+    }
+}
+
 impl<'a> Context<'a> {
     pub fn operation(self) -> Operation {
         self.operation
     }
 
+    /// Creates a `SelectionIterator` for a flat selection based on the current field and context.
+    /// For pagination, use `collection_selection`.
     pub(crate) fn selection(self, table: TableWalker<'a>) -> Result<SelectionIterator<'a>, SdkError> {
-        SelectionIterator::new(self, table, self.field, self.field.selection_set())
+        SelectionIterator::unique(self, table, self.field, Some(self.field.selection_set()))
     }
 
+    /// Creates a `SelectionIterator` for a collection of items (edges) based on the current field and context.
+    /// Use this method for pagination.
     pub fn collection_selection(self, table: TableWalker<'a>) -> Result<SelectionIterator<'a>, SdkError> {
-        let Some(edges) = self.field.selection_set().fields().find(|f| {
-            self.database_definition
-                .get_name_for_field_definition(f.definition_id())
-                == Some("edges")
-        }) else {
-            return SelectionIterator::new(self, table, self.field, self.field.selection_set());
-        };
-
-        let field = edges
-            .selection_set()
-            .fields()
-            .find(|f| {
-                self.database_definition
-                    .get_name_for_field_definition(f.definition_id())
-                    == Some("node")
-            })
-            .ok_or_else(|| SdkError::from("node field not defined in edges selection"))?;
-
-        let selection = field.selection_set();
-
-        SelectionIterator::new(self, table, field, selection)
+        SelectionIterator::edges(self, table, self.field, Some(self.field.selection_set()))
     }
 
     pub(crate) fn create_input(&'a self, table: TableWalker<'a>) -> Result<CreateInputIterator<'a>, SdkError> {
@@ -130,7 +169,7 @@ impl<'a> Context<'a> {
             return Ok(None);
         };
 
-        let iterator = SelectionIterator::new(self, table, returning, returning.selection_set())?;
+        let iterator = SelectionIterator::unique(self, table, returning, Some(returning.selection_set()))?;
 
         Ok(Some(iterator))
     }

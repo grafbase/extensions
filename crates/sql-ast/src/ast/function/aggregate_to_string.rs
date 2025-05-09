@@ -23,7 +23,7 @@ where
 impl<'a> From<AggregateToString<'a>> for Function<'a> {
     fn from(value: AggregateToString<'a>) -> Self {
         Self {
-            typ_: FunctionType::AggregateToString(value),
+            r#type: FunctionType::AggregateToString(value),
             alias: None,
         }
     }

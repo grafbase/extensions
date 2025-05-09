@@ -19,7 +19,7 @@ where
 impl<'a> From<Minimum<'a>> for Function<'a> {
     fn from(value: Minimum<'a>) -> Self {
         Self {
-            typ_: FunctionType::Minimum(value),
+            r#type: FunctionType::Minimum(value),
             alias: None,
         }
     }

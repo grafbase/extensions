@@ -22,7 +22,7 @@ where
 impl<'a> From<Count<'a>> for Function<'a> {
     fn from(value: Count<'a>) -> Self {
         Self {
-            typ_: FunctionType::Count(value),
+            r#type: FunctionType::Count(value),
             alias: None,
         }
     }

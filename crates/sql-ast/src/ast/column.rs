@@ -46,6 +46,11 @@ impl<'a> Column<'a> {
         self.table = Some(table.into());
         self
     }
+
+    /// Returns the name of the column.
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
 }
 
 impl<'a> Aliasable<'a> for Column<'a> {
