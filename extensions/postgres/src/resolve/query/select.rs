@@ -1,3 +1,5 @@
+mod pagination;
+
 use enumflags2::{BitFlags, bitflags};
 use grafbase_sdk::SdkError;
 use sql_ast::ast::{

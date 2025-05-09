@@ -16,7 +16,7 @@ pub struct Encode<'a> {
     pub(crate) format: EncodeFormat,
 }
 
-/// Return the given table as JSONB collection.
+/// Encode a given expression into a specified format.
 pub fn encode<'a>(expression: impl Into<Expression<'a>>, format: EncodeFormat) -> Function<'a> {
     let fun = Encode {
         expression: expression.into(),
@@ -29,7 +29,7 @@ pub fn encode<'a>(expression: impl Into<Expression<'a>>, format: EncodeFormat) -
 impl<'a> From<Encode<'a>> for Function<'a> {
     fn from(value: Encode<'a>) -> Self {
         Self {
-            typ_: super::FunctionType::Encode(value),
+            r#type: super::FunctionType::Encode(value),
             alias: None,
         }
     }

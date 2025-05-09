@@ -25,7 +25,7 @@ where
 impl<'a> From<JsonBuildObject<'a>> for Function<'a> {
     fn from(value: JsonBuildObject<'a>) -> Self {
         Self {
-            typ_: FunctionType::JsonBuildObject(value),
+            r#type: FunctionType::JsonBuildObject(value),
             alias: None,
         }
     }

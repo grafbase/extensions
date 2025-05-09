@@ -34,6 +34,20 @@ pub enum Order {
     DescNullsLast,
 }
 
+impl Order {
+    /// Reverses the direction of the ordering.
+    pub fn reverse(self) -> Self {
+        match self {
+            Order::Asc => Order::Desc,
+            Order::Desc => Order::Asc,
+            Order::AscNullsFirst => Order::DescNullsFirst,
+            Order::AscNullsLast => Order::DescNullsLast,
+            Order::DescNullsFirst => Order::AscNullsFirst,
+            Order::DescNullsLast => Order::AscNullsLast,
+        }
+    }
+}
+
 /// An item that can be used in the `ORDER BY` statement
 pub trait Orderable<'a>
 where

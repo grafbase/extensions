@@ -21,7 +21,7 @@ where
 impl<'a> From<Upper<'a>> for Function<'a> {
     fn from(value: Upper<'a>) -> Self {
         Self {
-            typ_: FunctionType::Upper(value),
+            r#type: FunctionType::Upper(value),
             alias: None,
         }
     }

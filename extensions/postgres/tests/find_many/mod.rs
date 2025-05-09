@@ -1,3 +1,5 @@
+mod pagination;
+
 use crate::PgTestApi;
 use indoc::indoc;
 

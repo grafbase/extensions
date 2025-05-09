@@ -21,7 +21,7 @@ where
 impl<'a> From<JsonUnquote<'a>> for Function<'a> {
     fn from(value: JsonUnquote<'a>) -> Self {
         Self {
-            typ_: FunctionType::JsonUnquote(value),
+            r#type: FunctionType::JsonUnquote(value),
             alias: None,
         }
     }
