@@ -34,6 +34,37 @@ pub enum Order {
     DescNullsLast,
 }
 
+impl Order {
+    /// Reverses the direction of the ordering.
+    pub fn reverse(self) -> Self {
+        match self {
+            Order::Asc => Order::Desc,
+            Order::Desc => Order::Asc,
+            Order::AscNullsFirst => Order::DescNullsFirst,
+            Order::AscNullsLast => Order::DescNullsLast,
+            Order::DescNullsFirst => Order::AscNullsFirst,
+            Order::DescNullsLast => Order::AscNullsLast,
+        }
+    }
+
+    /// Returns `true` if the ordering direction is ascending.
+    ///
+    /// This function determines if an `Order` variant represents an ascending order,
+    /// which includes `Asc`, `AscNullsFirst`, and `AscNullsLast`.
+    pub fn ascends(self) -> bool {
+        matches!(self, Order::Asc | Order::AscNullsFirst | Order::AscNullsLast)
+    }
+
+    /// Returns `true` if null values should be ordered first in the result.
+    ///
+    /// This function determines if an `Order` variant represents an ordering that
+    /// places null values before non-null values, which includes `Desc`, `AscNullsFirst`,
+    /// and `DescNullsFirst`.
+    pub fn nulls_first(&self) -> bool {
+        matches!(self, Order::Desc | Order::AscNullsFirst | Order::DescNullsFirst)
+    }
+}
+
 /// An item that can be used in the `ORDER BY` statement
 pub trait Orderable<'a>
 where

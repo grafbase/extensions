@@ -19,7 +19,7 @@ where
 impl<'a> From<Average<'a>> for Function<'a> {
     fn from(value: Average<'a>) -> Self {
         Self {
-            typ_: FunctionType::Average(value),
+            r#type: FunctionType::Average(value),
             alias: None,
         }
     }

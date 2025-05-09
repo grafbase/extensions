@@ -5,9 +5,9 @@ use grafbase_sdk::host_io::postgres::{self as sdk, types::DatabaseType};
 
 use crate::ast::{
     self, Alias, Average, Column, CommonTableExpression, Compare, Concat, ConditionTree, Delete, Encode, EncodeFormat,
-    Expression, ExpressionKind, Function, FunctionType, Grouping, Insert, Join, JoinData, JsonAgg, JsonBuildObject,
-    JsonCompare, JsonExtract, JsonExtractFirstArrayElem, JsonExtractLastArrayElem, JsonType, JsonUnquote, OnConflict,
-    Order, Ordering, ParameterizedValue, Query, Row, Select, SqlOp, Table, TableType, ToJsonb, Update, Values,
+    Expression, ExpressionKind, Function, FunctionType, Grouping, Insert, Join, JoinData, JsonAgg, JsonBuildArray,
+    JsonBuildObject, JsonCompare, JsonExtract, JsonExtractArrayElem, JsonType, JsonUnquote, OnConflict, Order,
+    Ordering, ParameterizedValue, Query, Row, Select, SqlOp, Table, TableType, ToJsonb, Update, Values,
 };
 
 const C_BACKTICK_OPEN: &str = "\"";
@@ -279,17 +279,11 @@ impl Renderer {
         self.visit_expression(right);
     }
 
-    fn visit_json_extract_last_array_item(&mut self, extract: JsonExtractLastArrayElem<'_>) {
+    fn visit_json_extract_array_item(&mut self, extract: JsonExtractArrayElem<'_>) {
         self.write("(");
         self.visit_expression(*extract.expr);
-        self.write("->-1");
-        self.write(")");
-    }
-
-    fn visit_json_extract_first_array_item(&mut self, extract: JsonExtractFirstArrayElem<'_>) {
-        self.write("(");
-        self.visit_expression(*extract.expr);
-        self.write("->0");
+        self.write("->>");
+        self.write(extract.index);
         self.write(")");
     }
 
@@ -447,6 +441,21 @@ impl Renderer {
         self.write(")");
     }
 
+    fn visit_json_build_array(&mut self, json_build_array: JsonBuildArray<'_>) {
+        self.write("json_build_array(");
+
+        let values_length = json_build_array.expressions.len();
+        for (i, expression) in json_build_array.expressions.into_iter().enumerate() {
+            self.visit_expression(expression);
+
+            if i < (values_length - 1) {
+                self.write(",");
+            }
+        }
+
+        self.write(")");
+    }
+
     fn visit_json_agg(&mut self, json_agg: JsonAgg<'_>) {
         self.write("json_agg(");
 
@@ -466,6 +475,20 @@ impl Renderer {
 
     fn visit_encode(&mut self, encode: Encode<'_>) {
         self.write("encode(");
+        self.visit_expression(encode.expression);
+        self.write(", ");
+
+        match encode.format {
+            EncodeFormat::Base64 => self.write("'base64'"),
+            EncodeFormat::Escape => self.write("'escape'"),
+            EncodeFormat::Hex => self.write("'hex'"),
+        }
+
+        self.write(")");
+    }
+
+    fn visit_decode(&mut self, encode: ast::Decode<'_>) {
+        self.write("decode(");
         self.visit_expression(encode.expression);
         self.write(", ");
 
@@ -1002,6 +1025,7 @@ impl Renderer {
         match compare {
             Compare::Equals(left, right) => self.visit_equals(*left, *right),
             Compare::NotEquals(left, right) => self.visit_not_equals(*left, *right),
+            Compare::IsNotDistinctFrom(left, right) => self.visit_is_not_distinct_from(*left, *right),
             Compare::LessThan(left, right) => self.visit_less_than(*left, *right),
             Compare::LessThanOrEquals(left, right) => self.visit_less_than_or_equals(*left, *right),
             Compare::GreaterThan(left, right) => self.visit_greater_than(*left, *right),
@@ -1228,6 +1252,12 @@ impl Renderer {
         self.visit_expression(right);
     }
 
+    fn visit_is_not_distinct_from(&mut self, left: Expression<'_>, right: Expression<'_>) {
+        self.visit_expression(left);
+        self.write(" IS NOT DISTINCT FROM ");
+        self.visit_expression(right);
+    }
+
     /// A visit in the `GROUP BY` section of the query
     fn visit_grouping(&mut self, grouping: Grouping<'_>) {
         let len = grouping.0.len();
@@ -1247,7 +1277,7 @@ impl Renderer {
     }
 
     fn visit_function(&mut self, fun: Function<'_>) {
-        match fun.typ_ {
+        match fun.r#type {
             FunctionType::Count(fun_count) => {
                 if fun_count.exprs.is_empty() {
                     self.write("COUNT(*)");
@@ -1301,11 +1331,8 @@ impl Renderer {
             FunctionType::JsonExtract(json_extract) => {
                 self.visit_json_extract(json_extract);
             }
-            FunctionType::JsonExtractFirstArrayElem(extract) => {
-                self.visit_json_extract_first_array_item(extract);
-            }
-            FunctionType::JsonExtractLastArrayElem(extract) => {
-                self.visit_json_extract_last_array_item(extract);
+            FunctionType::JsonExtractArrayElem(extract) => {
+                self.visit_json_extract_array_item(extract);
             }
             FunctionType::JsonUnquote(unquote) => {
                 self.visit_json_unquote(unquote);
@@ -1318,11 +1345,24 @@ impl Renderer {
                     s.visit_expression(pos.column);
                 });
             }
+            FunctionType::ConvertFrom(convert_from) => {
+                self.write("CONVERT_FROM");
+                self.surround_with("(", ")", |s| {
+                    s.visit_expression(convert_from.expression);
+                    s.write(",");
+                    s.surround_with("'", "'", |s| {
+                        s.write(convert_from.charset);
+                    });
+                });
+            }
             FunctionType::ToJsonb(to_jsonb) => self.visit_to_jsonb(to_jsonb),
             FunctionType::JsonAgg(json_agg) => self.visit_json_agg(json_agg),
             FunctionType::Encode(encode) => self.visit_encode(encode),
+            FunctionType::Decode(encode) => self.visit_decode(encode),
             FunctionType::JsonBuildObject(encode) => self.visit_json_build_object(encode),
+            FunctionType::JsonBuildArray(encode) => self.visit_json_build_array(encode),
             FunctionType::Unnest(unnest) => self.visit_unnest(unnest),
+            FunctionType::RowNumber(row_number) => self.visit_row_number(row_number),
             FunctionType::Concat(concat) => {
                 self.visit_concat(concat);
             }
@@ -1379,5 +1419,33 @@ impl Renderer {
         if unnest.with_ordinality {
             self.write(" WITH ORDINALITY");
         }
+    }
+
+    fn visit_row_number(&mut self, row_number: ast::RowNumber<'_>) {
+        self.write("ROW_NUMBER() OVER ");
+
+        self.surround_with("(", ")", |this| {
+            let partitioning = row_number.over.partitioning;
+            let ordering = row_number.over.ordering;
+
+            if !partitioning.is_empty() {
+                let len = partitioning.len();
+
+                this.write("PARTITION BY ");
+
+                for (i, column) in partitioning.into_iter().enumerate() {
+                    this.visit_column(column);
+
+                    if i < len - 1 {
+                        this.write(", ");
+                    }
+                }
+
+                this.write(" ");
+            }
+
+            this.write("ORDER BY ");
+            this.visit_ordering(ordering);
+        });
     }
 }

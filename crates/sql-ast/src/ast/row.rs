@@ -163,6 +163,14 @@ impl<'a> Comparable<'a> for Row<'a> {
         value.not_equals(comparison)
     }
 
+    fn is_not_distinct_from<T>(self, comparison: T) -> Compare<'a>
+    where
+        T: Into<Expression<'a>>,
+    {
+        let value: Expression<'a> = self.into();
+        value.is_not_distinct_from(comparison)
+    }
+
     fn less_than<T>(self, comparison: T) -> Compare<'a>
     where
         T: Into<Expression<'a>>,
@@ -317,42 +325,6 @@ impl<'a> Comparable<'a> for Row<'a> {
         let value: Expression<'a> = self.into();
 
         value.json_array_not_contains(item)
-    }
-
-    fn json_array_begins_with<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let value: Expression<'a> = self.into();
-
-        value.json_array_begins_with(item)
-    }
-
-    fn json_array_not_begins_with<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let value: Expression<'a> = self.into();
-
-        value.json_array_not_begins_with(item)
-    }
-
-    fn json_array_ends_into<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let value: Expression<'a> = self.into();
-
-        value.json_array_ends_into(item)
-    }
-
-    fn json_array_not_ends_into<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let value: Expression<'a> = self.into();
-
-        value.json_array_not_ends_into(item)
     }
 
     fn json_type_equals<T>(self, json_type: T) -> Compare<'a>

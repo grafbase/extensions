@@ -217,6 +217,13 @@ impl<'a> Comparable<'a> for Expression<'a> {
         Compare::NotEquals(Box::new(self), Box::new(comparison.into()))
     }
 
+    fn is_not_distinct_from<T>(self, comparison: T) -> Compare<'a>
+    where
+        T: Into<Expression<'a>>,
+    {
+        Compare::IsNotDistinctFrom(Box::new(self), Box::new(comparison.into()))
+    }
+
     fn less_than<T>(self, comparison: T) -> Compare<'a>
     where
         T: Into<Expression<'a>>,
@@ -347,42 +354,6 @@ impl<'a> Comparable<'a> for Expression<'a> {
         T: Into<Expression<'a>>,
     {
         Compare::Json(JsonCompare::ArrayNotContains(Box::new(self), Box::new(item.into())))
-    }
-
-    fn json_array_begins_with<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let array_starts_with: Expression = super::function::json_extract_first_array_elem(self).into();
-
-        Compare::Equals(Box::new(array_starts_with), Box::new(item.into()))
-    }
-
-    fn json_array_not_begins_with<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let array_starts_with: Expression = super::function::json_extract_first_array_elem(self).into();
-
-        Compare::NotEquals(Box::new(array_starts_with), Box::new(item.into()))
-    }
-
-    fn json_array_ends_into<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let array_ends_into: Expression = super::function::json_extract_last_array_elem(self).into();
-
-        Compare::Equals(Box::new(array_ends_into), Box::new(item.into()))
-    }
-
-    fn json_array_not_ends_into<T>(self, item: T) -> Compare<'a>
-    where
-        T: Into<Expression<'a>>,
-    {
-        let array_ends_into: Expression = super::function::json_extract_last_array_elem(self).into();
-
-        Compare::NotEquals(Box::new(array_ends_into), Box::new(item.into()))
     }
 
     fn json_type_equals<T>(self, json_type: T) -> Compare<'a>

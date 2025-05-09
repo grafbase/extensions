@@ -1,21 +1,19 @@
 use std::collections::BTreeMap;
 
 use grafbase_database_definition::{DatabaseDefinition, TableColumnWalker, TableWalker};
-use grafbase_sdk::{SdkError, host_io::postgres::types::DatabaseValue};
+use grafbase_sdk::SdkError;
 
-use sql_ast::ast::{Aliasable, Column, Comparable, ConditionTree, Expression, Order, OrderDefinition};
+use sql_ast::ast::{Aliasable, Column, Order, OrderDefinition};
 
-#[derive(Debug, Clone, Default)]
-pub struct CollectionOrdering {
-    inner: Vec<((String, String), Option<Order>)>,
+#[derive(Clone, Default)]
+pub struct CollectionOrdering<'a> {
+    inner: Vec<(TableColumnWalker<'a>, Option<Order>)>,
     outer: Vec<(String, Option<Order>)>,
 }
 
-impl CollectionOrdering {
-    pub fn inner(&self) -> impl ExactSizeIterator<Item = OrderDefinition<'static>> + '_ {
-        self.inner
-            .iter()
-            .map(|((table, column), order)| (Column::from((table.clone(), column.clone())).into(), *order))
+impl<'a> CollectionOrdering<'a> {
+    pub fn inner(&self) -> impl ExactSizeIterator<Item = (TableColumnWalker<'a>, Option<Order>)> + '_ {
+        self.inner.iter().map(|(column, order)| (*column, *order))
     }
 
     pub fn outer(&self) -> impl ExactSizeIterator<Item = OrderDefinition<'static>> + '_ {
@@ -27,12 +25,14 @@ impl CollectionOrdering {
 }
 
 /// Argument defining a relay-style GraphQL collection.
-#[derive(Debug, Clone)]
-pub struct CollectionArgs {
+#[derive(Clone)]
+pub struct CollectionArgs<'a> {
     first: Option<u64>,
     last: Option<u64>,
-    order_by: CollectionOrdering,
-    extra_columns: Vec<Column<'static>>,
+    before: Option<String>,
+    after: Option<String>,
+    order_by: CollectionOrdering<'a>,
+    extra_columns: Vec<(TableColumnWalker<'a>, Column<'static>)>,
 }
 
 #[derive(Default, Debug, Clone, serde::Deserialize)]
@@ -40,6 +40,8 @@ pub struct CollectionArgs {
 pub struct CollectionParameters {
     pub first: Option<u64>,
     pub last: Option<u64>,
+    pub before: Option<String>,
+    pub after: Option<String>,
     #[serde(default)]
     pub order_by: Vec<OrderParameter>,
 }
@@ -57,10 +59,10 @@ pub enum OrderDirection {
     Desc,
 }
 
-impl CollectionArgs {
+impl<'a> CollectionArgs<'a> {
     pub(crate) fn new(
-        database_definition: &DatabaseDefinition,
-        table: TableWalker<'_>,
+        database_definition: &'a DatabaseDefinition,
+        table: TableWalker<'a>,
         mut params: CollectionParameters,
     ) -> Result<Self, SdkError> {
         if let (Some(_), Some(_)) = (params.first, params.last) {
@@ -129,19 +131,17 @@ impl CollectionArgs {
             // We must name our order columns for them to be visible in the order by statement of the
             // outer queries.
             let alias = format!("{}_{}", table.database_name(), column.database_name());
-            extra_columns.push(sql_column.clone().alias(alias.clone()));
+            extra_columns.push((column, sql_column.clone().alias(alias.clone())));
 
-            order_by.inner.push((
-                (table.database_name().to_string(), column.database_name().to_string()),
-                Some(inner_direction),
-            ));
-
+            order_by.inner.push((column, Some(inner_direction)));
             order_by.outer.push((alias, Some(outer_direction)));
         }
 
         Ok(Self {
             first: params.first,
             last: params.last,
+            before: params.before,
+            after: params.after,
             order_by,
             extra_columns,
         })
@@ -157,83 +157,40 @@ impl CollectionArgs {
         self.last
     }
 
+    /// Returns the cursor value for fetching the page before the specified cursor.
+    ///
+    /// This corresponds to the `before` parameter in GraphQL pagination that is used
+    /// to fetch a page of items that come before a specific cursor value.
+    pub(crate) fn before(&self) -> Option<&str> {
+        self.before.as_deref()
+    }
+
+    /// Returns the cursor value for fetching the page after the specified cursor.
+    ///
+    /// This corresponds to the `after` parameter in GraphQL pagination that is used
+    /// to fetch a page of items that come after a specific cursor value.
+    pub(crate) fn after(&self) -> Option<&str> {
+        self.after.as_deref()
+    }
+
+    /// Returns the cursor value, prioritizing "before" over "after" if both are present.
+    ///
+    /// This is a convenience method that returns either the "before" cursor or the "after" cursor,
+    /// whichever is defined. If both are defined, "before" is returned.
+    pub(crate) fn cursor(&self) -> Option<&str> {
+        self.before().or_else(|| self.after())
+    }
+
     /// Defines the ordering of the collection. The first item in a tuple is the ordering for the innermost
     /// query, and the second one of all the outer queries. An example GraphQL definition:
     /// `userCollection(orderBy: [{ name: DESC }])`.
-    pub(crate) fn order_by(&self) -> &CollectionOrdering {
+    pub(crate) fn order_by(&self) -> &CollectionOrdering<'a> {
         &self.order_by
     }
 
     /// A set of extra columns needing to select in the collecting query. Needed to handle the ordering of the outer
     /// layers.
-    pub(crate) fn extra_columns(&self) -> impl ExactSizeIterator<Item = Column<'static>> + '_ {
+    pub(crate) fn extra_columns(&self) -> impl ExactSizeIterator<Item = (TableColumnWalker<'a>, Column<'static>)> + '_ {
         self.extra_columns.clone().into_iter()
-    }
-}
-
-// sigh, this is for pagination
-fn _generate_filter(
-    table_column: TableColumnWalker<'_>,
-    fields: &[(&str, &serde_json::Value, OrderDirection)],
-) -> Result<Option<Expression<'static>>, SdkError> {
-    let mut filters: Vec<Expression<'static>> = Vec::new();
-    let max_id = fields.len() - 1;
-
-    for (i, (column, value, direction)) in fields.iter().enumerate() {
-        let column = Column::from((*column).to_string());
-
-        if i == max_id {
-            if value.is_null() {
-                if let OrderDirection::Asc = direction {
-                    filters.push(column.is_not_null().into());
-                }
-            } else {
-                let value = DatabaseValue::from_json_input(
-                    (*value).clone(),
-                    table_column.database_type(),
-                    table_column.is_array(),
-                )?;
-
-                let expression = match table_column.enum_database_name() {
-                    Some(enum_name) => Expression::enum_value(value, enum_name),
-                    None => Expression::value(value),
-                };
-
-                match direction {
-                    OrderDirection::Asc => {
-                        filters.push(column.greater_than(expression).into());
-                    }
-                    OrderDirection::Desc => {
-                        let tree = ConditionTree::Or(vec![
-                            column.clone().less_than(expression).into(),
-                            column.is_null().into(),
-                        ]);
-
-                        filters.push(tree.into());
-                    }
-                }
-            }
-        } else {
-            let value = DatabaseValue::from_json_input(
-                (*value).clone(),
-                table_column.database_type(),
-                table_column.is_array(),
-            )?;
-
-            let expression = match table_column.enum_database_name() {
-                Some(enum_name) => Expression::enum_value(value, enum_name),
-                None => Expression::value(value),
-            };
-
-            filters.push(column.equals(expression).into());
-        }
-    }
-
-    if filters.is_empty() {
-        Ok(None)
-    } else if filters.len() == 1 {
-        Ok(Some(filters.pop().unwrap()))
-    } else {
-        Ok(Some(ConditionTree::And(filters).into()))
     }
 }

@@ -1,19 +1,15 @@
 use std::borrow::Cow;
 
 use crate::context::{
-    filter::FilterIterator,
-    order::LookupOrderIterator,
-    selection_iterator::{SelectionIterator, collection_args::CollectionArgs},
+    PageInfo, filter::FilterIterator, order::LookupOrderIterator, selection_iterator::SelectionIterator,
 };
 use grafbase_database_definition::{RelationWalker, TableWalker};
 
 /// A builder for building a PostgreSQL `SELECT` statement.
-#[derive(Clone)]
 pub struct SelectBuilder<'a> {
     table: TableWalker<'a>,
     selection: SelectionIterator<'a>,
     filter: Option<FilterIterator<'a>>,
-    collection_args: Option<CollectionArgs>,
     field_name: Cow<'static, str>,
     relation: Option<RelationWalker<'a>>,
     lookup_order: Option<LookupOrderIterator<'a>>,
@@ -31,23 +27,40 @@ impl<'a> SelectBuilder<'a> {
             table,
             selection,
             filter: None,
-            collection_args: None,
             field_name: field_name.into(),
             relation: None,
             lookup_order: None,
         }
     }
 
+    /// Returns whether the selection includes a cursor.
+    pub fn needs_cursor(&self) -> bool {
+        self.selection.needs_cursor()
+    }
+
+    /// Returns whether the selection includes a cursor.
+    pub fn selects_cursor(&self) -> bool {
+        self.selection.selects_cursor()
+    }
+
+    /// Returns `true` if the selection includes edges.
+    pub fn selects_edges(&self) -> bool {
+        self.selection.selects_edges()
+    }
+
+    /// Returns `true` if the selection includes nodes.
+    pub fn selects_nodes(&self) -> bool {
+        self.selection.selects_nodes()
+    }
+
+    /// Retrieves the pagination information if it exists in the selection.
+    pub fn page_info(&self) -> Option<PageInfo> {
+        self.selection.page_info()
+    }
+
     /// Adds a `WHERE` clause to the statement.
     pub fn set_filter(&mut self, filter: FilterIterator<'a>) {
         self.filter = Some(filter);
-    }
-
-    /// If defining collection arguments to the query, it sets the
-    /// result to be an array of rows, and allows defining the relay
-    /// arguments with first/last/before/after and orderBy.
-    pub fn set_collection_args(&mut self, args: CollectionArgs) {
-        self.collection_args = Some(args);
     }
 
     /// Marks the query as a selection for a relation.
@@ -74,11 +87,6 @@ impl<'a> SelectBuilder<'a> {
     /// and to the name of the relation field if creating a select for a join.
     pub fn field_name(&'a self) -> &'a str {
         &self.field_name
-    }
-
-    /// The arguments to define how multiple rows should be fetched.
-    pub fn collection_args(&self) -> Option<&CollectionArgs> {
-        self.collection_args.as_ref()
     }
 
     /// The `WHERE` statement for this select.

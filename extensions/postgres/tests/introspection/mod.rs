@@ -1271,11 +1271,11 @@ async fn table_with_generated_always_identity_primary_key() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -2814,11 +2814,11 @@ async fn table_with_generated_by_default_identity_primary_key() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -4357,11 +4357,11 @@ async fn table_with_serial_primary_key() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -6053,11 +6053,11 @@ async fn table_with_enum_field() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -7601,11 +7601,11 @@ async fn table_with_int_primary_key() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -9144,11 +9144,11 @@ async fn table_with_int_unique() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -10712,11 +10712,11 @@ async fn table_with_serial_primary_key_string_unique() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -12294,11 +12294,11 @@ async fn table_with_composite_primary_key() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -13934,11 +13934,11 @@ async fn two_schemas_same_table_name() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -15749,11 +15749,11 @@ async fn table_with_an_array_column() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -17314,11 +17314,11 @@ async fn table_with_jsonb_column() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -18879,11 +18879,11 @@ async fn table_with_json_column() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -20598,11 +20598,11 @@ async fn two_tables_with_single_column_foreign_key() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -22441,11 +22441,11 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -24409,11 +24409,11 @@ async fn issue_november_2023() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -26255,11 +26255,11 @@ async fn table_with_comment() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -27824,11 +27824,11 @@ async fn table_with_commented_column() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -29536,11 +29536,11 @@ async fn enum_with_comment() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """
@@ -31212,11 +31212,11 @@ async fn table_with_commented_foreign_key() {
       """
       The cursor of the first item in the page
       """
-      startCursor: String! @shareable
+      startCursor: String @shareable
       """
       The cursor of the last item in the page
       """
-      endCursor: String! @shareable
+      endCursor: String @shareable
     }
 
     """

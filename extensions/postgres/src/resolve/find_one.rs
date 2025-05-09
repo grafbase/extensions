@@ -20,7 +20,7 @@ pub(crate) fn execute(ctx: Context<'_>, table_id: TableId) -> Result<Data, SdkEr
         builder.set_filter(filter);
     }
 
-    let ast = query::select::build(builder, Default::default())?;
+    let ast = query::select::unique::build(builder)?;
     let query = renderer::postgres::render(ast);
 
     tracing::debug!("Executing query: {}", query);

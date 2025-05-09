@@ -27,7 +27,7 @@ pub fn json_agg<'a>(
 impl<'a> From<JsonAgg<'a>> for Function<'a> {
     fn from(value: JsonAgg<'a>) -> Self {
         Self {
-            typ_: super::FunctionType::JsonAgg(value),
+            r#type: super::FunctionType::JsonAgg(value),
             alias: None,
         }
     }

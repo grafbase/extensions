@@ -8,11 +8,6 @@ The introspection process generates a complete set of types representing the dat
 
 Generally, every operation executed through the extension generates exactly one SQL statement. This includes relationships, which the extension represents as lateral joins. The database handles JSON rendering; the extension manages query generation and data retrieval.
 
-**Note:** This extension is currently under development. Known missing features include:
-
-*   Support for types from Postgres extensions (e.g., PostGIS)
-*   Real pagination cursors and page info (currently returns dummy values)
-
 ## Getting Started
 
 ### Introspection Tool (`grafbase-postgres`)

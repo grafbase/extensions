@@ -24,7 +24,7 @@ where
 impl<'a> From<ArrayPosition<'a>> for Function<'a> {
     fn from(value: ArrayPosition<'a>) -> Self {
         Self {
-            typ_: FunctionType::ArrayPosition(value),
+            r#type: FunctionType::ArrayPosition(value),
             alias: None,
         }
     }

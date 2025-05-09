@@ -22,7 +22,7 @@ where
 impl<'a> From<Lower<'a>> for Function<'a> {
     fn from(value: Lower<'a>) -> Self {
         Self {
-            typ_: FunctionType::Lower(value),
+            r#type: FunctionType::Lower(value),
             alias: None,
         }
     }

@@ -213,14 +213,14 @@ fn render_page_info(rendered: &mut Schema<'_>) {
     });
 
     r#type.push_field({
-        let mut field = Field::new("startCursor", "String!");
+        let mut field = Field::new("startCursor", "String");
         field.set_description("The cursor of the first item in the page");
         field.push_directive(Directive::new("shareable"));
         field
     });
 
     r#type.push_field({
-        let mut field = Field::new("endCursor", "String!");
+        let mut field = Field::new("endCursor", "String");
         field.set_description("The cursor of the last item in the page");
         field.push_directive(Directive::new("shareable"));
         field

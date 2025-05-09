@@ -1,4 +1,3 @@
-use enumflags2::BitFlags;
 use grafbase_database_definition::{RelationWalker, TableColumnWalker};
 use grafbase_sdk::{SdkError, host_io::postgres::types::DatabaseValue};
 use indexmap::{IndexMap, map::Entry};
@@ -189,7 +188,7 @@ fn inject_relation<'a>(
     columns_for_json: &mut Vec<(String, Expression<'a>)>,
     relation: RelationWalker<'a>,
     nested_selection: SelectionIterator<'a>,
-    args: Option<CollectionArgs>,
+    args: Option<CollectionArgs<'a>>,
 ) -> Result<(), SdkError> {
     let client_field_name = relation.client_field_name();
     let join_alias = client_field_name;
@@ -197,11 +196,10 @@ fn inject_relation<'a>(
     let mut join_builder = SelectBuilder::new(relation.referenced_table(), nested_selection, join_alias.clone());
     join_builder.set_relation(relation);
 
-    if let Some(args) = args {
-        join_builder.set_collection_args(args);
-    }
-
-    let nested_select = super::select::build(join_builder, BitFlags::all())?;
+    let nested_select = match args {
+        Some(args) => super::select::pagination::build(join_builder, args)?,
+        None => super::select::unique::build(join_builder)?,
+    };
 
     let mut join_data = Table::from(nested_select)
         .alias(join_alias.clone())
