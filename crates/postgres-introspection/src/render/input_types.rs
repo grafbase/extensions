@@ -12,7 +12,26 @@ use crate::{
 use super::{EnabledOperations, ast::schema::Schema};
 
 const SCALARS: &[&str] = &[
-    "String", "BigInt", "Int", "Float", "Boolean", "Decimal", "Bytes", "JSON",
+    "String",
+    "BigInt",
+    "Int",
+    "Float",
+    "Boolean",
+    "Decimal",
+    "Bytes",
+    "JSON",
+    "UUID",
+    "Date",
+    "Time",
+    "TimeWithTimezone",
+    "Timestamp",
+    "DateTime",
+    "Inet",
+    "CIDR",
+    "MacAddr",
+    "Money",
+    "BitString",
+    "XML",
 ];
 
 const FILTERS: &[(&str, &str)] = &[
@@ -38,9 +57,21 @@ const ARRAYS: &[(&str, &str)] = &[
     ("[Boolean]", "Boolean"),
     ("[Bytes]", "Bytes"),
     ("[JSON]", "JSON"),
+    ("[UUID]", "UUID"),
+    ("[Date]", "Date"),
+    ("[Time]", "Time"),
+    ("[TimeWithTimezone]", "TimeWithTimezone"),
+    ("[Timestamp]", "Timestamp"),
+    ("[DateTime]", "DateTime"),
+    ("[Inet]", "Inet"),
+    ("[CIDR]", "CIDR"),
+    ("[MacAddr]", "MacAddr"),
+    ("[Money]", "Money"),
+    ("[BitString]", "BitString"),
+    ("[XML]", "XML"),
 ];
 
-static NUMERIC_SCALARS: &[&str] = &["BigInt", "Float", "Decimal", "Int"];
+static NUMERIC_SCALARS: &[&str] = &["BigInt", "Float", "Decimal", "Int", "Money"];
 
 pub fn render<'a>(
     database_definition: &'a DatabaseDefinition,

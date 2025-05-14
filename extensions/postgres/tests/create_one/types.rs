@@ -1546,7 +1546,7 @@ async fn money() {
 
     let mutation = indoc! {r#"
         mutation {
-          userCreate(input: { val: "1.23" }) {
+          userCreate(input: { val: "$1.23" }) {
             returning { val }
           }
         }
@@ -1589,7 +1589,7 @@ async fn money_array() {
 
     let mutation = indoc! {r#"
         mutation {
-          userCreate(input: { val: ["1.23", "3.14"] }) {
+          userCreate(input: { val: ["$1.23", "$3.14"] }) {
             returning { val }
           }
         }
@@ -1902,7 +1902,7 @@ async fn time() {
 
     let mutation = indoc! {r#"
         mutation {
-          userCreate(input: { val: "16:20:00" }) {
+          userCreate(input: { val: "16:20:00.666" }) {
             returning { val }
           }
         }
@@ -1919,7 +1919,7 @@ async fn time() {
           "data": {
             "userCreate": {
               "returning": {
-                "val": "16:20:00"
+                "val": "16:20:00.666"
               }
             }
           }
@@ -1991,7 +1991,7 @@ async fn timetz() {
 
     let mutation = indoc! {r#"
             mutation {
-              userCreate(input: { val: "16:20:00+00" }) {
+              userCreate(input: { val: "16:20:00Z" }) {
                 returning { val }
               }
             }
@@ -2004,15 +2004,15 @@ async fn timetz() {
         .unwrap();
 
     insta::assert_json_snapshot!(response, @r#"
-        {
-          "data": {
-            "userCreate": {
-              "returning": {
-                "val": "16:20:00+00"
-              }
-            }
+    {
+      "data": {
+        "userCreate": {
+          "returning": {
+            "val": "16:20:00+00"
           }
         }
+      }
+    }
     "#);
 }
 

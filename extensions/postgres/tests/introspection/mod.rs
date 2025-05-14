@@ -65,24 +65,84 @@ async fn table_with_generated_always_identity_primary_key() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -823,6 +883,862 @@ async fn table_with_generated_always_identity_primary_key() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -1252,6 +2168,654 @@ async fn table_with_generated_always_identity_primary_key() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -1602,24 +3166,84 @@ async fn table_with_generated_by_default_identity_primary_key() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -2366,6 +3990,862 @@ async fn table_with_generated_by_default_identity_primary_key() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -2795,6 +5275,654 @@ async fn table_with_generated_by_default_identity_primary_key() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -3145,24 +6273,84 @@ async fn table_with_serial_primary_key() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -3909,6 +7097,862 @@ async fn table_with_serial_primary_key() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -4338,6 +8382,654 @@ async fn table_with_serial_primary_key() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -4695,24 +9387,84 @@ async fn table_with_enum_field() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -5481,6 +10233,862 @@ async fn table_with_enum_field() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -5910,6 +11518,654 @@ async fn table_with_enum_field() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -6389,24 +12645,84 @@ async fn table_with_int_primary_key() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -7153,6 +13469,862 @@ async fn table_with_int_primary_key() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -7582,6 +14754,654 @@ async fn table_with_int_primary_key() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -7932,24 +15752,84 @@ async fn table_with_int_unique() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -8696,6 +16576,862 @@ async fn table_with_int_unique() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -9125,6 +17861,654 @@ async fn table_with_int_unique() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -9476,24 +18860,84 @@ async fn table_with_serial_primary_key_string_unique() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -10264,6 +19708,862 @@ async fn table_with_serial_primary_key_string_unique() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -10696,6 +20996,654 @@ async fn table_with_serial_primary_key_string_unique() {
     }
 
     """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
+    }
+
+    """
     Information about pagination in a collection of objects
     """
     type PageInfo
@@ -11052,24 +22000,84 @@ async fn table_with_composite_primary_key() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -11846,6 +22854,862 @@ async fn table_with_composite_primary_key() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -12278,6 +24142,654 @@ async fn table_with_composite_primary_key() {
     }
 
     """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
+    }
+
+    """
     Information about pagination in a collection of objects
     """
     type PageInfo
@@ -12640,24 +25152,84 @@ async fn two_schemas_same_table_name() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -13486,6 +26058,862 @@ async fn two_schemas_same_table_name() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -13915,6 +27343,654 @@ async fn two_schemas_same_table_name() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -14521,24 +28597,84 @@ async fn table_with_an_array_column() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -15301,6 +29437,862 @@ async fn table_with_an_array_column() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -15730,6 +30722,654 @@ async fn table_with_an_array_column() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -16086,24 +31726,84 @@ async fn table_with_jsonb_column() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -16866,6 +32566,862 @@ async fn table_with_jsonb_column() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -17295,6 +33851,654 @@ async fn table_with_jsonb_column() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -17651,24 +34855,84 @@ async fn table_with_json_column() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -18431,6 +35695,862 @@ async fn table_with_json_column() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -18860,6 +36980,654 @@ async fn table_with_json_column() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -19228,24 +37996,84 @@ async fn two_tables_with_single_column_foreign_key() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -20150,6 +38978,862 @@ async fn two_tables_with_single_column_foreign_key() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -20579,6 +40263,654 @@ async fn two_tables_with_single_column_foreign_key() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -21229,24 +41561,84 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -21993,6 +42385,862 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -22425,6 +43673,654 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
     }
 
     """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
+    }
+
+    """
     Information about pagination in a collection of objects
     """
     type PageInfo
@@ -22795,24 +44691,84 @@ async fn issue_november_2023() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -23713,6 +45669,862 @@ async fn issue_november_2023() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -24142,6 +46954,654 @@ async fn issue_november_2023() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -25043,24 +48503,84 @@ async fn table_with_comment() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -25807,6 +49327,862 @@ async fn table_with_comment() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -26239,6 +50615,654 @@ async fn table_with_comment() {
     }
 
     """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
+    }
+
+    """
     Information about pagination in a collection of objects
     """
     type PageInfo
@@ -26596,24 +51620,84 @@ async fn table_with_commented_column() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -27376,6 +52460,862 @@ async fn table_with_commented_column() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -27808,6 +53748,654 @@ async fn table_with_commented_column() {
     }
 
     """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
+    }
+
+    """
     Information about pagination in a collection of objects
     """
     type PageInfo
@@ -28176,24 +54764,84 @@ async fn enum_with_comment() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -28964,6 +55612,862 @@ async fn enum_with_comment() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -29393,6 +56897,654 @@ async fn enum_with_comment() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
@@ -29890,24 +58042,84 @@ async fn table_with_commented_foreign_key() {
       @pgDatabase(name: "default")
 
     """
-    JSON data type
+    Arbitrary JSON object
     """
     scalar JSON
 
     """
-    Binary data type
+    Binary data type, represented as a string containing a hexadecimal value
     """
     scalar Bytes
 
     """
-    Big integer data type
+    Big integer data type, represented as a string containing a numeric value
     """
     scalar BigInt
 
     """
-    Decimal data type
+    Decimal data type with arbitrary precision, represented as a string containing a numeric value
     """
     scalar Decimal
+
+    """
+    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    """
+    scalar UUID
+
+    """
+    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
+    """
+    scalar Date
+
+    """
+    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
+    """
+    scalar Time
+
+    """
+    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
+    """
+    scalar TimeWithTimezone
+
+    """
+    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
+    """
+    scalar Timestamp
+
+    """
+    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
+    """
+    scalar DateTime
+
+    """
+    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
+    """
+    scalar Inet
+
+    """
+    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
+    """
+    scalar CIDR
+
+    """
+    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
+    """
+    scalar MacAddr
+
+    """
+    Currency amount data type represented as a string with a numeric value and optional currency symbol
+    """
+    scalar Money
+
+    """
+    Bit string data type represented as a string of 0s and 1s
+    """
+    scalar BitString
+
+    """
+    XML data type represented as a string
+    """
+    scalar XML
 
     """
     Specifies the direction for ordering results.
@@ -30764,6 +58976,862 @@ async fn table_with_commented_foreign_key() {
     }
 
     """
+    Search filter input for UUID type.
+    """
+    input UUIDFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: UUID
+      """
+      The value is not the one given
+      """
+      ne: UUID
+      """
+      The value is greater than the one given
+      """
+      gt: UUID
+      """
+      The value is less than the one given
+      """
+      lt: UUID
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: UUID
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: UUID
+      """
+      The value is in the given array of values
+      """
+      in: [UUID!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [UUID!]
+      """
+      A negation of the given filter
+      """
+      not: UUIDFilterInput
+    }
+
+    """
+    Update input for UUID type.
+    """
+    input UUIDUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: UUID
+    }
+
+    """
+    Update input for UUID array type.
+    """
+    input UUIDArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [UUID]
+      """
+      Append an array value to the column.
+      """
+      append: [UUID]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [UUID]
+    }
+
+    """
+    Search filter input for Date type.
+    """
+    input DateFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Date
+      """
+      The value is not the one given
+      """
+      ne: Date
+      """
+      The value is greater than the one given
+      """
+      gt: Date
+      """
+      The value is less than the one given
+      """
+      lt: Date
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Date
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Date
+      """
+      The value is in the given array of values
+      """
+      in: [Date!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Date!]
+      """
+      A negation of the given filter
+      """
+      not: DateFilterInput
+    }
+
+    """
+    Update input for Date type.
+    """
+    input DateUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Date
+    }
+
+    """
+    Update input for Date array type.
+    """
+    input DateArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Date]
+      """
+      Append an array value to the column.
+      """
+      append: [Date]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Date]
+    }
+
+    """
+    Search filter input for Time type.
+    """
+    input TimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Time
+      """
+      The value is not the one given
+      """
+      ne: Time
+      """
+      The value is greater than the one given
+      """
+      gt: Time
+      """
+      The value is less than the one given
+      """
+      lt: Time
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Time
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Time
+      """
+      The value is in the given array of values
+      """
+      in: [Time!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Time!]
+      """
+      A negation of the given filter
+      """
+      not: TimeFilterInput
+    }
+
+    """
+    Update input for Time type.
+    """
+    input TimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Time
+    }
+
+    """
+    Update input for Time array type.
+    """
+    input TimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Time]
+      """
+      Append an array value to the column.
+      """
+      append: [Time]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Time]
+    }
+
+    """
+    Search filter input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: TimeWithTimezone
+      """
+      The value is not the one given
+      """
+      ne: TimeWithTimezone
+      """
+      The value is greater than the one given
+      """
+      gt: TimeWithTimezone
+      """
+      The value is less than the one given
+      """
+      lt: TimeWithTimezone
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: TimeWithTimezone
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: TimeWithTimezone
+      """
+      The value is in the given array of values
+      """
+      in: [TimeWithTimezone!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [TimeWithTimezone!]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneFilterInput
+    }
+
+    """
+    Update input for TimeWithTimezone type.
+    """
+    input TimeWithTimezoneUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: TimeWithTimezone
+    }
+
+    """
+    Update input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [TimeWithTimezone]
+      """
+      Append an array value to the column.
+      """
+      append: [TimeWithTimezone]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [TimeWithTimezone]
+    }
+
+    """
+    Search filter input for Timestamp type.
+    """
+    input TimestampFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Timestamp
+      """
+      The value is not the one given
+      """
+      ne: Timestamp
+      """
+      The value is greater than the one given
+      """
+      gt: Timestamp
+      """
+      The value is less than the one given
+      """
+      lt: Timestamp
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Timestamp
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Timestamp
+      """
+      The value is in the given array of values
+      """
+      in: [Timestamp!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Timestamp!]
+      """
+      A negation of the given filter
+      """
+      not: TimestampFilterInput
+    }
+
+    """
+    Update input for Timestamp type.
+    """
+    input TimestampUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Timestamp
+    }
+
+    """
+    Update input for Timestamp array type.
+    """
+    input TimestampArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Timestamp]
+      """
+      Append an array value to the column.
+      """
+      append: [Timestamp]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Timestamp]
+    }
+
+    """
+    Search filter input for DateTime type.
+    """
+    input DateTimeFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: DateTime
+      """
+      The value is not the one given
+      """
+      ne: DateTime
+      """
+      The value is greater than the one given
+      """
+      gt: DateTime
+      """
+      The value is less than the one given
+      """
+      lt: DateTime
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: DateTime
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: DateTime
+      """
+      The value is in the given array of values
+      """
+      in: [DateTime!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [DateTime!]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeFilterInput
+    }
+
+    """
+    Update input for DateTime type.
+    """
+    input DateTimeUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: DateTime
+    }
+
+    """
+    Update input for DateTime array type.
+    """
+    input DateTimeArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [DateTime]
+      """
+      Append an array value to the column.
+      """
+      append: [DateTime]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [DateTime]
+    }
+
+    """
+    Search filter input for Inet type.
+    """
+    input InetFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Inet
+      """
+      The value is not the one given
+      """
+      ne: Inet
+      """
+      The value is greater than the one given
+      """
+      gt: Inet
+      """
+      The value is less than the one given
+      """
+      lt: Inet
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Inet
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Inet
+      """
+      The value is in the given array of values
+      """
+      in: [Inet!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Inet!]
+      """
+      A negation of the given filter
+      """
+      not: InetFilterInput
+    }
+
+    """
+    Update input for Inet type.
+    """
+    input InetUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Inet
+    }
+
+    """
+    Update input for Inet array type.
+    """
+    input InetArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Inet]
+      """
+      Append an array value to the column.
+      """
+      append: [Inet]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Inet]
+    }
+
+    """
+    Search filter input for CIDR type.
+    """
+    input CIDRFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: CIDR
+      """
+      The value is not the one given
+      """
+      ne: CIDR
+      """
+      The value is greater than the one given
+      """
+      gt: CIDR
+      """
+      The value is less than the one given
+      """
+      lt: CIDR
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: CIDR
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: CIDR
+      """
+      The value is in the given array of values
+      """
+      in: [CIDR!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [CIDR!]
+      """
+      A negation of the given filter
+      """
+      not: CIDRFilterInput
+    }
+
+    """
+    Update input for CIDR type.
+    """
+    input CIDRUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: CIDR
+    }
+
+    """
+    Update input for CIDR array type.
+    """
+    input CIDRArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [CIDR]
+      """
+      Append an array value to the column.
+      """
+      append: [CIDR]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [CIDR]
+    }
+
+    """
+    Search filter input for MacAddr type.
+    """
+    input MacAddrFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: MacAddr
+      """
+      The value is not the one given
+      """
+      ne: MacAddr
+      """
+      The value is greater than the one given
+      """
+      gt: MacAddr
+      """
+      The value is less than the one given
+      """
+      lt: MacAddr
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: MacAddr
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: MacAddr
+      """
+      The value is in the given array of values
+      """
+      in: [MacAddr!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [MacAddr!]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrFilterInput
+    }
+
+    """
+    Update input for MacAddr type.
+    """
+    input MacAddrUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: MacAddr
+    }
+
+    """
+    Update input for MacAddr array type.
+    """
+    input MacAddrArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [MacAddr]
+      """
+      Append an array value to the column.
+      """
+      append: [MacAddr]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [MacAddr]
+    }
+
+    """
+    Search filter input for Money type.
+    """
+    input MoneyFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: Money
+      """
+      The value is not the one given
+      """
+      ne: Money
+      """
+      The value is greater than the one given
+      """
+      gt: Money
+      """
+      The value is less than the one given
+      """
+      lt: Money
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: Money
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: Money
+      """
+      The value is in the given array of values
+      """
+      in: [Money!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [Money!]
+      """
+      A negation of the given filter
+      """
+      not: MoneyFilterInput
+    }
+
+    """
+    Update input for Money type.
+    """
+    input MoneyUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: Money
+      """
+      Increments the value of a field by the specified value.
+      """
+      increment: Money
+      """
+      Decrements the value of a field by the specified value.
+      """
+      decrement: Money
+      """
+      Multiplies the value of a field by the specified value.
+      """
+      multiply: Money
+      """
+      Divides the value of a field by the specified value.
+      """
+      divide: Money
+    }
+
+    """
+    Update input for Money array type.
+    """
+    input MoneyArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [Money]
+      """
+      Append an array value to the column.
+      """
+      append: [Money]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [Money]
+    }
+
+    """
+    Search filter input for BitString type.
+    """
+    input BitStringFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: BitString
+      """
+      The value is not the one given
+      """
+      ne: BitString
+      """
+      The value is greater than the one given
+      """
+      gt: BitString
+      """
+      The value is less than the one given
+      """
+      lt: BitString
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: BitString
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: BitString
+      """
+      The value is in the given array of values
+      """
+      in: [BitString!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [BitString!]
+      """
+      A negation of the given filter
+      """
+      not: BitStringFilterInput
+    }
+
+    """
+    Update input for BitString type.
+    """
+    input BitStringUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: BitString
+    }
+
+    """
+    Update input for BitString array type.
+    """
+    input BitStringArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [BitString]
+      """
+      Append an array value to the column.
+      """
+      append: [BitString]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [BitString]
+    }
+
+    """
+    Search filter input for XML type.
+    """
+    input XMLFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: XML
+      """
+      The value is not the one given
+      """
+      ne: XML
+      """
+      The value is greater than the one given
+      """
+      gt: XML
+      """
+      The value is less than the one given
+      """
+      lt: XML
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: XML
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: XML
+      """
+      The value is in the given array of values
+      """
+      in: [XML!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [XML!]
+      """
+      A negation of the given filter
+      """
+      not: XMLFilterInput
+    }
+
+    """
+    Update input for XML type.
+    """
+    input XMLUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: XML
+    }
+
+    """
+    Update input for XML array type.
+    """
+    input XMLArrayUpdateInput @oneOf {
+      """
+      Replaces the value of a field with the specified value.
+      """
+      set: [XML]
+      """
+      Append an array value to the column.
+      """
+      append: [XML]
+      """
+      Prepend an array value to the column.
+      """
+      prepend: [XML]
+    }
+
+    """
     Search filter input for String array type.
     """
     input StringArrayFilterInput @oneOf {
@@ -31193,6 +60261,654 @@ async fn table_with_commented_foreign_key() {
       A negation of the given filter
       """
       not: JSONArrayFilterInput
+    }
+
+    """
+    Search filter input for UUID array type.
+    """
+    input UUIDArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [UUID]
+      """
+      The value is not the one given
+      """
+      ne: [UUID]
+      """
+      The value is greater than the one given
+      """
+      gt: [UUID]
+      """
+      The value is less than the one given
+      """
+      lt: [UUID]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [UUID]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [UUID]
+      """
+      The value is in the given array of values
+      """
+      in: [[UUID]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[UUID]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [UUID]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [UUID]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [UUID]
+      """
+      A negation of the given filter
+      """
+      not: UUIDArrayFilterInput
+    }
+
+    """
+    Search filter input for Date array type.
+    """
+    input DateArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Date]
+      """
+      The value is not the one given
+      """
+      ne: [Date]
+      """
+      The value is greater than the one given
+      """
+      gt: [Date]
+      """
+      The value is less than the one given
+      """
+      lt: [Date]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Date]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Date]
+      """
+      The value is in the given array of values
+      """
+      in: [[Date]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Date]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Date]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Date]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Date]
+      """
+      A negation of the given filter
+      """
+      not: DateArrayFilterInput
+    }
+
+    """
+    Search filter input for Time array type.
+    """
+    input TimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Time]
+      """
+      The value is not the one given
+      """
+      ne: [Time]
+      """
+      The value is greater than the one given
+      """
+      gt: [Time]
+      """
+      The value is less than the one given
+      """
+      lt: [Time]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Time]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Time]
+      """
+      The value is in the given array of values
+      """
+      in: [[Time]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Time]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Time]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Time]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Time]
+      """
+      A negation of the given filter
+      """
+      not: TimeArrayFilterInput
+    }
+
+    """
+    Search filter input for TimeWithTimezone array type.
+    """
+    input TimeWithTimezoneArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [TimeWithTimezone]
+      """
+      The value is not the one given
+      """
+      ne: [TimeWithTimezone]
+      """
+      The value is greater than the one given
+      """
+      gt: [TimeWithTimezone]
+      """
+      The value is less than the one given
+      """
+      lt: [TimeWithTimezone]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [TimeWithTimezone]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [TimeWithTimezone]
+      """
+      The value is in the given array of values
+      """
+      in: [[TimeWithTimezone]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[TimeWithTimezone]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [TimeWithTimezone]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [TimeWithTimezone]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [TimeWithTimezone]
+      """
+      A negation of the given filter
+      """
+      not: TimeWithTimezoneArrayFilterInput
+    }
+
+    """
+    Search filter input for Timestamp array type.
+    """
+    input TimestampArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Timestamp]
+      """
+      The value is not the one given
+      """
+      ne: [Timestamp]
+      """
+      The value is greater than the one given
+      """
+      gt: [Timestamp]
+      """
+      The value is less than the one given
+      """
+      lt: [Timestamp]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Timestamp]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Timestamp]
+      """
+      The value is in the given array of values
+      """
+      in: [[Timestamp]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Timestamp]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Timestamp]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Timestamp]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Timestamp]
+      """
+      A negation of the given filter
+      """
+      not: TimestampArrayFilterInput
+    }
+
+    """
+    Search filter input for DateTime array type.
+    """
+    input DateTimeArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [DateTime]
+      """
+      The value is not the one given
+      """
+      ne: [DateTime]
+      """
+      The value is greater than the one given
+      """
+      gt: [DateTime]
+      """
+      The value is less than the one given
+      """
+      lt: [DateTime]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [DateTime]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [DateTime]
+      """
+      The value is in the given array of values
+      """
+      in: [[DateTime]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[DateTime]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [DateTime]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [DateTime]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [DateTime]
+      """
+      A negation of the given filter
+      """
+      not: DateTimeArrayFilterInput
+    }
+
+    """
+    Search filter input for Inet array type.
+    """
+    input InetArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Inet]
+      """
+      The value is not the one given
+      """
+      ne: [Inet]
+      """
+      The value is greater than the one given
+      """
+      gt: [Inet]
+      """
+      The value is less than the one given
+      """
+      lt: [Inet]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Inet]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Inet]
+      """
+      The value is in the given array of values
+      """
+      in: [[Inet]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Inet]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Inet]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Inet]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Inet]
+      """
+      A negation of the given filter
+      """
+      not: InetArrayFilterInput
+    }
+
+    """
+    Search filter input for CIDR array type.
+    """
+    input CIDRArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [CIDR]
+      """
+      The value is not the one given
+      """
+      ne: [CIDR]
+      """
+      The value is greater than the one given
+      """
+      gt: [CIDR]
+      """
+      The value is less than the one given
+      """
+      lt: [CIDR]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [CIDR]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [CIDR]
+      """
+      The value is in the given array of values
+      """
+      in: [[CIDR]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[CIDR]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [CIDR]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [CIDR]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [CIDR]
+      """
+      A negation of the given filter
+      """
+      not: CIDRArrayFilterInput
+    }
+
+    """
+    Search filter input for MacAddr array type.
+    """
+    input MacAddrArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [MacAddr]
+      """
+      The value is not the one given
+      """
+      ne: [MacAddr]
+      """
+      The value is greater than the one given
+      """
+      gt: [MacAddr]
+      """
+      The value is less than the one given
+      """
+      lt: [MacAddr]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [MacAddr]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [MacAddr]
+      """
+      The value is in the given array of values
+      """
+      in: [[MacAddr]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[MacAddr]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [MacAddr]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [MacAddr]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [MacAddr]
+      """
+      A negation of the given filter
+      """
+      not: MacAddrArrayFilterInput
+    }
+
+    """
+    Search filter input for Money array type.
+    """
+    input MoneyArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [Money]
+      """
+      The value is not the one given
+      """
+      ne: [Money]
+      """
+      The value is greater than the one given
+      """
+      gt: [Money]
+      """
+      The value is less than the one given
+      """
+      lt: [Money]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [Money]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [Money]
+      """
+      The value is in the given array of values
+      """
+      in: [[Money]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[Money]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [Money]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [Money]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [Money]
+      """
+      A negation of the given filter
+      """
+      not: MoneyArrayFilterInput
+    }
+
+    """
+    Search filter input for BitString array type.
+    """
+    input BitStringArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [BitString]
+      """
+      The value is not the one given
+      """
+      ne: [BitString]
+      """
+      The value is greater than the one given
+      """
+      gt: [BitString]
+      """
+      The value is less than the one given
+      """
+      lt: [BitString]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [BitString]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [BitString]
+      """
+      The value is in the given array of values
+      """
+      in: [[BitString]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[BitString]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [BitString]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [BitString]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [BitString]
+      """
+      A negation of the given filter
+      """
+      not: BitStringArrayFilterInput
+    }
+
+    """
+    Search filter input for XML array type.
+    """
+    input XMLArrayFilterInput @oneOf {
+      """
+      The value is exactly the one given
+      """
+      eq: [XML]
+      """
+      The value is not the one given
+      """
+      ne: [XML]
+      """
+      The value is greater than the one given
+      """
+      gt: [XML]
+      """
+      The value is less than the one given
+      """
+      lt: [XML]
+      """
+      The value is greater than, or equal to the one given
+      """
+      gte: [XML]
+      """
+      The value is less than, or equal to the one given
+      """
+      lte: [XML]
+      """
+      The value is in the given array of values
+      """
+      in: [[XML]!]
+      """
+      The value is not in the given array of values
+      """
+      nin: [[XML]!]
+      """
+      Checks if the array contains all elements of the provided array
+      """
+      contains: [XML]
+      """
+      Checks if the array is contained within the provided array
+      """
+      contained: [XML]
+      """
+      Checks if the array has any elements in common with the provided array
+      """
+      overlaps: [XML]
+      """
+      A negation of the given filter
+      """
+      not: XMLArrayFilterInput
     }
 
     """
