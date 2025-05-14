@@ -55,10 +55,10 @@ impl fmt::Display for ArgumentValue<'_> {
 }
 
 pub struct Argument<'a> {
-    name: Cow<'a, str>,
-    value: ArgumentValue<'a>,
-    description: Option<Cow<'a, str>>,
-    directives: Vec<Directive<'a>>,
+    pub(super) name: Cow<'a, str>,
+    pub(super) value: ArgumentValue<'a>,
+    pub(super) description: Option<Cow<'a, str>>,
+    pub(super) directives: Vec<Directive<'a>>,
 }
 
 impl<'a> Argument<'a> {

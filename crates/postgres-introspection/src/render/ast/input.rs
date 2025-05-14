@@ -6,10 +6,10 @@ use std::{
 use super::{directive::Directive, field::Field};
 
 pub struct InputType<'a> {
-    name: Cow<'a, str>,
-    directives: Vec<Directive<'a>>,
-    fields: Vec<Field<'a>>,
-    description: Option<Cow<'a, str>>,
+    pub(super) name: Cow<'a, str>,
+    pub(super) directives: Vec<Directive<'a>>,
+    pub(super) fields: Vec<Field<'a>>,
+    pub(super) description: Option<Cow<'a, str>>,
 }
 
 impl<'a> InputType<'a> {
