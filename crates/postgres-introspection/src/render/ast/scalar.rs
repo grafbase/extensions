@@ -2,8 +2,8 @@ use std::borrow::Cow;
 use std::fmt;
 
 pub struct Scalar<'a> {
-    name: &'a str,
-    description: Option<Cow<'a, str>>,
+    pub(super) name: &'a str,
+    pub(super) description: Option<Cow<'a, str>>,
 }
 
 impl<'a> Scalar<'a> {

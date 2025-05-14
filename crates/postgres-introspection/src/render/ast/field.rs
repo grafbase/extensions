@@ -6,12 +6,12 @@ use indenter::indented;
 use super::directive::{Argument, Directive};
 
 pub struct Field<'a> {
-    name: Cow<'a, str>,
-    r#type: Cow<'a, str>,
-    directives: Vec<Directive<'a>>,
-    arguments: Vec<Argument<'a>>,
-    description: Option<Cow<'a, str>>,
-    render_multiline: bool,
+    pub(super) name: Cow<'a, str>,
+    pub(super) r#type: Cow<'a, str>,
+    pub(super) directives: Vec<Directive<'a>>,
+    pub(super) arguments: Vec<Argument<'a>>,
+    pub(super) description: Option<Cow<'a, str>>,
+    pub(super) render_multiline: bool,
 }
 
 impl<'a> Field<'a> {

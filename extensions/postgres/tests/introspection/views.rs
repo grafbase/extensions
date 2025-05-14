@@ -77,86 +77,6 @@ async fn view_with_int_unique() {
       @pgDatabase(name: "default")
 
     """
-    Arbitrary JSON object
-    """
-    scalar JSON
-
-    """
-    Binary data type, represented as a string containing a hexadecimal value
-    """
-    scalar Bytes
-
-    """
-    Big integer data type, represented as a string containing a numeric value
-    """
-    scalar BigInt
-
-    """
-    Decimal data type with arbitrary precision, represented as a string containing a numeric value
-    """
-    scalar Decimal
-
-    """
-    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-    """
-    scalar UUID
-
-    """
-    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
-    """
-    scalar Date
-
-    """
-    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
-    """
-    scalar Time
-
-    """
-    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
-    """
-    scalar TimeWithTimezone
-
-    """
-    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
-    """
-    scalar Timestamp
-
-    """
-    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
-    """
-    scalar DateTime
-
-    """
-    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
-    """
-    scalar Inet
-
-    """
-    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
-    """
-    scalar CIDR
-
-    """
-    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
-    """
-    scalar MacAddr
-
-    """
-    Currency amount data type represented as a string with a numeric value and optional currency symbol
-    """
-    scalar Money
-
-    """
-    Bit string data type represented as a string of 0s and 1s
-    """
-    scalar BitString
-
-    """
-    XML data type represented as a string
-    """
-    scalar XML
-
-    """
     Specifies the direction for ordering results.
     """
     enum OrderDirection {
@@ -168,128 +88,6 @@ async fn view_with_int_unique() {
       Specifies a descending order for a given orderBy argument.
       """
       DESC
-    }
-
-    """
-    Specifies the ordering for User results.
-    """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Filter input type for User collections
-    """
-    input UserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: UserFilterInput
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [UserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [UserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [UserFilterInput]
-    }
-
-    """
-    Input for creating a new User
-    """
-    input UserCreateInput {
-      """
-      Set field value for id
-      """
-      id: Int!
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      """
-      Update field value for id
-      """
-      id: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for FilteredUser results.
-    """
-    input FilteredUserOrderByInput @oneOf {
-      """
-      Order filteredUsers by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Lookup input type for FilteredUser objects for subgraph joins.
-    """
-    input FilteredUserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Input type to select a unique FilteredUser
-    """
-    input FilteredUserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Filter input type for FilteredUser collections
-    """
-    input FilteredUserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: FilteredUserFilterInput
     }
 
     """
@@ -315,163 +113,33 @@ async fn view_with_int_unique() {
     }
 
     """
-    Search filter input for String type.
+    Input type to select a unique FilteredUser
     """
-    input StringFilterInput @oneOf {
+    input FilteredUserLookupInput @oneOf {
       """
-      The value is exactly the one given
+      Select by the 'id' field
       """
-      eq: String
-      """
-      The value is not the one given
-      """
-      ne: String
-      """
-      The value is greater than the one given
-      """
-      gt: String
-      """
-      The value is less than the one given
-      """
-      lt: String
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: String
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: String
-      """
-      The given input is part of the column value
-      """
-      like: String
-      """
-      The value is in the given array of values
-      """
-      in: [String!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [String!]
-      """
-      A negation of the given filter
-      """
-      not: StringFilterInput
+      id: Int
     }
 
     """
-    Update input for String type.
+    Lookup input type for FilteredUser objects for subgraph joins.
     """
-    input StringUpdateInput @oneOf {
+    input FilteredUserManyLookupInput @oneOf @inaccessible {
       """
-      Replaces the value of a field with the specified value.
+      Select by the 'id' field
       """
-      set: String
+      id: [Int!] @inaccessible
     }
 
     """
-    Update input for String array type.
+    Specifies the ordering for FilteredUser results.
     """
-    input StringArrayUpdateInput @oneOf {
+    input FilteredUserOrderByInput @oneOf {
       """
-      Replaces the value of a field with the specified value.
+      Order filteredUsers by id
       """
-      set: [String]
-      """
-      Append an array value to the column.
-      """
-      append: [String]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [String]
-    }
-
-    """
-    Search filter input for BigInt type.
-    """
-    input BigIntFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: BigInt
-      """
-      The value is not the one given
-      """
-      ne: BigInt
-      """
-      The value is greater than the one given
-      """
-      gt: BigInt
-      """
-      The value is less than the one given
-      """
-      lt: BigInt
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: BigInt
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: BigInt
-      """
-      The value is in the given array of values
-      """
-      in: [BigInt!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [BigInt!]
-      """
-      A negation of the given filter
-      """
-      not: BigIntFilterInput
-    }
-
-    """
-    Update input for BigInt type.
-    """
-    input BigIntUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: BigInt
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: BigInt
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: BigInt
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: BigInt
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: BigInt
-    }
-
-    """
-    Update input for BigInt array type.
-    """
-    input BigIntArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [BigInt]
-      """
-      Append an array value to the column.
-      """
-      append: [BigInt]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [BigInt]
+      id: OrderDirection
     }
 
     """
@@ -543,2359 +211,113 @@ async fn view_with_int_unique() {
     }
 
     """
-    Update input for Int array type.
+    Input for creating a new User
     """
-    input IntArrayUpdateInput @oneOf {
+    input UserCreateInput {
       """
-      Replaces the value of a field with the specified value.
+      Set field value for id
       """
-      set: [Int]
-      """
-      Append an array value to the column.
-      """
-      append: [Int]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Int]
-    }
-
-    """
-    Search filter input for Float type.
-    """
-    input FloatFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Float
-      """
-      The value is not the one given
-      """
-      ne: Float
-      """
-      The value is greater than the one given
-      """
-      gt: Float
-      """
-      The value is less than the one given
-      """
-      lt: Float
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Float
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Float
-      """
-      The value is in the given array of values
-      """
-      in: [Float!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Float!]
-      """
-      A negation of the given filter
-      """
-      not: FloatFilterInput
-    }
-
-    """
-    Update input for Float type.
-    """
-    input FloatUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Float
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Float
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Float
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Float
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Float
-    }
-
-    """
-    Update input for Float array type.
-    """
-    input FloatArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Float]
-      """
-      Append an array value to the column.
-      """
-      append: [Float]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Float]
-    }
-
-    """
-    Search filter input for Boolean type.
-    """
-    input BooleanFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Boolean
-      """
-      The value is not the one given
-      """
-      ne: Boolean
-      """
-      The value is greater than the one given
-      """
-      gt: Boolean
-      """
-      The value is less than the one given
-      """
-      lt: Boolean
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Boolean
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Boolean
-      """
-      The value is in the given array of values
-      """
-      in: [Boolean!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Boolean!]
-      """
-      A negation of the given filter
-      """
-      not: BooleanFilterInput
-    }
-
-    """
-    Update input for Boolean type.
-    """
-    input BooleanUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Boolean
-    }
-
-    """
-    Update input for Boolean array type.
-    """
-    input BooleanArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Boolean]
-      """
-      Append an array value to the column.
-      """
-      append: [Boolean]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Boolean]
-    }
-
-    """
-    Search filter input for Decimal type.
-    """
-    input DecimalFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Decimal
-      """
-      The value is not the one given
-      """
-      ne: Decimal
-      """
-      The value is greater than the one given
-      """
-      gt: Decimal
-      """
-      The value is less than the one given
-      """
-      lt: Decimal
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Decimal
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Decimal
-      """
-      The value is in the given array of values
-      """
-      in: [Decimal!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Decimal!]
-      """
-      A negation of the given filter
-      """
-      not: DecimalFilterInput
-    }
-
-    """
-    Update input for Decimal type.
-    """
-    input DecimalUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Decimal
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Decimal
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Decimal
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Decimal
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Decimal
-    }
-
-    """
-    Update input for Decimal array type.
-    """
-    input DecimalArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Decimal]
-      """
-      Append an array value to the column.
-      """
-      append: [Decimal]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Decimal]
-    }
-
-    """
-    Search filter input for Bytes type.
-    """
-    input BytesFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Bytes
-      """
-      The value is not the one given
-      """
-      ne: Bytes
-      """
-      The value is greater than the one given
-      """
-      gt: Bytes
-      """
-      The value is less than the one given
-      """
-      lt: Bytes
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Bytes
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Bytes
-      """
-      The value is in the given array of values
-      """
-      in: [Bytes!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Bytes!]
-      """
-      A negation of the given filter
-      """
-      not: BytesFilterInput
-    }
-
-    """
-    Update input for Bytes type.
-    """
-    input BytesUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Bytes
-    }
-
-    """
-    Update input for Bytes array type.
-    """
-    input BytesArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Bytes]
-      """
-      Append an array value to the column.
-      """
-      append: [Bytes]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Bytes]
-    }
-
-    """
-    Search filter input for JSON type.
-    """
-    input JSONFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: JSON
-      """
-      The value is not the one given
-      """
-      ne: JSON
-      """
-      The value is greater than the one given
-      """
-      gt: JSON
-      """
-      The value is less than the one given
-      """
-      lt: JSON
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: JSON
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: JSON
-      """
-      The value is in the given array of values
-      """
-      in: [JSON!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [JSON!]
-      """
-      A negation of the given filter
-      """
-      not: JSONFilterInput
-    }
-
-    """
-    Update input for JSON type.
-    """
-    input JSONUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: JSON
-      """
-      Append JSON value to the column.
-      """
-      append: JSON
-      """
-      Prepend JSON value to the column.
-      """
-      prepend: JSON
-      """
-      Deletes a key (and its value) from a JSON object, or matching string value(s) from a JSON array.
-      """
-      deleteKey: String
-      """
-      Deletes the array element with specified index (negative integers count from the end). Throws an error if JSON value is not an array.
-      """
-      deleteElem: Int
-      """
-      Deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
-      """
-      deleteAtPath: [String!]
-    }
-
-    """
-    Update input for JSON array type.
-    """
-    input JSONArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [JSON]
-      """
-      Append an array value to the column.
-      """
-      append: [JSON]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [JSON]
-    }
-
-    """
-    Search filter input for UUID type.
-    """
-    input UUIDFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: UUID
-      """
-      The value is not the one given
-      """
-      ne: UUID
-      """
-      The value is greater than the one given
-      """
-      gt: UUID
-      """
-      The value is less than the one given
-      """
-      lt: UUID
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: UUID
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: UUID
-      """
-      The value is in the given array of values
-      """
-      in: [UUID!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [UUID!]
-      """
-      A negation of the given filter
-      """
-      not: UUIDFilterInput
-    }
-
-    """
-    Update input for UUID type.
-    """
-    input UUIDUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: UUID
-    }
-
-    """
-    Update input for UUID array type.
-    """
-    input UUIDArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [UUID]
-      """
-      Append an array value to the column.
-      """
-      append: [UUID]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [UUID]
-    }
-
-    """
-    Search filter input for Date type.
-    """
-    input DateFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Date
-      """
-      The value is not the one given
-      """
-      ne: Date
-      """
-      The value is greater than the one given
-      """
-      gt: Date
-      """
-      The value is less than the one given
-      """
-      lt: Date
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Date
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Date
-      """
-      The value is in the given array of values
-      """
-      in: [Date!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Date!]
-      """
-      A negation of the given filter
-      """
-      not: DateFilterInput
-    }
-
-    """
-    Update input for Date type.
-    """
-    input DateUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Date
-    }
-
-    """
-    Update input for Date array type.
-    """
-    input DateArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Date]
-      """
-      Append an array value to the column.
-      """
-      append: [Date]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Date]
-    }
-
-    """
-    Search filter input for Time type.
-    """
-    input TimeFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Time
-      """
-      The value is not the one given
-      """
-      ne: Time
-      """
-      The value is greater than the one given
-      """
-      gt: Time
-      """
-      The value is less than the one given
-      """
-      lt: Time
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Time
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Time
-      """
-      The value is in the given array of values
-      """
-      in: [Time!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Time!]
-      """
-      A negation of the given filter
-      """
-      not: TimeFilterInput
-    }
-
-    """
-    Update input for Time type.
-    """
-    input TimeUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Time
-    }
-
-    """
-    Update input for Time array type.
-    """
-    input TimeArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Time]
-      """
-      Append an array value to the column.
-      """
-      append: [Time]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Time]
-    }
-
-    """
-    Search filter input for TimeWithTimezone type.
-    """
-    input TimeWithTimezoneFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: TimeWithTimezone
-      """
-      The value is not the one given
-      """
-      ne: TimeWithTimezone
-      """
-      The value is greater than the one given
-      """
-      gt: TimeWithTimezone
-      """
-      The value is less than the one given
-      """
-      lt: TimeWithTimezone
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: TimeWithTimezone
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: TimeWithTimezone
-      """
-      The value is in the given array of values
-      """
-      in: [TimeWithTimezone!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [TimeWithTimezone!]
-      """
-      A negation of the given filter
-      """
-      not: TimeWithTimezoneFilterInput
-    }
-
-    """
-    Update input for TimeWithTimezone type.
-    """
-    input TimeWithTimezoneUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: TimeWithTimezone
-    }
-
-    """
-    Update input for TimeWithTimezone array type.
-    """
-    input TimeWithTimezoneArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [TimeWithTimezone]
-      """
-      Append an array value to the column.
-      """
-      append: [TimeWithTimezone]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [TimeWithTimezone]
-    }
-
-    """
-    Search filter input for Timestamp type.
-    """
-    input TimestampFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Timestamp
-      """
-      The value is not the one given
-      """
-      ne: Timestamp
-      """
-      The value is greater than the one given
-      """
-      gt: Timestamp
-      """
-      The value is less than the one given
-      """
-      lt: Timestamp
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Timestamp
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Timestamp
-      """
-      The value is in the given array of values
-      """
-      in: [Timestamp!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Timestamp!]
-      """
-      A negation of the given filter
-      """
-      not: TimestampFilterInput
-    }
-
-    """
-    Update input for Timestamp type.
-    """
-    input TimestampUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Timestamp
-    }
-
-    """
-    Update input for Timestamp array type.
-    """
-    input TimestampArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Timestamp]
-      """
-      Append an array value to the column.
-      """
-      append: [Timestamp]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Timestamp]
-    }
-
-    """
-    Search filter input for DateTime type.
-    """
-    input DateTimeFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: DateTime
-      """
-      The value is not the one given
-      """
-      ne: DateTime
-      """
-      The value is greater than the one given
-      """
-      gt: DateTime
-      """
-      The value is less than the one given
-      """
-      lt: DateTime
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: DateTime
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: DateTime
-      """
-      The value is in the given array of values
-      """
-      in: [DateTime!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [DateTime!]
-      """
-      A negation of the given filter
-      """
-      not: DateTimeFilterInput
-    }
-
-    """
-    Update input for DateTime type.
-    """
-    input DateTimeUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: DateTime
-    }
-
-    """
-    Update input for DateTime array type.
-    """
-    input DateTimeArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [DateTime]
-      """
-      Append an array value to the column.
-      """
-      append: [DateTime]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [DateTime]
-    }
-
-    """
-    Search filter input for Inet type.
-    """
-    input InetFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Inet
-      """
-      The value is not the one given
-      """
-      ne: Inet
-      """
-      The value is greater than the one given
-      """
-      gt: Inet
-      """
-      The value is less than the one given
-      """
-      lt: Inet
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Inet
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Inet
-      """
-      The value is in the given array of values
-      """
-      in: [Inet!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Inet!]
-      """
-      A negation of the given filter
-      """
-      not: InetFilterInput
-    }
-
-    """
-    Update input for Inet type.
-    """
-    input InetUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Inet
-    }
-
-    """
-    Update input for Inet array type.
-    """
-    input InetArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Inet]
-      """
-      Append an array value to the column.
-      """
-      append: [Inet]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Inet]
-    }
-
-    """
-    Search filter input for CIDR type.
-    """
-    input CIDRFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: CIDR
-      """
-      The value is not the one given
-      """
-      ne: CIDR
-      """
-      The value is greater than the one given
-      """
-      gt: CIDR
-      """
-      The value is less than the one given
-      """
-      lt: CIDR
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: CIDR
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: CIDR
-      """
-      The value is in the given array of values
-      """
-      in: [CIDR!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [CIDR!]
-      """
-      A negation of the given filter
-      """
-      not: CIDRFilterInput
-    }
-
-    """
-    Update input for CIDR type.
-    """
-    input CIDRUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: CIDR
-    }
-
-    """
-    Update input for CIDR array type.
-    """
-    input CIDRArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [CIDR]
-      """
-      Append an array value to the column.
-      """
-      append: [CIDR]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [CIDR]
-    }
-
-    """
-    Search filter input for MacAddr type.
-    """
-    input MacAddrFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: MacAddr
-      """
-      The value is not the one given
-      """
-      ne: MacAddr
-      """
-      The value is greater than the one given
-      """
-      gt: MacAddr
-      """
-      The value is less than the one given
-      """
-      lt: MacAddr
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: MacAddr
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: MacAddr
-      """
-      The value is in the given array of values
-      """
-      in: [MacAddr!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [MacAddr!]
-      """
-      A negation of the given filter
-      """
-      not: MacAddrFilterInput
-    }
-
-    """
-    Update input for MacAddr type.
-    """
-    input MacAddrUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: MacAddr
-    }
-
-    """
-    Update input for MacAddr array type.
-    """
-    input MacAddrArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [MacAddr]
-      """
-      Append an array value to the column.
-      """
-      append: [MacAddr]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [MacAddr]
-    }
-
-    """
-    Search filter input for Money type.
-    """
-    input MoneyFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Money
-      """
-      The value is not the one given
-      """
-      ne: Money
-      """
-      The value is greater than the one given
-      """
-      gt: Money
-      """
-      The value is less than the one given
-      """
-      lt: Money
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Money
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Money
-      """
-      The value is in the given array of values
-      """
-      in: [Money!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Money!]
-      """
-      A negation of the given filter
-      """
-      not: MoneyFilterInput
-    }
-
-    """
-    Update input for Money type.
-    """
-    input MoneyUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Money
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Money
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Money
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Money
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Money
-    }
-
-    """
-    Update input for Money array type.
-    """
-    input MoneyArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Money]
-      """
-      Append an array value to the column.
-      """
-      append: [Money]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Money]
-    }
-
-    """
-    Search filter input for BitString type.
-    """
-    input BitStringFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: BitString
-      """
-      The value is not the one given
-      """
-      ne: BitString
-      """
-      The value is greater than the one given
-      """
-      gt: BitString
-      """
-      The value is less than the one given
-      """
-      lt: BitString
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: BitString
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: BitString
-      """
-      The value is in the given array of values
-      """
-      in: [BitString!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [BitString!]
-      """
-      A negation of the given filter
-      """
-      not: BitStringFilterInput
-    }
-
-    """
-    Update input for BitString type.
-    """
-    input BitStringUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: BitString
-    }
-
-    """
-    Update input for BitString array type.
-    """
-    input BitStringArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [BitString]
-      """
-      Append an array value to the column.
-      """
-      append: [BitString]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [BitString]
-    }
-
-    """
-    Search filter input for XML type.
-    """
-    input XMLFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: XML
-      """
-      The value is not the one given
-      """
-      ne: XML
-      """
-      The value is greater than the one given
-      """
-      gt: XML
-      """
-      The value is less than the one given
-      """
-      lt: XML
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: XML
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: XML
-      """
-      The value is in the given array of values
-      """
-      in: [XML!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [XML!]
-      """
-      A negation of the given filter
-      """
-      not: XMLFilterInput
-    }
-
-    """
-    Update input for XML type.
-    """
-    input XMLUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: XML
-    }
-
-    """
-    Update input for XML array type.
-    """
-    input XMLArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [XML]
-      """
-      Append an array value to the column.
-      """
-      append: [XML]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [XML]
-    }
-
-    """
-    Search filter input for String array type.
-    """
-    input StringArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [String]
-      """
-      The value is not the one given
-      """
-      ne: [String]
-      """
-      The value is greater than the one given
-      """
-      gt: [String]
-      """
-      The value is less than the one given
-      """
-      lt: [String]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [String]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [String]
-      """
-      The value is in the given array of values
-      """
-      in: [[String]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[String]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [String]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [String]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [String]
-      """
-      A negation of the given filter
-      """
-      not: StringArrayFilterInput
-    }
-
-    """
-    Search filter input for Int array type.
-    """
-    input IntArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Int]
-      """
-      The value is not the one given
-      """
-      ne: [Int]
-      """
-      The value is greater than the one given
-      """
-      gt: [Int]
-      """
-      The value is less than the one given
-      """
-      lt: [Int]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Int]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Int]
-      """
-      The value is in the given array of values
-      """
-      in: [[Int]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Int]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Int]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Int]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Int]
-      """
-      A negation of the given filter
-      """
-      not: IntArrayFilterInput
-    }
-
-    """
-    Search filter input for BigInt array type.
-    """
-    input BigIntArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [BigInt]
-      """
-      The value is not the one given
-      """
-      ne: [BigInt]
-      """
-      The value is greater than the one given
-      """
-      gt: [BigInt]
-      """
-      The value is less than the one given
-      """
-      lt: [BigInt]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [BigInt]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [BigInt]
-      """
-      The value is in the given array of values
-      """
-      in: [[BigInt]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[BigInt]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [BigInt]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [BigInt]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [BigInt]
-      """
-      A negation of the given filter
-      """
-      not: BigIntArrayFilterInput
-    }
-
-    """
-    Search filter input for Decimal array type.
-    """
-    input DecimalArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Decimal]
-      """
-      The value is not the one given
-      """
-      ne: [Decimal]
-      """
-      The value is greater than the one given
-      """
-      gt: [Decimal]
-      """
-      The value is less than the one given
-      """
-      lt: [Decimal]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Decimal]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Decimal]
-      """
-      The value is in the given array of values
-      """
-      in: [[Decimal]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Decimal]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Decimal]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Decimal]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Decimal]
-      """
-      A negation of the given filter
-      """
-      not: DecimalArrayFilterInput
-    }
-
-    """
-    Search filter input for Float array type.
-    """
-    input FloatArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Float]
-      """
-      The value is not the one given
-      """
-      ne: [Float]
-      """
-      The value is greater than the one given
-      """
-      gt: [Float]
-      """
-      The value is less than the one given
-      """
-      lt: [Float]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Float]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Float]
-      """
-      The value is in the given array of values
-      """
-      in: [[Float]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Float]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Float]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Float]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Float]
-      """
-      A negation of the given filter
-      """
-      not: FloatArrayFilterInput
-    }
-
-    """
-    Search filter input for Boolean array type.
-    """
-    input BooleanArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Boolean]
-      """
-      The value is not the one given
-      """
-      ne: [Boolean]
-      """
-      The value is greater than the one given
-      """
-      gt: [Boolean]
-      """
-      The value is less than the one given
-      """
-      lt: [Boolean]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Boolean]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Boolean]
-      """
-      The value is in the given array of values
-      """
-      in: [[Boolean]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Boolean]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Boolean]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Boolean]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Boolean]
-      """
-      A negation of the given filter
-      """
-      not: BooleanArrayFilterInput
-    }
-
-    """
-    Search filter input for Bytes array type.
-    """
-    input BytesArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Bytes]
-      """
-      The value is not the one given
-      """
-      ne: [Bytes]
-      """
-      The value is greater than the one given
-      """
-      gt: [Bytes]
-      """
-      The value is less than the one given
-      """
-      lt: [Bytes]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Bytes]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Bytes]
-      """
-      The value is in the given array of values
-      """
-      in: [[Bytes]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Bytes]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Bytes]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Bytes]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Bytes]
-      """
-      A negation of the given filter
-      """
-      not: BytesArrayFilterInput
-    }
-
-    """
-    Search filter input for JSON array type.
-    """
-    input JSONArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [JSON]
-      """
-      The value is not the one given
-      """
-      ne: [JSON]
-      """
-      The value is greater than the one given
-      """
-      gt: [JSON]
-      """
-      The value is less than the one given
-      """
-      lt: [JSON]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [JSON]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [JSON]
-      """
-      The value is in the given array of values
-      """
-      in: [[JSON]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[JSON]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [JSON]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [JSON]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [JSON]
-      """
-      A negation of the given filter
-      """
-      not: JSONArrayFilterInput
-    }
-
-    """
-    Search filter input for UUID array type.
-    """
-    input UUIDArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [UUID]
-      """
-      The value is not the one given
-      """
-      ne: [UUID]
-      """
-      The value is greater than the one given
-      """
-      gt: [UUID]
-      """
-      The value is less than the one given
-      """
-      lt: [UUID]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [UUID]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [UUID]
-      """
-      The value is in the given array of values
-      """
-      in: [[UUID]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[UUID]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [UUID]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [UUID]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [UUID]
-      """
-      A negation of the given filter
-      """
-      not: UUIDArrayFilterInput
-    }
-
-    """
-    Search filter input for Date array type.
-    """
-    input DateArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Date]
-      """
-      The value is not the one given
-      """
-      ne: [Date]
-      """
-      The value is greater than the one given
-      """
-      gt: [Date]
-      """
-      The value is less than the one given
-      """
-      lt: [Date]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Date]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Date]
-      """
-      The value is in the given array of values
-      """
-      in: [[Date]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Date]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Date]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Date]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Date]
-      """
-      A negation of the given filter
-      """
-      not: DateArrayFilterInput
-    }
-
-    """
-    Search filter input for Time array type.
-    """
-    input TimeArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Time]
-      """
-      The value is not the one given
-      """
-      ne: [Time]
-      """
-      The value is greater than the one given
-      """
-      gt: [Time]
-      """
-      The value is less than the one given
-      """
-      lt: [Time]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Time]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Time]
-      """
-      The value is in the given array of values
-      """
-      in: [[Time]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Time]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Time]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Time]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Time]
-      """
-      A negation of the given filter
-      """
-      not: TimeArrayFilterInput
-    }
-
-    """
-    Search filter input for TimeWithTimezone array type.
-    """
-    input TimeWithTimezoneArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [TimeWithTimezone]
-      """
-      The value is not the one given
-      """
-      ne: [TimeWithTimezone]
-      """
-      The value is greater than the one given
-      """
-      gt: [TimeWithTimezone]
-      """
-      The value is less than the one given
-      """
-      lt: [TimeWithTimezone]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [TimeWithTimezone]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [TimeWithTimezone]
-      """
-      The value is in the given array of values
-      """
-      in: [[TimeWithTimezone]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[TimeWithTimezone]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [TimeWithTimezone]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [TimeWithTimezone]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [TimeWithTimezone]
-      """
-      A negation of the given filter
-      """
-      not: TimeWithTimezoneArrayFilterInput
+      id: Int!
     }
 
     """
-    Search filter input for Timestamp array type.
+    Filter input type for User objects.
     """
-    input TimestampArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Timestamp]
-      """
-      The value is not the one given
-      """
-      ne: [Timestamp]
-      """
-      The value is greater than the one given
-      """
-      gt: [Timestamp]
-      """
-      The value is less than the one given
-      """
-      lt: [Timestamp]
-      """
-      The value is greater than, or equal to the one given
+    input UserFilterInput @oneOf {
       """
-      gte: [Timestamp]
+      Filter by the given id
       """
-      The value is less than, or equal to the one given
+      id: IntFilterInput
       """
-      lte: [Timestamp]
+      All of the filters must match
       """
-      The value is in the given array of values
+      ALL: [UserFilterInput]
       """
-      in: [[Timestamp]!]
+      None of the filters must match
       """
-      The value is not in the given array of values
+      NONE: [UserFilterInput]
       """
-      nin: [[Timestamp]!]
+      At least one of the filters must match
       """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Timestamp]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Timestamp]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Timestamp]
-      """
-      A negation of the given filter
-      """
-      not: TimestampArrayFilterInput
+      ANY: [UserFilterInput]
     }
 
     """
-    Search filter input for DateTime array type.
+    Input type to select a unique User
     """
-    input DateTimeArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [DateTime]
-      """
-      The value is not the one given
-      """
-      ne: [DateTime]
-      """
-      The value is greater than the one given
-      """
-      gt: [DateTime]
-      """
-      The value is less than the one given
-      """
-      lt: [DateTime]
-      """
-      The value is greater than, or equal to the one given
+    input UserLookupInput @oneOf {
       """
-      gte: [DateTime]
+      Select by the 'id' field
       """
-      The value is less than, or equal to the one given
-      """
-      lte: [DateTime]
-      """
-      The value is in the given array of values
-      """
-      in: [[DateTime]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[DateTime]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [DateTime]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [DateTime]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [DateTime]
-      """
-      A negation of the given filter
-      """
-      not: DateTimeArrayFilterInput
+      id: Int
     }
 
     """
-    Search filter input for Inet array type.
+    Lookup input type for User objects for subgraph joins.
     """
-    input InetArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Inet]
-      """
-      The value is not the one given
+    input UserManyLookupInput @oneOf @inaccessible {
       """
-      ne: [Inet]
+      Select by the 'id' field
       """
-      The value is greater than the one given
-      """
-      gt: [Inet]
-      """
-      The value is less than the one given
-      """
-      lt: [Inet]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Inet]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Inet]
-      """
-      The value is in the given array of values
-      """
-      in: [[Inet]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Inet]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Inet]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Inet]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Inet]
-      """
-      A negation of the given filter
-      """
-      not: InetArrayFilterInput
+      id: [Int!] @inaccessible
     }
 
     """
-    Search filter input for CIDR array type.
+    Specifies the ordering for User results.
     """
-    input CIDRArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [CIDR]
-      """
-      The value is not the one given
-      """
-      ne: [CIDR]
-      """
-      The value is greater than the one given
-      """
-      gt: [CIDR]
-      """
-      The value is less than the one given
-      """
-      lt: [CIDR]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [CIDR]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [CIDR]
-      """
-      The value is in the given array of values
+    input UserOrderByInput @oneOf {
       """
-      in: [[CIDR]!]
+      Order users by id
       """
-      The value is not in the given array of values
-      """
-      nin: [[CIDR]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [CIDR]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [CIDR]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [CIDR]
-      """
-      A negation of the given filter
-      """
-      not: CIDRArrayFilterInput
+      id: OrderDirection
     }
 
     """
-    Search filter input for MacAddr array type.
+    Input for updating an existing User
     """
-    input MacAddrArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [MacAddr]
-      """
-      The value is not the one given
-      """
-      ne: [MacAddr]
-      """
-      The value is greater than the one given
-      """
-      gt: [MacAddr]
-      """
-      The value is less than the one given
+    input UserUpdateInput {
       """
-      lt: [MacAddr]
+      Update field value for id
       """
-      The value is greater than, or equal to the one given
-      """
-      gte: [MacAddr]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [MacAddr]
-      """
-      The value is in the given array of values
-      """
-      in: [[MacAddr]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[MacAddr]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [MacAddr]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [MacAddr]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [MacAddr]
-      """
-      A negation of the given filter
-      """
-      not: MacAddrArrayFilterInput
+      id: IntUpdateInput
     }
 
-    """
-    Search filter input for Money array type.
-    """
-    input MoneyArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Money]
-      """
-      The value is not the one given
-      """
-      ne: [Money]
-      """
-      The value is greater than the one given
-      """
-      gt: [Money]
-      """
-      The value is less than the one given
-      """
-      lt: [Money]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Money]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Money]
-      """
-      The value is in the given array of values
-      """
-      in: [[Money]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Money]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Money]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Money]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Money]
-      """
-      A negation of the given filter
-      """
-      not: MoneyArrayFilterInput
+    type FilteredUser
+      @key(fields: "id")
+      @pgTable(name: "filtered_users", kind: VIEW)
+      @pgKey(fields: ["id"], type: UNIQUE)
+    {
+      id: Int! @pgColumn(name: "id", type: INT)
     }
 
     """
-    Search filter input for BitString array type.
+    The connection type for FilteredUser
     """
-    input BitStringArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [BitString]
-      """
-      The value is not the one given
-      """
-      ne: [BitString]
-      """
-      The value is greater than the one given
-      """
-      gt: [BitString]
-      """
-      The value is less than the one given
+    type FilteredUserConnection
+      @pgConnection(type: "FilteredUser")
+    {
       """
-      lt: [BitString]
+      A list of edges
       """
-      The value is greater than, or equal to the one given
+      edges: [FilteredUserEdge!]! @shareable
       """
-      gte: [BitString]
+      Information to aid in pagination
       """
-      The value is less than, or equal to the one given
-      """
-      lte: [BitString]
-      """
-      The value is in the given array of values
-      """
-      in: [[BitString]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[BitString]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [BitString]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [BitString]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [BitString]
-      """
-      A negation of the given filter
-      """
-      not: BitStringArrayFilterInput
+      pageInfo: PageInfo! @shareable
     }
 
     """
-    Search filter input for XML array type.
+    An edge in a connection. Contains the node and its cursor
     """
-    input XMLArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [XML]
-      """
-      The value is not the one given
-      """
-      ne: [XML]
-      """
-      The value is greater than the one given
-      """
-      gt: [XML]
-      """
-      The value is less than the one given
-      """
-      lt: [XML]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [XML]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [XML]
-      """
-      The value is in the given array of values
-      """
-      in: [[XML]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[XML]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [XML]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [XML]
+    type FilteredUserEdge {
       """
-      Checks if the array has any elements in common with the provided array
+      The item at the end of the edge
       """
-      overlaps: [XML]
+      node: FilteredUser! @shareable
       """
-      A negation of the given filter
+      A cursor for use in pagination
       """
-      not: XMLArrayFilterInput
+      cursor: String! @shareable
     }
 
     """
@@ -2922,32 +344,28 @@ async fn view_with_int_unique() {
       endCursor: String @shareable
     }
 
-    """
-    Return type containing fields of the mutated or created User object
-    """
-    type UserReturning
-      @pgReturning(type: "User")
+    type User
+      @key(fields: "id")
+      @pgTable(name: "User")
+      @pgKey(fields: ["id"], type: UNIQUE)
     {
-      """
-      The value of the id field
-      """
-      id: Int! @shareable
+      id: Int! @pgColumn(name: "id", type: INT)
     }
 
     """
-    Return type when creating one User
+    The connection type for User
     """
-    type UserCreatePayload
-      @pgMutation(type: "User")
+    type UserConnection
+      @pgConnection(type: "User")
     {
       """
-      Returned item(s) from the mutation
+      A list of edges
       """
-      returning: UserReturning @shareable
+      edges: [UserEdge!]! @shareable
       """
-      The number of rows mutated
+      Information to aid in pagination
       """
-      rowCount: Int! @shareable
+      pageInfo: PageInfo! @shareable
     }
 
     """
@@ -2967,41 +385,9 @@ async fn view_with_int_unique() {
     }
 
     """
-    Return type when updating one User
+    Return type when creating one User
     """
-    type UserUpdatePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when updating many users
-    """
-    type UserUpdateManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting one User
-    """
-    type UserDeletePayload
+    type UserCreatePayload
       @pgMutation(type: "User")
     {
       """
@@ -3031,6 +417,22 @@ async fn view_with_int_unique() {
     }
 
     """
+    Return type when deleting one User
+    """
+    type UserDeletePayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: UserReturning @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
     An edge in a connection. Contains the node and its cursor
     """
     type UserEdge {
@@ -3045,65 +447,47 @@ async fn view_with_int_unique() {
     }
 
     """
-    The connection type for User
+    Return type containing fields of the mutated or created User object
     """
-    type UserConnection
-      @pgConnection(type: "User")
+    type UserReturning
+      @pgReturning(type: "User")
     {
       """
-      A list of edges
+      The value of the id field
       """
-      edges: [UserEdge!]! @shareable
-      """
-      Information to aid in pagination
-      """
-      pageInfo: PageInfo! @shareable
+      id: Int! @shareable
     }
 
     """
-    An edge in a connection. Contains the node and its cursor
+    Return type when updating many users
     """
-    type FilteredUserEdge {
+    type UserUpdateManyPayload
+      @pgMutation(type: "User")
+    {
       """
-      The item at the end of the edge
+      Returned item(s) from the mutation
       """
-      node: FilteredUser! @shareable
+      returning: [UserReturning]! @shareable
       """
-      A cursor for use in pagination
+      The number of rows mutated
       """
-      cursor: String! @shareable
+      rowCount: Int! @shareable
     }
 
     """
-    The connection type for FilteredUser
+    Return type when updating one User
     """
-    type FilteredUserConnection
-      @pgConnection(type: "FilteredUser")
+    type UserUpdatePayload
+      @pgMutation(type: "User")
     {
       """
-      A list of edges
+      Returned item(s) from the mutation
       """
-      edges: [FilteredUserEdge!]! @shareable
+      returning: UserReturning @shareable
       """
-      Information to aid in pagination
+      The number of rows mutated
       """
-      pageInfo: PageInfo! @shareable
-    }
-
-    type User
-      @key(fields: "id")
-      @pgTable(name: "User")
-      @pgKey(fields: ["id"], type: UNIQUE)
-    {
-      id: Int! @pgColumn(name: "id", type: INT)
-    }
-
-    type FilteredUser
-      @key(fields: "id")
-      @pgTable(name: "filtered_users", kind: VIEW)
-      @pgKey(fields: ["id"], type: UNIQUE)
-    {
-      id: Int! @pgColumn(name: "id", type: INT)
+      rowCount: Int! @shareable
     }
 
     type Query {
@@ -3346,86 +730,6 @@ async fn materialized_view_with_int_unique() {
       @pgDatabase(name: "default")
 
     """
-    Arbitrary JSON object
-    """
-    scalar JSON
-
-    """
-    Binary data type, represented as a string containing a hexadecimal value
-    """
-    scalar Bytes
-
-    """
-    Big integer data type, represented as a string containing a numeric value
-    """
-    scalar BigInt
-
-    """
-    Decimal data type with arbitrary precision, represented as a string containing a numeric value
-    """
-    scalar Decimal
-
-    """
-    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-    """
-    scalar UUID
-
-    """
-    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
-    """
-    scalar Date
-
-    """
-    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
-    """
-    scalar Time
-
-    """
-    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
-    """
-    scalar TimeWithTimezone
-
-    """
-    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
-    """
-    scalar Timestamp
-
-    """
-    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
-    """
-    scalar DateTime
-
-    """
-    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
-    """
-    scalar Inet
-
-    """
-    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
-    """
-    scalar CIDR
-
-    """
-    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
-    """
-    scalar MacAddr
-
-    """
-    Currency amount data type represented as a string with a numeric value and optional currency symbol
-    """
-    scalar Money
-
-    """
-    Bit string data type represented as a string of 0s and 1s
-    """
-    scalar BitString
-
-    """
-    XML data type represented as a string
-    """
-    scalar XML
-
-    """
     Specifies the direction for ordering results.
     """
     enum OrderDirection {
@@ -3437,128 +741,6 @@ async fn materialized_view_with_int_unique() {
       Specifies a descending order for a given orderBy argument.
       """
       DESC
-    }
-
-    """
-    Specifies the ordering for User results.
-    """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Filter input type for User collections
-    """
-    input UserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: UserFilterInput
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [UserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [UserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [UserFilterInput]
-    }
-
-    """
-    Input for creating a new User
-    """
-    input UserCreateInput {
-      """
-      Set field value for id
-      """
-      id: Int!
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      """
-      Update field value for id
-      """
-      id: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for FilteredUser results.
-    """
-    input FilteredUserOrderByInput @oneOf {
-      """
-      Order filteredUsers by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Lookup input type for FilteredUser objects for subgraph joins.
-    """
-    input FilteredUserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Input type to select a unique FilteredUser
-    """
-    input FilteredUserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Filter input type for FilteredUser collections
-    """
-    input FilteredUserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: FilteredUserFilterInput
     }
 
     """
@@ -3584,163 +766,33 @@ async fn materialized_view_with_int_unique() {
     }
 
     """
-    Search filter input for String type.
+    Input type to select a unique FilteredUser
     """
-    input StringFilterInput @oneOf {
+    input FilteredUserLookupInput @oneOf {
       """
-      The value is exactly the one given
+      Select by the 'id' field
       """
-      eq: String
-      """
-      The value is not the one given
-      """
-      ne: String
-      """
-      The value is greater than the one given
-      """
-      gt: String
-      """
-      The value is less than the one given
-      """
-      lt: String
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: String
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: String
-      """
-      The given input is part of the column value
-      """
-      like: String
-      """
-      The value is in the given array of values
-      """
-      in: [String!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [String!]
-      """
-      A negation of the given filter
-      """
-      not: StringFilterInput
+      id: Int
     }
 
     """
-    Update input for String type.
+    Lookup input type for FilteredUser objects for subgraph joins.
     """
-    input StringUpdateInput @oneOf {
+    input FilteredUserManyLookupInput @oneOf @inaccessible {
       """
-      Replaces the value of a field with the specified value.
+      Select by the 'id' field
       """
-      set: String
+      id: [Int!] @inaccessible
     }
 
     """
-    Update input for String array type.
+    Specifies the ordering for FilteredUser results.
     """
-    input StringArrayUpdateInput @oneOf {
+    input FilteredUserOrderByInput @oneOf {
       """
-      Replaces the value of a field with the specified value.
+      Order filteredUsers by id
       """
-      set: [String]
-      """
-      Append an array value to the column.
-      """
-      append: [String]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [String]
-    }
-
-    """
-    Search filter input for BigInt type.
-    """
-    input BigIntFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: BigInt
-      """
-      The value is not the one given
-      """
-      ne: BigInt
-      """
-      The value is greater than the one given
-      """
-      gt: BigInt
-      """
-      The value is less than the one given
-      """
-      lt: BigInt
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: BigInt
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: BigInt
-      """
-      The value is in the given array of values
-      """
-      in: [BigInt!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [BigInt!]
-      """
-      A negation of the given filter
-      """
-      not: BigIntFilterInput
-    }
-
-    """
-    Update input for BigInt type.
-    """
-    input BigIntUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: BigInt
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: BigInt
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: BigInt
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: BigInt
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: BigInt
-    }
-
-    """
-    Update input for BigInt array type.
-    """
-    input BigIntArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [BigInt]
-      """
-      Append an array value to the column.
-      """
-      append: [BigInt]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [BigInt]
+      id: OrderDirection
     }
 
     """
@@ -3812,2359 +864,113 @@ async fn materialized_view_with_int_unique() {
     }
 
     """
-    Update input for Int array type.
+    Input for creating a new User
     """
-    input IntArrayUpdateInput @oneOf {
+    input UserCreateInput {
       """
-      Replaces the value of a field with the specified value.
+      Set field value for id
       """
-      set: [Int]
-      """
-      Append an array value to the column.
-      """
-      append: [Int]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Int]
-    }
-
-    """
-    Search filter input for Float type.
-    """
-    input FloatFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Float
-      """
-      The value is not the one given
-      """
-      ne: Float
-      """
-      The value is greater than the one given
-      """
-      gt: Float
-      """
-      The value is less than the one given
-      """
-      lt: Float
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Float
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Float
-      """
-      The value is in the given array of values
-      """
-      in: [Float!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Float!]
-      """
-      A negation of the given filter
-      """
-      not: FloatFilterInput
-    }
-
-    """
-    Update input for Float type.
-    """
-    input FloatUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Float
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Float
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Float
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Float
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Float
-    }
-
-    """
-    Update input for Float array type.
-    """
-    input FloatArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Float]
-      """
-      Append an array value to the column.
-      """
-      append: [Float]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Float]
-    }
-
-    """
-    Search filter input for Boolean type.
-    """
-    input BooleanFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Boolean
-      """
-      The value is not the one given
-      """
-      ne: Boolean
-      """
-      The value is greater than the one given
-      """
-      gt: Boolean
-      """
-      The value is less than the one given
-      """
-      lt: Boolean
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Boolean
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Boolean
-      """
-      The value is in the given array of values
-      """
-      in: [Boolean!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Boolean!]
-      """
-      A negation of the given filter
-      """
-      not: BooleanFilterInput
-    }
-
-    """
-    Update input for Boolean type.
-    """
-    input BooleanUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Boolean
-    }
-
-    """
-    Update input for Boolean array type.
-    """
-    input BooleanArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Boolean]
-      """
-      Append an array value to the column.
-      """
-      append: [Boolean]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Boolean]
-    }
-
-    """
-    Search filter input for Decimal type.
-    """
-    input DecimalFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Decimal
-      """
-      The value is not the one given
-      """
-      ne: Decimal
-      """
-      The value is greater than the one given
-      """
-      gt: Decimal
-      """
-      The value is less than the one given
-      """
-      lt: Decimal
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Decimal
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Decimal
-      """
-      The value is in the given array of values
-      """
-      in: [Decimal!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Decimal!]
-      """
-      A negation of the given filter
-      """
-      not: DecimalFilterInput
-    }
-
-    """
-    Update input for Decimal type.
-    """
-    input DecimalUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Decimal
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Decimal
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Decimal
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Decimal
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Decimal
-    }
-
-    """
-    Update input for Decimal array type.
-    """
-    input DecimalArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Decimal]
-      """
-      Append an array value to the column.
-      """
-      append: [Decimal]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Decimal]
-    }
-
-    """
-    Search filter input for Bytes type.
-    """
-    input BytesFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Bytes
-      """
-      The value is not the one given
-      """
-      ne: Bytes
-      """
-      The value is greater than the one given
-      """
-      gt: Bytes
-      """
-      The value is less than the one given
-      """
-      lt: Bytes
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Bytes
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Bytes
-      """
-      The value is in the given array of values
-      """
-      in: [Bytes!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Bytes!]
-      """
-      A negation of the given filter
-      """
-      not: BytesFilterInput
-    }
-
-    """
-    Update input for Bytes type.
-    """
-    input BytesUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Bytes
-    }
-
-    """
-    Update input for Bytes array type.
-    """
-    input BytesArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Bytes]
-      """
-      Append an array value to the column.
-      """
-      append: [Bytes]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Bytes]
-    }
-
-    """
-    Search filter input for JSON type.
-    """
-    input JSONFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: JSON
-      """
-      The value is not the one given
-      """
-      ne: JSON
-      """
-      The value is greater than the one given
-      """
-      gt: JSON
-      """
-      The value is less than the one given
-      """
-      lt: JSON
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: JSON
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: JSON
-      """
-      The value is in the given array of values
-      """
-      in: [JSON!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [JSON!]
-      """
-      A negation of the given filter
-      """
-      not: JSONFilterInput
-    }
-
-    """
-    Update input for JSON type.
-    """
-    input JSONUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: JSON
-      """
-      Append JSON value to the column.
-      """
-      append: JSON
-      """
-      Prepend JSON value to the column.
-      """
-      prepend: JSON
-      """
-      Deletes a key (and its value) from a JSON object, or matching string value(s) from a JSON array.
-      """
-      deleteKey: String
-      """
-      Deletes the array element with specified index (negative integers count from the end). Throws an error if JSON value is not an array.
-      """
-      deleteElem: Int
-      """
-      Deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
-      """
-      deleteAtPath: [String!]
-    }
-
-    """
-    Update input for JSON array type.
-    """
-    input JSONArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [JSON]
-      """
-      Append an array value to the column.
-      """
-      append: [JSON]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [JSON]
-    }
-
-    """
-    Search filter input for UUID type.
-    """
-    input UUIDFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: UUID
-      """
-      The value is not the one given
-      """
-      ne: UUID
-      """
-      The value is greater than the one given
-      """
-      gt: UUID
-      """
-      The value is less than the one given
-      """
-      lt: UUID
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: UUID
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: UUID
-      """
-      The value is in the given array of values
-      """
-      in: [UUID!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [UUID!]
-      """
-      A negation of the given filter
-      """
-      not: UUIDFilterInput
-    }
-
-    """
-    Update input for UUID type.
-    """
-    input UUIDUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: UUID
-    }
-
-    """
-    Update input for UUID array type.
-    """
-    input UUIDArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [UUID]
-      """
-      Append an array value to the column.
-      """
-      append: [UUID]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [UUID]
-    }
-
-    """
-    Search filter input for Date type.
-    """
-    input DateFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Date
-      """
-      The value is not the one given
-      """
-      ne: Date
-      """
-      The value is greater than the one given
-      """
-      gt: Date
-      """
-      The value is less than the one given
-      """
-      lt: Date
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Date
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Date
-      """
-      The value is in the given array of values
-      """
-      in: [Date!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Date!]
-      """
-      A negation of the given filter
-      """
-      not: DateFilterInput
-    }
-
-    """
-    Update input for Date type.
-    """
-    input DateUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Date
-    }
-
-    """
-    Update input for Date array type.
-    """
-    input DateArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Date]
-      """
-      Append an array value to the column.
-      """
-      append: [Date]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Date]
-    }
-
-    """
-    Search filter input for Time type.
-    """
-    input TimeFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Time
-      """
-      The value is not the one given
-      """
-      ne: Time
-      """
-      The value is greater than the one given
-      """
-      gt: Time
-      """
-      The value is less than the one given
-      """
-      lt: Time
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Time
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Time
-      """
-      The value is in the given array of values
-      """
-      in: [Time!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Time!]
-      """
-      A negation of the given filter
-      """
-      not: TimeFilterInput
-    }
-
-    """
-    Update input for Time type.
-    """
-    input TimeUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Time
-    }
-
-    """
-    Update input for Time array type.
-    """
-    input TimeArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Time]
-      """
-      Append an array value to the column.
-      """
-      append: [Time]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Time]
-    }
-
-    """
-    Search filter input for TimeWithTimezone type.
-    """
-    input TimeWithTimezoneFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: TimeWithTimezone
-      """
-      The value is not the one given
-      """
-      ne: TimeWithTimezone
-      """
-      The value is greater than the one given
-      """
-      gt: TimeWithTimezone
-      """
-      The value is less than the one given
-      """
-      lt: TimeWithTimezone
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: TimeWithTimezone
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: TimeWithTimezone
-      """
-      The value is in the given array of values
-      """
-      in: [TimeWithTimezone!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [TimeWithTimezone!]
-      """
-      A negation of the given filter
-      """
-      not: TimeWithTimezoneFilterInput
-    }
-
-    """
-    Update input for TimeWithTimezone type.
-    """
-    input TimeWithTimezoneUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: TimeWithTimezone
-    }
-
-    """
-    Update input for TimeWithTimezone array type.
-    """
-    input TimeWithTimezoneArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [TimeWithTimezone]
-      """
-      Append an array value to the column.
-      """
-      append: [TimeWithTimezone]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [TimeWithTimezone]
-    }
-
-    """
-    Search filter input for Timestamp type.
-    """
-    input TimestampFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Timestamp
-      """
-      The value is not the one given
-      """
-      ne: Timestamp
-      """
-      The value is greater than the one given
-      """
-      gt: Timestamp
-      """
-      The value is less than the one given
-      """
-      lt: Timestamp
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Timestamp
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Timestamp
-      """
-      The value is in the given array of values
-      """
-      in: [Timestamp!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Timestamp!]
-      """
-      A negation of the given filter
-      """
-      not: TimestampFilterInput
-    }
-
-    """
-    Update input for Timestamp type.
-    """
-    input TimestampUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Timestamp
-    }
-
-    """
-    Update input for Timestamp array type.
-    """
-    input TimestampArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Timestamp]
-      """
-      Append an array value to the column.
-      """
-      append: [Timestamp]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Timestamp]
-    }
-
-    """
-    Search filter input for DateTime type.
-    """
-    input DateTimeFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: DateTime
-      """
-      The value is not the one given
-      """
-      ne: DateTime
-      """
-      The value is greater than the one given
-      """
-      gt: DateTime
-      """
-      The value is less than the one given
-      """
-      lt: DateTime
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: DateTime
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: DateTime
-      """
-      The value is in the given array of values
-      """
-      in: [DateTime!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [DateTime!]
-      """
-      A negation of the given filter
-      """
-      not: DateTimeFilterInput
-    }
-
-    """
-    Update input for DateTime type.
-    """
-    input DateTimeUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: DateTime
-    }
-
-    """
-    Update input for DateTime array type.
-    """
-    input DateTimeArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [DateTime]
-      """
-      Append an array value to the column.
-      """
-      append: [DateTime]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [DateTime]
-    }
-
-    """
-    Search filter input for Inet type.
-    """
-    input InetFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Inet
-      """
-      The value is not the one given
-      """
-      ne: Inet
-      """
-      The value is greater than the one given
-      """
-      gt: Inet
-      """
-      The value is less than the one given
-      """
-      lt: Inet
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Inet
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Inet
-      """
-      The value is in the given array of values
-      """
-      in: [Inet!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Inet!]
-      """
-      A negation of the given filter
-      """
-      not: InetFilterInput
-    }
-
-    """
-    Update input for Inet type.
-    """
-    input InetUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Inet
-    }
-
-    """
-    Update input for Inet array type.
-    """
-    input InetArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Inet]
-      """
-      Append an array value to the column.
-      """
-      append: [Inet]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Inet]
-    }
-
-    """
-    Search filter input for CIDR type.
-    """
-    input CIDRFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: CIDR
-      """
-      The value is not the one given
-      """
-      ne: CIDR
-      """
-      The value is greater than the one given
-      """
-      gt: CIDR
-      """
-      The value is less than the one given
-      """
-      lt: CIDR
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: CIDR
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: CIDR
-      """
-      The value is in the given array of values
-      """
-      in: [CIDR!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [CIDR!]
-      """
-      A negation of the given filter
-      """
-      not: CIDRFilterInput
-    }
-
-    """
-    Update input for CIDR type.
-    """
-    input CIDRUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: CIDR
-    }
-
-    """
-    Update input for CIDR array type.
-    """
-    input CIDRArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [CIDR]
-      """
-      Append an array value to the column.
-      """
-      append: [CIDR]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [CIDR]
-    }
-
-    """
-    Search filter input for MacAddr type.
-    """
-    input MacAddrFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: MacAddr
-      """
-      The value is not the one given
-      """
-      ne: MacAddr
-      """
-      The value is greater than the one given
-      """
-      gt: MacAddr
-      """
-      The value is less than the one given
-      """
-      lt: MacAddr
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: MacAddr
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: MacAddr
-      """
-      The value is in the given array of values
-      """
-      in: [MacAddr!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [MacAddr!]
-      """
-      A negation of the given filter
-      """
-      not: MacAddrFilterInput
-    }
-
-    """
-    Update input for MacAddr type.
-    """
-    input MacAddrUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: MacAddr
-    }
-
-    """
-    Update input for MacAddr array type.
-    """
-    input MacAddrArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [MacAddr]
-      """
-      Append an array value to the column.
-      """
-      append: [MacAddr]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [MacAddr]
-    }
-
-    """
-    Search filter input for Money type.
-    """
-    input MoneyFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Money
-      """
-      The value is not the one given
-      """
-      ne: Money
-      """
-      The value is greater than the one given
-      """
-      gt: Money
-      """
-      The value is less than the one given
-      """
-      lt: Money
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Money
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Money
-      """
-      The value is in the given array of values
-      """
-      in: [Money!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Money!]
-      """
-      A negation of the given filter
-      """
-      not: MoneyFilterInput
-    }
-
-    """
-    Update input for Money type.
-    """
-    input MoneyUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Money
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Money
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Money
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Money
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Money
-    }
-
-    """
-    Update input for Money array type.
-    """
-    input MoneyArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Money]
-      """
-      Append an array value to the column.
-      """
-      append: [Money]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Money]
-    }
-
-    """
-    Search filter input for BitString type.
-    """
-    input BitStringFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: BitString
-      """
-      The value is not the one given
-      """
-      ne: BitString
-      """
-      The value is greater than the one given
-      """
-      gt: BitString
-      """
-      The value is less than the one given
-      """
-      lt: BitString
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: BitString
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: BitString
-      """
-      The value is in the given array of values
-      """
-      in: [BitString!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [BitString!]
-      """
-      A negation of the given filter
-      """
-      not: BitStringFilterInput
-    }
-
-    """
-    Update input for BitString type.
-    """
-    input BitStringUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: BitString
-    }
-
-    """
-    Update input for BitString array type.
-    """
-    input BitStringArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [BitString]
-      """
-      Append an array value to the column.
-      """
-      append: [BitString]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [BitString]
-    }
-
-    """
-    Search filter input for XML type.
-    """
-    input XMLFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: XML
-      """
-      The value is not the one given
-      """
-      ne: XML
-      """
-      The value is greater than the one given
-      """
-      gt: XML
-      """
-      The value is less than the one given
-      """
-      lt: XML
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: XML
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: XML
-      """
-      The value is in the given array of values
-      """
-      in: [XML!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [XML!]
-      """
-      A negation of the given filter
-      """
-      not: XMLFilterInput
-    }
-
-    """
-    Update input for XML type.
-    """
-    input XMLUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: XML
-    }
-
-    """
-    Update input for XML array type.
-    """
-    input XMLArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [XML]
-      """
-      Append an array value to the column.
-      """
-      append: [XML]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [XML]
-    }
-
-    """
-    Search filter input for String array type.
-    """
-    input StringArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [String]
-      """
-      The value is not the one given
-      """
-      ne: [String]
-      """
-      The value is greater than the one given
-      """
-      gt: [String]
-      """
-      The value is less than the one given
-      """
-      lt: [String]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [String]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [String]
-      """
-      The value is in the given array of values
-      """
-      in: [[String]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[String]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [String]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [String]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [String]
-      """
-      A negation of the given filter
-      """
-      not: StringArrayFilterInput
-    }
-
-    """
-    Search filter input for Int array type.
-    """
-    input IntArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Int]
-      """
-      The value is not the one given
-      """
-      ne: [Int]
-      """
-      The value is greater than the one given
-      """
-      gt: [Int]
-      """
-      The value is less than the one given
-      """
-      lt: [Int]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Int]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Int]
-      """
-      The value is in the given array of values
-      """
-      in: [[Int]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Int]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Int]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Int]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Int]
-      """
-      A negation of the given filter
-      """
-      not: IntArrayFilterInput
-    }
-
-    """
-    Search filter input for BigInt array type.
-    """
-    input BigIntArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [BigInt]
-      """
-      The value is not the one given
-      """
-      ne: [BigInt]
-      """
-      The value is greater than the one given
-      """
-      gt: [BigInt]
-      """
-      The value is less than the one given
-      """
-      lt: [BigInt]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [BigInt]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [BigInt]
-      """
-      The value is in the given array of values
-      """
-      in: [[BigInt]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[BigInt]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [BigInt]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [BigInt]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [BigInt]
-      """
-      A negation of the given filter
-      """
-      not: BigIntArrayFilterInput
-    }
-
-    """
-    Search filter input for Decimal array type.
-    """
-    input DecimalArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Decimal]
-      """
-      The value is not the one given
-      """
-      ne: [Decimal]
-      """
-      The value is greater than the one given
-      """
-      gt: [Decimal]
-      """
-      The value is less than the one given
-      """
-      lt: [Decimal]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Decimal]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Decimal]
-      """
-      The value is in the given array of values
-      """
-      in: [[Decimal]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Decimal]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Decimal]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Decimal]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Decimal]
-      """
-      A negation of the given filter
-      """
-      not: DecimalArrayFilterInput
-    }
-
-    """
-    Search filter input for Float array type.
-    """
-    input FloatArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Float]
-      """
-      The value is not the one given
-      """
-      ne: [Float]
-      """
-      The value is greater than the one given
-      """
-      gt: [Float]
-      """
-      The value is less than the one given
-      """
-      lt: [Float]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Float]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Float]
-      """
-      The value is in the given array of values
-      """
-      in: [[Float]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Float]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Float]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Float]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Float]
-      """
-      A negation of the given filter
-      """
-      not: FloatArrayFilterInput
-    }
-
-    """
-    Search filter input for Boolean array type.
-    """
-    input BooleanArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Boolean]
-      """
-      The value is not the one given
-      """
-      ne: [Boolean]
-      """
-      The value is greater than the one given
-      """
-      gt: [Boolean]
-      """
-      The value is less than the one given
-      """
-      lt: [Boolean]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Boolean]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Boolean]
-      """
-      The value is in the given array of values
-      """
-      in: [[Boolean]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Boolean]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Boolean]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Boolean]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Boolean]
-      """
-      A negation of the given filter
-      """
-      not: BooleanArrayFilterInput
-    }
-
-    """
-    Search filter input for Bytes array type.
-    """
-    input BytesArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Bytes]
-      """
-      The value is not the one given
-      """
-      ne: [Bytes]
-      """
-      The value is greater than the one given
-      """
-      gt: [Bytes]
-      """
-      The value is less than the one given
-      """
-      lt: [Bytes]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Bytes]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Bytes]
-      """
-      The value is in the given array of values
-      """
-      in: [[Bytes]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Bytes]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Bytes]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Bytes]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Bytes]
-      """
-      A negation of the given filter
-      """
-      not: BytesArrayFilterInput
-    }
-
-    """
-    Search filter input for JSON array type.
-    """
-    input JSONArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [JSON]
-      """
-      The value is not the one given
-      """
-      ne: [JSON]
-      """
-      The value is greater than the one given
-      """
-      gt: [JSON]
-      """
-      The value is less than the one given
-      """
-      lt: [JSON]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [JSON]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [JSON]
-      """
-      The value is in the given array of values
-      """
-      in: [[JSON]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[JSON]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [JSON]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [JSON]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [JSON]
-      """
-      A negation of the given filter
-      """
-      not: JSONArrayFilterInput
-    }
-
-    """
-    Search filter input for UUID array type.
-    """
-    input UUIDArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [UUID]
-      """
-      The value is not the one given
-      """
-      ne: [UUID]
-      """
-      The value is greater than the one given
-      """
-      gt: [UUID]
-      """
-      The value is less than the one given
-      """
-      lt: [UUID]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [UUID]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [UUID]
-      """
-      The value is in the given array of values
-      """
-      in: [[UUID]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[UUID]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [UUID]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [UUID]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [UUID]
-      """
-      A negation of the given filter
-      """
-      not: UUIDArrayFilterInput
-    }
-
-    """
-    Search filter input for Date array type.
-    """
-    input DateArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Date]
-      """
-      The value is not the one given
-      """
-      ne: [Date]
-      """
-      The value is greater than the one given
-      """
-      gt: [Date]
-      """
-      The value is less than the one given
-      """
-      lt: [Date]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Date]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Date]
-      """
-      The value is in the given array of values
-      """
-      in: [[Date]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Date]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Date]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Date]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Date]
-      """
-      A negation of the given filter
-      """
-      not: DateArrayFilterInput
-    }
-
-    """
-    Search filter input for Time array type.
-    """
-    input TimeArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Time]
-      """
-      The value is not the one given
-      """
-      ne: [Time]
-      """
-      The value is greater than the one given
-      """
-      gt: [Time]
-      """
-      The value is less than the one given
-      """
-      lt: [Time]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Time]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Time]
-      """
-      The value is in the given array of values
-      """
-      in: [[Time]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Time]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Time]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Time]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Time]
-      """
-      A negation of the given filter
-      """
-      not: TimeArrayFilterInput
-    }
-
-    """
-    Search filter input for TimeWithTimezone array type.
-    """
-    input TimeWithTimezoneArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [TimeWithTimezone]
-      """
-      The value is not the one given
-      """
-      ne: [TimeWithTimezone]
-      """
-      The value is greater than the one given
-      """
-      gt: [TimeWithTimezone]
-      """
-      The value is less than the one given
-      """
-      lt: [TimeWithTimezone]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [TimeWithTimezone]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [TimeWithTimezone]
-      """
-      The value is in the given array of values
-      """
-      in: [[TimeWithTimezone]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[TimeWithTimezone]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [TimeWithTimezone]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [TimeWithTimezone]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [TimeWithTimezone]
-      """
-      A negation of the given filter
-      """
-      not: TimeWithTimezoneArrayFilterInput
+      id: Int!
     }
 
     """
-    Search filter input for Timestamp array type.
+    Filter input type for User objects.
     """
-    input TimestampArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Timestamp]
-      """
-      The value is not the one given
-      """
-      ne: [Timestamp]
-      """
-      The value is greater than the one given
-      """
-      gt: [Timestamp]
-      """
-      The value is less than the one given
-      """
-      lt: [Timestamp]
-      """
-      The value is greater than, or equal to the one given
+    input UserFilterInput @oneOf {
       """
-      gte: [Timestamp]
+      Filter by the given id
       """
-      The value is less than, or equal to the one given
+      id: IntFilterInput
       """
-      lte: [Timestamp]
+      All of the filters must match
       """
-      The value is in the given array of values
+      ALL: [UserFilterInput]
       """
-      in: [[Timestamp]!]
+      None of the filters must match
       """
-      The value is not in the given array of values
+      NONE: [UserFilterInput]
       """
-      nin: [[Timestamp]!]
+      At least one of the filters must match
       """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Timestamp]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Timestamp]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Timestamp]
-      """
-      A negation of the given filter
-      """
-      not: TimestampArrayFilterInput
+      ANY: [UserFilterInput]
     }
 
     """
-    Search filter input for DateTime array type.
+    Input type to select a unique User
     """
-    input DateTimeArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [DateTime]
-      """
-      The value is not the one given
-      """
-      ne: [DateTime]
-      """
-      The value is greater than the one given
-      """
-      gt: [DateTime]
-      """
-      The value is less than the one given
-      """
-      lt: [DateTime]
-      """
-      The value is greater than, or equal to the one given
+    input UserLookupInput @oneOf {
       """
-      gte: [DateTime]
+      Select by the 'id' field
       """
-      The value is less than, or equal to the one given
-      """
-      lte: [DateTime]
-      """
-      The value is in the given array of values
-      """
-      in: [[DateTime]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[DateTime]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [DateTime]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [DateTime]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [DateTime]
-      """
-      A negation of the given filter
-      """
-      not: DateTimeArrayFilterInput
+      id: Int
     }
 
     """
-    Search filter input for Inet array type.
+    Lookup input type for User objects for subgraph joins.
     """
-    input InetArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Inet]
-      """
-      The value is not the one given
+    input UserManyLookupInput @oneOf @inaccessible {
       """
-      ne: [Inet]
+      Select by the 'id' field
       """
-      The value is greater than the one given
-      """
-      gt: [Inet]
-      """
-      The value is less than the one given
-      """
-      lt: [Inet]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Inet]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Inet]
-      """
-      The value is in the given array of values
-      """
-      in: [[Inet]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Inet]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Inet]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Inet]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Inet]
-      """
-      A negation of the given filter
-      """
-      not: InetArrayFilterInput
+      id: [Int!] @inaccessible
     }
 
     """
-    Search filter input for CIDR array type.
+    Specifies the ordering for User results.
     """
-    input CIDRArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [CIDR]
-      """
-      The value is not the one given
-      """
-      ne: [CIDR]
-      """
-      The value is greater than the one given
-      """
-      gt: [CIDR]
-      """
-      The value is less than the one given
-      """
-      lt: [CIDR]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [CIDR]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [CIDR]
-      """
-      The value is in the given array of values
+    input UserOrderByInput @oneOf {
       """
-      in: [[CIDR]!]
+      Order users by id
       """
-      The value is not in the given array of values
-      """
-      nin: [[CIDR]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [CIDR]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [CIDR]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [CIDR]
-      """
-      A negation of the given filter
-      """
-      not: CIDRArrayFilterInput
+      id: OrderDirection
     }
 
     """
-    Search filter input for MacAddr array type.
+    Input for updating an existing User
     """
-    input MacAddrArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [MacAddr]
-      """
-      The value is not the one given
-      """
-      ne: [MacAddr]
-      """
-      The value is greater than the one given
-      """
-      gt: [MacAddr]
-      """
-      The value is less than the one given
+    input UserUpdateInput {
       """
-      lt: [MacAddr]
+      Update field value for id
       """
-      The value is greater than, or equal to the one given
-      """
-      gte: [MacAddr]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [MacAddr]
-      """
-      The value is in the given array of values
-      """
-      in: [[MacAddr]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[MacAddr]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [MacAddr]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [MacAddr]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [MacAddr]
-      """
-      A negation of the given filter
-      """
-      not: MacAddrArrayFilterInput
+      id: IntUpdateInput
     }
 
-    """
-    Search filter input for Money array type.
-    """
-    input MoneyArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Money]
-      """
-      The value is not the one given
-      """
-      ne: [Money]
-      """
-      The value is greater than the one given
-      """
-      gt: [Money]
-      """
-      The value is less than the one given
-      """
-      lt: [Money]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Money]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Money]
-      """
-      The value is in the given array of values
-      """
-      in: [[Money]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Money]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Money]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Money]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Money]
-      """
-      A negation of the given filter
-      """
-      not: MoneyArrayFilterInput
+    type FilteredUser
+      @key(fields: "id")
+      @pgTable(name: "filtered_users", kind: MATERIALIZED_VIEW)
+      @pgKey(fields: ["id"], type: UNIQUE)
+    {
+      id: Int! @pgColumn(name: "id", type: INT)
     }
 
     """
-    Search filter input for BitString array type.
+    The connection type for FilteredUser
     """
-    input BitStringArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [BitString]
-      """
-      The value is not the one given
-      """
-      ne: [BitString]
-      """
-      The value is greater than the one given
-      """
-      gt: [BitString]
-      """
-      The value is less than the one given
+    type FilteredUserConnection
+      @pgConnection(type: "FilteredUser")
+    {
       """
-      lt: [BitString]
+      A list of edges
       """
-      The value is greater than, or equal to the one given
+      edges: [FilteredUserEdge!]! @shareable
       """
-      gte: [BitString]
+      Information to aid in pagination
       """
-      The value is less than, or equal to the one given
-      """
-      lte: [BitString]
-      """
-      The value is in the given array of values
-      """
-      in: [[BitString]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[BitString]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [BitString]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [BitString]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [BitString]
-      """
-      A negation of the given filter
-      """
-      not: BitStringArrayFilterInput
+      pageInfo: PageInfo! @shareable
     }
 
     """
-    Search filter input for XML array type.
+    An edge in a connection. Contains the node and its cursor
     """
-    input XMLArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [XML]
-      """
-      The value is not the one given
-      """
-      ne: [XML]
-      """
-      The value is greater than the one given
-      """
-      gt: [XML]
-      """
-      The value is less than the one given
-      """
-      lt: [XML]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [XML]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [XML]
-      """
-      The value is in the given array of values
-      """
-      in: [[XML]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[XML]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [XML]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [XML]
+    type FilteredUserEdge {
       """
-      Checks if the array has any elements in common with the provided array
+      The item at the end of the edge
       """
-      overlaps: [XML]
+      node: FilteredUser! @shareable
       """
-      A negation of the given filter
+      A cursor for use in pagination
       """
-      not: XMLArrayFilterInput
+      cursor: String! @shareable
     }
 
     """
@@ -6191,32 +997,28 @@ async fn materialized_view_with_int_unique() {
       endCursor: String @shareable
     }
 
-    """
-    Return type containing fields of the mutated or created User object
-    """
-    type UserReturning
-      @pgReturning(type: "User")
+    type User
+      @key(fields: "id")
+      @pgTable(name: "User")
+      @pgKey(fields: ["id"], type: UNIQUE)
     {
-      """
-      The value of the id field
-      """
-      id: Int! @shareable
+      id: Int! @pgColumn(name: "id", type: INT)
     }
 
     """
-    Return type when creating one User
+    The connection type for User
     """
-    type UserCreatePayload
-      @pgMutation(type: "User")
+    type UserConnection
+      @pgConnection(type: "User")
     {
       """
-      Returned item(s) from the mutation
+      A list of edges
       """
-      returning: UserReturning @shareable
+      edges: [UserEdge!]! @shareable
       """
-      The number of rows mutated
+      Information to aid in pagination
       """
-      rowCount: Int! @shareable
+      pageInfo: PageInfo! @shareable
     }
 
     """
@@ -6236,41 +1038,9 @@ async fn materialized_view_with_int_unique() {
     }
 
     """
-    Return type when updating one User
+    Return type when creating one User
     """
-    type UserUpdatePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when updating many users
-    """
-    type UserUpdateManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting one User
-    """
-    type UserDeletePayload
+    type UserCreatePayload
       @pgMutation(type: "User")
     {
       """
@@ -6300,6 +1070,22 @@ async fn materialized_view_with_int_unique() {
     }
 
     """
+    Return type when deleting one User
+    """
+    type UserDeletePayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: UserReturning @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
     An edge in a connection. Contains the node and its cursor
     """
     type UserEdge {
@@ -6314,65 +1100,47 @@ async fn materialized_view_with_int_unique() {
     }
 
     """
-    The connection type for User
+    Return type containing fields of the mutated or created User object
     """
-    type UserConnection
-      @pgConnection(type: "User")
+    type UserReturning
+      @pgReturning(type: "User")
     {
       """
-      A list of edges
+      The value of the id field
       """
-      edges: [UserEdge!]! @shareable
-      """
-      Information to aid in pagination
-      """
-      pageInfo: PageInfo! @shareable
+      id: Int! @shareable
     }
 
     """
-    An edge in a connection. Contains the node and its cursor
+    Return type when updating many users
     """
-    type FilteredUserEdge {
+    type UserUpdateManyPayload
+      @pgMutation(type: "User")
+    {
       """
-      The item at the end of the edge
+      Returned item(s) from the mutation
       """
-      node: FilteredUser! @shareable
+      returning: [UserReturning]! @shareable
       """
-      A cursor for use in pagination
+      The number of rows mutated
       """
-      cursor: String! @shareable
+      rowCount: Int! @shareable
     }
 
     """
-    The connection type for FilteredUser
+    Return type when updating one User
     """
-    type FilteredUserConnection
-      @pgConnection(type: "FilteredUser")
+    type UserUpdatePayload
+      @pgMutation(type: "User")
     {
       """
-      A list of edges
+      Returned item(s) from the mutation
       """
-      edges: [FilteredUserEdge!]! @shareable
+      returning: UserReturning @shareable
       """
-      Information to aid in pagination
+      The number of rows mutated
       """
-      pageInfo: PageInfo! @shareable
-    }
-
-    type User
-      @key(fields: "id")
-      @pgTable(name: "User")
-      @pgKey(fields: ["id"], type: UNIQUE)
-    {
-      id: Int! @pgColumn(name: "id", type: INT)
-    }
-
-    type FilteredUser
-      @key(fields: "id")
-      @pgTable(name: "filtered_users", kind: MATERIALIZED_VIEW)
-      @pgKey(fields: ["id"], type: UNIQUE)
-    {
-      id: Int! @pgColumn(name: "id", type: INT)
+      rowCount: Int! @shareable
     }
 
     type Query {
@@ -6624,86 +1392,6 @@ async fn view_with_composite_key() {
       @pgDatabase(name: "default")
 
     """
-    Arbitrary JSON object
-    """
-    scalar JSON
-
-    """
-    Binary data type, represented as a string containing a hexadecimal value
-    """
-    scalar Bytes
-
-    """
-    Big integer data type, represented as a string containing a numeric value
-    """
-    scalar BigInt
-
-    """
-    Decimal data type with arbitrary precision, represented as a string containing a numeric value
-    """
-    scalar Decimal
-
-    """
-    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-    """
-    scalar UUID
-
-    """
-    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
-    """
-    scalar Date
-
-    """
-    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
-    """
-    scalar Time
-
-    """
-    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
-    """
-    scalar TimeWithTimezone
-
-    """
-    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
-    """
-    scalar Timestamp
-
-    """
-    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
-    """
-    scalar DateTime
-
-    """
-    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
-    """
-    scalar Inet
-
-    """
-    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
-    """
-    scalar CIDR
-
-    """
-    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
-    """
-    scalar MacAddr
-
-    """
-    Currency amount data type represented as a string with a numeric value and optional currency symbol
-    """
-    scalar Money
-
-    """
-    Bit string data type represented as a string of 0s and 1s
-    """
-    scalar BitString
-
-    """
-    XML data type represented as a string
-    """
-    scalar XML
-
-    """
     Specifies the direction for ordering results.
     """
     enum OrderDirection {
@@ -6718,67 +1406,9 @@ async fn view_with_composite_key() {
     }
 
     """
-    Specifies the ordering for User results.
+    Filter input type for FilteredUser objects.
     """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by name
-      """
-      name: OrderDirection
-      """
-      Order users by emailAddress
-      """
-      emailAddress: OrderDirection
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select User by composite columns 'name, emailAddress'
-      """
-      nameEmailAddress: [UserNameEmailAddressInput!] @inaccessible
-    }
-
-    """
-    Input type to select a unique User with multiple fields
-    """
-    input UserNameEmailAddressInput {
-      """
-      Select by the 'name' field
-      """
-      name: String!
-      """
-      Select by the 'emailAddress' field
-      """
-      emailAddress: String!
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select User by composite columns 'name, emailAddress'
-      """
-      nameEmailAddress: UserNameEmailAddressInput
-    }
-
-    """
-    Filter input type for User collections
-    """
-    input UserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: UserFilterInput
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
+    input FilteredUserFilterInput @oneOf {
       """
       Filter by the given name
       """
@@ -6790,57 +1420,25 @@ async fn view_with_composite_key() {
       """
       All of the filters must match
       """
-      ALL: [UserFilterInput]
+      ALL: [FilteredUserFilterInput]
       """
       None of the filters must match
       """
-      NONE: [UserFilterInput]
+      NONE: [FilteredUserFilterInput]
       """
       At least one of the filters must match
       """
-      ANY: [UserFilterInput]
+      ANY: [FilteredUserFilterInput]
     }
 
     """
-    Input for creating a new User
+    Input type to select a unique FilteredUser
     """
-    input UserCreateInput {
+    input FilteredUserLookupInput @oneOf {
       """
-      Set field value for name
+      Select FilteredUser by composite columns 'name, emailAddress'
       """
-      name: String!
-      """
-      Set field value for emailAddress
-      """
-      emailAddress: String!
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      """
-      Update field value for name
-      """
-      name: StringUpdateInput
-      """
-      Update field value for emailAddress
-      """
-      emailAddress: StringUpdateInput
-    }
-
-    """
-    Specifies the ordering for FilteredUser results.
-    """
-    input FilteredUserOrderByInput @oneOf {
-      """
-      Order filteredUsers by name
-      """
-      name: OrderDirection
-      """
-      Order filteredUsers by emailAddress
-      """
-      emailAddress: OrderDirection
+      nameEmailAddress: FilteredUserNameEmailAddressInput
     }
 
     """
@@ -6868,49 +1466,17 @@ async fn view_with_composite_key() {
     }
 
     """
-    Input type to select a unique FilteredUser
+    Specifies the ordering for FilteredUser results.
     """
-    input FilteredUserLookupInput @oneOf {
+    input FilteredUserOrderByInput @oneOf {
       """
-      Select FilteredUser by composite columns 'name, emailAddress'
+      Order filteredUsers by name
       """
-      nameEmailAddress: FilteredUserNameEmailAddressInput
-    }
-
-    """
-    Filter input type for FilteredUser collections
-    """
-    input FilteredUserCollectionFilterInput {
+      name: OrderDirection
       """
-      The object is related to an object with the given fields
+      Order filteredUsers by emailAddress
       """
-      contains: FilteredUserFilterInput
-    }
-
-    """
-    Filter input type for FilteredUser objects.
-    """
-    input FilteredUserFilterInput @oneOf {
-      """
-      Filter by the given name
-      """
-      name: StringFilterInput
-      """
-      Filter by the given emailAddress
-      """
-      emailAddress: StringFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [FilteredUserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [FilteredUserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [FilteredUserFilterInput]
+      emailAddress: OrderDirection
     }
 
     """
@@ -6970,2531 +1536,144 @@ async fn view_with_composite_key() {
     }
 
     """
-    Update input for String array type.
+    Input for creating a new User
     """
-    input StringArrayUpdateInput @oneOf {
+    input UserCreateInput {
       """
-      Replaces the value of a field with the specified value.
+      Set field value for name
       """
-      set: [String]
+      name: String!
       """
-      Append an array value to the column.
+      Set field value for emailAddress
       """
-      append: [String]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [String]
-    }
-
-    """
-    Search filter input for BigInt type.
-    """
-    input BigIntFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: BigInt
-      """
-      The value is not the one given
-      """
-      ne: BigInt
-      """
-      The value is greater than the one given
-      """
-      gt: BigInt
-      """
-      The value is less than the one given
-      """
-      lt: BigInt
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: BigInt
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: BigInt
-      """
-      The value is in the given array of values
-      """
-      in: [BigInt!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [BigInt!]
-      """
-      A negation of the given filter
-      """
-      not: BigIntFilterInput
-    }
-
-    """
-    Update input for BigInt type.
-    """
-    input BigIntUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: BigInt
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: BigInt
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: BigInt
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: BigInt
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: BigInt
-    }
-
-    """
-    Update input for BigInt array type.
-    """
-    input BigIntArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [BigInt]
-      """
-      Append an array value to the column.
-      """
-      append: [BigInt]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [BigInt]
-    }
-
-    """
-    Search filter input for Int type.
-    """
-    input IntFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Int
-      """
-      The value is not the one given
-      """
-      ne: Int
-      """
-      The value is greater than the one given
-      """
-      gt: Int
-      """
-      The value is less than the one given
-      """
-      lt: Int
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Int
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Int
-      """
-      The value is in the given array of values
-      """
-      in: [Int!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Int!]
-      """
-      A negation of the given filter
-      """
-      not: IntFilterInput
-    }
-
-    """
-    Update input for Int type.
-    """
-    input IntUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Int
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Int
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Int
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Int
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Int
-    }
-
-    """
-    Update input for Int array type.
-    """
-    input IntArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Int]
-      """
-      Append an array value to the column.
-      """
-      append: [Int]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Int]
-    }
-
-    """
-    Search filter input for Float type.
-    """
-    input FloatFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Float
-      """
-      The value is not the one given
-      """
-      ne: Float
-      """
-      The value is greater than the one given
-      """
-      gt: Float
-      """
-      The value is less than the one given
-      """
-      lt: Float
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Float
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Float
-      """
-      The value is in the given array of values
-      """
-      in: [Float!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Float!]
-      """
-      A negation of the given filter
-      """
-      not: FloatFilterInput
-    }
-
-    """
-    Update input for Float type.
-    """
-    input FloatUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Float
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Float
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Float
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Float
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Float
-    }
-
-    """
-    Update input for Float array type.
-    """
-    input FloatArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Float]
-      """
-      Append an array value to the column.
-      """
-      append: [Float]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Float]
-    }
-
-    """
-    Search filter input for Boolean type.
-    """
-    input BooleanFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Boolean
-      """
-      The value is not the one given
-      """
-      ne: Boolean
-      """
-      The value is greater than the one given
-      """
-      gt: Boolean
-      """
-      The value is less than the one given
-      """
-      lt: Boolean
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Boolean
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Boolean
-      """
-      The value is in the given array of values
-      """
-      in: [Boolean!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Boolean!]
-      """
-      A negation of the given filter
-      """
-      not: BooleanFilterInput
-    }
-
-    """
-    Update input for Boolean type.
-    """
-    input BooleanUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Boolean
-    }
-
-    """
-    Update input for Boolean array type.
-    """
-    input BooleanArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Boolean]
-      """
-      Append an array value to the column.
-      """
-      append: [Boolean]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Boolean]
-    }
-
-    """
-    Search filter input for Decimal type.
-    """
-    input DecimalFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Decimal
-      """
-      The value is not the one given
-      """
-      ne: Decimal
-      """
-      The value is greater than the one given
-      """
-      gt: Decimal
-      """
-      The value is less than the one given
-      """
-      lt: Decimal
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Decimal
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Decimal
-      """
-      The value is in the given array of values
-      """
-      in: [Decimal!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Decimal!]
-      """
-      A negation of the given filter
-      """
-      not: DecimalFilterInput
-    }
-
-    """
-    Update input for Decimal type.
-    """
-    input DecimalUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Decimal
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Decimal
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Decimal
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Decimal
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Decimal
-    }
-
-    """
-    Update input for Decimal array type.
-    """
-    input DecimalArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Decimal]
-      """
-      Append an array value to the column.
-      """
-      append: [Decimal]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Decimal]
-    }
-
-    """
-    Search filter input for Bytes type.
-    """
-    input BytesFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Bytes
-      """
-      The value is not the one given
-      """
-      ne: Bytes
-      """
-      The value is greater than the one given
-      """
-      gt: Bytes
-      """
-      The value is less than the one given
-      """
-      lt: Bytes
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Bytes
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Bytes
-      """
-      The value is in the given array of values
-      """
-      in: [Bytes!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Bytes!]
-      """
-      A negation of the given filter
-      """
-      not: BytesFilterInput
-    }
-
-    """
-    Update input for Bytes type.
-    """
-    input BytesUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Bytes
-    }
-
-    """
-    Update input for Bytes array type.
-    """
-    input BytesArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Bytes]
-      """
-      Append an array value to the column.
-      """
-      append: [Bytes]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Bytes]
-    }
-
-    """
-    Search filter input for JSON type.
-    """
-    input JSONFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: JSON
-      """
-      The value is not the one given
-      """
-      ne: JSON
-      """
-      The value is greater than the one given
-      """
-      gt: JSON
-      """
-      The value is less than the one given
-      """
-      lt: JSON
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: JSON
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: JSON
-      """
-      The value is in the given array of values
-      """
-      in: [JSON!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [JSON!]
-      """
-      A negation of the given filter
-      """
-      not: JSONFilterInput
-    }
-
-    """
-    Update input for JSON type.
-    """
-    input JSONUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: JSON
-      """
-      Append JSON value to the column.
-      """
-      append: JSON
-      """
-      Prepend JSON value to the column.
-      """
-      prepend: JSON
-      """
-      Deletes a key (and its value) from a JSON object, or matching string value(s) from a JSON array.
-      """
-      deleteKey: String
-      """
-      Deletes the array element with specified index (negative integers count from the end). Throws an error if JSON value is not an array.
-      """
-      deleteElem: Int
-      """
-      Deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
-      """
-      deleteAtPath: [String!]
-    }
-
-    """
-    Update input for JSON array type.
-    """
-    input JSONArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [JSON]
-      """
-      Append an array value to the column.
-      """
-      append: [JSON]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [JSON]
-    }
-
-    """
-    Search filter input for UUID type.
-    """
-    input UUIDFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: UUID
-      """
-      The value is not the one given
-      """
-      ne: UUID
-      """
-      The value is greater than the one given
-      """
-      gt: UUID
-      """
-      The value is less than the one given
-      """
-      lt: UUID
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: UUID
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: UUID
-      """
-      The value is in the given array of values
-      """
-      in: [UUID!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [UUID!]
-      """
-      A negation of the given filter
-      """
-      not: UUIDFilterInput
-    }
-
-    """
-    Update input for UUID type.
-    """
-    input UUIDUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: UUID
-    }
-
-    """
-    Update input for UUID array type.
-    """
-    input UUIDArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [UUID]
-      """
-      Append an array value to the column.
-      """
-      append: [UUID]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [UUID]
-    }
-
-    """
-    Search filter input for Date type.
-    """
-    input DateFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Date
-      """
-      The value is not the one given
-      """
-      ne: Date
-      """
-      The value is greater than the one given
-      """
-      gt: Date
-      """
-      The value is less than the one given
-      """
-      lt: Date
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Date
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Date
-      """
-      The value is in the given array of values
-      """
-      in: [Date!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Date!]
-      """
-      A negation of the given filter
-      """
-      not: DateFilterInput
-    }
-
-    """
-    Update input for Date type.
-    """
-    input DateUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Date
-    }
-
-    """
-    Update input for Date array type.
-    """
-    input DateArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Date]
-      """
-      Append an array value to the column.
-      """
-      append: [Date]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Date]
-    }
-
-    """
-    Search filter input for Time type.
-    """
-    input TimeFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Time
-      """
-      The value is not the one given
-      """
-      ne: Time
-      """
-      The value is greater than the one given
-      """
-      gt: Time
-      """
-      The value is less than the one given
-      """
-      lt: Time
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Time
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Time
-      """
-      The value is in the given array of values
-      """
-      in: [Time!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Time!]
-      """
-      A negation of the given filter
-      """
-      not: TimeFilterInput
-    }
-
-    """
-    Update input for Time type.
-    """
-    input TimeUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Time
-    }
-
-    """
-    Update input for Time array type.
-    """
-    input TimeArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Time]
-      """
-      Append an array value to the column.
-      """
-      append: [Time]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Time]
-    }
-
-    """
-    Search filter input for TimeWithTimezone type.
-    """
-    input TimeWithTimezoneFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: TimeWithTimezone
-      """
-      The value is not the one given
-      """
-      ne: TimeWithTimezone
-      """
-      The value is greater than the one given
-      """
-      gt: TimeWithTimezone
-      """
-      The value is less than the one given
-      """
-      lt: TimeWithTimezone
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: TimeWithTimezone
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: TimeWithTimezone
-      """
-      The value is in the given array of values
-      """
-      in: [TimeWithTimezone!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [TimeWithTimezone!]
-      """
-      A negation of the given filter
-      """
-      not: TimeWithTimezoneFilterInput
-    }
-
-    """
-    Update input for TimeWithTimezone type.
-    """
-    input TimeWithTimezoneUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: TimeWithTimezone
-    }
-
-    """
-    Update input for TimeWithTimezone array type.
-    """
-    input TimeWithTimezoneArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [TimeWithTimezone]
-      """
-      Append an array value to the column.
-      """
-      append: [TimeWithTimezone]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [TimeWithTimezone]
-    }
-
-    """
-    Search filter input for Timestamp type.
-    """
-    input TimestampFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Timestamp
-      """
-      The value is not the one given
-      """
-      ne: Timestamp
-      """
-      The value is greater than the one given
-      """
-      gt: Timestamp
-      """
-      The value is less than the one given
-      """
-      lt: Timestamp
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Timestamp
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Timestamp
-      """
-      The value is in the given array of values
-      """
-      in: [Timestamp!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Timestamp!]
-      """
-      A negation of the given filter
-      """
-      not: TimestampFilterInput
-    }
-
-    """
-    Update input for Timestamp type.
-    """
-    input TimestampUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Timestamp
-    }
-
-    """
-    Update input for Timestamp array type.
-    """
-    input TimestampArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Timestamp]
-      """
-      Append an array value to the column.
-      """
-      append: [Timestamp]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Timestamp]
-    }
-
-    """
-    Search filter input for DateTime type.
-    """
-    input DateTimeFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: DateTime
-      """
-      The value is not the one given
-      """
-      ne: DateTime
-      """
-      The value is greater than the one given
-      """
-      gt: DateTime
-      """
-      The value is less than the one given
-      """
-      lt: DateTime
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: DateTime
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: DateTime
-      """
-      The value is in the given array of values
-      """
-      in: [DateTime!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [DateTime!]
-      """
-      A negation of the given filter
-      """
-      not: DateTimeFilterInput
-    }
-
-    """
-    Update input for DateTime type.
-    """
-    input DateTimeUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: DateTime
-    }
-
-    """
-    Update input for DateTime array type.
-    """
-    input DateTimeArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [DateTime]
-      """
-      Append an array value to the column.
-      """
-      append: [DateTime]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [DateTime]
-    }
-
-    """
-    Search filter input for Inet type.
-    """
-    input InetFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Inet
-      """
-      The value is not the one given
-      """
-      ne: Inet
-      """
-      The value is greater than the one given
-      """
-      gt: Inet
-      """
-      The value is less than the one given
-      """
-      lt: Inet
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Inet
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Inet
-      """
-      The value is in the given array of values
-      """
-      in: [Inet!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Inet!]
-      """
-      A negation of the given filter
-      """
-      not: InetFilterInput
-    }
-
-    """
-    Update input for Inet type.
-    """
-    input InetUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Inet
-    }
-
-    """
-    Update input for Inet array type.
-    """
-    input InetArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Inet]
-      """
-      Append an array value to the column.
-      """
-      append: [Inet]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Inet]
-    }
-
-    """
-    Search filter input for CIDR type.
-    """
-    input CIDRFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: CIDR
-      """
-      The value is not the one given
-      """
-      ne: CIDR
-      """
-      The value is greater than the one given
-      """
-      gt: CIDR
-      """
-      The value is less than the one given
-      """
-      lt: CIDR
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: CIDR
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: CIDR
-      """
-      The value is in the given array of values
-      """
-      in: [CIDR!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [CIDR!]
-      """
-      A negation of the given filter
-      """
-      not: CIDRFilterInput
-    }
-
-    """
-    Update input for CIDR type.
-    """
-    input CIDRUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: CIDR
-    }
-
-    """
-    Update input for CIDR array type.
-    """
-    input CIDRArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [CIDR]
-      """
-      Append an array value to the column.
-      """
-      append: [CIDR]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [CIDR]
-    }
-
-    """
-    Search filter input for MacAddr type.
-    """
-    input MacAddrFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: MacAddr
-      """
-      The value is not the one given
-      """
-      ne: MacAddr
-      """
-      The value is greater than the one given
-      """
-      gt: MacAddr
-      """
-      The value is less than the one given
-      """
-      lt: MacAddr
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: MacAddr
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: MacAddr
-      """
-      The value is in the given array of values
-      """
-      in: [MacAddr!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [MacAddr!]
-      """
-      A negation of the given filter
-      """
-      not: MacAddrFilterInput
-    }
-
-    """
-    Update input for MacAddr type.
-    """
-    input MacAddrUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: MacAddr
-    }
-
-    """
-    Update input for MacAddr array type.
-    """
-    input MacAddrArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [MacAddr]
-      """
-      Append an array value to the column.
-      """
-      append: [MacAddr]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [MacAddr]
-    }
-
-    """
-    Search filter input for Money type.
-    """
-    input MoneyFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Money
-      """
-      The value is not the one given
-      """
-      ne: Money
-      """
-      The value is greater than the one given
-      """
-      gt: Money
-      """
-      The value is less than the one given
-      """
-      lt: Money
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Money
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Money
-      """
-      The value is in the given array of values
-      """
-      in: [Money!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Money!]
-      """
-      A negation of the given filter
-      """
-      not: MoneyFilterInput
-    }
-
-    """
-    Update input for Money type.
-    """
-    input MoneyUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Money
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Money
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Money
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Money
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Money
-    }
-
-    """
-    Update input for Money array type.
-    """
-    input MoneyArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Money]
-      """
-      Append an array value to the column.
-      """
-      append: [Money]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Money]
-    }
-
-    """
-    Search filter input for BitString type.
-    """
-    input BitStringFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: BitString
-      """
-      The value is not the one given
-      """
-      ne: BitString
-      """
-      The value is greater than the one given
-      """
-      gt: BitString
-      """
-      The value is less than the one given
-      """
-      lt: BitString
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: BitString
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: BitString
-      """
-      The value is in the given array of values
-      """
-      in: [BitString!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [BitString!]
-      """
-      A negation of the given filter
-      """
-      not: BitStringFilterInput
-    }
-
-    """
-    Update input for BitString type.
-    """
-    input BitStringUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: BitString
-    }
-
-    """
-    Update input for BitString array type.
-    """
-    input BitStringArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [BitString]
-      """
-      Append an array value to the column.
-      """
-      append: [BitString]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [BitString]
-    }
-
-    """
-    Search filter input for XML type.
-    """
-    input XMLFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: XML
-      """
-      The value is not the one given
-      """
-      ne: XML
-      """
-      The value is greater than the one given
-      """
-      gt: XML
-      """
-      The value is less than the one given
-      """
-      lt: XML
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: XML
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: XML
-      """
-      The value is in the given array of values
-      """
-      in: [XML!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [XML!]
-      """
-      A negation of the given filter
-      """
-      not: XMLFilterInput
-    }
-
-    """
-    Update input for XML type.
-    """
-    input XMLUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: XML
-    }
-
-    """
-    Update input for XML array type.
-    """
-    input XMLArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [XML]
-      """
-      Append an array value to the column.
-      """
-      append: [XML]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [XML]
-    }
-
-    """
-    Search filter input for String array type.
-    """
-    input StringArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [String]
-      """
-      The value is not the one given
-      """
-      ne: [String]
-      """
-      The value is greater than the one given
-      """
-      gt: [String]
-      """
-      The value is less than the one given
-      """
-      lt: [String]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [String]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [String]
-      """
-      The value is in the given array of values
-      """
-      in: [[String]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[String]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [String]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [String]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [String]
-      """
-      A negation of the given filter
-      """
-      not: StringArrayFilterInput
-    }
-
-    """
-    Search filter input for Int array type.
-    """
-    input IntArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Int]
-      """
-      The value is not the one given
-      """
-      ne: [Int]
-      """
-      The value is greater than the one given
-      """
-      gt: [Int]
-      """
-      The value is less than the one given
-      """
-      lt: [Int]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Int]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Int]
-      """
-      The value is in the given array of values
-      """
-      in: [[Int]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Int]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Int]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Int]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Int]
-      """
-      A negation of the given filter
-      """
-      not: IntArrayFilterInput
-    }
-
-    """
-    Search filter input for BigInt array type.
-    """
-    input BigIntArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [BigInt]
-      """
-      The value is not the one given
-      """
-      ne: [BigInt]
-      """
-      The value is greater than the one given
-      """
-      gt: [BigInt]
-      """
-      The value is less than the one given
-      """
-      lt: [BigInt]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [BigInt]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [BigInt]
-      """
-      The value is in the given array of values
-      """
-      in: [[BigInt]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[BigInt]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [BigInt]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [BigInt]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [BigInt]
-      """
-      A negation of the given filter
-      """
-      not: BigIntArrayFilterInput
-    }
-
-    """
-    Search filter input for Decimal array type.
-    """
-    input DecimalArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Decimal]
-      """
-      The value is not the one given
-      """
-      ne: [Decimal]
-      """
-      The value is greater than the one given
-      """
-      gt: [Decimal]
-      """
-      The value is less than the one given
-      """
-      lt: [Decimal]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Decimal]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Decimal]
-      """
-      The value is in the given array of values
-      """
-      in: [[Decimal]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Decimal]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Decimal]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Decimal]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Decimal]
-      """
-      A negation of the given filter
-      """
-      not: DecimalArrayFilterInput
-    }
-
-    """
-    Search filter input for Float array type.
-    """
-    input FloatArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Float]
-      """
-      The value is not the one given
-      """
-      ne: [Float]
-      """
-      The value is greater than the one given
-      """
-      gt: [Float]
-      """
-      The value is less than the one given
-      """
-      lt: [Float]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Float]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Float]
-      """
-      The value is in the given array of values
-      """
-      in: [[Float]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Float]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Float]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Float]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Float]
-      """
-      A negation of the given filter
-      """
-      not: FloatArrayFilterInput
-    }
-
-    """
-    Search filter input for Boolean array type.
-    """
-    input BooleanArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Boolean]
-      """
-      The value is not the one given
-      """
-      ne: [Boolean]
-      """
-      The value is greater than the one given
-      """
-      gt: [Boolean]
-      """
-      The value is less than the one given
-      """
-      lt: [Boolean]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Boolean]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Boolean]
-      """
-      The value is in the given array of values
-      """
-      in: [[Boolean]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Boolean]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Boolean]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Boolean]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Boolean]
-      """
-      A negation of the given filter
-      """
-      not: BooleanArrayFilterInput
-    }
-
-    """
-    Search filter input for Bytes array type.
-    """
-    input BytesArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Bytes]
-      """
-      The value is not the one given
-      """
-      ne: [Bytes]
-      """
-      The value is greater than the one given
-      """
-      gt: [Bytes]
-      """
-      The value is less than the one given
-      """
-      lt: [Bytes]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Bytes]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Bytes]
-      """
-      The value is in the given array of values
-      """
-      in: [[Bytes]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Bytes]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Bytes]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Bytes]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Bytes]
-      """
-      A negation of the given filter
-      """
-      not: BytesArrayFilterInput
-    }
-
-    """
-    Search filter input for JSON array type.
-    """
-    input JSONArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [JSON]
-      """
-      The value is not the one given
-      """
-      ne: [JSON]
-      """
-      The value is greater than the one given
-      """
-      gt: [JSON]
-      """
-      The value is less than the one given
-      """
-      lt: [JSON]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [JSON]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [JSON]
-      """
-      The value is in the given array of values
-      """
-      in: [[JSON]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[JSON]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [JSON]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [JSON]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [JSON]
-      """
-      A negation of the given filter
-      """
-      not: JSONArrayFilterInput
-    }
-
-    """
-    Search filter input for UUID array type.
-    """
-    input UUIDArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [UUID]
-      """
-      The value is not the one given
-      """
-      ne: [UUID]
-      """
-      The value is greater than the one given
-      """
-      gt: [UUID]
-      """
-      The value is less than the one given
-      """
-      lt: [UUID]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [UUID]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [UUID]
-      """
-      The value is in the given array of values
-      """
-      in: [[UUID]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[UUID]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [UUID]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [UUID]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [UUID]
-      """
-      A negation of the given filter
-      """
-      not: UUIDArrayFilterInput
-    }
-
-    """
-    Search filter input for Date array type.
-    """
-    input DateArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Date]
-      """
-      The value is not the one given
-      """
-      ne: [Date]
-      """
-      The value is greater than the one given
-      """
-      gt: [Date]
-      """
-      The value is less than the one given
-      """
-      lt: [Date]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Date]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Date]
-      """
-      The value is in the given array of values
-      """
-      in: [[Date]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Date]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Date]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Date]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Date]
-      """
-      A negation of the given filter
-      """
-      not: DateArrayFilterInput
-    }
-
-    """
-    Search filter input for Time array type.
-    """
-    input TimeArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Time]
-      """
-      The value is not the one given
-      """
-      ne: [Time]
-      """
-      The value is greater than the one given
-      """
-      gt: [Time]
-      """
-      The value is less than the one given
-      """
-      lt: [Time]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Time]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Time]
-      """
-      The value is in the given array of values
-      """
-      in: [[Time]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Time]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Time]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Time]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Time]
-      """
-      A negation of the given filter
-      """
-      not: TimeArrayFilterInput
+      emailAddress: String!
     }
 
     """
-    Search filter input for TimeWithTimezone array type.
+    Filter input type for User objects.
     """
-    input TimeWithTimezoneArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [TimeWithTimezone]
-      """
-      The value is not the one given
-      """
-      ne: [TimeWithTimezone]
-      """
-      The value is greater than the one given
-      """
-      gt: [TimeWithTimezone]
-      """
-      The value is less than the one given
+    input UserFilterInput @oneOf {
       """
-      lt: [TimeWithTimezone]
+      Filter by the given name
       """
-      The value is greater than, or equal to the one given
+      name: StringFilterInput
       """
-      gte: [TimeWithTimezone]
+      Filter by the given emailAddress
       """
-      The value is less than, or equal to the one given
+      emailAddress: StringFilterInput
       """
-      lte: [TimeWithTimezone]
+      All of the filters must match
       """
-      The value is in the given array of values
+      ALL: [UserFilterInput]
       """
-      in: [[TimeWithTimezone]!]
+      None of the filters must match
       """
-      The value is not in the given array of values
+      NONE: [UserFilterInput]
       """
-      nin: [[TimeWithTimezone]!]
+      At least one of the filters must match
       """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [TimeWithTimezone]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [TimeWithTimezone]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [TimeWithTimezone]
-      """
-      A negation of the given filter
-      """
-      not: TimeWithTimezoneArrayFilterInput
+      ANY: [UserFilterInput]
     }
 
     """
-    Search filter input for Timestamp array type.
+    Input type to select a unique User
     """
-    input TimestampArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Timestamp]
-      """
-      The value is not the one given
-      """
-      ne: [Timestamp]
-      """
-      The value is greater than the one given
-      """
-      gt: [Timestamp]
-      """
-      The value is less than the one given
-      """
-      lt: [Timestamp]
-      """
-      The value is greater than, or equal to the one given
+    input UserLookupInput @oneOf {
       """
-      gte: [Timestamp]
+      Select User by composite columns 'name, emailAddress'
       """
-      The value is less than, or equal to the one given
-      """
-      lte: [Timestamp]
-      """
-      The value is in the given array of values
-      """
-      in: [[Timestamp]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Timestamp]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Timestamp]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Timestamp]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Timestamp]
-      """
-      A negation of the given filter
-      """
-      not: TimestampArrayFilterInput
+      nameEmailAddress: UserNameEmailAddressInput
     }
 
     """
-    Search filter input for DateTime array type.
+    Lookup input type for User objects for subgraph joins.
     """
-    input DateTimeArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [DateTime]
-      """
-      The value is not the one given
-      """
-      ne: [DateTime]
-      """
-      The value is greater than the one given
-      """
-      gt: [DateTime]
-      """
-      The value is less than the one given
-      """
-      lt: [DateTime]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [DateTime]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [DateTime]
-      """
-      The value is in the given array of values
-      """
-      in: [[DateTime]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[DateTime]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [DateTime]
-      """
-      Checks if the array is contained within the provided array
+    input UserManyLookupInput @oneOf @inaccessible {
       """
-      contained: [DateTime]
+      Select User by composite columns 'name, emailAddress'
       """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [DateTime]
-      """
-      A negation of the given filter
-      """
-      not: DateTimeArrayFilterInput
+      nameEmailAddress: [UserNameEmailAddressInput!] @inaccessible
     }
 
     """
-    Search filter input for Inet array type.
+    Input type to select a unique User with multiple fields
     """
-    input InetArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Inet]
-      """
-      The value is not the one given
-      """
-      ne: [Inet]
-      """
-      The value is greater than the one given
-      """
-      gt: [Inet]
-      """
-      The value is less than the one given
-      """
-      lt: [Inet]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Inet]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Inet]
-      """
-      The value is in the given array of values
+    input UserNameEmailAddressInput {
       """
-      in: [[Inet]!]
+      Select by the 'name' field
       """
-      The value is not in the given array of values
+      name: String!
       """
-      nin: [[Inet]!]
+      Select by the 'emailAddress' field
       """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Inet]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Inet]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Inet]
-      """
-      A negation of the given filter
-      """
-      not: InetArrayFilterInput
+      emailAddress: String!
     }
 
     """
-    Search filter input for CIDR array type.
+    Specifies the ordering for User results.
     """
-    input CIDRArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [CIDR]
-      """
-      The value is not the one given
-      """
-      ne: [CIDR]
-      """
-      The value is greater than the one given
-      """
-      gt: [CIDR]
-      """
-      The value is less than the one given
-      """
-      lt: [CIDR]
-      """
-      The value is greater than, or equal to the one given
+    input UserOrderByInput @oneOf {
       """
-      gte: [CIDR]
+      Order users by name
       """
-      The value is less than, or equal to the one given
+      name: OrderDirection
       """
-      lte: [CIDR]
+      Order users by emailAddress
       """
-      The value is in the given array of values
-      """
-      in: [[CIDR]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[CIDR]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [CIDR]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [CIDR]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [CIDR]
-      """
-      A negation of the given filter
-      """
-      not: CIDRArrayFilterInput
+      emailAddress: OrderDirection
     }
 
     """
-    Search filter input for MacAddr array type.
+    Input for updating an existing User
     """
-    input MacAddrArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [MacAddr]
-      """
-      The value is not the one given
-      """
-      ne: [MacAddr]
-      """
-      The value is greater than the one given
+    input UserUpdateInput {
       """
-      gt: [MacAddr]
+      Update field value for name
       """
-      The value is less than the one given
+      name: StringUpdateInput
       """
-      lt: [MacAddr]
+      Update field value for emailAddress
       """
-      The value is greater than, or equal to the one given
-      """
-      gte: [MacAddr]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [MacAddr]
-      """
-      The value is in the given array of values
-      """
-      in: [[MacAddr]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[MacAddr]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [MacAddr]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [MacAddr]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [MacAddr]
-      """
-      A negation of the given filter
-      """
-      not: MacAddrArrayFilterInput
+      emailAddress: StringUpdateInput
     }
 
-    """
-    Search filter input for Money array type.
-    """
-    input MoneyArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Money]
-      """
-      The value is not the one given
-      """
-      ne: [Money]
-      """
-      The value is greater than the one given
-      """
-      gt: [Money]
-      """
-      The value is less than the one given
-      """
-      lt: [Money]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Money]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Money]
-      """
-      The value is in the given array of values
-      """
-      in: [[Money]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Money]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Money]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Money]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Money]
-      """
-      A negation of the given filter
-      """
-      not: MoneyArrayFilterInput
+    type FilteredUser
+      @key(fields: "name emailAddress")
+      @pgTable(name: "filtered_users", kind: VIEW)
+      @pgKey(fields: ["name", "emailAddress"], type: UNIQUE)
+    {
+      name: String! @pgColumn(name: "name", type: VARCHAR)
+      emailAddress: String! @pgColumn(name: "email_address", type: VARCHAR)
     }
 
     """
-    Search filter input for BitString array type.
+    The connection type for FilteredUser
     """
-    input BitStringArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [BitString]
-      """
-      The value is not the one given
-      """
-      ne: [BitString]
-      """
-      The value is greater than the one given
-      """
-      gt: [BitString]
-      """
-      The value is less than the one given
+    type FilteredUserConnection
+      @pgConnection(type: "FilteredUser")
+    {
       """
-      lt: [BitString]
+      A list of edges
       """
-      The value is greater than, or equal to the one given
+      edges: [FilteredUserEdge!]! @shareable
       """
-      gte: [BitString]
+      Information to aid in pagination
       """
-      The value is less than, or equal to the one given
-      """
-      lte: [BitString]
-      """
-      The value is in the given array of values
-      """
-      in: [[BitString]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[BitString]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [BitString]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [BitString]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [BitString]
-      """
-      A negation of the given filter
-      """
-      not: BitStringArrayFilterInput
+      pageInfo: PageInfo! @shareable
     }
 
     """
-    Search filter input for XML array type.
+    An edge in a connection. Contains the node and its cursor
     """
-    input XMLArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [XML]
-      """
-      The value is not the one given
-      """
-      ne: [XML]
-      """
-      The value is greater than the one given
-      """
-      gt: [XML]
-      """
-      The value is less than the one given
-      """
-      lt: [XML]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [XML]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [XML]
-      """
-      The value is in the given array of values
-      """
-      in: [[XML]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[XML]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [XML]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [XML]
+    type FilteredUserEdge {
       """
-      Checks if the array has any elements in common with the provided array
+      The item at the end of the edge
       """
-      overlaps: [XML]
+      node: FilteredUser! @shareable
       """
-      A negation of the given filter
+      A cursor for use in pagination
       """
-      not: XMLArrayFilterInput
+      cursor: String! @shareable
     }
 
     """
@@ -9521,36 +1700,29 @@ async fn view_with_composite_key() {
       endCursor: String @shareable
     }
 
-    """
-    Return type containing fields of the mutated or created User object
-    """
-    type UserReturning
-      @pgReturning(type: "User")
+    type User
+      @key(fields: "name emailAddress")
+      @pgTable(name: "User")
+      @pgKey(fields: ["name", "emailAddress"], type: PRIMARY)
     {
-      """
-      The value of the name field
-      """
-      name: String! @shareable
-      """
-      The value of the emailAddress field
-      """
-      emailAddress: String! @shareable
+      name: String! @pgColumn(name: "name", type: VARCHAR)
+      emailAddress: String! @pgColumn(name: "email_address", type: VARCHAR)
     }
 
     """
-    Return type when creating one User
+    The connection type for User
     """
-    type UserCreatePayload
-      @pgMutation(type: "User")
+    type UserConnection
+      @pgConnection(type: "User")
     {
       """
-      Returned item(s) from the mutation
+      A list of edges
       """
-      returning: UserReturning @shareable
+      edges: [UserEdge!]! @shareable
       """
-      The number of rows mutated
+      Information to aid in pagination
       """
-      rowCount: Int! @shareable
+      pageInfo: PageInfo! @shareable
     }
 
     """
@@ -9570,41 +1742,9 @@ async fn view_with_composite_key() {
     }
 
     """
-    Return type when updating one User
+    Return type when creating one User
     """
-    type UserUpdatePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when updating many users
-    """
-    type UserUpdateManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting one User
-    """
-    type UserDeletePayload
+    type UserCreatePayload
       @pgMutation(type: "User")
     {
       """
@@ -9634,6 +1774,22 @@ async fn view_with_composite_key() {
     }
 
     """
+    Return type when deleting one User
+    """
+    type UserDeletePayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: UserReturning @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
     An edge in a connection. Contains the node and its cursor
     """
     type UserEdge {
@@ -9648,67 +1804,51 @@ async fn view_with_composite_key() {
     }
 
     """
-    The connection type for User
+    Return type containing fields of the mutated or created User object
     """
-    type UserConnection
-      @pgConnection(type: "User")
+    type UserReturning
+      @pgReturning(type: "User")
     {
       """
-      A list of edges
+      The value of the name field
       """
-      edges: [UserEdge!]! @shareable
+      name: String! @shareable
       """
-      Information to aid in pagination
+      The value of the emailAddress field
       """
-      pageInfo: PageInfo! @shareable
+      emailAddress: String! @shareable
     }
 
     """
-    An edge in a connection. Contains the node and its cursor
+    Return type when updating many users
     """
-    type FilteredUserEdge {
+    type UserUpdateManyPayload
+      @pgMutation(type: "User")
+    {
       """
-      The item at the end of the edge
+      Returned item(s) from the mutation
       """
-      node: FilteredUser! @shareable
+      returning: [UserReturning]! @shareable
       """
-      A cursor for use in pagination
+      The number of rows mutated
       """
-      cursor: String! @shareable
+      rowCount: Int! @shareable
     }
 
     """
-    The connection type for FilteredUser
+    Return type when updating one User
     """
-    type FilteredUserConnection
-      @pgConnection(type: "FilteredUser")
+    type UserUpdatePayload
+      @pgMutation(type: "User")
     {
       """
-      A list of edges
+      Returned item(s) from the mutation
       """
-      edges: [FilteredUserEdge!]! @shareable
+      returning: UserReturning @shareable
       """
-      Information to aid in pagination
+      The number of rows mutated
       """
-      pageInfo: PageInfo! @shareable
-    }
-
-    type User
-      @key(fields: "name emailAddress")
-      @pgTable(name: "User")
-      @pgKey(fields: ["name", "emailAddress"], type: PRIMARY)
-    {
-      name: String! @pgColumn(name: "name", type: VARCHAR)
-      emailAddress: String! @pgColumn(name: "email_address", type: VARCHAR)
-    }
-
-    type FilteredUser
-      @key(fields: "name emailAddress")
-      @pgTable(name: "filtered_users", kind: VIEW)
-      @pgKey(fields: ["name", "emailAddress"], type: UNIQUE)
-    {
-      name: String! @pgColumn(name: "name", type: VARCHAR)
-      emailAddress: String! @pgColumn(name: "email_address", type: VARCHAR)
+      rowCount: Int! @shareable
     }
 
     type Query {
@@ -9965,86 +2105,6 @@ async fn view_with_relation_from_view_to_table() {
       @pgDatabase(name: "default")
 
     """
-    Arbitrary JSON object
-    """
-    scalar JSON
-
-    """
-    Binary data type, represented as a string containing a hexadecimal value
-    """
-    scalar Bytes
-
-    """
-    Big integer data type, represented as a string containing a numeric value
-    """
-    scalar BigInt
-
-    """
-    Decimal data type with arbitrary precision, represented as a string containing a numeric value
-    """
-    scalar Decimal
-
-    """
-    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-    """
-    scalar UUID
-
-    """
-    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
-    """
-    scalar Date
-
-    """
-    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
-    """
-    scalar Time
-
-    """
-    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
-    """
-    scalar TimeWithTimezone
-
-    """
-    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
-    """
-    scalar Timestamp
-
-    """
-    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
-    """
-    scalar DateTime
-
-    """
-    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
-    """
-    scalar Inet
-
-    """
-    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
-    """
-    scalar CIDR
-
-    """
-    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
-    """
-    scalar MacAddr
-
-    """
-    Currency amount data type represented as a string with a numeric value and optional currency symbol
-    """
-    scalar Money
-
-    """
-    Bit string data type represented as a string of 0s and 1s
-    """
-    scalar BitString
-
-    """
-    XML data type represented as a string
-    """
-    scalar XML
-
-    """
     Specifies the direction for ordering results.
     """
     enum OrderDirection {
@@ -10059,44 +2119,6 @@ async fn view_with_relation_from_view_to_table() {
     }
 
     """
-    Specifies the ordering for Blog results.
-    """
-    input BlogOrderByInput @oneOf {
-      """
-      Order blogs by id
-      """
-      id: OrderDirection
-      """
-      Order blogs by authorId
-      """
-      authorId: OrderDirection
-      """
-      Order Blog results by FilteredUser fields
-      """
-      filteredUser: FilteredUserOrderByInput
-    }
-
-    """
-    Lookup input type for Blog objects for subgraph joins.
-    """
-    input BlogManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Input type to select a unique Blog
-    """
-    input BlogLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
     Filter input type for Blog collections
     """
     input BlogCollectionFilterInput {
@@ -10104,6 +2126,20 @@ async fn view_with_relation_from_view_to_table() {
       The object is related to an object with the given fields
       """
       contains: BlogFilterInput
+    }
+
+    """
+    Input for creating a new Blog
+    """
+    input BlogCreateInput {
+      """
+      Set field value for id
+      """
+      id: Int!
+      """
+      Set field value for authorId
+      """
+      authorId: Int!
     }
 
     """
@@ -10137,17 +2173,41 @@ async fn view_with_relation_from_view_to_table() {
     }
 
     """
-    Input for creating a new Blog
+    Input type to select a unique Blog
     """
-    input BlogCreateInput {
+    input BlogLookupInput @oneOf {
       """
-      Set field value for id
+      Select by the 'id' field
       """
-      id: Int!
+      id: Int
+    }
+
+    """
+    Lookup input type for Blog objects for subgraph joins.
+    """
+    input BlogManyLookupInput @oneOf @inaccessible {
       """
-      Set field value for authorId
+      Select by the 'id' field
       """
-      authorId: Int!
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Specifies the ordering for Blog results.
+    """
+    input BlogOrderByInput @oneOf {
+      """
+      Order blogs by id
+      """
+      id: OrderDirection
+      """
+      Order blogs by authorId
+      """
+      authorId: OrderDirection
+      """
+      Order Blog results by FilteredUser fields
+      """
+      filteredUser: FilteredUserOrderByInput
     }
 
     """
@@ -10162,128 +2222,6 @@ async fn view_with_relation_from_view_to_table() {
       Update field value for authorId
       """
       authorId: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for User results.
-    """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Filter input type for User collections
-    """
-    input UserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: UserFilterInput
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [UserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [UserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [UserFilterInput]
-    }
-
-    """
-    Input for creating a new User
-    """
-    input UserCreateInput {
-      """
-      Set field value for id
-      """
-      id: Int!
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      """
-      Update field value for id
-      """
-      id: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for FilteredUser results.
-    """
-    input FilteredUserOrderByInput @oneOf {
-      """
-      Order filteredUsers by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Lookup input type for FilteredUser objects for subgraph joins.
-    """
-    input FilteredUserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Input type to select a unique FilteredUser
-    """
-    input FilteredUserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Filter input type for FilteredUser collections
-    """
-    input FilteredUserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: FilteredUserFilterInput
     }
 
     """
@@ -10313,163 +2251,33 @@ async fn view_with_relation_from_view_to_table() {
     }
 
     """
-    Search filter input for String type.
+    Input type to select a unique FilteredUser
     """
-    input StringFilterInput @oneOf {
+    input FilteredUserLookupInput @oneOf {
       """
-      The value is exactly the one given
+      Select by the 'id' field
       """
-      eq: String
-      """
-      The value is not the one given
-      """
-      ne: String
-      """
-      The value is greater than the one given
-      """
-      gt: String
-      """
-      The value is less than the one given
-      """
-      lt: String
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: String
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: String
-      """
-      The given input is part of the column value
-      """
-      like: String
-      """
-      The value is in the given array of values
-      """
-      in: [String!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [String!]
-      """
-      A negation of the given filter
-      """
-      not: StringFilterInput
+      id: Int
     }
 
     """
-    Update input for String type.
+    Lookup input type for FilteredUser objects for subgraph joins.
     """
-    input StringUpdateInput @oneOf {
+    input FilteredUserManyLookupInput @oneOf @inaccessible {
       """
-      Replaces the value of a field with the specified value.
+      Select by the 'id' field
       """
-      set: String
+      id: [Int!] @inaccessible
     }
 
     """
-    Update input for String array type.
+    Specifies the ordering for FilteredUser results.
     """
-    input StringArrayUpdateInput @oneOf {
+    input FilteredUserOrderByInput @oneOf {
       """
-      Replaces the value of a field with the specified value.
+      Order filteredUsers by id
       """
-      set: [String]
-      """
-      Append an array value to the column.
-      """
-      append: [String]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [String]
-    }
-
-    """
-    Search filter input for BigInt type.
-    """
-    input BigIntFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: BigInt
-      """
-      The value is not the one given
-      """
-      ne: BigInt
-      """
-      The value is greater than the one given
-      """
-      gt: BigInt
-      """
-      The value is less than the one given
-      """
-      lt: BigInt
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: BigInt
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: BigInt
-      """
-      The value is in the given array of values
-      """
-      in: [BigInt!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [BigInt!]
-      """
-      A negation of the given filter
-      """
-      not: BigIntFilterInput
-    }
-
-    """
-    Update input for BigInt type.
-    """
-    input BigIntUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: BigInt
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: BigInt
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: BigInt
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: BigInt
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: BigInt
-    }
-
-    """
-    Update input for BigInt array type.
-    """
-    input BigIntArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [BigInt]
-      """
-      Append an array value to the column.
-      """
-      append: [BigInt]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [BigInt]
+      id: OrderDirection
     }
 
     """
@@ -10541,2415 +2349,101 @@ async fn view_with_relation_from_view_to_table() {
     }
 
     """
-    Update input for Int array type.
+    Input for creating a new User
     """
-    input IntArrayUpdateInput @oneOf {
+    input UserCreateInput {
       """
-      Replaces the value of a field with the specified value.
+      Set field value for id
       """
-      set: [Int]
-      """
-      Append an array value to the column.
-      """
-      append: [Int]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Int]
-    }
-
-    """
-    Search filter input for Float type.
-    """
-    input FloatFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Float
-      """
-      The value is not the one given
-      """
-      ne: Float
-      """
-      The value is greater than the one given
-      """
-      gt: Float
-      """
-      The value is less than the one given
-      """
-      lt: Float
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Float
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Float
-      """
-      The value is in the given array of values
-      """
-      in: [Float!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Float!]
-      """
-      A negation of the given filter
-      """
-      not: FloatFilterInput
-    }
-
-    """
-    Update input for Float type.
-    """
-    input FloatUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Float
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Float
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Float
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Float
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Float
-    }
-
-    """
-    Update input for Float array type.
-    """
-    input FloatArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Float]
-      """
-      Append an array value to the column.
-      """
-      append: [Float]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Float]
-    }
-
-    """
-    Search filter input for Boolean type.
-    """
-    input BooleanFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Boolean
-      """
-      The value is not the one given
-      """
-      ne: Boolean
-      """
-      The value is greater than the one given
-      """
-      gt: Boolean
-      """
-      The value is less than the one given
-      """
-      lt: Boolean
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Boolean
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Boolean
-      """
-      The value is in the given array of values
-      """
-      in: [Boolean!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Boolean!]
-      """
-      A negation of the given filter
-      """
-      not: BooleanFilterInput
-    }
-
-    """
-    Update input for Boolean type.
-    """
-    input BooleanUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Boolean
-    }
-
-    """
-    Update input for Boolean array type.
-    """
-    input BooleanArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Boolean]
-      """
-      Append an array value to the column.
-      """
-      append: [Boolean]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Boolean]
-    }
-
-    """
-    Search filter input for Decimal type.
-    """
-    input DecimalFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Decimal
-      """
-      The value is not the one given
-      """
-      ne: Decimal
-      """
-      The value is greater than the one given
-      """
-      gt: Decimal
-      """
-      The value is less than the one given
-      """
-      lt: Decimal
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Decimal
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Decimal
-      """
-      The value is in the given array of values
-      """
-      in: [Decimal!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Decimal!]
-      """
-      A negation of the given filter
-      """
-      not: DecimalFilterInput
-    }
-
-    """
-    Update input for Decimal type.
-    """
-    input DecimalUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Decimal
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Decimal
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Decimal
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Decimal
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Decimal
-    }
-
-    """
-    Update input for Decimal array type.
-    """
-    input DecimalArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Decimal]
-      """
-      Append an array value to the column.
-      """
-      append: [Decimal]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Decimal]
-    }
-
-    """
-    Search filter input for Bytes type.
-    """
-    input BytesFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Bytes
-      """
-      The value is not the one given
-      """
-      ne: Bytes
-      """
-      The value is greater than the one given
-      """
-      gt: Bytes
-      """
-      The value is less than the one given
-      """
-      lt: Bytes
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Bytes
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Bytes
-      """
-      The value is in the given array of values
-      """
-      in: [Bytes!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Bytes!]
-      """
-      A negation of the given filter
-      """
-      not: BytesFilterInput
-    }
-
-    """
-    Update input for Bytes type.
-    """
-    input BytesUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Bytes
-    }
-
-    """
-    Update input for Bytes array type.
-    """
-    input BytesArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Bytes]
-      """
-      Append an array value to the column.
-      """
-      append: [Bytes]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Bytes]
-    }
-
-    """
-    Search filter input for JSON type.
-    """
-    input JSONFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: JSON
-      """
-      The value is not the one given
-      """
-      ne: JSON
-      """
-      The value is greater than the one given
-      """
-      gt: JSON
-      """
-      The value is less than the one given
-      """
-      lt: JSON
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: JSON
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: JSON
-      """
-      The value is in the given array of values
-      """
-      in: [JSON!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [JSON!]
-      """
-      A negation of the given filter
-      """
-      not: JSONFilterInput
-    }
-
-    """
-    Update input for JSON type.
-    """
-    input JSONUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: JSON
-      """
-      Append JSON value to the column.
-      """
-      append: JSON
-      """
-      Prepend JSON value to the column.
-      """
-      prepend: JSON
-      """
-      Deletes a key (and its value) from a JSON object, or matching string value(s) from a JSON array.
-      """
-      deleteKey: String
-      """
-      Deletes the array element with specified index (negative integers count from the end). Throws an error if JSON value is not an array.
-      """
-      deleteElem: Int
-      """
-      Deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
-      """
-      deleteAtPath: [String!]
-    }
-
-    """
-    Update input for JSON array type.
-    """
-    input JSONArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [JSON]
-      """
-      Append an array value to the column.
-      """
-      append: [JSON]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [JSON]
-    }
-
-    """
-    Search filter input for UUID type.
-    """
-    input UUIDFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: UUID
-      """
-      The value is not the one given
-      """
-      ne: UUID
-      """
-      The value is greater than the one given
-      """
-      gt: UUID
-      """
-      The value is less than the one given
-      """
-      lt: UUID
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: UUID
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: UUID
-      """
-      The value is in the given array of values
-      """
-      in: [UUID!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [UUID!]
-      """
-      A negation of the given filter
-      """
-      not: UUIDFilterInput
-    }
-
-    """
-    Update input for UUID type.
-    """
-    input UUIDUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: UUID
-    }
-
-    """
-    Update input for UUID array type.
-    """
-    input UUIDArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [UUID]
-      """
-      Append an array value to the column.
-      """
-      append: [UUID]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [UUID]
-    }
-
-    """
-    Search filter input for Date type.
-    """
-    input DateFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Date
-      """
-      The value is not the one given
-      """
-      ne: Date
-      """
-      The value is greater than the one given
-      """
-      gt: Date
-      """
-      The value is less than the one given
-      """
-      lt: Date
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Date
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Date
-      """
-      The value is in the given array of values
-      """
-      in: [Date!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Date!]
-      """
-      A negation of the given filter
-      """
-      not: DateFilterInput
-    }
-
-    """
-    Update input for Date type.
-    """
-    input DateUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Date
-    }
-
-    """
-    Update input for Date array type.
-    """
-    input DateArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Date]
-      """
-      Append an array value to the column.
-      """
-      append: [Date]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Date]
-    }
-
-    """
-    Search filter input for Time type.
-    """
-    input TimeFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Time
-      """
-      The value is not the one given
-      """
-      ne: Time
-      """
-      The value is greater than the one given
-      """
-      gt: Time
-      """
-      The value is less than the one given
-      """
-      lt: Time
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Time
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Time
-      """
-      The value is in the given array of values
-      """
-      in: [Time!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Time!]
-      """
-      A negation of the given filter
-      """
-      not: TimeFilterInput
-    }
-
-    """
-    Update input for Time type.
-    """
-    input TimeUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Time
-    }
-
-    """
-    Update input for Time array type.
-    """
-    input TimeArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Time]
-      """
-      Append an array value to the column.
-      """
-      append: [Time]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Time]
-    }
-
-    """
-    Search filter input for TimeWithTimezone type.
-    """
-    input TimeWithTimezoneFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: TimeWithTimezone
-      """
-      The value is not the one given
-      """
-      ne: TimeWithTimezone
-      """
-      The value is greater than the one given
-      """
-      gt: TimeWithTimezone
-      """
-      The value is less than the one given
-      """
-      lt: TimeWithTimezone
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: TimeWithTimezone
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: TimeWithTimezone
-      """
-      The value is in the given array of values
-      """
-      in: [TimeWithTimezone!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [TimeWithTimezone!]
-      """
-      A negation of the given filter
-      """
-      not: TimeWithTimezoneFilterInput
-    }
-
-    """
-    Update input for TimeWithTimezone type.
-    """
-    input TimeWithTimezoneUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: TimeWithTimezone
-    }
-
-    """
-    Update input for TimeWithTimezone array type.
-    """
-    input TimeWithTimezoneArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [TimeWithTimezone]
-      """
-      Append an array value to the column.
-      """
-      append: [TimeWithTimezone]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [TimeWithTimezone]
-    }
-
-    """
-    Search filter input for Timestamp type.
-    """
-    input TimestampFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Timestamp
-      """
-      The value is not the one given
-      """
-      ne: Timestamp
-      """
-      The value is greater than the one given
-      """
-      gt: Timestamp
-      """
-      The value is less than the one given
-      """
-      lt: Timestamp
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Timestamp
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Timestamp
-      """
-      The value is in the given array of values
-      """
-      in: [Timestamp!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Timestamp!]
-      """
-      A negation of the given filter
-      """
-      not: TimestampFilterInput
-    }
-
-    """
-    Update input for Timestamp type.
-    """
-    input TimestampUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Timestamp
-    }
-
-    """
-    Update input for Timestamp array type.
-    """
-    input TimestampArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Timestamp]
-      """
-      Append an array value to the column.
-      """
-      append: [Timestamp]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Timestamp]
-    }
-
-    """
-    Search filter input for DateTime type.
-    """
-    input DateTimeFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: DateTime
-      """
-      The value is not the one given
-      """
-      ne: DateTime
-      """
-      The value is greater than the one given
-      """
-      gt: DateTime
-      """
-      The value is less than the one given
-      """
-      lt: DateTime
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: DateTime
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: DateTime
-      """
-      The value is in the given array of values
-      """
-      in: [DateTime!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [DateTime!]
-      """
-      A negation of the given filter
-      """
-      not: DateTimeFilterInput
-    }
-
-    """
-    Update input for DateTime type.
-    """
-    input DateTimeUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: DateTime
-    }
-
-    """
-    Update input for DateTime array type.
-    """
-    input DateTimeArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [DateTime]
-      """
-      Append an array value to the column.
-      """
-      append: [DateTime]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [DateTime]
-    }
-
-    """
-    Search filter input for Inet type.
-    """
-    input InetFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Inet
-      """
-      The value is not the one given
-      """
-      ne: Inet
-      """
-      The value is greater than the one given
-      """
-      gt: Inet
-      """
-      The value is less than the one given
-      """
-      lt: Inet
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Inet
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Inet
-      """
-      The value is in the given array of values
-      """
-      in: [Inet!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Inet!]
-      """
-      A negation of the given filter
-      """
-      not: InetFilterInput
-    }
-
-    """
-    Update input for Inet type.
-    """
-    input InetUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Inet
-    }
-
-    """
-    Update input for Inet array type.
-    """
-    input InetArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Inet]
-      """
-      Append an array value to the column.
-      """
-      append: [Inet]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Inet]
-    }
-
-    """
-    Search filter input for CIDR type.
-    """
-    input CIDRFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: CIDR
-      """
-      The value is not the one given
-      """
-      ne: CIDR
-      """
-      The value is greater than the one given
-      """
-      gt: CIDR
-      """
-      The value is less than the one given
-      """
-      lt: CIDR
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: CIDR
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: CIDR
-      """
-      The value is in the given array of values
-      """
-      in: [CIDR!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [CIDR!]
-      """
-      A negation of the given filter
-      """
-      not: CIDRFilterInput
-    }
-
-    """
-    Update input for CIDR type.
-    """
-    input CIDRUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: CIDR
-    }
-
-    """
-    Update input for CIDR array type.
-    """
-    input CIDRArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [CIDR]
-      """
-      Append an array value to the column.
-      """
-      append: [CIDR]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [CIDR]
-    }
-
-    """
-    Search filter input for MacAddr type.
-    """
-    input MacAddrFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: MacAddr
-      """
-      The value is not the one given
-      """
-      ne: MacAddr
-      """
-      The value is greater than the one given
-      """
-      gt: MacAddr
-      """
-      The value is less than the one given
-      """
-      lt: MacAddr
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: MacAddr
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: MacAddr
-      """
-      The value is in the given array of values
-      """
-      in: [MacAddr!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [MacAddr!]
-      """
-      A negation of the given filter
-      """
-      not: MacAddrFilterInput
-    }
-
-    """
-    Update input for MacAddr type.
-    """
-    input MacAddrUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: MacAddr
-    }
-
-    """
-    Update input for MacAddr array type.
-    """
-    input MacAddrArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [MacAddr]
-      """
-      Append an array value to the column.
-      """
-      append: [MacAddr]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [MacAddr]
-    }
-
-    """
-    Search filter input for Money type.
-    """
-    input MoneyFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Money
-      """
-      The value is not the one given
-      """
-      ne: Money
-      """
-      The value is greater than the one given
-      """
-      gt: Money
-      """
-      The value is less than the one given
-      """
-      lt: Money
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Money
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Money
-      """
-      The value is in the given array of values
-      """
-      in: [Money!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Money!]
-      """
-      A negation of the given filter
-      """
-      not: MoneyFilterInput
-    }
-
-    """
-    Update input for Money type.
-    """
-    input MoneyUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Money
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Money
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Money
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Money
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Money
-    }
-
-    """
-    Update input for Money array type.
-    """
-    input MoneyArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Money]
-      """
-      Append an array value to the column.
-      """
-      append: [Money]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Money]
-    }
-
-    """
-    Search filter input for BitString type.
-    """
-    input BitStringFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: BitString
-      """
-      The value is not the one given
-      """
-      ne: BitString
-      """
-      The value is greater than the one given
-      """
-      gt: BitString
-      """
-      The value is less than the one given
-      """
-      lt: BitString
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: BitString
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: BitString
-      """
-      The value is in the given array of values
-      """
-      in: [BitString!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [BitString!]
-      """
-      A negation of the given filter
-      """
-      not: BitStringFilterInput
-    }
-
-    """
-    Update input for BitString type.
-    """
-    input BitStringUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: BitString
-    }
-
-    """
-    Update input for BitString array type.
-    """
-    input BitStringArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [BitString]
-      """
-      Append an array value to the column.
-      """
-      append: [BitString]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [BitString]
-    }
-
-    """
-    Search filter input for XML type.
-    """
-    input XMLFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: XML
-      """
-      The value is not the one given
-      """
-      ne: XML
-      """
-      The value is greater than the one given
-      """
-      gt: XML
-      """
-      The value is less than the one given
-      """
-      lt: XML
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: XML
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: XML
-      """
-      The value is in the given array of values
-      """
-      in: [XML!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [XML!]
-      """
-      A negation of the given filter
-      """
-      not: XMLFilterInput
-    }
-
-    """
-    Update input for XML type.
-    """
-    input XMLUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: XML
-    }
-
-    """
-    Update input for XML array type.
-    """
-    input XMLArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [XML]
-      """
-      Append an array value to the column.
-      """
-      append: [XML]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [XML]
-    }
-
-    """
-    Search filter input for String array type.
-    """
-    input StringArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [String]
-      """
-      The value is not the one given
-      """
-      ne: [String]
-      """
-      The value is greater than the one given
-      """
-      gt: [String]
-      """
-      The value is less than the one given
-      """
-      lt: [String]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [String]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [String]
-      """
-      The value is in the given array of values
-      """
-      in: [[String]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[String]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [String]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [String]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [String]
-      """
-      A negation of the given filter
-      """
-      not: StringArrayFilterInput
-    }
-
-    """
-    Search filter input for Int array type.
-    """
-    input IntArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Int]
-      """
-      The value is not the one given
-      """
-      ne: [Int]
-      """
-      The value is greater than the one given
-      """
-      gt: [Int]
-      """
-      The value is less than the one given
-      """
-      lt: [Int]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Int]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Int]
-      """
-      The value is in the given array of values
-      """
-      in: [[Int]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Int]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Int]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Int]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Int]
-      """
-      A negation of the given filter
-      """
-      not: IntArrayFilterInput
-    }
-
-    """
-    Search filter input for BigInt array type.
-    """
-    input BigIntArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [BigInt]
-      """
-      The value is not the one given
-      """
-      ne: [BigInt]
-      """
-      The value is greater than the one given
-      """
-      gt: [BigInt]
-      """
-      The value is less than the one given
-      """
-      lt: [BigInt]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [BigInt]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [BigInt]
-      """
-      The value is in the given array of values
-      """
-      in: [[BigInt]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[BigInt]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [BigInt]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [BigInt]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [BigInt]
-      """
-      A negation of the given filter
-      """
-      not: BigIntArrayFilterInput
-    }
-
-    """
-    Search filter input for Decimal array type.
-    """
-    input DecimalArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Decimal]
-      """
-      The value is not the one given
-      """
-      ne: [Decimal]
-      """
-      The value is greater than the one given
-      """
-      gt: [Decimal]
-      """
-      The value is less than the one given
-      """
-      lt: [Decimal]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Decimal]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Decimal]
-      """
-      The value is in the given array of values
-      """
-      in: [[Decimal]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Decimal]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Decimal]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Decimal]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Decimal]
-      """
-      A negation of the given filter
-      """
-      not: DecimalArrayFilterInput
-    }
-
-    """
-    Search filter input for Float array type.
-    """
-    input FloatArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Float]
-      """
-      The value is not the one given
-      """
-      ne: [Float]
-      """
-      The value is greater than the one given
-      """
-      gt: [Float]
-      """
-      The value is less than the one given
-      """
-      lt: [Float]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Float]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Float]
-      """
-      The value is in the given array of values
-      """
-      in: [[Float]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Float]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Float]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Float]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Float]
-      """
-      A negation of the given filter
-      """
-      not: FloatArrayFilterInput
-    }
-
-    """
-    Search filter input for Boolean array type.
-    """
-    input BooleanArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Boolean]
-      """
-      The value is not the one given
-      """
-      ne: [Boolean]
-      """
-      The value is greater than the one given
-      """
-      gt: [Boolean]
-      """
-      The value is less than the one given
-      """
-      lt: [Boolean]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Boolean]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Boolean]
-      """
-      The value is in the given array of values
-      """
-      in: [[Boolean]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Boolean]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Boolean]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Boolean]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Boolean]
-      """
-      A negation of the given filter
-      """
-      not: BooleanArrayFilterInput
-    }
-
-    """
-    Search filter input for Bytes array type.
-    """
-    input BytesArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Bytes]
-      """
-      The value is not the one given
-      """
-      ne: [Bytes]
-      """
-      The value is greater than the one given
-      """
-      gt: [Bytes]
-      """
-      The value is less than the one given
-      """
-      lt: [Bytes]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Bytes]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Bytes]
-      """
-      The value is in the given array of values
-      """
-      in: [[Bytes]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Bytes]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Bytes]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Bytes]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Bytes]
-      """
-      A negation of the given filter
-      """
-      not: BytesArrayFilterInput
-    }
-
-    """
-    Search filter input for JSON array type.
-    """
-    input JSONArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [JSON]
-      """
-      The value is not the one given
-      """
-      ne: [JSON]
-      """
-      The value is greater than the one given
-      """
-      gt: [JSON]
-      """
-      The value is less than the one given
-      """
-      lt: [JSON]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [JSON]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [JSON]
-      """
-      The value is in the given array of values
-      """
-      in: [[JSON]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[JSON]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [JSON]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [JSON]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [JSON]
-      """
-      A negation of the given filter
-      """
-      not: JSONArrayFilterInput
-    }
-
-    """
-    Search filter input for UUID array type.
-    """
-    input UUIDArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [UUID]
-      """
-      The value is not the one given
-      """
-      ne: [UUID]
-      """
-      The value is greater than the one given
-      """
-      gt: [UUID]
-      """
-      The value is less than the one given
-      """
-      lt: [UUID]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [UUID]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [UUID]
-      """
-      The value is in the given array of values
-      """
-      in: [[UUID]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[UUID]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [UUID]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [UUID]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [UUID]
-      """
-      A negation of the given filter
-      """
-      not: UUIDArrayFilterInput
-    }
-
-    """
-    Search filter input for Date array type.
-    """
-    input DateArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Date]
-      """
-      The value is not the one given
-      """
-      ne: [Date]
-      """
-      The value is greater than the one given
-      """
-      gt: [Date]
-      """
-      The value is less than the one given
-      """
-      lt: [Date]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Date]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Date]
-      """
-      The value is in the given array of values
-      """
-      in: [[Date]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Date]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Date]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Date]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Date]
-      """
-      A negation of the given filter
-      """
-      not: DateArrayFilterInput
-    }
-
-    """
-    Search filter input for Time array type.
-    """
-    input TimeArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Time]
-      """
-      The value is not the one given
-      """
-      ne: [Time]
-      """
-      The value is greater than the one given
-      """
-      gt: [Time]
-      """
-      The value is less than the one given
-      """
-      lt: [Time]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Time]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Time]
-      """
-      The value is in the given array of values
-      """
-      in: [[Time]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Time]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Time]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Time]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Time]
-      """
-      A negation of the given filter
-      """
-      not: TimeArrayFilterInput
-    }
-
-    """
-    Search filter input for TimeWithTimezone array type.
-    """
-    input TimeWithTimezoneArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [TimeWithTimezone]
-      """
-      The value is not the one given
-      """
-      ne: [TimeWithTimezone]
-      """
-      The value is greater than the one given
-      """
-      gt: [TimeWithTimezone]
-      """
-      The value is less than the one given
-      """
-      lt: [TimeWithTimezone]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [TimeWithTimezone]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [TimeWithTimezone]
-      """
-      The value is in the given array of values
-      """
-      in: [[TimeWithTimezone]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[TimeWithTimezone]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [TimeWithTimezone]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [TimeWithTimezone]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [TimeWithTimezone]
-      """
-      A negation of the given filter
-      """
-      not: TimeWithTimezoneArrayFilterInput
-    }
-
-    """
-    Search filter input for Timestamp array type.
-    """
-    input TimestampArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Timestamp]
-      """
-      The value is not the one given
-      """
-      ne: [Timestamp]
-      """
-      The value is greater than the one given
-      """
-      gt: [Timestamp]
-      """
-      The value is less than the one given
-      """
-      lt: [Timestamp]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Timestamp]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Timestamp]
-      """
-      The value is in the given array of values
-      """
-      in: [[Timestamp]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Timestamp]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Timestamp]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Timestamp]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Timestamp]
-      """
-      A negation of the given filter
-      """
-      not: TimestampArrayFilterInput
-    }
-
-    """
-    Search filter input for DateTime array type.
-    """
-    input DateTimeArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [DateTime]
-      """
-      The value is not the one given
-      """
-      ne: [DateTime]
-      """
-      The value is greater than the one given
-      """
-      gt: [DateTime]
-      """
-      The value is less than the one given
-      """
-      lt: [DateTime]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [DateTime]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [DateTime]
-      """
-      The value is in the given array of values
-      """
-      in: [[DateTime]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[DateTime]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [DateTime]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [DateTime]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [DateTime]
-      """
-      A negation of the given filter
-      """
-      not: DateTimeArrayFilterInput
+      id: Int!
     }
 
     """
-    Search filter input for Inet array type.
+    Filter input type for User objects.
     """
-    input InetArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
+    input UserFilterInput @oneOf {
       """
-      eq: [Inet]
+      Filter by the given id
       """
-      The value is not the one given
+      id: IntFilterInput
       """
-      ne: [Inet]
+      All of the filters must match
       """
-      The value is greater than the one given
+      ALL: [UserFilterInput]
       """
-      gt: [Inet]
+      None of the filters must match
       """
-      The value is less than the one given
+      NONE: [UserFilterInput]
       """
-      lt: [Inet]
+      At least one of the filters must match
       """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Inet]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Inet]
-      """
-      The value is in the given array of values
-      """
-      in: [[Inet]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Inet]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Inet]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Inet]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Inet]
-      """
-      A negation of the given filter
-      """
-      not: InetArrayFilterInput
+      ANY: [UserFilterInput]
     }
 
     """
-    Search filter input for CIDR array type.
+    Input type to select a unique User
     """
-    input CIDRArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [CIDR]
-      """
-      The value is not the one given
-      """
-      ne: [CIDR]
-      """
-      The value is greater than the one given
-      """
-      gt: [CIDR]
-      """
-      The value is less than the one given
-      """
-      lt: [CIDR]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [CIDR]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [CIDR]
-      """
-      The value is in the given array of values
-      """
-      in: [[CIDR]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[CIDR]!]
-      """
-      Checks if the array contains all elements of the provided array
+    input UserLookupInput @oneOf {
       """
-      contains: [CIDR]
+      Select by the 'id' field
       """
-      Checks if the array is contained within the provided array
-      """
-      contained: [CIDR]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [CIDR]
-      """
-      A negation of the given filter
-      """
-      not: CIDRArrayFilterInput
+      id: Int
     }
 
     """
-    Search filter input for MacAddr array type.
+    Lookup input type for User objects for subgraph joins.
     """
-    input MacAddrArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [MacAddr]
-      """
-      The value is not the one given
-      """
-      ne: [MacAddr]
-      """
-      The value is greater than the one given
-      """
-      gt: [MacAddr]
-      """
-      The value is less than the one given
-      """
-      lt: [MacAddr]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [MacAddr]
-      """
-      The value is less than, or equal to the one given
+    input UserManyLookupInput @oneOf @inaccessible {
       """
-      lte: [MacAddr]
+      Select by the 'id' field
       """
-      The value is in the given array of values
-      """
-      in: [[MacAddr]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[MacAddr]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [MacAddr]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [MacAddr]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [MacAddr]
-      """
-      A negation of the given filter
-      """
-      not: MacAddrArrayFilterInput
+      id: [Int!] @inaccessible
     }
 
     """
-    Search filter input for Money array type.
+    Specifies the ordering for User results.
     """
-    input MoneyArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Money]
-      """
-      The value is not the one given
-      """
-      ne: [Money]
-      """
-      The value is greater than the one given
+    input UserOrderByInput @oneOf {
       """
-      gt: [Money]
+      Order users by id
       """
-      The value is less than the one given
-      """
-      lt: [Money]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Money]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Money]
-      """
-      The value is in the given array of values
-      """
-      in: [[Money]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Money]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Money]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Money]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Money]
-      """
-      A negation of the given filter
-      """
-      not: MoneyArrayFilterInput
+      id: OrderDirection
     }
 
     """
-    Search filter input for BitString array type.
+    Input for updating an existing User
     """
-    input BitStringArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [BitString]
-      """
-      The value is not the one given
-      """
-      ne: [BitString]
-      """
-      The value is greater than the one given
-      """
-      gt: [BitString]
-      """
-      The value is less than the one given
-      """
-      lt: [BitString]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [BitString]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [BitString]
-      """
-      The value is in the given array of values
-      """
-      in: [[BitString]!]
-      """
-      The value is not in the given array of values
+    input UserUpdateInput {
       """
-      nin: [[BitString]!]
+      Update field value for id
       """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [BitString]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [BitString]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [BitString]
-      """
-      A negation of the given filter
-      """
-      not: BitStringArrayFilterInput
+      id: IntUpdateInput
     }
 
-    """
-    Search filter input for XML array type.
-    """
-    input XMLArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [XML]
-      """
-      The value is not the one given
-      """
-      ne: [XML]
-      """
-      The value is greater than the one given
-      """
-      gt: [XML]
-      """
-      The value is less than the one given
-      """
-      lt: [XML]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [XML]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [XML]
-      """
-      The value is in the given array of values
-      """
-      in: [[XML]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[XML]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [XML]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [XML]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [XML]
-      """
-      A negation of the given filter
-      """
-      not: XMLArrayFilterInput
+    type Blog
+      @key(fields: "id")
+      @pgTable(name: "Blog")
+      @pgKey(fields: ["id"], type: UNIQUE)
+    {
+      id: Int! @pgColumn(name: "id", type: INT)
+      authorId: Int! @pgColumn(name: "author_id", type: INT)
+      filteredUser: FilteredUser @pgRelation(name: "filtered_users_to_blogs")
     }
 
     """
-    Information about pagination in a collection of objects
+    The connection type for Blog
     """
-    type PageInfo
-      @shareable
+    type BlogConnection
+      @pgConnection(type: "Blog")
     {
       """
-      When paginating backwards, are there more items?
+      A list of edges
       """
-      hasPreviousPage: Boolean! @shareable
+      edges: [BlogEdge!]! @shareable
       """
-      When paginating forwards, are there more items?
+      Information to aid in pagination
       """
-      hasNextPage: Boolean! @shareable
-      """
-      The cursor of the first item in the page
-      """
-      startCursor: String @shareable
-      """
-      The cursor of the last item in the page
-      """
-      endCursor: String @shareable
-    }
-
-    """
-    Return type containing fields of the mutated or created Blog object
-    """
-    type BlogReturning
-      @pgReturning(type: "Blog")
-    {
-      """
-      The value of the id field
-      """
-      id: Int! @shareable
-      """
-      The value of the authorId field
-      """
-      authorId: Int!
-    }
-
-    """
-    Return type when creating one Blog
-    """
-    type BlogCreatePayload
-      @pgMutation(type: "Blog")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: BlogReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
+      pageInfo: PageInfo! @shareable
     }
 
     """
@@ -12969,41 +2463,9 @@ async fn view_with_relation_from_view_to_table() {
     }
 
     """
-    Return type when updating one Blog
+    Return type when creating one Blog
     """
-    type BlogUpdatePayload
-      @pgMutation(type: "Blog")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: BlogReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when updating many blogs
-    """
-    type BlogUpdateManyPayload
-      @pgMutation(type: "Blog")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [BlogReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting one Blog
-    """
-    type BlogDeletePayload
+    type BlogCreatePayload
       @pgMutation(type: "Blog")
     {
       """
@@ -13033,6 +2495,22 @@ async fn view_with_relation_from_view_to_table() {
     }
 
     """
+    Return type when deleting one Blog
+    """
+    type BlogDeletePayload
+      @pgMutation(type: "Blog")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: BlogReturning @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
     An edge in a connection. Contains the node and its cursor
     """
     type BlogEdge {
@@ -13047,43 +2525,31 @@ async fn view_with_relation_from_view_to_table() {
     }
 
     """
-    The connection type for Blog
+    Return type containing fields of the mutated or created Blog object
     """
-    type BlogConnection
-      @pgConnection(type: "Blog")
-    {
-      """
-      A list of edges
-      """
-      edges: [BlogEdge!]! @shareable
-      """
-      Information to aid in pagination
-      """
-      pageInfo: PageInfo! @shareable
-    }
-
-    """
-    Return type containing fields of the mutated or created User object
-    """
-    type UserReturning
-      @pgReturning(type: "User")
+    type BlogReturning
+      @pgReturning(type: "Blog")
     {
       """
       The value of the id field
       """
       id: Int! @shareable
+      """
+      The value of the authorId field
+      """
+      authorId: Int!
     }
 
     """
-    Return type when creating one User
+    Return type when updating many blogs
     """
-    type UserCreatePayload
-      @pgMutation(type: "User")
+    type BlogUpdateManyPayload
+      @pgMutation(type: "Blog")
     {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning @shareable
+      returning: [BlogReturning]! @shareable
       """
       The number of rows mutated
       """
@@ -13091,161 +2557,19 @@ async fn view_with_relation_from_view_to_table() {
     }
 
     """
-    Return type when creating many users
+    Return type when updating one Blog
     """
-    type UserCreateManyPayload
-      @pgMutation(type: "User")
+    type BlogUpdatePayload
+      @pgMutation(type: "Blog")
     {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]! @shareable
+      returning: BlogReturning @shareable
       """
       The number of rows mutated
       """
       rowCount: Int! @shareable
-    }
-
-    """
-    Return type when updating one User
-    """
-    type UserUpdatePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when updating many users
-    """
-    type UserUpdateManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting one User
-    """
-    type UserDeletePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting many users
-    """
-    type UserDeleteManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    An edge in a connection. Contains the node and its cursor
-    """
-    type UserEdge {
-      """
-      The item at the end of the edge
-      """
-      node: User! @shareable
-      """
-      A cursor for use in pagination
-      """
-      cursor: String! @shareable
-    }
-
-    """
-    The connection type for User
-    """
-    type UserConnection
-      @pgConnection(type: "User")
-    {
-      """
-      A list of edges
-      """
-      edges: [UserEdge!]! @shareable
-      """
-      Information to aid in pagination
-      """
-      pageInfo: PageInfo! @shareable
-    }
-
-    """
-    An edge in a connection. Contains the node and its cursor
-    """
-    type FilteredUserEdge {
-      """
-      The item at the end of the edge
-      """
-      node: FilteredUser! @shareable
-      """
-      A cursor for use in pagination
-      """
-      cursor: String! @shareable
-    }
-
-    """
-    The connection type for FilteredUser
-    """
-    type FilteredUserConnection
-      @pgConnection(type: "FilteredUser")
-    {
-      """
-      A list of edges
-      """
-      edges: [FilteredUserEdge!]! @shareable
-      """
-      Information to aid in pagination
-      """
-      pageInfo: PageInfo! @shareable
-    }
-
-    type Blog
-      @key(fields: "id")
-      @pgTable(name: "Blog")
-      @pgKey(fields: ["id"], type: UNIQUE)
-    {
-      id: Int! @pgColumn(name: "id", type: INT)
-      authorId: Int! @pgColumn(name: "author_id", type: INT)
-      filteredUser: FilteredUser @pgRelation(name: "filtered_users_to_blogs")
-    }
-
-    type User
-      @key(fields: "id")
-      @pgTable(name: "User")
-      @pgKey(fields: ["id"], type: UNIQUE)
-    {
-      id: Int! @pgColumn(name: "id", type: INT)
     }
 
     type FilteredUser
@@ -13280,6 +2604,206 @@ async fn view_with_relation_from_view_to_table() {
         """
         orderBy: [BlogOrderByInput!],
       ): BlogConnection! @pgRelation(name: "filtered_users_to_blogs", fields: ["id"], references: ["authorId"])
+    }
+
+    """
+    The connection type for FilteredUser
+    """
+    type FilteredUserConnection
+      @pgConnection(type: "FilteredUser")
+    {
+      """
+      A list of edges
+      """
+      edges: [FilteredUserEdge!]! @shareable
+      """
+      Information to aid in pagination
+      """
+      pageInfo: PageInfo! @shareable
+    }
+
+    """
+    An edge in a connection. Contains the node and its cursor
+    """
+    type FilteredUserEdge {
+      """
+      The item at the end of the edge
+      """
+      node: FilteredUser! @shareable
+      """
+      A cursor for use in pagination
+      """
+      cursor: String! @shareable
+    }
+
+    """
+    Information about pagination in a collection of objects
+    """
+    type PageInfo
+      @shareable
+    {
+      """
+      When paginating backwards, are there more items?
+      """
+      hasPreviousPage: Boolean! @shareable
+      """
+      When paginating forwards, are there more items?
+      """
+      hasNextPage: Boolean! @shareable
+      """
+      The cursor of the first item in the page
+      """
+      startCursor: String @shareable
+      """
+      The cursor of the last item in the page
+      """
+      endCursor: String @shareable
+    }
+
+    type User
+      @key(fields: "id")
+      @pgTable(name: "User")
+      @pgKey(fields: ["id"], type: UNIQUE)
+    {
+      id: Int! @pgColumn(name: "id", type: INT)
+    }
+
+    """
+    The connection type for User
+    """
+    type UserConnection
+      @pgConnection(type: "User")
+    {
+      """
+      A list of edges
+      """
+      edges: [UserEdge!]! @shareable
+      """
+      Information to aid in pagination
+      """
+      pageInfo: PageInfo! @shareable
+    }
+
+    """
+    Return type when creating many users
+    """
+    type UserCreateManyPayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: [UserReturning]! @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
+    Return type when creating one User
+    """
+    type UserCreatePayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: UserReturning @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
+    Return type when deleting many users
+    """
+    type UserDeleteManyPayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: [UserReturning]! @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
+    Return type when deleting one User
+    """
+    type UserDeletePayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: UserReturning @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
+    An edge in a connection. Contains the node and its cursor
+    """
+    type UserEdge {
+      """
+      The item at the end of the edge
+      """
+      node: User! @shareable
+      """
+      A cursor for use in pagination
+      """
+      cursor: String! @shareable
+    }
+
+    """
+    Return type containing fields of the mutated or created User object
+    """
+    type UserReturning
+      @pgReturning(type: "User")
+    {
+      """
+      The value of the id field
+      """
+      id: Int! @shareable
+    }
+
+    """
+    Return type when updating many users
+    """
+    type UserUpdateManyPayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: [UserReturning]! @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
+    Return type when updating one User
+    """
+    type UserUpdatePayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: UserReturning @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
     }
 
     type Query {
@@ -13645,86 +3169,6 @@ async fn view_with_relation_from_table_to_view() {
       @pgDatabase(name: "default")
 
     """
-    Arbitrary JSON object
-    """
-    scalar JSON
-
-    """
-    Binary data type, represented as a string containing a hexadecimal value
-    """
-    scalar Bytes
-
-    """
-    Big integer data type, represented as a string containing a numeric value
-    """
-    scalar BigInt
-
-    """
-    Decimal data type with arbitrary precision, represented as a string containing a numeric value
-    """
-    scalar Decimal
-
-    """
-    UUID data type represented as a string in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-    """
-    scalar UUID
-
-    """
-    Date data type represented as a string in ISO 8601 format (YYYY-MM-DD)
-    """
-    scalar Date
-
-    """
-    Time data type represented as a string in ISO 8601 format (HH:MM:SS or HH:MM:SS.sss)
-    """
-    scalar Time
-
-    """
-    Time with time zone data type represented as a string in format (HH:MM:SS.sssZ or HH:MM:SS.sss+HH:MM)
-    """
-    scalar TimeWithTimezone
-
-    """
-    Timestamp data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sss)
-    """
-    scalar Timestamp
-
-    """
-    DateTime with time zone data type represented as a string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ or YYYY-MM-DDTHH:MM:SS.sss+HH:MM)
-    """
-    scalar DateTime
-
-    """
-    IPv4 or IPv6 network address represented as a string (e.g., '192.168.0.1' or '2001:db8::1')
-    """
-    scalar Inet
-
-    """
-    IPv4 or IPv6 network address space represented as a string (e.g., '192.168.0.1/24' or '2001:db8::1/64')
-    """
-    scalar CIDR
-
-    """
-    MAC address data type represented as a string in the format 'XX:XX:XX:XX:XX:XX'
-    """
-    scalar MacAddr
-
-    """
-    Currency amount data type represented as a string with a numeric value and optional currency symbol
-    """
-    scalar Money
-
-    """
-    Bit string data type represented as a string of 0s and 1s
-    """
-    scalar BitString
-
-    """
-    XML data type represented as a string
-    """
-    scalar XML
-
-    """
     Specifies the direction for ordering results.
     """
     enum OrderDirection {
@@ -13739,44 +3183,6 @@ async fn view_with_relation_from_table_to_view() {
     }
 
     """
-    Specifies the ordering for Blog results.
-    """
-    input BlogOrderByInput @oneOf {
-      """
-      Order blogs by id
-      """
-      id: OrderDirection
-      """
-      Order blogs by authorId
-      """
-      authorId: OrderDirection
-      """
-      Order Blog results by User fields
-      """
-      user: UserOrderByInput
-    }
-
-    """
-    Lookup input type for Blog objects for subgraph joins.
-    """
-    input BlogManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Input type to select a unique Blog
-    """
-    input BlogLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
     Filter input type for Blog collections
     """
     input BlogCollectionFilterInput {
@@ -13784,6 +3190,20 @@ async fn view_with_relation_from_table_to_view() {
       The object is related to an object with the given fields
       """
       contains: BlogFilterInput
+    }
+
+    """
+    Input for creating a new Blog
+    """
+    input BlogCreateInput {
+      """
+      Set field value for id
+      """
+      id: Int!
+      """
+      Set field value for authorId
+      """
+      authorId: Int!
     }
 
     """
@@ -13817,17 +3237,41 @@ async fn view_with_relation_from_table_to_view() {
     }
 
     """
-    Input for creating a new Blog
+    Input type to select a unique Blog
     """
-    input BlogCreateInput {
+    input BlogLookupInput @oneOf {
       """
-      Set field value for id
+      Select by the 'id' field
       """
-      id: Int!
+      id: Int
+    }
+
+    """
+    Lookup input type for Blog objects for subgraph joins.
+    """
+    input BlogManyLookupInput @oneOf @inaccessible {
       """
-      Set field value for authorId
+      Select by the 'id' field
       """
-      authorId: Int!
+      id: [Int!] @inaccessible
+    }
+
+    """
+    Specifies the ordering for Blog results.
+    """
+    input BlogOrderByInput @oneOf {
+      """
+      Order blogs by id
+      """
+      id: OrderDirection
+      """
+      Order blogs by authorId
+      """
+      authorId: OrderDirection
+      """
+      Order Blog results by User fields
+      """
+      user: UserOrderByInput
     }
 
     """
@@ -13842,136 +3286,6 @@ async fn view_with_relation_from_table_to_view() {
       Update field value for authorId
       """
       authorId: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for User results.
-    """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Filter input type for User collections
-    """
-    input UserCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: UserFilterInput
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      Filter by the related Blog objects
-      """
-      blogs: BlogCollectionFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [UserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [UserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [UserFilterInput]
-    }
-
-    """
-    Input for creating a new User
-    """
-    input UserCreateInput {
-      """
-      Set field value for id
-      """
-      id: Int!
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      """
-      Update field value for id
-      """
-      id: IntUpdateInput
-    }
-
-    """
-    Specifies the ordering for FilteredBlog results.
-    """
-    input FilteredBlogOrderByInput @oneOf {
-      """
-      Order filteredBlogs by id
-      """
-      id: OrderDirection
-      """
-      Order filteredBlogs by authorId
-      """
-      authorId: OrderDirection
-    }
-
-    """
-    Lookup input type for FilteredBlog objects for subgraph joins.
-    """
-    input FilteredBlogManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Input type to select a unique FilteredBlog
-    """
-    input FilteredBlogLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Filter input type for FilteredBlog collections
-    """
-    input FilteredBlogCollectionFilterInput {
-      """
-      The object is related to an object with the given fields
-      """
-      contains: FilteredBlogFilterInput
     }
 
     """
@@ -14001,163 +3315,37 @@ async fn view_with_relation_from_table_to_view() {
     }
 
     """
-    Search filter input for String type.
+    Input type to select a unique FilteredBlog
     """
-    input StringFilterInput @oneOf {
+    input FilteredBlogLookupInput @oneOf {
       """
-      The value is exactly the one given
+      Select by the 'id' field
       """
-      eq: String
-      """
-      The value is not the one given
-      """
-      ne: String
-      """
-      The value is greater than the one given
-      """
-      gt: String
-      """
-      The value is less than the one given
-      """
-      lt: String
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: String
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: String
-      """
-      The given input is part of the column value
-      """
-      like: String
-      """
-      The value is in the given array of values
-      """
-      in: [String!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [String!]
-      """
-      A negation of the given filter
-      """
-      not: StringFilterInput
+      id: Int
     }
 
     """
-    Update input for String type.
+    Lookup input type for FilteredBlog objects for subgraph joins.
     """
-    input StringUpdateInput @oneOf {
+    input FilteredBlogManyLookupInput @oneOf @inaccessible {
       """
-      Replaces the value of a field with the specified value.
+      Select by the 'id' field
       """
-      set: String
+      id: [Int!] @inaccessible
     }
 
     """
-    Update input for String array type.
+    Specifies the ordering for FilteredBlog results.
     """
-    input StringArrayUpdateInput @oneOf {
+    input FilteredBlogOrderByInput @oneOf {
       """
-      Replaces the value of a field with the specified value.
+      Order filteredBlogs by id
       """
-      set: [String]
+      id: OrderDirection
       """
-      Append an array value to the column.
+      Order filteredBlogs by authorId
       """
-      append: [String]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [String]
-    }
-
-    """
-    Search filter input for BigInt type.
-    """
-    input BigIntFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: BigInt
-      """
-      The value is not the one given
-      """
-      ne: BigInt
-      """
-      The value is greater than the one given
-      """
-      gt: BigInt
-      """
-      The value is less than the one given
-      """
-      lt: BigInt
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: BigInt
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: BigInt
-      """
-      The value is in the given array of values
-      """
-      in: [BigInt!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [BigInt!]
-      """
-      A negation of the given filter
-      """
-      not: BigIntFilterInput
-    }
-
-    """
-    Update input for BigInt type.
-    """
-    input BigIntUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: BigInt
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: BigInt
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: BigInt
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: BigInt
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: BigInt
-    }
-
-    """
-    Update input for BigInt array type.
-    """
-    input BigIntArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [BigInt]
-      """
-      Append an array value to the column.
-      """
-      append: [BigInt]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [BigInt]
+      authorId: OrderDirection
     }
 
     """
@@ -14229,2415 +3417,105 @@ async fn view_with_relation_from_table_to_view() {
     }
 
     """
-    Update input for Int array type.
+    Input for creating a new User
     """
-    input IntArrayUpdateInput @oneOf {
+    input UserCreateInput {
       """
-      Replaces the value of a field with the specified value.
+      Set field value for id
       """
-      set: [Int]
-      """
-      Append an array value to the column.
-      """
-      append: [Int]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Int]
-    }
-
-    """
-    Search filter input for Float type.
-    """
-    input FloatFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Float
-      """
-      The value is not the one given
-      """
-      ne: Float
-      """
-      The value is greater than the one given
-      """
-      gt: Float
-      """
-      The value is less than the one given
-      """
-      lt: Float
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Float
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Float
-      """
-      The value is in the given array of values
-      """
-      in: [Float!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Float!]
-      """
-      A negation of the given filter
-      """
-      not: FloatFilterInput
-    }
-
-    """
-    Update input for Float type.
-    """
-    input FloatUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Float
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Float
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Float
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Float
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Float
-    }
-
-    """
-    Update input for Float array type.
-    """
-    input FloatArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Float]
-      """
-      Append an array value to the column.
-      """
-      append: [Float]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Float]
-    }
-
-    """
-    Search filter input for Boolean type.
-    """
-    input BooleanFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Boolean
-      """
-      The value is not the one given
-      """
-      ne: Boolean
-      """
-      The value is greater than the one given
-      """
-      gt: Boolean
-      """
-      The value is less than the one given
-      """
-      lt: Boolean
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Boolean
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Boolean
-      """
-      The value is in the given array of values
-      """
-      in: [Boolean!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Boolean!]
-      """
-      A negation of the given filter
-      """
-      not: BooleanFilterInput
-    }
-
-    """
-    Update input for Boolean type.
-    """
-    input BooleanUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Boolean
-    }
-
-    """
-    Update input for Boolean array type.
-    """
-    input BooleanArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Boolean]
-      """
-      Append an array value to the column.
-      """
-      append: [Boolean]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Boolean]
-    }
-
-    """
-    Search filter input for Decimal type.
-    """
-    input DecimalFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Decimal
-      """
-      The value is not the one given
-      """
-      ne: Decimal
-      """
-      The value is greater than the one given
-      """
-      gt: Decimal
-      """
-      The value is less than the one given
-      """
-      lt: Decimal
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Decimal
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Decimal
-      """
-      The value is in the given array of values
-      """
-      in: [Decimal!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Decimal!]
-      """
-      A negation of the given filter
-      """
-      not: DecimalFilterInput
-    }
-
-    """
-    Update input for Decimal type.
-    """
-    input DecimalUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Decimal
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Decimal
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Decimal
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Decimal
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Decimal
-    }
-
-    """
-    Update input for Decimal array type.
-    """
-    input DecimalArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Decimal]
-      """
-      Append an array value to the column.
-      """
-      append: [Decimal]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Decimal]
-    }
-
-    """
-    Search filter input for Bytes type.
-    """
-    input BytesFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Bytes
-      """
-      The value is not the one given
-      """
-      ne: Bytes
-      """
-      The value is greater than the one given
-      """
-      gt: Bytes
-      """
-      The value is less than the one given
-      """
-      lt: Bytes
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Bytes
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Bytes
-      """
-      The value is in the given array of values
-      """
-      in: [Bytes!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Bytes!]
-      """
-      A negation of the given filter
-      """
-      not: BytesFilterInput
-    }
-
-    """
-    Update input for Bytes type.
-    """
-    input BytesUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Bytes
-    }
-
-    """
-    Update input for Bytes array type.
-    """
-    input BytesArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Bytes]
-      """
-      Append an array value to the column.
-      """
-      append: [Bytes]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Bytes]
-    }
-
-    """
-    Search filter input for JSON type.
-    """
-    input JSONFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: JSON
-      """
-      The value is not the one given
-      """
-      ne: JSON
-      """
-      The value is greater than the one given
-      """
-      gt: JSON
-      """
-      The value is less than the one given
-      """
-      lt: JSON
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: JSON
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: JSON
-      """
-      The value is in the given array of values
-      """
-      in: [JSON!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [JSON!]
-      """
-      A negation of the given filter
-      """
-      not: JSONFilterInput
-    }
-
-    """
-    Update input for JSON type.
-    """
-    input JSONUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: JSON
-      """
-      Append JSON value to the column.
-      """
-      append: JSON
-      """
-      Prepend JSON value to the column.
-      """
-      prepend: JSON
-      """
-      Deletes a key (and its value) from a JSON object, or matching string value(s) from a JSON array.
-      """
-      deleteKey: String
-      """
-      Deletes the array element with specified index (negative integers count from the end). Throws an error if JSON value is not an array.
-      """
-      deleteElem: Int
-      """
-      Deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
-      """
-      deleteAtPath: [String!]
-    }
-
-    """
-    Update input for JSON array type.
-    """
-    input JSONArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [JSON]
-      """
-      Append an array value to the column.
-      """
-      append: [JSON]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [JSON]
-    }
-
-    """
-    Search filter input for UUID type.
-    """
-    input UUIDFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: UUID
-      """
-      The value is not the one given
-      """
-      ne: UUID
-      """
-      The value is greater than the one given
-      """
-      gt: UUID
-      """
-      The value is less than the one given
-      """
-      lt: UUID
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: UUID
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: UUID
-      """
-      The value is in the given array of values
-      """
-      in: [UUID!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [UUID!]
-      """
-      A negation of the given filter
-      """
-      not: UUIDFilterInput
-    }
-
-    """
-    Update input for UUID type.
-    """
-    input UUIDUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: UUID
-    }
-
-    """
-    Update input for UUID array type.
-    """
-    input UUIDArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [UUID]
-      """
-      Append an array value to the column.
-      """
-      append: [UUID]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [UUID]
-    }
-
-    """
-    Search filter input for Date type.
-    """
-    input DateFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Date
-      """
-      The value is not the one given
-      """
-      ne: Date
-      """
-      The value is greater than the one given
-      """
-      gt: Date
-      """
-      The value is less than the one given
-      """
-      lt: Date
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Date
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Date
-      """
-      The value is in the given array of values
-      """
-      in: [Date!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Date!]
-      """
-      A negation of the given filter
-      """
-      not: DateFilterInput
-    }
-
-    """
-    Update input for Date type.
-    """
-    input DateUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Date
-    }
-
-    """
-    Update input for Date array type.
-    """
-    input DateArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Date]
-      """
-      Append an array value to the column.
-      """
-      append: [Date]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Date]
-    }
-
-    """
-    Search filter input for Time type.
-    """
-    input TimeFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Time
-      """
-      The value is not the one given
-      """
-      ne: Time
-      """
-      The value is greater than the one given
-      """
-      gt: Time
-      """
-      The value is less than the one given
-      """
-      lt: Time
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Time
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Time
-      """
-      The value is in the given array of values
-      """
-      in: [Time!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Time!]
-      """
-      A negation of the given filter
-      """
-      not: TimeFilterInput
-    }
-
-    """
-    Update input for Time type.
-    """
-    input TimeUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Time
-    }
-
-    """
-    Update input for Time array type.
-    """
-    input TimeArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Time]
-      """
-      Append an array value to the column.
-      """
-      append: [Time]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Time]
-    }
-
-    """
-    Search filter input for TimeWithTimezone type.
-    """
-    input TimeWithTimezoneFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: TimeWithTimezone
-      """
-      The value is not the one given
-      """
-      ne: TimeWithTimezone
-      """
-      The value is greater than the one given
-      """
-      gt: TimeWithTimezone
-      """
-      The value is less than the one given
-      """
-      lt: TimeWithTimezone
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: TimeWithTimezone
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: TimeWithTimezone
-      """
-      The value is in the given array of values
-      """
-      in: [TimeWithTimezone!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [TimeWithTimezone!]
-      """
-      A negation of the given filter
-      """
-      not: TimeWithTimezoneFilterInput
-    }
-
-    """
-    Update input for TimeWithTimezone type.
-    """
-    input TimeWithTimezoneUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: TimeWithTimezone
-    }
-
-    """
-    Update input for TimeWithTimezone array type.
-    """
-    input TimeWithTimezoneArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [TimeWithTimezone]
-      """
-      Append an array value to the column.
-      """
-      append: [TimeWithTimezone]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [TimeWithTimezone]
-    }
-
-    """
-    Search filter input for Timestamp type.
-    """
-    input TimestampFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Timestamp
-      """
-      The value is not the one given
-      """
-      ne: Timestamp
-      """
-      The value is greater than the one given
-      """
-      gt: Timestamp
-      """
-      The value is less than the one given
-      """
-      lt: Timestamp
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Timestamp
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Timestamp
-      """
-      The value is in the given array of values
-      """
-      in: [Timestamp!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Timestamp!]
-      """
-      A negation of the given filter
-      """
-      not: TimestampFilterInput
-    }
-
-    """
-    Update input for Timestamp type.
-    """
-    input TimestampUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Timestamp
-    }
-
-    """
-    Update input for Timestamp array type.
-    """
-    input TimestampArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Timestamp]
-      """
-      Append an array value to the column.
-      """
-      append: [Timestamp]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Timestamp]
-    }
-
-    """
-    Search filter input for DateTime type.
-    """
-    input DateTimeFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: DateTime
-      """
-      The value is not the one given
-      """
-      ne: DateTime
-      """
-      The value is greater than the one given
-      """
-      gt: DateTime
-      """
-      The value is less than the one given
-      """
-      lt: DateTime
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: DateTime
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: DateTime
-      """
-      The value is in the given array of values
-      """
-      in: [DateTime!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [DateTime!]
-      """
-      A negation of the given filter
-      """
-      not: DateTimeFilterInput
-    }
-
-    """
-    Update input for DateTime type.
-    """
-    input DateTimeUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: DateTime
-    }
-
-    """
-    Update input for DateTime array type.
-    """
-    input DateTimeArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [DateTime]
-      """
-      Append an array value to the column.
-      """
-      append: [DateTime]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [DateTime]
-    }
-
-    """
-    Search filter input for Inet type.
-    """
-    input InetFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Inet
-      """
-      The value is not the one given
-      """
-      ne: Inet
-      """
-      The value is greater than the one given
-      """
-      gt: Inet
-      """
-      The value is less than the one given
-      """
-      lt: Inet
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Inet
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Inet
-      """
-      The value is in the given array of values
-      """
-      in: [Inet!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Inet!]
-      """
-      A negation of the given filter
-      """
-      not: InetFilterInput
-    }
-
-    """
-    Update input for Inet type.
-    """
-    input InetUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Inet
-    }
-
-    """
-    Update input for Inet array type.
-    """
-    input InetArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Inet]
-      """
-      Append an array value to the column.
-      """
-      append: [Inet]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Inet]
-    }
-
-    """
-    Search filter input for CIDR type.
-    """
-    input CIDRFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: CIDR
-      """
-      The value is not the one given
-      """
-      ne: CIDR
-      """
-      The value is greater than the one given
-      """
-      gt: CIDR
-      """
-      The value is less than the one given
-      """
-      lt: CIDR
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: CIDR
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: CIDR
-      """
-      The value is in the given array of values
-      """
-      in: [CIDR!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [CIDR!]
-      """
-      A negation of the given filter
-      """
-      not: CIDRFilterInput
-    }
-
-    """
-    Update input for CIDR type.
-    """
-    input CIDRUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: CIDR
-    }
-
-    """
-    Update input for CIDR array type.
-    """
-    input CIDRArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [CIDR]
-      """
-      Append an array value to the column.
-      """
-      append: [CIDR]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [CIDR]
-    }
-
-    """
-    Search filter input for MacAddr type.
-    """
-    input MacAddrFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: MacAddr
-      """
-      The value is not the one given
-      """
-      ne: MacAddr
-      """
-      The value is greater than the one given
-      """
-      gt: MacAddr
-      """
-      The value is less than the one given
-      """
-      lt: MacAddr
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: MacAddr
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: MacAddr
-      """
-      The value is in the given array of values
-      """
-      in: [MacAddr!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [MacAddr!]
-      """
-      A negation of the given filter
-      """
-      not: MacAddrFilterInput
-    }
-
-    """
-    Update input for MacAddr type.
-    """
-    input MacAddrUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: MacAddr
-    }
-
-    """
-    Update input for MacAddr array type.
-    """
-    input MacAddrArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [MacAddr]
-      """
-      Append an array value to the column.
-      """
-      append: [MacAddr]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [MacAddr]
-    }
-
-    """
-    Search filter input for Money type.
-    """
-    input MoneyFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Money
-      """
-      The value is not the one given
-      """
-      ne: Money
-      """
-      The value is greater than the one given
-      """
-      gt: Money
-      """
-      The value is less than the one given
-      """
-      lt: Money
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Money
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Money
-      """
-      The value is in the given array of values
-      """
-      in: [Money!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Money!]
-      """
-      A negation of the given filter
-      """
-      not: MoneyFilterInput
-    }
-
-    """
-    Update input for Money type.
-    """
-    input MoneyUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: Money
-      """
-      Increments the value of a field by the specified value.
-      """
-      increment: Money
-      """
-      Decrements the value of a field by the specified value.
-      """
-      decrement: Money
-      """
-      Multiplies the value of a field by the specified value.
-      """
-      multiply: Money
-      """
-      Divides the value of a field by the specified value.
-      """
-      divide: Money
-    }
-
-    """
-    Update input for Money array type.
-    """
-    input MoneyArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [Money]
-      """
-      Append an array value to the column.
-      """
-      append: [Money]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [Money]
-    }
-
-    """
-    Search filter input for BitString type.
-    """
-    input BitStringFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: BitString
-      """
-      The value is not the one given
-      """
-      ne: BitString
-      """
-      The value is greater than the one given
-      """
-      gt: BitString
-      """
-      The value is less than the one given
-      """
-      lt: BitString
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: BitString
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: BitString
-      """
-      The value is in the given array of values
-      """
-      in: [BitString!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [BitString!]
-      """
-      A negation of the given filter
-      """
-      not: BitStringFilterInput
-    }
-
-    """
-    Update input for BitString type.
-    """
-    input BitStringUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: BitString
-    }
-
-    """
-    Update input for BitString array type.
-    """
-    input BitStringArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [BitString]
-      """
-      Append an array value to the column.
-      """
-      append: [BitString]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [BitString]
-    }
-
-    """
-    Search filter input for XML type.
-    """
-    input XMLFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: XML
-      """
-      The value is not the one given
-      """
-      ne: XML
-      """
-      The value is greater than the one given
-      """
-      gt: XML
-      """
-      The value is less than the one given
-      """
-      lt: XML
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: XML
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: XML
-      """
-      The value is in the given array of values
-      """
-      in: [XML!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [XML!]
-      """
-      A negation of the given filter
-      """
-      not: XMLFilterInput
-    }
-
-    """
-    Update input for XML type.
-    """
-    input XMLUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: XML
-    }
-
-    """
-    Update input for XML array type.
-    """
-    input XMLArrayUpdateInput @oneOf {
-      """
-      Replaces the value of a field with the specified value.
-      """
-      set: [XML]
-      """
-      Append an array value to the column.
-      """
-      append: [XML]
-      """
-      Prepend an array value to the column.
-      """
-      prepend: [XML]
-    }
-
-    """
-    Search filter input for String array type.
-    """
-    input StringArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [String]
-      """
-      The value is not the one given
-      """
-      ne: [String]
-      """
-      The value is greater than the one given
-      """
-      gt: [String]
-      """
-      The value is less than the one given
-      """
-      lt: [String]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [String]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [String]
-      """
-      The value is in the given array of values
-      """
-      in: [[String]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[String]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [String]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [String]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [String]
-      """
-      A negation of the given filter
-      """
-      not: StringArrayFilterInput
-    }
-
-    """
-    Search filter input for Int array type.
-    """
-    input IntArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Int]
-      """
-      The value is not the one given
-      """
-      ne: [Int]
-      """
-      The value is greater than the one given
-      """
-      gt: [Int]
-      """
-      The value is less than the one given
-      """
-      lt: [Int]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Int]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Int]
-      """
-      The value is in the given array of values
-      """
-      in: [[Int]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Int]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Int]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Int]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Int]
-      """
-      A negation of the given filter
-      """
-      not: IntArrayFilterInput
-    }
-
-    """
-    Search filter input for BigInt array type.
-    """
-    input BigIntArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [BigInt]
-      """
-      The value is not the one given
-      """
-      ne: [BigInt]
-      """
-      The value is greater than the one given
-      """
-      gt: [BigInt]
-      """
-      The value is less than the one given
-      """
-      lt: [BigInt]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [BigInt]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [BigInt]
-      """
-      The value is in the given array of values
-      """
-      in: [[BigInt]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[BigInt]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [BigInt]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [BigInt]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [BigInt]
-      """
-      A negation of the given filter
-      """
-      not: BigIntArrayFilterInput
-    }
-
-    """
-    Search filter input for Decimal array type.
-    """
-    input DecimalArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Decimal]
-      """
-      The value is not the one given
-      """
-      ne: [Decimal]
-      """
-      The value is greater than the one given
-      """
-      gt: [Decimal]
-      """
-      The value is less than the one given
-      """
-      lt: [Decimal]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Decimal]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Decimal]
-      """
-      The value is in the given array of values
-      """
-      in: [[Decimal]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Decimal]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Decimal]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Decimal]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Decimal]
-      """
-      A negation of the given filter
-      """
-      not: DecimalArrayFilterInput
-    }
-
-    """
-    Search filter input for Float array type.
-    """
-    input FloatArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Float]
-      """
-      The value is not the one given
-      """
-      ne: [Float]
-      """
-      The value is greater than the one given
-      """
-      gt: [Float]
-      """
-      The value is less than the one given
-      """
-      lt: [Float]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Float]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Float]
-      """
-      The value is in the given array of values
-      """
-      in: [[Float]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Float]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Float]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Float]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Float]
-      """
-      A negation of the given filter
-      """
-      not: FloatArrayFilterInput
-    }
-
-    """
-    Search filter input for Boolean array type.
-    """
-    input BooleanArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Boolean]
-      """
-      The value is not the one given
-      """
-      ne: [Boolean]
-      """
-      The value is greater than the one given
-      """
-      gt: [Boolean]
-      """
-      The value is less than the one given
-      """
-      lt: [Boolean]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Boolean]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Boolean]
-      """
-      The value is in the given array of values
-      """
-      in: [[Boolean]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Boolean]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Boolean]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Boolean]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Boolean]
-      """
-      A negation of the given filter
-      """
-      not: BooleanArrayFilterInput
-    }
-
-    """
-    Search filter input for Bytes array type.
-    """
-    input BytesArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Bytes]
-      """
-      The value is not the one given
-      """
-      ne: [Bytes]
-      """
-      The value is greater than the one given
-      """
-      gt: [Bytes]
-      """
-      The value is less than the one given
-      """
-      lt: [Bytes]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Bytes]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Bytes]
-      """
-      The value is in the given array of values
-      """
-      in: [[Bytes]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Bytes]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Bytes]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Bytes]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Bytes]
-      """
-      A negation of the given filter
-      """
-      not: BytesArrayFilterInput
-    }
-
-    """
-    Search filter input for JSON array type.
-    """
-    input JSONArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [JSON]
-      """
-      The value is not the one given
-      """
-      ne: [JSON]
-      """
-      The value is greater than the one given
-      """
-      gt: [JSON]
-      """
-      The value is less than the one given
-      """
-      lt: [JSON]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [JSON]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [JSON]
-      """
-      The value is in the given array of values
-      """
-      in: [[JSON]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[JSON]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [JSON]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [JSON]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [JSON]
-      """
-      A negation of the given filter
-      """
-      not: JSONArrayFilterInput
-    }
-
-    """
-    Search filter input for UUID array type.
-    """
-    input UUIDArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [UUID]
-      """
-      The value is not the one given
-      """
-      ne: [UUID]
-      """
-      The value is greater than the one given
-      """
-      gt: [UUID]
-      """
-      The value is less than the one given
-      """
-      lt: [UUID]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [UUID]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [UUID]
-      """
-      The value is in the given array of values
-      """
-      in: [[UUID]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[UUID]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [UUID]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [UUID]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [UUID]
-      """
-      A negation of the given filter
-      """
-      not: UUIDArrayFilterInput
-    }
-
-    """
-    Search filter input for Date array type.
-    """
-    input DateArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Date]
-      """
-      The value is not the one given
-      """
-      ne: [Date]
-      """
-      The value is greater than the one given
-      """
-      gt: [Date]
-      """
-      The value is less than the one given
-      """
-      lt: [Date]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Date]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Date]
-      """
-      The value is in the given array of values
-      """
-      in: [[Date]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Date]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Date]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Date]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Date]
-      """
-      A negation of the given filter
-      """
-      not: DateArrayFilterInput
-    }
-
-    """
-    Search filter input for Time array type.
-    """
-    input TimeArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Time]
-      """
-      The value is not the one given
-      """
-      ne: [Time]
-      """
-      The value is greater than the one given
-      """
-      gt: [Time]
-      """
-      The value is less than the one given
-      """
-      lt: [Time]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Time]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Time]
-      """
-      The value is in the given array of values
-      """
-      in: [[Time]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Time]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Time]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Time]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Time]
-      """
-      A negation of the given filter
-      """
-      not: TimeArrayFilterInput
-    }
-
-    """
-    Search filter input for TimeWithTimezone array type.
-    """
-    input TimeWithTimezoneArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [TimeWithTimezone]
-      """
-      The value is not the one given
-      """
-      ne: [TimeWithTimezone]
-      """
-      The value is greater than the one given
-      """
-      gt: [TimeWithTimezone]
-      """
-      The value is less than the one given
-      """
-      lt: [TimeWithTimezone]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [TimeWithTimezone]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [TimeWithTimezone]
-      """
-      The value is in the given array of values
-      """
-      in: [[TimeWithTimezone]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[TimeWithTimezone]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [TimeWithTimezone]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [TimeWithTimezone]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [TimeWithTimezone]
-      """
-      A negation of the given filter
-      """
-      not: TimeWithTimezoneArrayFilterInput
-    }
-
-    """
-    Search filter input for Timestamp array type.
-    """
-    input TimestampArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Timestamp]
-      """
-      The value is not the one given
-      """
-      ne: [Timestamp]
-      """
-      The value is greater than the one given
-      """
-      gt: [Timestamp]
-      """
-      The value is less than the one given
-      """
-      lt: [Timestamp]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Timestamp]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Timestamp]
-      """
-      The value is in the given array of values
-      """
-      in: [[Timestamp]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Timestamp]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Timestamp]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Timestamp]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Timestamp]
-      """
-      A negation of the given filter
-      """
-      not: TimestampArrayFilterInput
-    }
-
-    """
-    Search filter input for DateTime array type.
-    """
-    input DateTimeArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [DateTime]
-      """
-      The value is not the one given
-      """
-      ne: [DateTime]
-      """
-      The value is greater than the one given
-      """
-      gt: [DateTime]
-      """
-      The value is less than the one given
-      """
-      lt: [DateTime]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [DateTime]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [DateTime]
-      """
-      The value is in the given array of values
-      """
-      in: [[DateTime]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[DateTime]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [DateTime]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [DateTime]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [DateTime]
-      """
-      A negation of the given filter
-      """
-      not: DateTimeArrayFilterInput
+      id: Int!
     }
 
     """
-    Search filter input for Inet array type.
+    Filter input type for User objects.
     """
-    input InetArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Inet]
-      """
-      The value is not the one given
-      """
-      ne: [Inet]
-      """
-      The value is greater than the one given
-      """
-      gt: [Inet]
-      """
-      The value is less than the one given
+    input UserFilterInput @oneOf {
       """
-      lt: [Inet]
+      Filter by the given id
       """
-      The value is greater than, or equal to the one given
+      id: IntFilterInput
       """
-      gte: [Inet]
+      Filter by the related Blog objects
       """
-      The value is less than, or equal to the one given
+      blogs: BlogCollectionFilterInput
       """
-      lte: [Inet]
+      All of the filters must match
       """
-      The value is in the given array of values
+      ALL: [UserFilterInput]
       """
-      in: [[Inet]!]
+      None of the filters must match
       """
-      The value is not in the given array of values
+      NONE: [UserFilterInput]
       """
-      nin: [[Inet]!]
+      At least one of the filters must match
       """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Inet]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Inet]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Inet]
-      """
-      A negation of the given filter
-      """
-      not: InetArrayFilterInput
+      ANY: [UserFilterInput]
     }
 
     """
-    Search filter input for CIDR array type.
+    Input type to select a unique User
     """
-    input CIDRArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [CIDR]
-      """
-      The value is not the one given
-      """
-      ne: [CIDR]
-      """
-      The value is greater than the one given
-      """
-      gt: [CIDR]
-      """
-      The value is less than the one given
-      """
-      lt: [CIDR]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [CIDR]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [CIDR]
-      """
-      The value is in the given array of values
-      """
-      in: [[CIDR]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[CIDR]!]
-      """
-      Checks if the array contains all elements of the provided array
+    input UserLookupInput @oneOf {
       """
-      contains: [CIDR]
+      Select by the 'id' field
       """
-      Checks if the array is contained within the provided array
-      """
-      contained: [CIDR]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [CIDR]
-      """
-      A negation of the given filter
-      """
-      not: CIDRArrayFilterInput
+      id: Int
     }
 
     """
-    Search filter input for MacAddr array type.
+    Lookup input type for User objects for subgraph joins.
     """
-    input MacAddrArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [MacAddr]
-      """
-      The value is not the one given
-      """
-      ne: [MacAddr]
-      """
-      The value is greater than the one given
-      """
-      gt: [MacAddr]
-      """
-      The value is less than the one given
-      """
-      lt: [MacAddr]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [MacAddr]
-      """
-      The value is less than, or equal to the one given
+    input UserManyLookupInput @oneOf @inaccessible {
       """
-      lte: [MacAddr]
+      Select by the 'id' field
       """
-      The value is in the given array of values
-      """
-      in: [[MacAddr]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[MacAddr]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [MacAddr]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [MacAddr]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [MacAddr]
-      """
-      A negation of the given filter
-      """
-      not: MacAddrArrayFilterInput
+      id: [Int!] @inaccessible
     }
 
     """
-    Search filter input for Money array type.
+    Specifies the ordering for User results.
     """
-    input MoneyArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [Money]
-      """
-      The value is not the one given
-      """
-      ne: [Money]
-      """
-      The value is greater than the one given
+    input UserOrderByInput @oneOf {
       """
-      gt: [Money]
+      Order users by id
       """
-      The value is less than the one given
-      """
-      lt: [Money]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [Money]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [Money]
-      """
-      The value is in the given array of values
-      """
-      in: [[Money]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[Money]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [Money]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [Money]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [Money]
-      """
-      A negation of the given filter
-      """
-      not: MoneyArrayFilterInput
+      id: OrderDirection
     }
 
     """
-    Search filter input for BitString array type.
+    Input for updating an existing User
     """
-    input BitStringArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [BitString]
-      """
-      The value is not the one given
-      """
-      ne: [BitString]
-      """
-      The value is greater than the one given
-      """
-      gt: [BitString]
-      """
-      The value is less than the one given
-      """
-      lt: [BitString]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [BitString]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [BitString]
-      """
-      The value is in the given array of values
-      """
-      in: [[BitString]!]
-      """
-      The value is not in the given array of values
+    input UserUpdateInput {
       """
-      nin: [[BitString]!]
+      Update field value for id
       """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [BitString]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [BitString]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [BitString]
-      """
-      A negation of the given filter
-      """
-      not: BitStringArrayFilterInput
+      id: IntUpdateInput
     }
 
-    """
-    Search filter input for XML array type.
-    """
-    input XMLArrayFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: [XML]
-      """
-      The value is not the one given
-      """
-      ne: [XML]
-      """
-      The value is greater than the one given
-      """
-      gt: [XML]
-      """
-      The value is less than the one given
-      """
-      lt: [XML]
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: [XML]
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: [XML]
-      """
-      The value is in the given array of values
-      """
-      in: [[XML]!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [[XML]!]
-      """
-      Checks if the array contains all elements of the provided array
-      """
-      contains: [XML]
-      """
-      Checks if the array is contained within the provided array
-      """
-      contained: [XML]
-      """
-      Checks if the array has any elements in common with the provided array
-      """
-      overlaps: [XML]
-      """
-      A negation of the given filter
-      """
-      not: XMLArrayFilterInput
+    type Blog
+      @key(fields: "id")
+      @pgTable(name: "Blog")
+      @pgKey(fields: ["id"], type: UNIQUE)
+    {
+      id: Int! @pgColumn(name: "id", type: INT)
+      authorId: Int! @pgColumn(name: "author_id", type: INT)
+      user: User @pgRelation(name: "users_to_filtered_blogs")
     }
 
     """
-    Information about pagination in a collection of objects
+    The connection type for Blog
     """
-    type PageInfo
-      @shareable
+    type BlogConnection
+      @pgConnection(type: "Blog")
     {
       """
-      When paginating backwards, are there more items?
+      A list of edges
       """
-      hasPreviousPage: Boolean! @shareable
+      edges: [BlogEdge!]! @shareable
       """
-      When paginating forwards, are there more items?
+      Information to aid in pagination
       """
-      hasNextPage: Boolean! @shareable
-      """
-      The cursor of the first item in the page
-      """
-      startCursor: String @shareable
-      """
-      The cursor of the last item in the page
-      """
-      endCursor: String @shareable
-    }
-
-    """
-    Return type containing fields of the mutated or created Blog object
-    """
-    type BlogReturning
-      @pgReturning(type: "Blog")
-    {
-      """
-      The value of the id field
-      """
-      id: Int! @shareable
-      """
-      The value of the authorId field
-      """
-      authorId: Int!
-    }
-
-    """
-    Return type when creating one Blog
-    """
-    type BlogCreatePayload
-      @pgMutation(type: "Blog")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: BlogReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
+      pageInfo: PageInfo! @shareable
     }
 
     """
@@ -16657,41 +3535,9 @@ async fn view_with_relation_from_table_to_view() {
     }
 
     """
-    Return type when updating one Blog
+    Return type when creating one Blog
     """
-    type BlogUpdatePayload
-      @pgMutation(type: "Blog")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: BlogReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when updating many blogs
-    """
-    type BlogUpdateManyPayload
-      @pgMutation(type: "Blog")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [BlogReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting one Blog
-    """
-    type BlogDeletePayload
+    type BlogCreatePayload
       @pgMutation(type: "Blog")
     {
       """
@@ -16721,6 +3567,22 @@ async fn view_with_relation_from_table_to_view() {
     }
 
     """
+    Return type when deleting one Blog
+    """
+    type BlogDeletePayload
+      @pgMutation(type: "Blog")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: BlogReturning @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
     An edge in a connection. Contains the node and its cursor
     """
     type BlogEdge {
@@ -16735,43 +3597,31 @@ async fn view_with_relation_from_table_to_view() {
     }
 
     """
-    The connection type for Blog
+    Return type containing fields of the mutated or created Blog object
     """
-    type BlogConnection
-      @pgConnection(type: "Blog")
-    {
-      """
-      A list of edges
-      """
-      edges: [BlogEdge!]! @shareable
-      """
-      Information to aid in pagination
-      """
-      pageInfo: PageInfo! @shareable
-    }
-
-    """
-    Return type containing fields of the mutated or created User object
-    """
-    type UserReturning
-      @pgReturning(type: "User")
+    type BlogReturning
+      @pgReturning(type: "Blog")
     {
       """
       The value of the id field
       """
       id: Int! @shareable
+      """
+      The value of the authorId field
+      """
+      authorId: Int!
     }
 
     """
-    Return type when creating one User
+    Return type when updating many blogs
     """
-    type UserCreatePayload
-      @pgMutation(type: "User")
+    type BlogUpdateManyPayload
+      @pgMutation(type: "Blog")
     {
       """
       Returned item(s) from the mutation
       """
-      returning: UserReturning @shareable
+      returning: [BlogReturning]! @shareable
       """
       The number of rows mutated
       """
@@ -16779,109 +3629,40 @@ async fn view_with_relation_from_table_to_view() {
     }
 
     """
-    Return type when creating many users
+    Return type when updating one Blog
     """
-    type UserCreateManyPayload
-      @pgMutation(type: "User")
+    type BlogUpdatePayload
+      @pgMutation(type: "Blog")
     {
       """
       Returned item(s) from the mutation
       """
-      returning: [UserReturning]! @shareable
+      returning: BlogReturning @shareable
       """
       The number of rows mutated
       """
       rowCount: Int! @shareable
     }
 
-    """
-    Return type when updating one User
-    """
-    type UserUpdatePayload
-      @pgMutation(type: "User")
+    type FilteredBlog
+      @key(fields: "id")
+      @pgTable(name: "filtered_blogs", kind: VIEW)
+      @pgKey(fields: ["id"], type: UNIQUE)
     {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
+      id: Int! @pgColumn(name: "id", type: INT)
+      authorId: Int @pgColumn(name: "author_id", type: INT)
     }
 
     """
-    Return type when updating many users
+    The connection type for FilteredBlog
     """
-    type UserUpdateManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting one User
-    """
-    type UserDeletePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting many users
-    """
-    type UserDeleteManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    An edge in a connection. Contains the node and its cursor
-    """
-    type UserEdge {
-      """
-      The item at the end of the edge
-      """
-      node: User! @shareable
-      """
-      A cursor for use in pagination
-      """
-      cursor: String! @shareable
-    }
-
-    """
-    The connection type for User
-    """
-    type UserConnection
-      @pgConnection(type: "User")
+    type FilteredBlogConnection
+      @pgConnection(type: "FilteredBlog")
     {
       """
       A list of edges
       """
-      edges: [UserEdge!]! @shareable
+      edges: [FilteredBlogEdge!]! @shareable
       """
       Information to aid in pagination
       """
@@ -16903,29 +3684,27 @@ async fn view_with_relation_from_table_to_view() {
     }
 
     """
-    The connection type for FilteredBlog
+    Information about pagination in a collection of objects
     """
-    type FilteredBlogConnection
-      @pgConnection(type: "FilteredBlog")
+    type PageInfo
+      @shareable
     {
       """
-      A list of edges
+      When paginating backwards, are there more items?
       """
-      edges: [FilteredBlogEdge!]! @shareable
+      hasPreviousPage: Boolean! @shareable
       """
-      Information to aid in pagination
+      When paginating forwards, are there more items?
       """
-      pageInfo: PageInfo! @shareable
-    }
-
-    type Blog
-      @key(fields: "id")
-      @pgTable(name: "Blog")
-      @pgKey(fields: ["id"], type: UNIQUE)
-    {
-      id: Int! @pgColumn(name: "id", type: INT)
-      authorId: Int! @pgColumn(name: "author_id", type: INT)
-      user: User @pgRelation(name: "users_to_filtered_blogs")
+      hasNextPage: Boolean! @shareable
+      """
+      The cursor of the first item in the page
+      """
+      startCursor: String @shareable
+      """
+      The cursor of the last item in the page
+      """
+      endCursor: String @shareable
     }
 
     type User
@@ -16962,13 +3741,142 @@ async fn view_with_relation_from_table_to_view() {
       ): BlogConnection! @pgRelation(name: "users_to_filtered_blogs", fields: ["id"], references: ["authorId"])
     }
 
-    type FilteredBlog
-      @key(fields: "id")
-      @pgTable(name: "filtered_blogs", kind: VIEW)
-      @pgKey(fields: ["id"], type: UNIQUE)
+    """
+    The connection type for User
+    """
+    type UserConnection
+      @pgConnection(type: "User")
     {
-      id: Int! @pgColumn(name: "id", type: INT)
-      authorId: Int @pgColumn(name: "author_id", type: INT)
+      """
+      A list of edges
+      """
+      edges: [UserEdge!]! @shareable
+      """
+      Information to aid in pagination
+      """
+      pageInfo: PageInfo! @shareable
+    }
+
+    """
+    Return type when creating many users
+    """
+    type UserCreateManyPayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: [UserReturning]! @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
+    Return type when creating one User
+    """
+    type UserCreatePayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: UserReturning @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
+    Return type when deleting many users
+    """
+    type UserDeleteManyPayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: [UserReturning]! @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
+    Return type when deleting one User
+    """
+    type UserDeletePayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: UserReturning @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
+    An edge in a connection. Contains the node and its cursor
+    """
+    type UserEdge {
+      """
+      The item at the end of the edge
+      """
+      node: User! @shareable
+      """
+      A cursor for use in pagination
+      """
+      cursor: String! @shareable
+    }
+
+    """
+    Return type containing fields of the mutated or created User object
+    """
+    type UserReturning
+      @pgReturning(type: "User")
+    {
+      """
+      The value of the id field
+      """
+      id: Int! @shareable
+    }
+
+    """
+    Return type when updating many users
+    """
+    type UserUpdateManyPayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: [UserReturning]! @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
+    }
+
+    """
+    Return type when updating one User
+    """
+    type UserUpdatePayload
+      @pgMutation(type: "User")
+    {
+      """
+      Returned item(s) from the mutation
+      """
+      returning: UserReturning @shareable
+      """
+      The number of rows mutated
+      """
+      rowCount: Int! @shareable
     }
 
     type Query {

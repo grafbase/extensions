@@ -3,10 +3,10 @@ use std::{borrow::Cow, fmt};
 use super::directive::Directive;
 
 pub struct Enum<'a> {
-    name: &'a str,
-    directives: Vec<Directive<'a>>,
-    variants: Vec<EnumVariant<'a>>,
-    description: Option<Cow<'a, str>>,
+    pub(super) name: &'a str,
+    pub(super) directives: Vec<Directive<'a>>,
+    pub(super) variants: Vec<EnumVariant<'a>>,
+    pub(super) description: Option<Cow<'a, str>>,
 }
 
 impl<'a> Enum<'a> {

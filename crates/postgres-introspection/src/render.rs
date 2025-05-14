@@ -55,5 +55,7 @@ pub fn to_sdl(database_definition: DatabaseDefinition, config: &Config) -> Strin
         mutation::render(&database_definition, config, prefix, &mut rendered);
     }
 
+    rendered.remove_unused_types();
+
     rendered.to_string()
 }
