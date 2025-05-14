@@ -255,21 +255,27 @@ impl ScalarType {
         use ScalarKind::*;
 
         let type_name = match self.kind {
-            Char | Text | Xml | Cidr | Macaddr8 | Macaddr | Varchar | Bit | Varbit => "String",
-            Date | Inet | Time | Timetz => "String",
-            Uuid | Oid => "String",
-            Bigint | Bigserial => "BigInt",
-            Timestamp => "String",
-            Timestamptz => "String",
+            Xml => "XML",
+            Cidr => "CIDR",
+            Macaddr | Macaddr8 => "MacAddr",
+            Bit | Varbit => "BitString",
+            Char | Text | Varchar => "String",
+            Inet => "Inet",
+            Date => "Date",
+            Time => "Time",
+            Timetz => "TimeWithTimezone",
+            Timestamp => "Timestamp",
+            Timestamptz => "DateTime",
+            Uuid => "UUID",
+            Oid | Bigint | Bigserial => "BigInt",
             Interval => "String",
-            Decimal | Numeric | Money => "Decimal",
-
+            Money => "Money",
+            Decimal | Numeric => "Decimal",
             Smallserial | Serial | Smallint | Int | Integer => "Int",
             Json | Jsonb => "JSON",
             Real | DoublePrecision => "Float",
             Boolean => "Boolean",
             Bytea => "Bytes",
-
             _ => return None,
         };
 
