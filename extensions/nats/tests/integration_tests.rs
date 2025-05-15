@@ -569,7 +569,7 @@ async fn test_non_existing_stream() {
     insta::assert_json_snapshot!(&events, @r#"
     [
       {
-        "data": null,
+        "data": {},
         "errors": [
           {
             "message": "Failed to subscribe to subject 'persistence.user.1.events': jetstream error: stream not found (code 404, error code 10059)",
