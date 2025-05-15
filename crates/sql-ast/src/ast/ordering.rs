@@ -40,10 +40,8 @@ impl Order {
         match self {
             Order::Asc => Order::Desc,
             Order::Desc => Order::Asc,
-            Order::AscNullsFirst => Order::DescNullsFirst,
-            Order::AscNullsLast => Order::DescNullsLast,
-            Order::DescNullsFirst => Order::AscNullsFirst,
-            Order::DescNullsLast => Order::AscNullsLast,
+            Order::AscNullsFirst | Order::AscNullsLast => Order::DescNullsLast,
+            Order::DescNullsFirst | Order::DescNullsLast => Order::AscNullsFirst,
         }
     }
 
