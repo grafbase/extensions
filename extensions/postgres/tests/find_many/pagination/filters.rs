@@ -98,7 +98,7 @@ async fn id_pk_implicit_order_with_after() {
           ],
           "pageInfo": {
             "hasNextPage": false,
-            "hasPreviousPage": false,
+            "hasPreviousPage": true,
             "startCursor": "WzJd",
             "endCursor": "WzJd"
           }
@@ -177,7 +177,7 @@ async fn id_pk_implicit_order_with_before() {
             }
           ],
           "pageInfo": {
-            "hasNextPage": false,
+            "hasNextPage": true,
             "hasPreviousPage": false,
             "startCursor": "WzFd",
             "endCursor": "WzFd"
@@ -252,7 +252,7 @@ async fn id_pk_explicit_order_with_after() {
           ],
           "pageInfo": {
             "hasNextPage": false,
-            "hasPreviousPage": false,
+            "hasPreviousPage": true,
             "startCursor": "WzFd",
             "endCursor": "WzFd"
           }
@@ -325,7 +325,7 @@ async fn id_pk_explicit_order_with_before() {
             }
           ],
           "pageInfo": {
-            "hasNextPage": false,
+            "hasNextPage": true,
             "hasPreviousPage": false,
             "startCursor": "WzJd",
             "endCursor": "WzJd"
@@ -405,7 +405,7 @@ async fn compound_pk_implicit_order_with_after() {
           ],
           "pageInfo": {
             "hasNextPage": true,
-            "hasPreviousPage": false,
+            "hasPreviousPage": true,
             "startCursor": "WyJNdXN0aSIsICJtZW93MkBleGFtcGxlLmNvbSJd",
             "endCursor": "WyJNdXN0aSIsICJtZW93MkBleGFtcGxlLmNvbSJd"
           }
@@ -482,7 +482,7 @@ async fn compound_pk_implicit_order_with_before() {
             }
           ],
           "pageInfo": {
-            "hasNextPage": false,
+            "hasNextPage": true,
             "hasPreviousPage": false,
             "startCursor": "WyJNdXN0aSIsICJtZW93MUBleGFtcGxlLmNvbSJd",
             "endCursor": "WyJNdXN0aSIsICJtZW93MUBleGFtcGxlLmNvbSJd"
@@ -562,7 +562,7 @@ async fn compound_pk_explicit_order_with_after() {
           ],
           "pageInfo": {
             "hasNextPage": true,
-            "hasPreviousPage": false,
+            "hasPreviousPage": true,
             "startCursor": "WyJNdXN0aSIsICJtZW93MUBleGFtcGxlLmNvbSJd",
             "endCursor": "WyJNdXN0aSIsICJtZW93MUBleGFtcGxlLmNvbSJd"
           }
@@ -640,7 +640,7 @@ async fn compound_pk_explicit_order_with_before() {
             }
           ],
           "pageInfo": {
-            "hasNextPage": false,
+            "hasNextPage": true,
             "hasPreviousPage": true,
             "startCursor": "WyJNdXN0aSIsICJtZW93MUBleGFtcGxlLmNvbSJd",
             "endCursor": "WyJNdXN0aSIsICJtZW93MUBleGFtcGxlLmNvbSJd"
@@ -720,7 +720,7 @@ async fn compound_pk_implicit_order_with_nulls_and_after() {
           ],
           "pageInfo": {
             "hasNextPage": true,
-            "hasPreviousPage": false,
+            "hasPreviousPage": true,
             "startCursor": "WyJOYXVraW8iLCBudWxsXQ==",
             "endCursor": "WyJOYXVraW8iLCBudWxsXQ=="
           }
@@ -798,7 +798,7 @@ async fn compound_pk_implicit_order_with_nulls_and_before() {
             }
           ],
           "pageInfo": {
-            "hasNextPage": false,
+            "hasNextPage": true,
             "hasPreviousPage": true,
             "startCursor": "WyJOYXVraW8iLCAibWVvdzNAZXhhbXBsZS5jb20iXQ==",
             "endCursor": "WyJOYXVraW8iLCAibWVvdzNAZXhhbXBsZS5jb20iXQ=="

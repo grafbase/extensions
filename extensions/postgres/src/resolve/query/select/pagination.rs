@@ -230,7 +230,13 @@ fn build_page_info_cte<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a
                     select.value(expr);
                     Expression::from(select)
                 }
-                None => raw("false"),
+                None => {
+                    if args.before().is_some() {
+                        raw("true")
+                    } else {
+                        raw("false")
+                    }
+                }
             };
 
             expr.alias("hasNextPage")
@@ -248,7 +254,13 @@ fn build_page_info_cte<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a
                     select.value(expr);
                     Expression::from(select)
                 }
-                None => raw("false"),
+                None => {
+                    if args.after().is_some() {
+                        raw("true")
+                    } else {
+                        raw("false")
+                    }
+                }
             };
 
             expr.alias("hasPreviousPage")
