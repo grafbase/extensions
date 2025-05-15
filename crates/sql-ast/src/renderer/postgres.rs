@@ -7,7 +7,7 @@ use crate::ast::{
     self, Alias, Average, Column, CommonTableExpression, Compare, Concat, ConditionTree, Delete, Encode, EncodeFormat,
     Expression, ExpressionKind, Function, FunctionType, Grouping, Insert, Join, JoinData, JsonAgg, JsonBuildArray,
     JsonBuildObject, JsonCompare, JsonExtract, JsonExtractArrayElem, JsonType, JsonUnquote, OnConflict, Order,
-    Ordering, ParameterizedValue, Query, Row, Select, SqlOp, Table, TableType, ToJsonb, Update, Values,
+    Ordering, ParameterizedValue, Query, Replace, Row, Select, SqlOp, Table, TableType, ToJsonb, Update, Values,
 };
 
 const C_BACKTICK_OPEN: &str = "\"";
@@ -474,17 +474,45 @@ impl Renderer {
     }
 
     fn visit_encode(&mut self, encode: Encode<'_>) {
-        self.write("encode(");
-        self.visit_expression(encode.expression);
-        self.write(", ");
+        self.write("encode");
 
-        match encode.format {
-            EncodeFormat::Base64 => self.write("'base64'"),
-            EncodeFormat::Escape => self.write("'escape'"),
-            EncodeFormat::Hex => self.write("'hex'"),
+        self.surround_with("(", ")", |s| {
+            s.visit_expression(encode.expression);
+            s.write(", ");
+
+            match encode.format {
+                EncodeFormat::Base64 => s.write("'base64'"),
+                EncodeFormat::Escape => s.write("'escape'"),
+                EncodeFormat::Hex => s.write("'hex'"),
+            }
+        });
+    }
+
+    fn visit_replace(&mut self, replace: Replace<'_>) {
+        self.write("replace");
+
+        self.surround_with("(", ")", |s| {
+            s.visit_expression(*replace.expression);
+            s.write(", ");
+
+            s.visit_sql_string_pattern(replace.old_value);
+            s.write(", ");
+
+            s.surround_with("'", "'", |s| {
+                s.write(replace.new_value);
+            });
+        });
+    }
+
+    fn visit_sql_string_pattern(&mut self, pattern: ast::SqlStringPattern<'_>) {
+        match pattern {
+            ast::SqlStringPattern::Literal(literal) => self.surround_with("'", "'", |s| {
+                s.write(literal);
+            }),
+            ast::SqlStringPattern::EscapedContent(content) => self.surround_with("E'", "'", |s| {
+                s.write(content);
+            }),
         }
-
-        self.write(")");
     }
 
     fn visit_decode(&mut self, encode: ast::Decode<'_>) {
@@ -1363,6 +1391,7 @@ impl Renderer {
             FunctionType::JsonBuildArray(encode) => self.visit_json_build_array(encode),
             FunctionType::Unnest(unnest) => self.visit_unnest(unnest),
             FunctionType::RowNumber(row_number) => self.visit_row_number(row_number),
+            FunctionType::Replace(replace) => self.visit_replace(replace),
             FunctionType::Concat(concat) => {
                 self.visit_concat(concat);
             }

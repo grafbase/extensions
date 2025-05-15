@@ -11,8 +11,9 @@ use grafbase_database_definition::TableColumnWalker;
 use grafbase_sdk::{SdkError, host_io::postgres::types::DatabaseType};
 use sql_ast::ast::{
     Aliasable, Column, CommonTableExpression, Comparable, ConditionTree, EncodeFormat, Expression, Function, Joinable,
-    Order, OrderDefinition, Ordering, Select, Table, asterisk, cast, coalesce, convert_from, count, decode, encode,
-    json_agg, json_build_array, json_build_object, json_extract_array_elem, raw, row_number, row_to_json,
+    Order, OrderDefinition, Ordering, Select, SqlStringPattern, Table, asterisk, cast, coalesce, convert_from, count,
+    decode, encode, json_agg, json_build_array, json_build_object, json_extract_array_elem, raw, replace, row_number,
+    row_to_json,
 };
 
 /// The name of the Common Table Expression (CTE) that contains the decoded cursor.
@@ -166,8 +167,10 @@ fn build_filtered_cte<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a>
         let generated_cursor_expr = encode(
             cast(cast(json_build_array(cursor_payload_expressions), "text"), "bytea"),
             EncodeFormat::Base64,
-        )
-        .alias("cursor");
+        );
+
+        let generated_cursor_expr =
+            replace(generated_cursor_expr, SqlStringPattern::EscapedContent("\\n"), "").alias("cursor");
 
         select.value(generated_cursor_expr);
     }

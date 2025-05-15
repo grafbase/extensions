@@ -109,6 +109,86 @@ async fn id_pk_implicit_order_with_after() {
 }
 
 #[tokio::test]
+async fn with_long_cursor() {
+    let api = PgTestApi::new("", |api| async move {
+        let schema = indoc! {r#"
+            CREATE TABLE "User" (
+                id INT PRIMARY KEY,
+                name TEXT NOT NULL
+            )
+        "#};
+
+        api.execute_sql(schema).await;
+
+        let insert = indoc! {r#"
+            INSERT INTO "User" (id, name) VALUES (1, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaaaaaaaa!!!111'), (2, 'kekw')
+        "#};
+
+        api.execute_sql(insert).await;
+    })
+    .await;
+
+    let runner = api.runner_spawn().await;
+
+    let query = indoc! {r"
+        query {
+          users(first: 1, orderBy: [{ name: ASC }]) {
+            pageInfo { hasNextPage hasPreviousPage startCursor endCursor }
+          }
+        }
+    "};
+
+    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let page_info = response.data.users.page_info;
+
+    assert!(page_info.has_next_page);
+
+    let query = indoc! {r#"
+        query Pg($after: String) {
+          users(first: 1, after: $after, orderBy: [{ name: ASC }]) {
+            edges { node { id name } cursor }
+            pageInfo { hasNextPage hasPreviousPage startCursor endCursor }
+          }
+        }
+    "#};
+
+    let variables = serde_json::json!({
+        "after": page_info.end_cursor,
+    });
+
+    let response = runner
+        .graphql_query::<serde_json::Value>(query)
+        .with_variables(variables)
+        .send()
+        .await
+        .unwrap();
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "data": {
+        "users": {
+          "edges": [
+            {
+              "node": {
+                "id": 2,
+                "name": "kekw"
+              },
+              "cursor": "WyJrZWt3IiwgMl0="
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": false,
+            "hasPreviousPage": true,
+            "startCursor": "WyJrZWt3IiwgMl0=",
+            "endCursor": "WyJrZWt3IiwgMl0="
+          }
+        }
+      }
+    }
+    "#);
+}
+
+#[tokio::test]
 async fn id_pk_implicit_order_with_before() {
     let api = PgTestApi::new("", |api| async move {
         let schema = indoc! {r#"
