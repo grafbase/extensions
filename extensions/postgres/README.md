@@ -16,21 +16,6 @@ The extension provides a command-line tool for introspecting your Postgres datab
 
 The introspection tool is highly recommended for **automating schema generation**. It simplifies the process of creating a subgraph schema from your Postgres database.
 
-### Building the Extension
-
-To use the extension with the Grafbase Gateway, you first need to build the Wasm component.
-
-1.  Build the extension:
-    ```bash
-    grafbase extension build
-    ```
-2.  This command creates a `build` directory containing the Wasm module and its manifest:
-    ```
-    build/
-    ├── extension.wasm
-    └── manifest.json
-    ```
-
 ### Gateway Configuration
 
 Configure your Grafbase Gateway to use the extension in your `grafbase.toml` configuration file.
@@ -47,25 +32,24 @@ version = "0.1"
 
 **Using a Local Build:**
 
-If you built the extension manually, point the gateway to the build directory:
+1.  Build the extension:
+    ```bash
+    grafbase extension build
+    ```
+2.  This command creates a `build` directory containing the Wasm module and its manifest:
+    ```
+    build/
+    ├── extension.wasm
+    └── manifest.json
+    ```
+
+Point the gateway to the build directory:
 
 ```toml
 # grafbase.toml
 [extensions.postgres]
 path = "/path/to/your/build" # Update this path
 ```
-
-## Building From Source
-
-As mentioned above, you currently need to build the Wasm module locally.
-
-1.  Clone the repository containing this extension.
-2.  Navigate to the extension's directory.
-3.  Run the build command:
-    ```bash
-    grafbase extension build
-    ```
-4.  Configure your gateway to use the generated artifacts in the `build` directory as shown in the [Gateway Configuration](#gateway-configuration) section.
 
 ## Testing
 
@@ -91,7 +75,7 @@ grafbase extension build
 Then, run the tests with the `PREBUILT_EXTENSION` environment variable set:
 
 ```bash
-PREBUILT_EXTENSION=1 cargo test
+PREBUILT_EXTENSION=1 cargo nextest run
 ```
 
 ## Configuration
