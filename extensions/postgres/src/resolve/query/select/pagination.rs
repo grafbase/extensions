@@ -278,7 +278,7 @@ fn build_page_info_cte<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a
             select.limit(1);
             select.column("cursor");
 
-            for (column, order) in args.order_by().inner() {
+            for (column, order) in args.order_by().outer() {
                 let column = Expression::from(Column::from((column.table().client_name(), column.database_name())));
                 let order = order.unwrap_or(Order::AscNullsFirst);
 
@@ -297,7 +297,7 @@ fn build_page_info_cte<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a
             select.limit(1);
             select.column("cursor");
 
-            for (column, order) in args.order_by().inner() {
+            for (column, order) in args.order_by().outer() {
                 let column = Expression::from(Column::from((column.table().client_name(), column.database_name())));
                 let order = order.map(|o| o.reverse()).unwrap_or(Order::DescNullsLast);
 
@@ -329,8 +329,9 @@ fn build_final_select<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a>
     // we'll reuse the nested ordering here.
     let mut ordering = Ordering::default();
 
-    for order in args.order_by().outer() {
-        ordering.append(order.clone());
+    for (column, order) in args.order_by().outer() {
+        let alias = format!("{}_{}", column.table().database_name(), column.database_name());
+        ordering.append((Column::from(alias).into(), order));
     }
 
     if builder.selects_edges() {
@@ -479,8 +480,9 @@ fn build_edges_select<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a>
         json_select.column(column.table(builder.table().client_name()));
     }
 
-    for ordering in args.order_by().outer() {
-        json_select.order_by(ordering);
+    for (column, order) in args.order_by().outer() {
+        let alias = format!("{}_{}", column.table().database_name(), column.database_name());
+        json_select.order_by((Column::from(alias).into(), order));
     }
 
     Ok(json_select)

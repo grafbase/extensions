@@ -3,24 +3,25 @@ use std::collections::BTreeMap;
 use grafbase_database_definition::{DatabaseDefinition, TableColumnWalker, TableWalker};
 use grafbase_sdk::SdkError;
 
-use sql_ast::ast::{Aliasable, Column, Order, OrderDefinition};
+use sql_ast::ast::{Aliasable, Column, Order};
 
 #[derive(Clone, Default)]
 pub struct CollectionOrdering<'a> {
     inner: Vec<(TableColumnWalker<'a>, Option<Order>)>,
-    outer: Vec<(String, Option<Order>)>,
+    outer: Vec<(TableColumnWalker<'a>, Option<Order>)>,
 }
 
 impl<'a> CollectionOrdering<'a> {
+    /// This order is reversed from the input, if the client is asking for the last N items. Do not use
+    /// for data which is returned to the client.
     pub fn inner(&self) -> impl ExactSizeIterator<Item = (TableColumnWalker<'a>, Option<Order>)> + '_ {
         self.inner.iter().map(|(column, order)| (*column, *order))
     }
 
-    pub fn outer(&self) -> impl ExactSizeIterator<Item = OrderDefinition<'static>> + '_ {
-        self.outer.iter().map(|(column, order)| {
-            let column = Column::from(column.clone());
-            (column.into(), *order)
-        })
+    /// The actual order, given by the client. Never reversed. Use only for data which is returned to the client,
+    /// never for pagination.
+    pub fn outer(&self) -> impl ExactSizeIterator<Item = (TableColumnWalker<'a>, Option<Order>)> + '_ {
+        self.outer.iter().map(|(column, order)| (*column, *order))
     }
 }
 
@@ -104,15 +105,15 @@ impl<'a> CollectionArgs<'a> {
             // For `last` to work, we must reverse the order of the inner query.
             let inner_direction = match direction {
                 OrderDirection::Desc if params.last.is_some() => Order::AscNullsFirst,
-                OrderDirection::Desc => Order::DescNullsFirst,
-                _ if params.last.is_some() => Order::DescNullsFirst,
+                OrderDirection::Desc => Order::DescNullsLast,
+                _ if params.last.is_some() => Order::DescNullsLast,
                 _ => Order::AscNullsFirst,
             };
 
             // and then reverse the order again for the outer query.
             let outer_direction = match inner_direction {
-                Order::DescNullsFirst if params.last.is_some() => Order::AscNullsFirst,
-                Order::AscNullsFirst if params.last.is_some() => Order::DescNullsFirst,
+                Order::DescNullsLast if params.last.is_some() => Order::AscNullsFirst,
+                Order::AscNullsFirst if params.last.is_some() => Order::DescNullsLast,
                 _ => inner_direction,
             };
 
@@ -134,7 +135,7 @@ impl<'a> CollectionArgs<'a> {
             extra_columns.push((column, sql_column.clone().alias(alias.clone())));
 
             order_by.inner.push((column, Some(inner_direction)));
-            order_by.outer.push((alias, Some(outer_direction)));
+            order_by.outer.push((column, Some(outer_direction)));
         }
 
         Ok(Self {

@@ -7,7 +7,7 @@ struct Users {
     page_info: PageInfo,
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
 struct PageInfo {
     has_next_page: bool,
@@ -106,6 +106,91 @@ async fn id_pk_implicit_order_with_after() {
       }
     }
     "#);
+}
+
+#[tokio::test]
+async fn forward_back_forward() {
+    let api = PgTestApi::new("", |api| async move {
+        let schema = indoc! {r#"
+            CREATE TABLE "User" (
+                id INT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL
+            )
+        "#};
+
+        api.execute_sql(schema).await;
+
+        let insert = indoc! {r#"
+            INSERT INTO "User" (id, name) VALUES (1, 'Musti'), (2, 'Naukio'), (3, 'Kekw'), (4, 'Lol')
+        "#};
+
+        api.execute_sql(insert).await;
+    })
+    .await;
+
+    let runner = api.runner_spawn().await;
+
+    let query = indoc! {r"
+        query {
+          users(first: 2) {
+            edges { cursor node { id name }}
+            pageInfo { hasNextPage hasPreviousPage startCursor endCursor }
+          }
+        }
+    "};
+
+    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let first_page_info = response.data.users.page_info;
+
+    assert!(first_page_info.has_next_page);
+
+    let query = indoc! {r#"
+        query Pg($after: String) {
+          users(first: 2, after: $after) {
+            edges { cursor node { id name } }
+            pageInfo { hasNextPage hasPreviousPage startCursor endCursor }
+          }
+        }
+    "#};
+
+    let variables = serde_json::json!({
+        "after": first_page_info.end_cursor,
+    });
+
+    let response = runner
+        .graphql_query::<Response>(query)
+        .with_variables(variables)
+        .send()
+        .await
+        .unwrap();
+
+    let page_info = response.data.users.page_info;
+
+    assert!(!page_info.has_next_page);
+    assert!(page_info.has_previous_page);
+
+    let query = indoc! {r#"
+        query Pg($before: String) {
+          users(last: 2, before: $before) {
+            edges { cursor node { id name } }
+            pageInfo { hasNextPage hasPreviousPage startCursor endCursor }
+          }
+        }
+    "#};
+
+    let variables = serde_json::json!({
+        "before": page_info.start_cursor,
+    });
+
+    let response = runner
+        .graphql_query::<Response>(query)
+        .with_variables(variables)
+        .send()
+        .await
+        .unwrap();
+
+    let last_page_info = response.data.users.page_info;
+    assert_eq!(first_page_info, last_page_info);
 }
 
 #[tokio::test]
@@ -871,17 +956,17 @@ async fn compound_pk_implicit_order_with_nulls_and_before() {
           "edges": [
             {
               "node": {
-                "name": "Naukio",
-                "email": "meow3@example.com"
+                "name": "Musti",
+                "email": null
               },
-              "cursor": "WyJOYXVraW8iLCAibWVvdzNAZXhhbXBsZS5jb20iXQ=="
+              "cursor": "WyJNdXN0aSIsIG51bGxd"
             }
           ],
           "pageInfo": {
             "hasNextPage": true,
-            "hasPreviousPage": true,
-            "startCursor": "WyJOYXVraW8iLCAibWVvdzNAZXhhbXBsZS5jb20iXQ==",
-            "endCursor": "WyJOYXVraW8iLCAibWVvdzNAZXhhbXBsZS5jb20iXQ=="
+            "hasPreviousPage": false,
+            "startCursor": "WyJNdXN0aSIsIG51bGxd",
+            "endCursor": "WyJNdXN0aSIsIG51bGxd"
           }
         }
       }
