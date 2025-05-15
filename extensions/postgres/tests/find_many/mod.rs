@@ -63,7 +63,7 @@ async fn everything() {
 async fn eq_pk() {
     let api = PgTestApi::new("", |api| async move {
         let schema = indoc! {r#"
-            CREATE TABLE "User" (
+            CREATE TABLE "users" (
                 id INT PRIMARY KEY,
                 name VARCHAR(255) NOT NULL
             )
@@ -72,7 +72,7 @@ async fn eq_pk() {
         api.execute_sql(schema).await;
 
         let insert = indoc! {r#"
-            INSERT INTO "User" (id, name) VALUES (1, 'Musti'), (2, 'Naukio')
+            INSERT INTO "users" (id, name) VALUES (1, 'Musti'), (2, 'Naukio')
         "#};
 
         api.execute_sql(insert).await;
