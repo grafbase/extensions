@@ -17,6 +17,7 @@ mod json_unquote;
 mod lower;
 mod maximum;
 mod minimum;
+mod replace;
 mod row_number;
 mod row_to_json;
 mod sum;
@@ -43,6 +44,7 @@ pub use json_unquote::*;
 pub use lower::*;
 pub use maximum::*;
 pub use minimum::*;
+pub use replace::*;
 pub use row_number::*;
 pub use row_to_json::*;
 pub use sum::*;
@@ -99,6 +101,7 @@ pub(crate) enum FunctionType<'a> {
     RowNumber(RowNumber<'a>),
     Decode(Decode<'a>),
     ConvertFrom(ConvertFrom<'a>),
+    Replace(Replace<'a>),
 }
 
 impl<'a> Aliasable<'a> for Function<'a> {

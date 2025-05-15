@@ -68,6 +68,53 @@ async fn page_info_no_nesting() {
 }
 
 #[tokio::test]
+async fn page_info_long_cursor() {
+    let api = PgTestApi::new("", |api| async move {
+        let schema = indoc! {r#"
+            CREATE TABLE "User" (
+                id INT PRIMARY KEY,
+                name TEXT NOT NULL
+            )
+        "#};
+
+        api.execute_sql(schema).await;
+
+        let insert = indoc! {r#"
+            INSERT INTO "User" (id, name) VALUES (1, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaaaaaaaa!!!111')
+        "#};
+
+        api.execute_sql(insert).await;
+    })
+    .await;
+
+    let runner = api.runner_spawn().await;
+
+    let query = indoc! {r"
+        query {
+          users(orderBy: [{ name: ASC }]) {
+            edges { cursor }
+          }
+        }
+    "};
+
+    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "data": {
+        "users": {
+          "edges": [
+            {
+              "cursor": "WyJBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFhYWFhYWFhYWFhYWFhYWFhYWFhISEhMTExIiwgMV0="
+            }
+          ]
+        }
+      }
+    }
+    "#);
+}
+
+#[tokio::test]
 async fn page_info_first_has_more_data() {
     let api = PgTestApi::new("", |api| async move {
         let schema = indoc! {r#"
@@ -182,7 +229,7 @@ async fn page_info_last_has_more_data() {
 }
 
 #[tokio::test]
-async fn xxx_nested_page_info_no_limit() {
+async fn nested_page_info_no_limit() {
     let api = PgTestApi::new("", |api| async move {
         let user_table = indoc! {r#"
             CREATE TABLE "User" (
