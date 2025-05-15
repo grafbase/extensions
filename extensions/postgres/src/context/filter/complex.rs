@@ -136,7 +136,7 @@ fn generate_conditions(
     let mut compares = Vec::with_capacity(operations.len());
 
     for (key, value) in operations {
-        let table_column = (column.table().database_name(), column.database_name());
+        let table_column = (column.table().client_name(), column.database_name());
 
         let expression = |value| {
             let db_value = DatabaseValue::from_json_input(value, column.database_type(), column.is_array())?;
