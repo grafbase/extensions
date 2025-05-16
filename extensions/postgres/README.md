@@ -262,6 +262,16 @@ type Mutation {
 *   **Returning Data:** All mutations support a `returning` selection set, allowing you to fetch data about the affected rows within the same database transaction.
 *   **Performance:** Each mutation executes as a single SQL statement.
 
+### Logging
+
+The extension logs parameterized queries at the debug level without revealing any user data.
+
+Enable query logging by setting the environment variable:
+
+```bash
+GRAFBASE_LOG=info,postgres=debug
+```
+
 ### Supported Postgres Versions
 
 We primarily test against the latest stable Postgres version. The extension relies on SQL features, particularly JSON/JSONB functions, available in Postgres. Therefore, the minimum supported version is **Postgres 9.4**.
