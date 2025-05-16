@@ -63,7 +63,7 @@ async fn globally_disabled_mutations() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -517,7 +517,7 @@ async fn globally_disabled_queries() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -1098,7 +1098,7 @@ async fn disable_mutations_per_schema() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -1722,7 +1722,7 @@ async fn disable_queries_per_schema() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -2441,7 +2441,7 @@ async fn disable_mutations_per_table() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -3394,7 +3394,7 @@ async fn disable_queries_per_table() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -4428,7 +4428,7 @@ async fn schema_mutations_setting_takes_precedence_over_global_setting() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -5054,7 +5054,7 @@ async fn schema_queries_setting_takes_precedence_over_global_setting() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -5767,7 +5767,7 @@ async fn table_mutations_setting_takes_precedence_over_global_setting() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -6393,7 +6393,7 @@ async fn table_queries_setting_takes_precedence_over_global_setting() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -7117,7 +7117,7 @@ async fn table_mutations_setting_takes_precedence_over_schema_setting() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -8075,7 +8075,7 @@ async fn table_queries_setting_takes_precedence_over_schema_setting() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -9125,7 +9125,7 @@ async fn disable_queries_globally_for_views() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -9734,7 +9734,7 @@ async fn disable_queries_per_view() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"

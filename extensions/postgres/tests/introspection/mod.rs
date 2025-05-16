@@ -49,7 +49,7 @@ async fn table_with_generated_always_identity_primary_key() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -518,7 +518,7 @@ async fn table_with_generated_by_default_identity_primary_key() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -1019,7 +1019,7 @@ async fn table_with_serial_primary_key() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -1527,7 +1527,7 @@ async fn table_with_enum_field() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -2107,7 +2107,7 @@ async fn table_with_int_primary_key() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -2608,7 +2608,7 @@ async fn table_with_int_unique() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -3110,7 +3110,7 @@ async fn table_with_serial_primary_key_string_unique() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -3700,7 +3700,7 @@ async fn table_with_composite_primary_key() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -4234,7 +4234,7 @@ async fn two_schemas_same_table_name() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -5063,7 +5063,7 @@ async fn table_with_an_array_column() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -5658,7 +5658,7 @@ async fn table_with_jsonb_column() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -6258,7 +6258,7 @@ async fn table_with_json_column() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -6870,7 +6870,7 @@ async fn two_tables_with_single_column_foreign_key() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -7885,7 +7885,7 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -8397,7 +8397,7 @@ async fn issue_november_2023() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -9459,7 +9459,7 @@ async fn table_with_comment() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -9970,7 +9970,7 @@ async fn table_with_commented_column() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -10564,7 +10564,7 @@ async fn enum_with_comment() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"
@@ -11164,7 +11164,7 @@ async fn table_with_commented_foreign_key() {
         ]
       )
       @link(
-        url: "https://specs.grafbase.com/composite-schema/v1",
+        url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
           "@key"

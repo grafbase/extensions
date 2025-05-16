@@ -1743,7 +1743,7 @@ dependencies = [
 
 [[package]]
 name = "grafbase-postgres"
-version = "0.3.4"
+version = "0.3.5"
 dependencies = [
  "Inflector",
  "anyhow",
@@ -1780,9 +1780,9 @@ dependencies = [
 
 [[package]]
 name = "grafbase-sdk"
-version = "0.15.5"
+version = "0.15.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "022ad47e4f2a198381e26ef6d22139935d784a4254d0cedabd6396052a1c3b2b"
+checksum = "ef3e0e124bcee37434056131a0d00e150f556446fc3e655abd54c08ef626f921"
 dependencies = [
  "anyhow",
  "async-tungstenite",
@@ -1862,9 +1862,9 @@ checksum = "ebfd7fd1a0e3427f3e6c9ef7bc4e0d2f05c9e94ecf859176cdf297212fe8f06e"
 
 [[package]]
 name = "graphql-composition"
-version = "0.7.3"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "11ec3d30dc261df686cc46e212279e71a3e1b4de4f007dbc131db304dd621762"
+checksum = "58d6cc2b721f76a5dc608fefa610b3740d4c9d547eba3ffa8e79670a5dd73ed4"
 dependencies = [
  "bitflags 2.9.0",
  "cynic-parser",
@@ -1878,9 +1878,9 @@ dependencies = [
 
 [[package]]
 name = "graphql-federated-graph"
-version = "0.7.2"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d1acf641b57dacf508edbe21df9a23744d2d40d010a4c51b0902d374aa1019c"
+checksum = "7a04f965bbdf9037c41808615d9a9f743440c89c8ded5c328a8df8aad5eebef6"
 dependencies = [
  "bitflags 2.9.0",
  "cynic-parser",
@@ -2764,7 +2764,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc2f4eb4bc735547cfed7c0a4922cbd04a4655978c09b54f1f7b228750664c34"
 dependencies = [
  "cfg-if",
- "windows-targets 0.48.5",
+ "windows-targets 0.52.6",
 ]
 
 [[package]]
@@ -3646,7 +3646,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be769465445e8c1474e9c5dac2018218498557af32d9ed057325ec9a41ae81bf"
 dependencies = [
  "heck 0.4.1",
- "itertools 0.10.5",
+ "itertools 0.14.0",
  "log",
  "multimap",
  "once_cell",
@@ -3666,7 +3666,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8a56d757972c98b346a9b766e3f02746cde6dd1cd1d1d563472929fdd74bec4d"
 dependencies = [
  "anyhow",
- "itertools 0.10.5",
+ "itertools 0.14.0",
  "proc-macro2",
  "quote",
  "syn 2.0.100",
