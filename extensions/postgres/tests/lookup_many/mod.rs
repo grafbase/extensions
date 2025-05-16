@@ -7,7 +7,7 @@ use serde_json::json;
 async fn lookup_int_pk() {
     let mock_sdl = indoc! {r#"
         extend schema
-            @link(url: "https://specs.grafbase.com/composite-schema/v1", import: ["@lookup", "@key"])
+            @link(url: "https://specs.grafbase.com/composite-schemas/v1", import: ["@lookup", "@key"])
 
         type User @key(fields: "id") {
           id: Int!
@@ -89,7 +89,7 @@ async fn lookup_int_pk() {
 async fn lookup_unique_string() {
     let mock_sdl = indoc! {r#"
         extend schema
-            @link(url: "https://specs.grafbase.com/composite-schema/v1", import: ["@lookup", "@key"])
+            @link(url: "https://specs.grafbase.com/composite-schemas/v1", import: ["@lookup", "@key"])
 
         type User @key(fields: "email") {
           email: String!
@@ -171,7 +171,7 @@ async fn lookup_unique_string() {
 async fn with_one_to_many_join() {
     let mock_sdl = indoc! {r#"
         extend schema
-            @link(url: "https://specs.grafbase.com/composite-schema/v1", import: ["@lookup", "@key"])
+            @link(url: "https://specs.grafbase.com/composite-schemas/v1", import: ["@lookup", "@key"])
 
         type User @key(fields: "id") {
           id: Int!
@@ -293,7 +293,7 @@ async fn with_one_to_many_join() {
 async fn with_one_to_many_join_renamed() {
     let mock_sdl = indoc! {r#"
         extend schema
-            @link(url: "https://specs.grafbase.com/composite-schema/v1", import: ["@lookup", "@key"])
+            @link(url: "https://specs.grafbase.com/composite-schemas/v1", import: ["@lookup", "@key"])
 
         type User @key(fields: "id") {
           id: Int!
@@ -415,7 +415,7 @@ async fn with_one_to_many_join_renamed() {
 async fn with_composite_key() {
     let mock_sdl = indoc! {r#"
         extend schema
-            @link(url: "https://specs.grafbase.com/composite-schema/v1", import: ["@lookup", "@key"])
+            @link(url: "https://specs.grafbase.com/composite-schemas/v1", import: ["@lookup", "@key"])
 
         type User @key(fields: "name email") {
           name: String!
@@ -509,7 +509,7 @@ async fn with_composite_key() {
 async fn with_one_missing_from_the_middle() {
     let mock_sdl = indoc! {r#"
         extend schema
-            @link(url: "https://specs.grafbase.com/composite-schema/v1", import: ["@lookup", "@key"])
+            @link(url: "https://specs.grafbase.com/composite-schemas/v1", import: ["@lookup", "@key"])
 
         type User @key(fields: "id") {
           id: Int!
@@ -602,7 +602,7 @@ async fn with_one_missing_from_the_middle() {
 async fn lookup_rename() {
     let mock_sdl = indoc! {r#"
         extend schema
-            @link(url: "https://specs.grafbase.com/composite-schema/v1", import: ["@lookup", "@key"])
+            @link(url: "https://specs.grafbase.com/composite-schemas/v1", import: ["@lookup", "@key"])
 
         type User @key(fields: "id") {
           id: Int!

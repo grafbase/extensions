@@ -54,7 +54,7 @@ pub fn render<'a>(database_definition: &'a DatabaseDefinition, extension_url: &'
 
         directive.push_argument(Argument::string(
             "url",
-            "https://specs.grafbase.com/composite-schema/v1",
+            "https://specs.grafbase.com/composite-schemas/v1",
         ));
 
         directive.push_argument(Argument::new(
