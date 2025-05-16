@@ -163,7 +163,7 @@ fn build_filtered_cte<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a>
         _ => {}
     }
 
-    if builder.needs_cursor() {
+    if builder.selects_cursor() {
         let generated_cursor_expr = encode(
             cast(cast(json_build_array(cursor_payload_expressions), "text"), "bytea"),
             EncodeFormat::Base64,
@@ -196,7 +196,7 @@ fn build_nodes_cte<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a>) -
 
     attach_selection(builder, args, &mut select)?;
 
-    if builder.needs_cursor() {
+    if builder.selects_cursor() {
         select.column(Column::from((builder.table().client_name(), "cursor")).alias("cursor"));
     }
 
@@ -270,42 +270,71 @@ fn build_page_info_cte<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a
         });
     }
 
-    if page_info.selects_start_cursor() {
-        outer_select.value({
-            let table = Table::from(NODES).alias(builder.table().client_name());
-            let mut select = Select::from_table(table);
+    if page_info.needs_cursor() {
+        let generate_cursor = || {
+            let mut cursor_payload_expressions: Vec<Expression<'_>> = Vec::new();
 
-            select.limit(1);
-            select.column("cursor");
+            for (column, _) in args.order_by().inner() {
+                let expr = Expression::from(Column::from((column.table().client_name(), column.database_name())));
 
-            for (column, order) in args.order_by().outer() {
-                let column = Expression::from(Column::from((column.table().client_name(), column.database_name())));
-                let order = order.unwrap_or(Order::AscNullsFirst);
-
-                select.order_by((column, Some(order)));
+                cursor_payload_expressions.push(expr);
             }
 
-            Expression::from(select).alias("startCursor")
-        });
-    }
+            let generated_cursor_expr = encode(
+                cast(cast(json_build_array(cursor_payload_expressions), "text"), "bytea"),
+                EncodeFormat::Base64,
+            );
 
-    if page_info.selects_end_cursor() {
-        outer_select.value({
-            let table = Table::from(NODES).alias(builder.table().client_name());
-            let mut select = Select::from_table(table);
+            replace(generated_cursor_expr, SqlStringPattern::EscapedContent("\\n"), "").alias("cursor")
+        };
 
-            select.limit(1);
-            select.column("cursor");
+        if page_info.selects_start_cursor() {
+            outer_select.value({
+                let table = Table::from(NODES).alias(builder.table().client_name());
+                let mut select = Select::from_table(table);
 
-            for (column, order) in args.order_by().outer() {
-                let column = Expression::from(Column::from((column.table().client_name(), column.database_name())));
-                let order = order.map(|o| o.reverse()).unwrap_or(Order::DescNullsLast);
+                select.limit(1);
 
-                select.order_by((column, Some(order)));
-            }
+                if builder.selects_cursor() {
+                    select.column("cursor");
+                } else {
+                    select.value(generate_cursor());
+                }
 
-            Expression::from(select).alias("endCursor")
-        });
+                for (column, order) in args.order_by().outer() {
+                    let column = Expression::from(Column::from((column.table().client_name(), column.database_name())));
+                    let order = order.unwrap_or(Order::AscNullsFirst);
+
+                    select.order_by((column, Some(order)));
+                }
+
+                Expression::from(select).alias("startCursor")
+            });
+        }
+
+        if page_info.selects_end_cursor() {
+            outer_select.value({
+                let table = Table::from(NODES).alias(builder.table().client_name());
+                let mut select = Select::from_table(table);
+
+                select.limit(1);
+
+                if builder.selects_cursor() {
+                    select.column("cursor");
+                } else {
+                    select.value(generate_cursor());
+                }
+
+                for (column, order) in args.order_by().outer() {
+                    let column = Expression::from(Column::from((column.table().client_name(), column.database_name())));
+                    let order = order.map(|o| o.reverse()).unwrap_or(Order::DescNullsLast);
+
+                    select.order_by((column, Some(order)));
+                }
+
+                Expression::from(select).alias("endCursor")
+            });
+        }
     }
 
     outer_select
