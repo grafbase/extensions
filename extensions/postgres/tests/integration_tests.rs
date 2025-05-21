@@ -291,4 +291,14 @@ impl PgTestApi {
             .await
             .unwrap()
     }
+
+    async fn introspect_error(&self, toml_str: &str) -> String {
+        let config = toml::from_str(toml_str).unwrap();
+        let mut conn = self.inner.pool.acquire().await.unwrap();
+
+        grafbase_postgres_introspection::introspect(&mut conn, config)
+            .await
+            .unwrap_err()
+            .to_string()
+    }
 }

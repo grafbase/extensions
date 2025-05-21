@@ -1743,7 +1743,7 @@ dependencies = [
 
 [[package]]
 name = "grafbase-postgres"
-version = "0.3.5"
+version = "0.3.6"
 dependencies = [
  "Inflector",
  "anyhow",
@@ -1772,6 +1772,7 @@ dependencies = [
  "anyhow",
  "grafbase-database-definition",
  "indenter",
+ "indexmap 2.9.0",
  "indoc",
  "itertools 0.14.0",
  "serde",

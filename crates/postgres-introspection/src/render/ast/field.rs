@@ -5,6 +5,7 @@ use indenter::indented;
 
 use super::directive::{Argument, Directive};
 
+#[derive(Debug)]
 pub struct Field<'a> {
     pub(super) name: Cow<'a, str>,
     pub(super) r#type: Cow<'a, str>,

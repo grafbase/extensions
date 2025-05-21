@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use grafbase_database_definition::{DatabaseDefinition, TableWalker};
 use inflector::Inflector;
 
@@ -17,6 +19,7 @@ pub fn render<'a>(
     database_definition: &'a DatabaseDefinition,
     config: &Config,
     operations: EnabledOperations,
+    derived_types: BTreeMap<&'a str, Type<'a>>,
     rendered: &mut Schema<'a>,
 ) {
     if operations.has_queries {
@@ -33,6 +36,10 @@ pub fn render<'a>(
             render_edge(rendered, table);
             render_connection(rendered, table);
         }
+    }
+
+    for (_, r#type) in derived_types {
+        rendered.push_type(r#type);
     }
 }
 

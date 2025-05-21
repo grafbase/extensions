@@ -3,6 +3,7 @@ use std::{
     fmt::{self, Write},
 };
 
+#[derive(Debug)]
 pub enum ArgumentValue<'a> {
     String(Cow<'a, str>),
     Constant(Cow<'a, str>),
@@ -54,6 +55,7 @@ impl fmt::Display for ArgumentValue<'_> {
     }
 }
 
+#[derive(Debug)]
 pub struct Argument<'a> {
     pub(super) name: Cow<'a, str>,
     pub(super) value: ArgumentValue<'a>,
@@ -110,6 +112,7 @@ impl fmt::Display for Argument<'_> {
     }
 }
 
+#[derive(Debug)]
 pub struct Directive<'a> {
     name: &'a str,
     arguments: Vec<Argument<'a>>,

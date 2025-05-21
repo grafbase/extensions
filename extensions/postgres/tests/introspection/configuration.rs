@@ -66,7 +66,9 @@ async fn globally_disabled_mutations() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -520,7 +522,9 @@ async fn globally_disabled_queries() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -1101,7 +1105,9 @@ async fn disable_mutations_per_schema() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -1725,7 +1731,9 @@ async fn disable_queries_per_schema() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -2444,7 +2452,9 @@ async fn disable_mutations_per_table() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -3397,7 +3407,9 @@ async fn disable_queries_per_table() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -4431,7 +4443,9 @@ async fn schema_mutations_setting_takes_precedence_over_global_setting() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -5057,7 +5071,9 @@ async fn schema_queries_setting_takes_precedence_over_global_setting() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -5770,7 +5786,9 @@ async fn table_mutations_setting_takes_precedence_over_global_setting() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -6396,7 +6414,9 @@ async fn table_queries_setting_takes_precedence_over_global_setting() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -7120,7 +7140,9 @@ async fn table_mutations_setting_takes_precedence_over_schema_setting() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -8078,7 +8100,9 @@ async fn table_queries_setting_takes_precedence_over_schema_setting() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -9128,7 +9152,9 @@ async fn disable_queries_globally_for_views() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -9737,7 +9763,9 @@ async fn disable_queries_per_view() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(

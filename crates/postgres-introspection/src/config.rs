@@ -1,4 +1,5 @@
 use grafbase_database_definition::TableWalker;
+use indexmap::IndexMap;
 use serde::Deserialize;
 use std::collections::BTreeMap;
 
@@ -121,6 +122,9 @@ pub struct TableConfig {
     /// Configuration details for relationships originating from this view, keyed by relationship name.
     #[serde(default)]
     pub relations: BTreeMap<String, RelationConfig>,
+    /// Configuration for derived fields in this table, keyed by derive name.
+    #[serde(default)]
+    pub derives: BTreeMap<String, DeriveConfig>,
 }
 
 /// Represents the configuration settings for a specific database relation (e.g., a view).
@@ -139,6 +143,78 @@ pub struct ViewConfig {
     /// Configuration details for relationships originating from this view, keyed by relationship name.
     #[serde(default)]
     pub relations: BTreeMap<String, RelationConfig>,
+    /// Configuration for derived fields in this table, keyed by derive name.
+    #[serde(default)]
+    pub derives: BTreeMap<String, DeriveConfig>,
+}
+
+/// Represents the configuration for a derived field within a table or view.
+///
+/// A derived field allows you to enable joins between subgraphs. By defining a derived field in
+/// this database, the introspection generates a virtual type, which then composes with the full
+/// federated schema.
+///
+/// For example:
+///
+/// ```toml
+/// # In your config.toml file:
+///
+/// [schemas.public.tables.Post.derives.author]
+/// referenced_type = "User"
+/// field = { author_id = "id" }
+/// ```
+///
+/// This then is reflected in the generated schema as follows:
+///
+/// ```graphql
+/// type Post @key(fields: "id") {
+///   id: ID!
+///   title: String!
+///   email: String!
+///   # introspection will create this field
+///   author: User! @derive @is(field: "{ author_id: id }")
+/// }
+///
+/// """
+/// Introspection will create this type.
+/// """
+/// type User @key(fields: "id") {
+///   id: ID!
+/// }
+/// ```
+///
+/// Keep in mind that you do not need to define derives for types that are already defined in the
+/// schema. The introspection process will detect the relationship between the types through
+/// foreign keys. Also, if you have the same type in two different databases, automatically utilize the
+/// Apollo federation keys to implement an entity join:
+///
+/// Subgraph A:
+///
+/// ```
+/// type User @key(fields: "id") {
+///   id: ID!
+///   name: String!
+/// }
+/// ```
+///
+/// Subgraph B:
+///
+/// ```
+/// type User @key(fields: "id") {
+///   id: ID!
+///   socialSecurityNumber: String!
+/// }
+/// ```
+///
+/// The composition will combine these User types into a single User type without extra
+/// configuration.
+#[derive(Deserialize, Debug)]
+#[serde(deny_unknown_fields)]
+pub struct DeriveConfig {
+    /// The type the derived field points to.
+    pub referenced_type: String,
+    /// A map of referencing field to referenced field.
+    pub fields: IndexMap<String, String>,
 }
 
 /// Represents the configuration for a specific column within a view.

@@ -171,6 +171,9 @@ enable_queries = true
 # you can define them manually from this map. Key/value from relation name
 # to config.
 relations = {}
+
+# Configure derives for cross-database joins.
+derives = {}
 ```
 
 ### View Configuration
@@ -201,6 +204,9 @@ columns = {}
 # can define relations manualy from this map.
 # Key/value from relation name to config.
 relations = {}
+
+# Configure derives for cross-database joins.
+derives = {}
 ```
 
 #### Unique Key Definitions
@@ -257,6 +263,173 @@ referenced_columns = ["id", "name"]
 ```
 
 Define these relations in your config file to enable joins to and from your views.
+
+### Derive Definitions
+
+Our derives setup offers a powerful way to join data efficiently between multiple Postgres databases. You can use several approaches to enable joins across two or more Postgres databases.
+
+The Grafbase Gateway prevents GraphQL N+1 problems in all cross-database joins by minimizing the number of queries needed to load data.
+
+Let's explore some examples using these SQL schemas:
+
+Database A:
+
+```sql
+CREATE TABLE "posts" (
+  id INT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  author_id INT NOT NULL
+);
+```
+
+Database B:
+
+```sql
+CREATE TABLE "users" (
+  id INT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL
+)
+```
+
+We want to create a federated GraphQL schema that joins posts and users:
+
+```graphql
+type Post @key(fields: "id") {
+  id: Int!
+  title: String!
+  authorId: Int!
+  author: User
+}
+
+type User @key(fields: "id") {
+  id: Int!
+  name: String!
+}
+```
+
+#### Entity Joins
+
+The first approach uses GraphQL federation spec entity joins. This method requires both subgraph schemas to define the same type. Database A needs a view that represents unique users, which we create with:
+
+```sql
+CREATE VIEW "users" AS SELECT DISTINCT(author_id) AS id FROM posts ORDER BY author_id;
+```
+
+Add this configuration for the grafbase-postgres CLI extension before introspection:
+
+```toml
+[schemas.public.views.users.columns.id]
+nullable = false
+unique = true
+```
+
+This gives subgraph A the following types:
+
+```graphql
+type Post @key(fields: "id") {
+  id: Int!
+  title: String!
+  authorId: Int!
+  author: User!
+}
+
+type User @key(fields: "id") {
+  id: Int!
+}
+```
+
+When you compose this with subgraph B, you can efficiently join posts and users.
+
+#### Deriving
+
+Creating an extra view to join data between databases often adds maintenance overhead and can slow down performance. Instead, use the composite spec `@is` and `@derive` directives. Define derives for subgraph A:
+
+```toml
+[schemas.public.tables.posts.derives.author]
+referenced_type = "User"
+fields = { id = "authorId" }
+```
+
+This tells the system: for the `posts` table, create a derived field `author` that loads a single `User` entity. The `id` field of the User type maps to the `authorId` field of the `Post` type.
+
+Introspection then produces these types:
+
+```graphql
+type Post @key(fields: "id") {
+  id: Int!
+  title: String!
+  authorId: Int!
+  author: User! @derive @is(field: "{ id: authorId }")
+}
+
+type User @key(fields: "id") {
+  id: Int!
+}
+```
+
+The introspection creates a User type with fields needed for joining and a derived relation field with the corresponding directives. Compose this with the other subgraph to create a federated graph that joins posts to users across databases.
+
+#### One to Many
+
+We're currently working on support for one-to-many joins with deriving. For now, use the entity join approach if you need to fetch many entities from another graph.
+
+Add a view to the database with the posts table:
+
+```sql
+CREATE VIEW "users" AS SELECT DISTINCT(author_id) AS id FROM posts ORDER BY author_id;
+```
+
+Then add this configuration to create a relation between the users view and posts table:
+
+```toml
+[schemas.public.views.users.relations.users_to_posts]
+referenced_schema = "public"
+referenced_table = "posts"
+referencing_columns = ["id"]
+referenced_columns = ["author_id"]
+```
+
+Introspection produces this SDL:
+
+```graphql
+type Post @key(fields: "id") {
+  id: Int!
+  title: String!
+  authorId: Int!
+  author: User!
+}
+
+type User @key(fields: "id") {
+  id: Int!
+  posts: [Post!]!
+}
+```
+
+When you compose this with the other subgraph:
+
+```graphql
+type User @key(fields: "id") {
+  id: Int!
+  name: String!
+}
+```
+
+You get this federated graph:
+
+```graphql
+type Post @key(fields: "id") {
+  id: Int!
+  title: String!
+  authorId: Int!
+  author: User!
+}
+
+type User @key(fields: "id") {
+  id: Int!
+  name: String!
+  posts: [Post!]!
+}
+```
 
 ## License
 
