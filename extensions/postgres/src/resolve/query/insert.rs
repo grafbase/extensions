@@ -58,17 +58,17 @@ pub fn build<'a>(
         for selection in selection {
             match selection? {
                 TableSelection::Column(select) => {
-                    let (column, expr) = select.into_expression(Some(insert_name.clone().into()));
+                    let (column, expr, alias) = select.into_expression(Some(insert_name.clone().into()));
 
-                    selected_data.push((column.client_name(), expr));
+                    selected_data.push((alias.unwrap_or_else(|| column.client_name()), expr));
                     returning.push(column.database_name());
                 }
                 TableSelection::ColumnUnnest(unnest) => {
-                    let (column, nested) = unnest.into_select(Some(insert_name.clone().into()));
+                    let (column, nested, field_alias) = unnest.into_select(Some(insert_name.clone().into()));
                     let alias = format!("transformed_{}", column.database_name());
 
                     selected_data.push((
-                        column.client_name(),
+                        field_alias.unwrap_or_else(|| column.client_name()),
                         Column::new("json_array").table(alias.clone()).into(),
                     ));
 

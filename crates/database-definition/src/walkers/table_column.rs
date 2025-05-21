@@ -24,6 +24,11 @@ impl<'a> TableColumnWalker<'a> {
         self.get_name(self.get().client_name())
     }
 
+    /// Returns the provided alias if present, otherwise falls back to the client name.
+    pub fn alias(self, alias: Option<&'a str>) -> &'a str {
+        alias.unwrap_or_else(|| self.client_name())
+    }
+
     /// The type of the column in the database.
     pub fn database_type(self) -> DatabaseType<'a> {
         match self.get().database_type() {

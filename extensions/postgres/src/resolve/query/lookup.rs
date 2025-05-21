@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use grafbase_database_definition::{RelationWalker, TableColumnWalker};
 use grafbase_sdk::{SdkError, host_io::postgres::types::DatabaseValue};
 use indexmap::{IndexMap, map::Entry};
@@ -93,35 +95,38 @@ pub fn build(builder: SelectBuilder<'_>) -> Result<Select<'_>, SdkError> {
         match selection? {
             // Base columns from the main table (e.g., User.id, User.name)
             TableSelection::Column(select) => {
-                let (column, _) = select.into_expression(None); // We only need column names here
+                let (column, _, _) = select.into_expression(None); // We only need column names here
                 // Reference the column from the aliased main table (e.g., "User"."name")
                 let col_expr = Column::from((builder.table().client_name(), column.database_name()));
                 columns_for_json.push((column.client_name().to_string(), col_expr.into()));
             }
             // Nested object/array fetched via LATERAL JOIN (e.g., blogs, author)
-            TableSelection::JoinUnique(relation, nested_selection) => {
+            TableSelection::JoinUnique(relation, nested_selection, alias) => {
                 inject_relation(
                     &mut main_select,
                     &mut columns_for_json,
                     relation,
                     nested_selection,
                     None,
+                    alias,
                 )?;
             }
-            TableSelection::JoinMany(relation, nested_selection, args) => {
+            TableSelection::JoinMany(relation, nested_selection, args, alias) => {
                 inject_relation(
                     &mut main_select,
                     &mut columns_for_json,
                     relation,
                     nested_selection,
                     Some(args),
+                    alias,
                 )?;
             }
             TableSelection::ColumnUnnest(unnest) => {
                 // Handle array unnesting if required in the final object structure.
                 // This might involve adding a subquery result similar to lateral joins.
-                let (column, nested_select) = unnest.into_select(None);
-                columns_for_json.push((column.client_name().to_string(), Expression::from(nested_select)));
+                let (column, nested_select, alias) = unnest.into_select(None);
+                let alias = alias.unwrap_or_else(|| column.database_name());
+                columns_for_json.push((alias.to_string(), Expression::from(nested_select)));
             }
         }
     }
@@ -189,11 +194,13 @@ fn inject_relation<'a>(
     relation: RelationWalker<'a>,
     nested_selection: SelectionIterator<'a>,
     args: Option<CollectionArgs<'a>>,
+    alias: Option<&'a str>,
 ) -> Result<(), SdkError> {
-    let client_field_name = relation.client_field_name();
-    let join_alias = client_field_name;
+    let join_alias = alias
+        .map(Cow::Borrowed)
+        .unwrap_or_else(|| Cow::Owned(relation.client_field_name()));
 
-    let mut join_builder = SelectBuilder::new(relation.referenced_table(), nested_selection, join_alias.clone());
+    let mut join_builder = SelectBuilder::new(relation.referenced_table(), nested_selection, join_alias.to_string());
     join_builder.set_relation(relation);
 
     let nested_select = match args {
@@ -211,7 +218,7 @@ fn inject_relation<'a>(
 
     columns_for_json.push((
         join_alias.to_string(), // Alias in the final JSON object (e.g., "blogs")
-        Column::from((join_alias.clone(), join_alias)).into(), // Column from lateral join result
+        Column::from((join_alias.to_string(), join_alias.to_string())).into(), // Column from lateral join result
     ));
 
     Ok(())

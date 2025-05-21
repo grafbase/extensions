@@ -32,12 +32,16 @@ pub fn build<'a>(
         for selection in selection {
             match selection? {
                 TableSelection::Column(select) => {
-                    let (column, expr) = select.into_expression(None);
-                    returning.push((column.client_name(), expr));
+                    let (column, expr, alias) = select.into_expression(None);
+                    let alias = alias.unwrap_or_else(|| column.client_name());
+
+                    returning.push((alias, expr));
                 }
                 TableSelection::ColumnUnnest(unnest) => {
-                    let (column, nested) = unnest.into_select(None);
-                    returning.push((column.client_name(), Expression::from(nested)));
+                    let (column, nested, alias) = unnest.into_select(None);
+                    let alias = alias.unwrap_or_else(|| column.client_name());
+
+                    returning.push((alias, Expression::from(nested)));
                 }
                 // our output type doesn't have relations, so this is never reachable
                 TableSelection::JoinMany(..) | TableSelection::JoinUnique(..) => {

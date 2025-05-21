@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use grafbase_sdk::SdkError;
 use sql_ast::ast::{
     Aliasable, Column, Comparable, ConditionTree, Expression, Joinable, Select, Table, raw, row_to_json,
@@ -38,19 +40,27 @@ pub fn build(builder: SelectBuilder<'_>) -> Result<Select<'_>, SdkError> {
     for selection in builder.selection() {
         match selection? {
             TableSelection::Column(select) => {
-                let (column, expr) = select.into_expression(Some(builder.table().client_name().into()));
-                collecting_select.value(expr.alias(column.client_name()));
+                let (column, expr, alias) = select.into_expression(Some(builder.table().client_name().into()));
+                let alias = alias.unwrap_or_else(|| column.client_name());
+
+                collecting_select.value(expr.alias(alias));
             }
             TableSelection::ColumnUnnest(unnest) => {
-                let (column, nested) = unnest.into_select(None);
-                collecting_select.value(Expression::from(nested).alias(column.client_name()));
+                let (column, nested, alias) = unnest.into_select(None);
+                let alias = alias.unwrap_or_else(|| column.client_name());
+
+                collecting_select.value(Expression::from(nested).alias(alias));
             }
             // m:1, 1:1
-            TableSelection::JoinUnique(relation, selection) => {
-                let client_field_name = relation.client_field_name();
-                collecting_select.column(client_field_name.clone());
+            TableSelection::JoinUnique(relation, selection, alias) => {
+                let client_field_name = alias
+                    .map(Cow::Borrowed)
+                    .unwrap_or_else(|| relation.client_field_name().into());
 
-                let mut builder = SelectBuilder::new(relation.referenced_table(), selection, client_field_name.clone());
+                collecting_select.column(client_field_name.to_string());
+
+                let mut builder =
+                    SelectBuilder::new(relation.referenced_table(), selection, client_field_name.to_string());
                 builder.set_relation(relation);
 
                 // recurse
@@ -62,11 +72,15 @@ pub fn build(builder: SelectBuilder<'_>) -> Result<Select<'_>, SdkError> {
                 collecting_select.left_join(join_data);
             }
             // 1:m
-            TableSelection::JoinMany(relation, selection, args) => {
-                let client_field_name = relation.client_field_name();
-                collecting_select.column(client_field_name.clone());
+            TableSelection::JoinMany(relation, selection, args, alias) => {
+                let client_field_name = alias
+                    .map(Cow::Borrowed)
+                    .unwrap_or_else(|| relation.client_field_name().into());
 
-                let mut builder = SelectBuilder::new(relation.referenced_table(), selection, client_field_name.clone());
+                collecting_select.column(client_field_name.to_string());
+
+                let mut builder =
+                    SelectBuilder::new(relation.referenced_table(), selection, client_field_name.to_string());
                 builder.set_relation(relation);
 
                 // recurse
