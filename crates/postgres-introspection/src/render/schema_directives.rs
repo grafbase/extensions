@@ -64,6 +64,8 @@ pub fn render<'a>(database_definition: &'a DatabaseDefinition, extension_url: &'
                 values: vec![
                     ArgumentValue::String("@lookup".into()),
                     ArgumentValue::String("@key".into()),
+                    ArgumentValue::String("@derive".into()),
+                    ArgumentValue::String("@is".into()),
                 ],
             },
         ));

@@ -1,4 +1,5 @@
 mod ast;
+mod derives;
 mod enums;
 mod input_types;
 mod mutation;
@@ -9,6 +10,7 @@ mod schema_directives;
 mod tables;
 
 use ast::schema::Schema;
+use derives::Derives;
 use grafbase_database_definition::DatabaseDefinition;
 
 use crate::config::Config;
@@ -22,7 +24,7 @@ struct EnabledOperations {
     has_mutations: bool,
 }
 
-pub fn to_sdl(database_definition: DatabaseDefinition, config: &Config) -> String {
+pub fn to_sdl(database_definition: DatabaseDefinition, config: &Config) -> anyhow::Result<String> {
     let database_name = config.database_name.as_str();
     let extension_url = config.extension_url.as_str();
     let default_schema = config.default_schema.as_str();
@@ -40,12 +42,14 @@ pub fn to_sdl(database_definition: DatabaseDefinition, config: &Config) -> Strin
         Some(database_name)
     };
 
+    let Derives { types, fields } = derives::generate(&database_definition, config)?;
+
     scalars::render(&mut rendered);
     schema_directives::render(&database_definition, extension_url, &mut rendered);
     input_types::render(&database_definition, config, &mut operations, prefix, &mut rendered);
     enums::render(&database_definition, default_schema, &operations, &mut rendered);
-    output_types::render(&database_definition, config, operations, &mut rendered);
-    tables::render(&database_definition, default_schema, operations, &mut rendered);
+    output_types::render(&database_definition, config, operations, types, &mut rendered);
+    tables::render(&database_definition, default_schema, operations, fields, &mut rendered);
 
     if operations.has_queries {
         query::render(&database_definition, config, prefix, &mut rendered);
@@ -57,5 +61,5 @@ pub fn to_sdl(database_definition: DatabaseDefinition, config: &Config) -> Strin
 
     rendered.remove_unused_types();
 
-    rendered.to_string()
+    Ok(rendered.to_string())
 }

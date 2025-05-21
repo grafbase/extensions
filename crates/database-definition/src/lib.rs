@@ -421,6 +421,13 @@ impl DatabaseDefinition {
             .map(|id| self.walk(id))
     }
 
+    /// Retrieves a table walker for the given schema and table name.
+    pub fn get_table(&self, schema: &str, table_name: &str) -> Option<TableWalker<'_>> {
+        self.get_schema_id(schema)
+            .and_then(|schema_id| self.get_table_id(schema_id, table_name))
+            .map(|table_id| self.walk(table_id))
+    }
+
     /// Finds the id of a schema with the given name, if existing.
     pub fn get_schema_id(&self, schema: &str) -> Option<SchemaId> {
         self.schemas

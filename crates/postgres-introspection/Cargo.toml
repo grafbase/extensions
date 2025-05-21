@@ -23,6 +23,7 @@ itertools.workspace = true
 Inflector.workspace = true
 indenter = { version = "0.3.3", features = ["std"] }
 serde = { workspace = true, features = ["derive"] }
+indexmap.workspace = true
 
 [lints]
 workspace = true

@@ -64,7 +64,9 @@ async fn view_with_int_unique() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -717,7 +719,9 @@ async fn materialized_view_with_int_unique() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -1379,7 +1383,9 @@ async fn view_with_composite_key() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -2092,7 +2098,9 @@ async fn view_with_relation_from_view_to_table() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(
@@ -3156,7 +3164,9 @@ async fn view_with_relation_from_table_to_view() {
         url: "https://specs.grafbase.com/composite-schemas/v1",
         import: [
           "@lookup",
-          "@key"
+          "@key",
+          "@derive",
+          "@is"
         ]
       )
       @link(

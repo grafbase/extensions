@@ -1,3 +1,5 @@
+mod derive_is;
+
 use crate::PgTestApi;
 use grafbase_sdk::test::DynamicSchema;
 use indoc::indoc;

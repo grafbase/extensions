@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use grafbase_database_definition::{
     DatabaseDefinition, DatabaseType, RelationKind, RelationWalker, TableColumnWalker, TableWalker,
 };
@@ -17,6 +19,7 @@ pub fn render<'a>(
     database_definition: &'a DatabaseDefinition,
     default_schema: &str,
     operations: EnabledOperations,
+    mut derived_fields: BTreeMap<&'a str, Vec<Field<'a>>>,
     rendered: &mut Schema<'a>,
 ) {
     for table in database_definition.tables().filter(|t| t.allowed_in_client()) {
@@ -37,6 +40,12 @@ pub fn render<'a>(
 
         if let Some(description) = table.description() {
             render.set_description(description);
+        }
+
+        if let Some(fields) = derived_fields.remove(table.client_name()) {
+            fields.into_iter().for_each(|field| {
+                render.push_field(field);
+            });
         }
 
         rendered.push_type(render);

@@ -32,7 +32,7 @@ pub async fn introspect(conn: &mut sqlx::PgConnection, config: Config) -> anyhow
 
     database_definition.finalize();
 
-    Ok(render::to_sdl(database_definition, &config))
+    render::to_sdl(database_definition, &config)
 }
 
 /// A list of schemas to filter out automatically on every introspection.
