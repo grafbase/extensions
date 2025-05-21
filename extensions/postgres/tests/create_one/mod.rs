@@ -50,6 +50,55 @@ async fn pk_explicit_int() {
 }
 
 #[tokio::test]
+async fn pk_explicit_int_aliased() {
+    let api = PgTestApi::new("", |api| async move {
+        let schema = indoc! {r#"
+            CREATE TABLE "users" (
+                id INT PRIMARY KEY,
+                full_name VARCHAR(255) NOT NULL
+            )
+        "#};
+
+        api.execute_sql(schema).await;
+    })
+    .await;
+
+    let runner = api.runner_spawn().await;
+
+    let mutation = indoc! {r#"
+        mutation {
+          userCreate(input: { id: 1, fullName: "John Doe" }) {
+            returning {
+              aliased: id
+              fullName
+            }
+            rowCount
+          }
+        }
+    "#};
+
+    let response = runner
+        .graphql_query::<serde_json::Value>(mutation)
+        .send()
+        .await
+        .unwrap();
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "data": {
+        "userCreate": {
+          "returning": {
+            "aliased": 1,
+            "fullName": "John Doe"
+          },
+          "rowCount": 1
+        }
+      }
+    }
+    "#);
+}
+
+#[tokio::test]
 async fn pk_explicit_int_no_returning() {
     let api = PgTestApi::new("", |api| async move {
         let schema = indoc! {r#"

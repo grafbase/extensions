@@ -72,6 +72,76 @@ async fn one_to_one_join_parent_side() {
 }
 
 #[tokio::test]
+async fn aliased_one_to_one_join_parent_side() {
+    let api = PgTestApi::new("", |api| async move {
+        let user_table = indoc! {r#"
+            CREATE TABLE "User" (
+                id INT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL
+            );
+        "#};
+
+        api.execute_sql(user_table).await;
+
+        let profile_table = indoc! {r#"
+            CREATE TABLE "Profile" (
+                id INT PRIMARY KEY,
+                user_id INT NULL UNIQUE,
+                description TEXT NOT NULL,
+                CONSTRAINT Profile_User_fkey FOREIGN KEY (user_id) REFERENCES "User" (id)
+            )
+        "#};
+
+        api.execute_sql(profile_table).await;
+
+        let insert_users = indoc! {r#"
+            INSERT INTO "User" (id, name) VALUES
+              (1, 'Musti'),
+              (2, 'Naukio')
+        "#};
+
+        api.execute_sql(insert_users).await;
+
+        let insert_profiles = indoc! {r#"
+            INSERT INTO "Profile" (id, user_id, description) VALUES
+              (1, 1, 'meowmeowmeow'),
+              (2, 2, 'purrpurrpurr')
+        "#};
+
+        api.execute_sql(insert_profiles).await;
+    })
+    .await;
+
+    let runner = api.runner_spawn().await;
+
+    let query = indoc! {r"
+        query {
+          user(lookup: { id: 2 }) {
+            id
+            name
+            aliased: profile { description }
+          }
+        }
+    "};
+
+    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "data": {
+        "user": {
+          "id": 2,
+          "name": "Naukio",
+          "aliased": {
+            "description": "purrpurrpurr"
+          }
+        }
+      }
+    }
+    "#);
+}
+
+#[tokio::test]
 async fn one_to_one_join_parent_side_null() {
     let api = PgTestApi::new("", |api| async move {
         let user_table = indoc! {r#"
@@ -960,6 +1030,82 @@ async fn one_to_many_join_parent_side_with_first() {
                 "node": {
                   "id": 1,
                   "title": "Hello, world!"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+    "#);
+}
+
+#[tokio::test]
+async fn one_to_many_join_parent_side_with_first_aliased() {
+    let api = PgTestApi::new("", |api| async move {
+        let user_table = indoc! {r#"
+            CREATE TABLE "User" (
+                id INT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL
+            );
+        "#};
+
+        api.execute_sql(user_table).await;
+
+        let profile_table = indoc! {r#"
+            CREATE TABLE "Blog" (
+                id INT PRIMARY KEY,
+                user_id INT NOT NULL,
+                title VARCHAR(255) NOT NULL,
+                CONSTRAINT Blog_User_fkey FOREIGN KEY (user_id) REFERENCES "User" (id)
+            )
+        "#};
+
+        api.execute_sql(profile_table).await;
+
+        let insert_users = indoc! {r#"
+            INSERT INTO "User" (id, name) VALUES
+              (1, 'Musti'),
+              (2, 'Naukio')
+        "#};
+
+        api.execute_sql(insert_users).await;
+
+        let insert_profiles = indoc! {r#"
+            INSERT INTO "Blog" (id, user_id, title) VALUES
+              (1, 1, 'Hello, world!'),
+              (2, 1, 'Sayonara...'),
+              (3, 2, 'Meow meow?')
+        "#};
+
+        api.execute_sql(insert_profiles).await;
+    })
+    .await;
+
+    let runner = api.runner_spawn().await;
+
+    let query = indoc! {r"
+        query {
+          user(lookup: { id: 1 }) {
+            name
+            aliased: blogs(first: 1) { edges { node { id aliased: title } } }
+          }
+        }
+    "};
+
+    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "data": {
+        "user": {
+          "name": "Musti",
+          "aliased": {
+            "edges": [
+              {
+                "node": {
+                  "id": 1,
+                  "aliased": "Hello, world!"
                 }
               }
             ]

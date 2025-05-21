@@ -12,25 +12,31 @@ use std::{borrow::Cow, collections::HashMap};
 use super::{Context, PageInfo};
 
 #[derive(Clone)]
-pub struct SelectColumn<'a>(TableColumnWalker<'a>);
+pub struct SelectColumn<'a> {
+    column: TableColumnWalker<'a>,
+    alias: Option<&'a str>,
+}
 
 impl<'a> SelectColumn<'a> {
-    pub fn into_expression(self, table_name: Option<Cow<'a, str>>) -> (TableColumnWalker<'a>, Expression<'a>) {
+    pub fn into_expression(
+        self,
+        table_name: Option<Cow<'a, str>>,
+    ) -> (TableColumnWalker<'a>, Expression<'a>, Option<&'a str>) {
         let table_name = match table_name {
             Some(name) => name,
-            None => Cow::Borrowed(self.0.table().database_name()),
+            None => Cow::Borrowed(self.column.table().database_name()),
         };
 
-        let sql_col = Column::new(self.0.database_name()).table(table_name);
+        let sql_col = Column::new(self.column.database_name()).table(table_name);
 
-        let r#enum = match self.0.database_type() {
+        let r#enum = match self.column.database_type() {
             DatabaseType::Scalar(scalar_type) => {
                 let expr = match scalar_type.from_db_to_client_cast() {
                     Some(cast) => Expression::from(ast::cast(sql_col, cast)),
                     None => Expression::from(sql_col),
                 };
 
-                return (self.0, expr);
+                return (self.column, expr, self.alias);
             }
             DatabaseType::Enum(walker) => walker,
         };
@@ -46,15 +52,15 @@ impl<'a> SelectColumn<'a> {
 
         let expr = builder.r#else(Expression::from(col)).into();
 
-        (self.0, expr)
+        (self.column, expr, self.alias)
     }
 }
 
 #[derive(Clone)]
-pub struct Unnest<'a>(TableColumnWalker<'a>, EnumWalker<'a>);
+pub struct Unnest<'a>(TableColumnWalker<'a>, EnumWalker<'a>, Option<&'a str>);
 
 impl<'a> Unnest<'a> {
-    pub fn into_select(self, table_name: Option<Cow<'a, str>>) -> (TableColumnWalker<'a>, Select<'a>) {
+    pub fn into_select(self, table_name: Option<Cow<'a, str>>) -> (TableColumnWalker<'a>, Select<'a>, Option<&'a str>) {
         let unnest_col = Column::new(format!("unnest_{}", self.0.database_name()));
         let unnest_col = ast::cast(unnest_col, "text");
 
@@ -79,7 +85,7 @@ impl<'a> Unnest<'a> {
         let mut select = Select::from_table(expr);
         select.value(aggregate);
 
-        (self.0, select)
+        (self.0, select, self.2)
     }
 }
 
@@ -91,9 +97,14 @@ pub enum TableSelection<'a> {
     /// GraphQL enum values, renamed.
     ColumnUnnest(Unnest<'a>),
     /// Joins a unique row with a nested selection.
-    JoinUnique(RelationWalker<'a>, SelectionIterator<'a>),
+    JoinUnique(RelationWalker<'a>, SelectionIterator<'a>, Option<&'a str>),
     /// Joins a collection of rows with a nested selection.
-    JoinMany(RelationWalker<'a>, SelectionIterator<'a>, CollectionArgs<'a>),
+    JoinMany(
+        RelationWalker<'a>,
+        SelectionIterator<'a>,
+        CollectionArgs<'a>,
+        Option<&'a str>,
+    ),
 }
 
 /// An iterator over a GraphQL selection. Returns either a column or a
@@ -251,7 +262,12 @@ impl<'a> Iterator for SelectionIterator<'a> {
             let extra = self.extra_columns.get(self.extra_column_index);
             self.extra_column_index += 1;
 
-            return extra.map(|column| Ok(TableSelection::Column(SelectColumn(*column))));
+            return extra.map(|column| {
+                Ok(TableSelection::Column(SelectColumn {
+                    column: *column,
+                    alias: None,
+                }))
+            });
         };
 
         self.index += 1;
@@ -264,10 +280,17 @@ impl<'a> Iterator for SelectionIterator<'a> {
         {
             match column.database_type() {
                 DatabaseType::Enum(r#enum) if column.is_array() => {
-                    return Some(Ok(TableSelection::ColumnUnnest(Unnest(column, r#enum))));
+                    return Some(Ok(TableSelection::ColumnUnnest(Unnest(
+                        column,
+                        r#enum,
+                        selection_field.alias(),
+                    ))));
                 }
                 _ => {
-                    return Some(Ok(TableSelection::Column(SelectColumn(column))));
+                    return Some(Ok(TableSelection::Column(SelectColumn {
+                        column,
+                        alias: selection_field.alias(),
+                    })));
                 }
             }
         }
@@ -299,7 +322,11 @@ impl<'a> Iterator for SelectionIterator<'a> {
                 Err(err) => return Some(Err(err)),
             };
 
-            Some(Ok(TableSelection::JoinUnique(relation, iterator)))
+            Some(Ok(TableSelection::JoinUnique(
+                relation,
+                iterator,
+                selection_field.alias(),
+            )))
         } else {
             let params = selection_field
                 .arguments::<CollectionParameters>(self.ctx.arguments)
@@ -327,7 +354,12 @@ impl<'a> Iterator for SelectionIterator<'a> {
             let args = CollectionArgs::new(self.ctx.database_definition, relation.referenced_table(), params);
 
             match args {
-                Ok(args) => Some(Ok(TableSelection::JoinMany(relation, iterator, args))),
+                Ok(args) => Some(Ok(TableSelection::JoinMany(
+                    relation,
+                    iterator,
+                    args,
+                    selection_field.alias(),
+                ))),
                 Err(error) => Some(Err(error)),
             }
         }

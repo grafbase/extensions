@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{borrow::Cow, collections::HashSet};
 
 use crate::{
     context::{
@@ -443,23 +443,29 @@ fn build_edges_select<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a>
     for selection in builder.selection() {
         match selection? {
             TableSelection::Column(select) => {
-                let (column, expr) = select.into_expression(Some(builder.table().client_name().into()));
+                let (column, expr, alias) = select.into_expression(Some(builder.table().client_name().into()));
+                let alias = alias.unwrap_or_else(|| column.client_name());
 
                 selected_columns.insert(column.id());
-                collecting_select.value(expr.alias(column.client_name()));
+                collecting_select.value(expr.alias(alias));
             }
             TableSelection::ColumnUnnest(unnest) => {
-                let (column, nested) = unnest.into_select(Some(NODES.into()));
+                let (column, nested, alias) = unnest.into_select(Some(NODES.into()));
+                let alias = alias.unwrap_or_else(|| column.client_name());
 
                 selected_columns.insert(column.id());
-                collecting_select.value(Expression::from(nested).alias(column.client_name()));
+                collecting_select.value(Expression::from(nested).alias(alias));
             }
             // m:1, 1:1
-            TableSelection::JoinUnique(relation, selection) => {
-                let client_field_name = relation.client_field_name();
-                collecting_select.column(client_field_name.clone());
+            TableSelection::JoinUnique(relation, selection, alias) => {
+                let client_field_name = alias
+                    .map(Cow::Borrowed)
+                    .unwrap_or_else(|| Cow::Owned(relation.client_field_name()));
 
-                let mut builder = SelectBuilder::new(relation.referenced_table(), selection, client_field_name.clone());
+                collecting_select.column(client_field_name.to_string());
+
+                let mut builder =
+                    SelectBuilder::new(relation.referenced_table(), selection, client_field_name.to_string());
                 builder.set_relation(relation);
 
                 // recurse
@@ -471,11 +477,15 @@ fn build_edges_select<'a>(builder: &SelectBuilder<'a>, args: &CollectionArgs<'a>
                 collecting_select.left_join(join_data);
             }
             // 1:m
-            TableSelection::JoinMany(relation, selection, args) => {
-                let client_field_name = relation.client_field_name();
-                collecting_select.column(client_field_name.clone());
+            TableSelection::JoinMany(relation, selection, args, alias) => {
+                let client_field_name = alias
+                    .map(Cow::Borrowed)
+                    .unwrap_or_else(|| Cow::Owned(relation.client_field_name()));
 
-                let mut builder = SelectBuilder::new(relation.referenced_table(), selection, client_field_name.clone());
+                collecting_select.column(client_field_name.to_string());
+
+                let mut builder =
+                    SelectBuilder::new(relation.referenced_table(), selection, client_field_name.to_string());
                 builder.set_relation(relation);
 
                 // recurse
@@ -531,13 +541,13 @@ fn attach_selection<'a>(
     for selection_item in builder.selection() {
         match selection_item? {
             TableSelection::Column(col_select) => {
-                let (column_meta, expr) = col_select.into_expression(Some(builder.table().client_name().into()));
+                let (column_meta, expr, _) = col_select.into_expression(Some(builder.table().client_name().into()));
 
                 if selected_columns.insert(column_meta.id()) {
                     select.value(expr.alias(column_meta.database_name()));
                 }
             }
-            TableSelection::JoinUnique(relation, _) => {
+            TableSelection::JoinUnique(relation, _, _) => {
                 for column in relation.referencing_columns() {
                     if selected_columns.insert(column.id()) {
                         let column = Column::from((builder.table().client_name(), column.database_name()))

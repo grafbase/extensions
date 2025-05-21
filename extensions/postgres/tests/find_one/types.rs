@@ -828,6 +828,54 @@ async fn r#enum() {
 }
 
 #[tokio::test]
+async fn enum_aliased() {
+    let api = PgTestApi::new("", |api| async move {
+        let r#type = indoc! {r"
+            CREATE TYPE street_light AS ENUM ('red', 'yellow', 'green');
+        "};
+
+        api.execute_sql(r#type).await;
+
+        let schema = indoc! {r#"
+            CREATE TABLE "User" (
+                id SERIAL PRIMARY KEY,
+                val street_light NOT NULL
+            )
+        "#};
+
+        api.execute_sql(schema).await;
+
+        let insert = indoc! {r#"
+            INSERT INTO "User" (id, val) VALUES (1, 'red');
+        "#};
+
+        api.execute_sql(insert).await;
+    })
+    .await;
+
+    let runner = api.runner_spawn().await;
+
+    let query = indoc! {r"
+        query {
+          user(lookup: { id: 1 }) { id aliased: val }
+        }
+    "};
+
+    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "data": {
+        "user": {
+          "id": 1,
+          "aliased": "RED"
+        }
+      }
+    }
+    "#);
+}
+
+#[tokio::test]
 async fn enum_array() {
     let api = PgTestApi::new("", |api| async move {
         let r#type = indoc! {r"
@@ -869,6 +917,57 @@ async fn enum_array() {
         "user": {
           "id": 1,
           "val": [
+            "RED",
+            "YELLOW"
+          ]
+        }
+      }
+    }
+    "#);
+}
+
+#[tokio::test]
+async fn aliased_enum_array() {
+    let api = PgTestApi::new("", |api| async move {
+        let r#type = indoc! {r"
+            CREATE TYPE street_light AS ENUM ('red', 'yellow', 'green');
+        "};
+
+        api.execute_sql(r#type).await;
+
+        let schema = indoc! {r#"
+            CREATE TABLE "User" (
+                id SERIAL PRIMARY KEY,
+                val street_light[] NOT NULL
+            )
+        "#};
+
+        api.execute_sql(schema).await;
+
+        let insert = indoc! {r#"
+            INSERT INTO "User" (id, val) VALUES (1, ARRAY['red', 'yellow']::street_light[]);
+        "#};
+
+        api.execute_sql(insert).await;
+    })
+    .await;
+
+    let runner = api.runner_spawn().await;
+
+    let query = indoc! {r"
+        query {
+          user(lookup: { id: 1 }) { id aliased: val }
+        }
+    "};
+
+    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "data": {
+        "user": {
+          "id": 1,
+          "aliased": [
             "RED",
             "YELLOW"
           ]
