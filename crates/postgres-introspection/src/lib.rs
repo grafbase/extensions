@@ -23,9 +23,9 @@ mod tables;
 pub async fn introspect(conn: &mut sqlx::PgConnection, config: Config) -> anyhow::Result<String> {
     let mut database_definition = DatabaseDefinition::new(config.database_name.clone());
 
-    schemas::introspect_database(conn, &mut database_definition).await?;
+    schemas::introspect_database(conn, &config, &mut database_definition).await?;
     enums::introspect_database(conn, &mut database_definition).await?;
-    tables::introspect_database(conn, &mut database_definition).await?;
+    tables::introspect_database(conn, &config, &mut database_definition).await?;
     columns::introspect_database(conn, &config, &mut database_definition).await?;
     foreign_keys::introspect_database(conn, &config, &mut database_definition).await?;
     keys::introspect_database(conn, &config, &mut database_definition).await?;

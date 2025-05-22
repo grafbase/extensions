@@ -1,8 +1,10 @@
+use crate::config::Config;
 use grafbase_database_definition::{DatabaseDefinition, RelationKind, Table};
 use sqlx::{PgConnection, Row};
 
 pub(crate) async fn introspect_database(
     conn: &mut PgConnection,
+    config: &Config,
     database_definition: &mut DatabaseDefinition,
 ) -> anyhow::Result<()> {
     let query = indoc::indoc! {r#"
@@ -30,7 +32,15 @@ pub(crate) async fn introspect_database(
         .await?;
 
     for row in rows {
-        let Some(schema_id) = database_definition.get_schema_id(row.get(1)) else {
+        let schema_name: String = row.get(1);
+        let table_name: String = row.get(0);
+
+        let Some(schema_id) = database_definition.get_schema_id(&schema_name) else {
+            continue;
+        };
+
+        // Skip tables that are not in the allowlist or are in the denylist
+        if !config.is_table_included(&schema_name, &table_name) {
             continue;
         };
 
@@ -41,7 +51,7 @@ pub(crate) async fn introspect_database(
             _ => unreachable!(),
         };
 
-        let mut table = Table::<String>::new(schema_id, row.get(0), kind, None);
+        let mut table = Table::<String>::new(schema_id, table_name, kind, None);
 
         if let Some(description) = row.get(2) {
             table.set_description(description);
