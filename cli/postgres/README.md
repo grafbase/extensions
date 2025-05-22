@@ -127,6 +127,16 @@ enable_mutations = true
 # Defaults to true if you omit this setting.
 enable_queries = true
 
+# Schema allowlist: An array of schema names to include in the introspection.
+# If provided, only schemas in this list will be included.
+# If empty, all schemas will be included (unless in the denylist).
+schema_allowlist = []
+
+# Schema denylist: An array of schema names to exclude from the introspection.
+# Schemas in this list will be excluded even if they appear in the allowlist.
+# This takes precedence over the schema_allowlist.
+schema_denylist = []
+
 # Configure schemas for this database. Key-value from schema name to configuration.
 schemas = {}
 ```
@@ -143,6 +153,16 @@ enable_mutations = true
 # Enable queries (read operations) globally for the whole database.
 # Takes precedence over the global setting. Defaults to true if you omit this setting.
 enable_queries = true
+
+# Table allowlist: An array of table names to include in the introspection.
+# If provided, only tables in this list will be included for this schema.
+# If empty, all tables will be included (unless in the denylist).
+table_allowlist = []
+
+# Table denylist: An array of table names to exclude from the introspection.
+# Tables in this list will be excluded even if they appear in the allowlist.
+# This takes precedence over the table_allowlist.
+table_denylist = []
 
 # Configure views for this schema.
 views = {}
@@ -430,6 +450,44 @@ type User @key(fields: "id") {
   posts: [Post!]!
 }
 ```
+
+### Schema and Table Filtering
+
+You can control which database schemas and tables are included in the introspection process using allowlist and denylist options.
+
+#### Schema Filtering
+
+You can include or exclude specific database schemas using the following options:
+
+- `schema_allowlist`: An array of schema names to include. If provided, only schemas in this list will be included in the introspection.
+- `schema_denylist`: An array of schema names to exclude. Schemas in this list will be excluded from introspection, even if they appear in the allowlist.
+
+```toml
+# Example of schema filtering in config.toml
+extension_url = "https://grafbase.com/extensions/postgres/0.4.7"
+schema_allowlist = ["public", "app"]
+schema_denylist = ["internal"]
+```
+
+#### Table Filtering
+
+Within each schema, you can include or exclude specific tables using these options:
+
+- `table_allowlist`: An array of table names to include. If provided, only tables in this list will be included for that schema.
+- `table_denylist`: An array of table names to exclude. Tables in this list will be excluded, even if they appear in the allowlist.
+
+```toml
+# Example of table filtering in config.toml
+extension_url = "https://grafbase.com/extensions/postgres/0.4.7"
+
+[schemas.public]
+table_allowlist = ["users", "posts"]
+
+[schemas.internal]
+table_denylist = ["audit_logs", "system_metrics"]
+```
+
+When both allowlist and denylist are specified, the denylist takes precedence. For example, if a table is included in both `table_allowlist` and `table_denylist`, it will be excluded from the introspection.
 
 ## License
 

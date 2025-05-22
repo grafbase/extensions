@@ -266,6 +266,8 @@ impl PgTestApi {
             schemas: Default::default(),
             enable_mutations: true,
             enable_queries: true,
+            schema_allowlist: Vec::new(),
+            schema_denylist: Vec::new(),
         })
         .await
     }
@@ -280,6 +282,8 @@ impl PgTestApi {
             schemas: Default::default(),
             enable_mutations: true,
             enable_queries: true,
+            schema_allowlist: Vec::new(),
+            schema_denylist: Vec::new(),
         })
         .await
     }
