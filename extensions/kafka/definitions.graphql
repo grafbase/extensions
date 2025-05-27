@@ -1,0 +1,212 @@
+extend schema
+  @link(
+    url: "https://specs.grafbase.com/grafbase"
+    import: ["InputValueSet", "UrlTemplate", "JsonTemplate"]
+  )
+
+"""
+Kafka producer directive for configuring message publishing to Kafka topics.
+Allows schema-level configuration of Kafka producers with connection, topic, and producer settings.
+"""
+directive @kafkaProducer(
+  """
+  The unique name identifier for this Kafka producer instance
+  """
+  name: String!
+  """
+  The Kafka provider to use
+  """
+  provider: String! = "default"
+  """
+  The Kafka topic to publish messages to
+  """
+  topic: String!
+  """
+  Additional configuration options for the Kafka producer
+  """
+  config: KafkaProducerConfiguration! = {}
+) repeatable on SCHEMA
+
+"""
+Kafka publish directive for sending messages to Kafka topics through a configured producer.
+Applied to field definitions to automatically publish field resolution results as messages.
+"""
+directive @kafkaPublish(
+  """
+  The name of the Kafka producer instance to use for publishing messages.
+  Must reference a producer defined with @kafkaProducer directive.
+  """
+  producer: String!
+  """
+  The key of the message to publish.
+  This supports templating using GraphQL arguments: {{args.argument}}
+  """
+  key: UrlTemplate
+  """
+  The body of the message to publish
+  """
+  body: Body! = { selection: "*" }
+) on FIELD_DEFINITION
+
+"""
+Body configuration for NATS publish operations
+"""
+input Body {
+  """
+  GraphQL selection to include in the message body
+  """
+  selection: InputValueSet
+
+  """
+  Static JSON content to include in the message body
+  """
+  static: JSON
+}
+
+"""
+Configuration options for Kafka producer behavior and connection settings.
+"""
+input KafkaProducerConfiguration {
+  """
+  Compression algorithm to use for message payloads
+  """
+  compression: KafkaProducerCompression
+  """
+  Specific partition numbers to produce to. If not specified, uses default partitioning
+  """
+  partitions: [Int!]
+  """
+  Batching configuration for optimizing message throughput and latency
+  """
+  batch: KafkaProducerBatchConfiguration
+}
+
+"""
+Producer batching configuration for optimizing message throughput and latency
+"""
+input KafkaProducerBatchConfiguration {
+  """
+  Time in milliseconds to wait for additional messages before sending a batch
+  """
+  lingerMs: Int
+  """
+  Maximum size of a message batch in bytes before forcing a send
+  """
+  maxSizeBytes: Int
+}
+
+"""
+Supported compression algorithms for Kafka message payloads.
+"""
+enum KafkaProducerCompression {
+  """
+  GZIP compression algorithm
+  """
+  GZIP
+  """
+  Snappy compression algorithm
+  """
+  SNAPPY
+  """
+  LZ4 compression algorithm
+  """
+  LZ4
+  """
+  Zstandard compression algorithm
+  """
+  ZSTD
+}
+
+"""
+TLS/SSL configuration options for secure Kafka connections.
+Use either system CA certificates or provide a custom CA certificate.
+"""
+input KafkaTlsConfiguration @oneOf {
+  """
+  Use system's default CA certificate store
+  """
+  systemCa: Boolean
+  """
+  Custom CA certificate content for verification
+  """
+  customCa: String
+}
+
+"""
+Authentication configuration for Kafka broker access.
+Supports SASL Plain, SASL SCRAM, or mutual TLS authentication.
+"""
+input KafkaAuthenticationConfiguration @oneOf {
+  """
+  SASL Plain authentication credentials
+  """
+  saslPlain: KafkaSaslPlainAuth
+  """
+  SASL SCRAM authentication credentials
+  """
+  saslScram: KafkaSaslScramAuth
+  """
+  Mutual TLS authentication configuration
+  """
+  mtls: KafkaMtlsAuth
+}
+
+"""
+SASL Plain authentication credentials for Kafka broker access.
+"""
+input KafkaSaslPlainAuth {
+  """
+  Username for SASL Plain authentication
+  """
+  username: String!
+  """
+  Password for SASL Plain authentication
+  """
+  password: String!
+}
+
+"""
+SASL SCRAM authentication credentials and mechanism selection.
+"""
+input KafkaSaslScramAuth {
+  """
+  Username for SASL SCRAM authentication
+  """
+  username: String!
+  """
+  Password for SASL SCRAM authentication
+  """
+  password: String!
+  """
+  SCRAM mechanism to use for authentication
+  """
+  mechanism: KafkaScramMechanism!
+}
+
+"""
+Supported SASL SCRAM authentication mechanisms.
+"""
+enum KafkaScramMechanism {
+  """
+  SCRAM-SHA-256 authentication mechanism
+  """
+  SHA256
+  """
+  SCRAM-SHA-512 authentication mechanism
+  """
+  SHA512
+}
+
+"""
+Mutual TLS authentication configuration using client certificates.
+"""
+input KafkaMtlsAuth {
+  """
+  File path to the client certificate for mTLS authentication
+  """
+  clientCertPath: String!
+  """
+  File path to the client private key for mTLS authentication
+  """
+  clientKeyPath: String!
+}

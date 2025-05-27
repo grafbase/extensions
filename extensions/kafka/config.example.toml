@@ -1,0 +1,69 @@
+# Kafka Multiple Named Connections Configuration
+
+[connections.local_dev]
+bootstrap_servers = ["localhost:9092"]
+# No TLS or authentication needed for local development
+
+[connections.staging]
+bootstrap_servers = ["kafka-staging-1.company.com:9092", "kafka-staging-2.company.com:9092"]
+
+[connections.staging.tls]
+system_ca = true
+
+[connections.staging.authentication]
+sasl_plain = { username = "staging_user", password = "staging_password" }
+
+[connections.production]
+bootstrap_servers = [
+    "kafka-prod-1.company.com:9092", 
+    "kafka-prod-2.company.com:9092", 
+    "kafka-prod-3.company.com:9092"
+]
+
+[connections.production.tls]
+system_ca = true
+
+[connections.production.authentication]
+sasl_scram = { 
+    username = "prod_user", 
+    password = "secure_prod_password", 
+    mechanism = "sha512" 
+}
+
+[connections.analytics]
+bootstrap_servers = ["analytics-kafka.company.com:9092"]
+
+[connections.analytics.tls]
+custom_ca = { ca_path = "/etc/ssl/certs/analytics-ca.pem" }
+
+[connections.analytics.authentication]
+mtls = { 
+    client_certificate_path = "/etc/ssl/certs/analytics-client.pem", 
+    client_key_path = "/etc/ssl/private/analytics-client.key" 
+}
+
+[connections.external_partner]
+bootstrap_servers = ["partner-kafka.external.com:9094"]
+
+[connections.external_partner.tls]
+custom_ca = { ca_path = "/etc/ssl/certs/partner-ca.pem" }
+
+[connections.external_partner.authentication]
+sasl_scram = { 
+    username = "integration_user", 
+    password = "partner_integration_key", 
+    mechanism = "sha256" 
+}
+
+[connections.cloud_events]
+bootstrap_servers = ["my-cluster.cloud-provider.com:9092"]
+
+[connections.cloud_events.tls]
+system_ca = true
+
+[connections.cloud_events.authentication]
+sasl_plain = { username = "cloud_user", password = "cloud_api_key" }
+
+# Example of minimal connection with just bootstrap servers
+[connections.test]
+bootstrap_servers = ["test-kafka:9092"]
