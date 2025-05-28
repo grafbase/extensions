@@ -1,5 +1,7 @@
 use std::path::PathBuf;
 
+use grafbase_sdk::host_io::kafka::{KafkaAuthentication, KafkaTlsConfig};
+
 /// Configuration for multiple named Kafka connections.
 #[derive(serde::Deserialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
@@ -24,6 +26,34 @@ pub struct Endpoint {
     /// Optional authentication configuration.
     #[serde(default)]
     pub authentication: Option<AuthenticationConfig>,
+}
+
+impl From<TlsConfig> for KafkaTlsConfig {
+    fn from(value: TlsConfig) -> Self {
+        match value {
+            TlsConfig::SystemCa => KafkaTlsConfig::system_ca(),
+            TlsConfig::CustomCa { ca_path } => KafkaTlsConfig::CustomCa(ca_path.clone()),
+        }
+    }
+}
+
+impl From<AuthenticationConfig> for KafkaAuthentication {
+    fn from(value: AuthenticationConfig) -> Self {
+        match value {
+            AuthenticationConfig::SaslPlain { username, password } => {
+                KafkaAuthentication::sasl_plain(username, password)
+            }
+            AuthenticationConfig::SaslScram {
+                username,
+                password,
+                mechanism,
+            } => match mechanism {
+                SaslScramMechanism::Sha256 => KafkaAuthentication::sasl_scram_sha256(username, password),
+                SaslScramMechanism::Sha512 => KafkaAuthentication::sasl_scram_sha512(username, password),
+            },
+            AuthenticationConfig::Mtls { certificate, key } => KafkaAuthentication::mtls(certificate, key),
+        }
+    }
 }
 
 fn default_endpoint_name() -> String {

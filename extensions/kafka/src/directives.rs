@@ -69,6 +69,8 @@ impl From<KafkaProducerCompression> for kafka::KafkaProducerCompression {
 pub enum DirectiveKind {
     /// A publish directive for sending messages to Kafka.
     Publish,
+    /// A subscription directive for receiving messages from Kafka.
+    Subscription,
 }
 
 impl FromStr for DirectiveKind {
@@ -77,6 +79,7 @@ impl FromStr for DirectiveKind {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "kafkaPublish" => Ok(DirectiveKind::Publish),
+            "kafkaSubscription" => Ok(DirectiveKind::Subscription),
             _ => Err(format!("Unknown directive: {}", s)),
         }
     }
@@ -121,4 +124,74 @@ pub struct Body {
 pub struct BodyInput {
     /// The input value as JSON.
     input: Option<serde_json::Value>,
+}
+
+#[derive(Debug, Clone, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct KafkaSubscription<'a> {
+    pub provider: &'a str,
+    pub topic: &'a str,
+    pub selection: Option<String>,
+    pub key_filter: Option<&'a str>,
+    #[serde(default)]
+    pub consumer_config: KafkaConsumerConfiguration,
+}
+
+/// Configuration options for Kafka consumer behavior and message consumption settings.
+#[derive(serde::Deserialize, Debug, Clone, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct KafkaConsumerConfiguration {
+    /// Minimum number of messages to wait for before processing a batch.
+    pub min_batch_size: Option<i32>,
+    /// Maximum number of messages to process in a single batch.
+    pub max_batch_size: Option<i32>,
+    /// Maximum time in milliseconds to wait for messages before returning an empty batch.
+    pub max_wait_time_ms: Option<i32>,
+    /// Starting offset position for consuming messages from the topic.
+    #[serde(default)]
+    start_offset: KafkaConsumerStartOffsetConfig,
+    /// Specific partition numbers to consume from. If not specified, consumes from all partitions.
+    pub partitions: Option<Vec<i32>>,
+}
+
+impl KafkaConsumerConfiguration {
+    /// Returns the configured starting offset for the Kafka consumer.
+    ///
+    /// If a specific offset is configured, it returns `KafkaConsumerStartOffset::Specific`
+    /// with the offset value. Otherwise, it returns the preset offset position.
+    ///
+    /// # Panics
+    ///
+    /// Panics if neither `offset` nor `preset` is configured, though this should not
+    /// happen as the configuration uses `@oneOf` validation.
+    pub fn start_offset(&self) -> KafkaConsumerStartOffset {
+        match self.start_offset.offset {
+            Some(offset) => KafkaConsumerStartOffset::Specific(offset as i64),
+            None => self.start_offset.preset,
+        }
+    }
+}
+
+/// Configuration for specifying the starting offset position when consuming Kafka messages.
+#[derive(serde::Deserialize, Debug, Clone, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct KafkaConsumerStartOffsetConfig {
+    /// Predefined offset position (e.g., LATEST, EARLIEST).
+    #[serde(default)]
+    pub preset: KafkaConsumerStartOffset,
+    /// Specific numeric offset to start consuming from.
+    pub offset: Option<i32>,
+}
+
+/// Predefined offset positions for Kafka consumers.
+#[derive(serde::Deserialize, Debug, Clone, Copy, Default)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum KafkaConsumerStartOffset {
+    /// Start consuming from the latest available message.
+    #[default]
+    Latest,
+    /// Start consuming from the earliest available message.
+    Earliest,
+    /// Start consuming from a specific offset.
+    Specific(i64),
 }

@@ -9,14 +9,16 @@ crate-type = ["cdylib"]
 
 [dependencies]
 futures-util.workspace = true
-grafbase-sdk.workspace = true
+grafbase-sdk = { workspace = true, features = ["jq-selection"] }
+regex.workspace = true
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
 
 [dev-dependencies]
+chrono = { workspace = true, features = ["clock"] }
 grafbase-sdk = { workspace = true, features = ["test-utils"] }
 indoc.workspace = true
 insta = { workspace = true, features = ["json"] }
-rskafka = { version = "0.6.0", features = ["full"] }
+rskafka = { workspace = true, features = ["full"] }
 serde_json.workspace = true
 tokio = { workspace = true, features = ["rt-multi-thread", "macros", "test-util"] }

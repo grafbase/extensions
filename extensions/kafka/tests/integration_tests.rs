@@ -1,17 +1,19 @@
 use std::{sync::Arc, time::Duration};
 
+use chrono::Utc;
 use futures_util::{Stream, StreamExt, TryStreamExt, stream::select_all};
 use grafbase_sdk::test::{DynamicSchema, ExtensionOnlySubgraph, LogLevel, TestConfig, TestRunner};
 use indoc::{formatdoc, indoc};
 use rskafka::{
     client::{
         consumer::{StartOffset, StreamConsumerBuilder},
-        partition::UnknownTopicHandling,
+        partition::{PartitionClient, UnknownTopicHandling},
     },
-    record::RecordAndOffset,
+    record::{Record, RecordAndOffset},
 };
+use serde_json::json;
 
-const TEST_TOPIC: &str = "test-topic-1";
+const KAFKA_TOPIC: &str = "producer-topic";
 
 fn subgraph() -> ExtensionOnlySubgraph {
     let extension_path = std::env::current_dir().unwrap().join("build");
@@ -25,35 +27,36 @@ fn subgraph() -> ExtensionOnlySubgraph {
             import: [
               "@kafkaProducer",
               "@kafkaPublish",
+              "@kafkaSubscription",
             ]
           )
           @kafkaProducer(
             name: "user-producer-plain",
-            topic: "{TEST_TOPIC}",
+            topic: "{KAFKA_TOPIC}",
           )
           @kafkaProducer(
             name: "user-producer-sasl-plain",
             provider: "sasl-plain",
-            topic: "{TEST_TOPIC}",
+            topic: "{KAFKA_TOPIC}",
           )
           @kafkaProducer(
             name: "user-producer-sasl-scram",
             provider: "sasl-scram",
-            topic: "{TEST_TOPIC}",
+            topic: "{KAFKA_TOPIC}",
           )
           @kafkaProducer(
             name: "user-producer-tls-no-auth",
             provider: "ssl-plain",
-            topic: "{TEST_TOPIC}",
+            topic: "{KAFKA_TOPIC}",
           )
           @kafkaProducer(
             name: "user-producer-mtls",
             provider: "mtls",
-            topic: "{TEST_TOPIC}",
+            topic: "{KAFKA_TOPIC}",
           )
           @kafkaProducer(
             name: "user-producer-batched",
-            topic: "{TEST_TOPIC}",
+            topic: "{KAFKA_TOPIC}",
             config: {{
               compression: GZIP,
               batch: {{
@@ -64,7 +67,7 @@ fn subgraph() -> ExtensionOnlySubgraph {
           )
           @kafkaProducer(
             name: "user-producer-single-partition",
-            topic: "{TEST_TOPIC}",
+            topic: "{KAFKA_TOPIC}",
             config: {{
               partitions: [0],
             }}
@@ -106,9 +109,36 @@ fn subgraph() -> ExtensionOnlySubgraph {
           )
         }}
 
+        type Subscription {{
+          userLatestEvents(filter: String!): UserEvent! @kafkaSubscription(
+            topic: "{KAFKA_TOPIC}",
+            keyFilter: "{{{{args.filter}}}}"
+            consumerConfig: {{
+              maxWaitTimeMs: 10000
+            }}
+          )
+
+          highPriorityBankEvents(filter: String!, limit: Int!): BankEvent! @kafkaSubscription(
+            topic: "{KAFKA_TOPIC}",
+            keyFilter: "{{{{args.filter}}}}"
+            selection: "select(.money > {{{{args.limit}}}}) | {{ id, account, money }}",
+          )
+        }}
+
         input UserEventInput {{
           email: String!
           name: String!
+        }}
+
+        type UserEvent {{
+          email: String!
+          name: String!
+        }}
+
+        type BankEvent {{
+          id: Int!
+          account: String!
+          money: Int!
         }}
     "#};
 
@@ -189,6 +219,18 @@ async fn consumer(topic: &str) -> impl Stream<Item = Result<(RecordAndOffset, i6
     select_all(streams)
 }
 
+async fn producer(topic: &str) -> PartitionClient {
+    let client = rskafka::client::ClientBuilder::new(vec!["localhost:9092".to_string()])
+        .build()
+        .await
+        .unwrap();
+
+    client
+        .partition_client(topic, 0, UnknownTopicHandling::Error)
+        .await
+        .unwrap()
+}
+
 async fn partition_consumer(topic: &str, partition: i32) -> impl Stream<Item = Result<(RecordAndOffset, i64), String>> {
     let client = rskafka::client::ClientBuilder::new(vec!["localhost:9092".to_string()])
         .build()
@@ -222,7 +264,7 @@ async fn produce_no_batch() {
     let (sender, mut recv) = tokio::sync::mpsc::channel(10);
 
     tokio::spawn(async move {
-        let mut consumer = consumer(TEST_TOPIC).await;
+        let mut consumer = consumer(KAFKA_TOPIC).await;
         let expected_key = "publish.user.1.events".as_bytes();
 
         while let Some(Ok((record, _))) = consumer.next().await {
@@ -285,7 +327,7 @@ async fn produce_single_partition() {
     let (sender, mut recv) = tokio::sync::mpsc::channel(10);
 
     tokio::spawn(async move {
-        let mut consumer = partition_consumer(TEST_TOPIC, 0).await;
+        let mut consumer = partition_consumer(KAFKA_TOPIC, 0).await;
         let expected_key = "publish.user.single-partition.1.events".as_bytes();
 
         while let Some(Ok((record, _))) = consumer.next().await {
@@ -348,7 +390,7 @@ async fn produce_batch() {
     let (sender, mut recv) = tokio::sync::mpsc::channel(10);
 
     tokio::spawn(async move {
-        let mut consumer = consumer(TEST_TOPIC).await;
+        let mut consumer = consumer(KAFKA_TOPIC).await;
         let expected_key = "publish.user.1.events".as_bytes();
 
         while let Some(Ok((record, _))) = consumer.next().await {
@@ -557,5 +599,167 @@ async fn connect_mtls() {
         "publishUserEventMtls": true
       }
     }
+    "#);
+}
+
+#[tokio::test]
+async fn test_subscribe() {
+    let config = TestConfig::builder()
+        .with_subgraph(subgraph())
+        .enable_networking()
+        .enable_stderr()
+        .enable_stdout()
+        .log_level(LogLevel::EngineDebug)
+        .build(config())
+        .unwrap();
+
+    let runner = TestRunner::new(config).await.unwrap();
+
+    let query = indoc! {r#"
+        subscription {
+          userLatestEvents(filter: "test_subscribe") {
+            email
+            name
+          }
+        }
+    "#};
+
+    let subscription = runner
+        .graphql_subscription::<serde_json::Value>(query)
+        .unwrap()
+        .subscribe()
+        .await
+        .unwrap();
+
+    tokio::time::sleep(Duration::from_secs(4)).await;
+
+    tokio::spawn(async move {
+        let producer = producer(KAFKA_TOPIC).await;
+        let mut records = Vec::new();
+
+        for i in 1..=2 {
+            let value = json!({
+                "email": format!("test{i}@example.com"),
+                "name": format!("Test User {i}")
+            });
+
+            let record = Record {
+                key: Some("test_subscribe".as_bytes().to_vec()),
+                value: Some(serde_json::to_vec(&value).unwrap()),
+                headers: Default::default(),
+                timestamp: Utc::now(),
+            };
+
+            records.push(record);
+        }
+
+        producer.produce(records, Default::default()).await.unwrap();
+        tokio::time::sleep(Duration::from_millis(100)).await;
+    });
+
+    let events = tokio::time::timeout(Duration::from_secs(5), subscription.take(2).collect::<Vec<_>>())
+        .await
+        .unwrap();
+
+    insta::assert_json_snapshot!(&events, @r#"
+    [
+      {
+        "data": {
+          "userLatestEvents": {
+            "email": "test1@example.com",
+            "name": "Test User 1"
+          }
+        }
+      },
+      {
+        "data": {
+          "userLatestEvents": {
+            "email": "test2@example.com",
+            "name": "Test User 2"
+          }
+        }
+      }
+    ]
+    "#);
+}
+
+#[tokio::test]
+async fn xxx_test_subscribe_filter() {
+    let config = TestConfig::builder()
+        .with_subgraph(subgraph())
+        .enable_networking()
+        .enable_stderr()
+        .enable_stdout()
+        .log_level(LogLevel::EngineDebug)
+        .build(config())
+        .unwrap();
+
+    let runner = TestRunner::new(config).await.unwrap();
+
+    let query = indoc! {r#"
+        subscription {
+          highPriorityBankEvents(filter: "test_subscribe_filter", limit: 1000) {
+            id
+            account
+            money
+          }
+        }
+    "#};
+
+    let subscription = runner
+        .graphql_subscription::<serde_json::Value>(query)
+        .unwrap()
+        .subscribe()
+        .await
+        .unwrap();
+
+    tokio::time::sleep(Duration::from_secs(4)).await;
+
+    tokio::spawn(async move {
+        let producer = producer(KAFKA_TOPIC).await;
+        let mut records = Vec::new();
+
+        for i in 1000..=1002 {
+            let value = json!({ "id": 1, "account": "User One", "money": i });
+
+            let record = Record {
+                key: Some("test_subscribe_filter".as_bytes().to_vec()),
+                value: Some(serde_json::to_vec(&value).unwrap()),
+                headers: Default::default(),
+                timestamp: Utc::now(),
+            };
+
+            records.push(record);
+        }
+
+        producer.produce(records, Default::default()).await.unwrap();
+        tokio::time::sleep(Duration::from_millis(100)).await;
+    });
+
+    let events = tokio::time::timeout(Duration::from_secs(5), subscription.take(2).collect::<Vec<_>>())
+        .await
+        .unwrap();
+
+    insta::assert_json_snapshot!(&events, @r#"
+    [
+      {
+        "data": {
+          "highPriorityBankEvents": {
+            "id": 1,
+            "account": "User One",
+            "money": 1001
+          }
+        }
+      },
+      {
+        "data": {
+          "highPriorityBankEvents": {
+            "id": 1,
+            "account": "User One",
+            "money": 1002
+          }
+        }
+      }
+    ]
     "#);
 }
