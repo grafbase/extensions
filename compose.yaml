@@ -273,7 +273,9 @@ services:
         echo 'Creating topics for all authentication methods...' &&
 
         # Create topic using PLAINTEXT
-        kafka-topics --bootstrap-server localhost:9092 --create --topic test-topic-1 --partitions 4 --replication-factor 1 --if-not-exists &&
+        kafka-topics --bootstrap-server localhost:9092 --create --topic producer-topic --partitions 4 --replication-factor 1 --if-not-exists &&
+        echo 'Topic created' &&
+        kafka-topics --bootstrap-server localhost:9092 --create --topic consumer-topic --partitions 4 --replication-factor 1 --if-not-exists &&
         echo 'Topic created' &&
 
         # Verify topic creation

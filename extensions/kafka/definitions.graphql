@@ -48,6 +48,86 @@ directive @kafkaPublish(
   body: Body! = { selection: "*" }
 ) on FIELD_DEFINITION
 
+directive @kafkaSubscription(
+  """
+  The Kafka provider to use
+  """
+  provider: String! = "default"
+
+  """
+  The topic to subscribe to
+  This supports templating using GraphQL arguments: {{args.argument}}
+  """
+  topic: UrlTemplate!
+
+  """
+  Selection to apply to the subscription payload. In jq syntax.
+  """
+  selection: JsonTemplate
+
+  """
+  A regular expression to filter messages by key
+  """
+  keyFilter: UrlTemplate
+
+  """
+  Kafka consumer settings
+  """
+  consumerConfig: KafkaConsumerConfiguration! = {}
+) on FIELD_DEFINITION
+
+"""
+Configuration options for Kafka consumer behavior and message consumption settings.
+"""
+input KafkaConsumerConfiguration {
+  """
+  Minimum number of messages to wait for before processing a batch
+  """
+  minBatchSize: Int
+  """
+  Maximum number of messages to process in a single batch
+  """
+  maxBatchSize: Int
+  """
+  Maximum time in milliseconds to wait for messages before returning an empty batch
+  """
+  maxWaitTimeMs: Int
+  """
+  Starting offset position for consuming messages from the topic
+  """
+  startOffset: KafkaConsumerStartOffset! = { preset: LATEST }
+  """
+  Specific partition numbers to consume from. If not specified, consumes from all partitions
+  """
+  partitions: [Int!]
+}
+
+"""
+Configuration for specifying the starting offset position when consuming Kafka messages.
+Use either a preset position or a specific numeric offset.
+"""
+input KafkaConsumerStartOffset @oneOf {
+  """
+  Predefined offset position (e.g., LATEST, EARLIEST)
+  """
+  preset: KafkaConsumerStartOffsetPreset
+  """
+  Specific numeric offset to start consuming from
+  """
+  offset: Int
+}
+
+enum KafkaConsumerStartOffsetPreset {
+  """
+  Start consuming from the latest offset available in the topic
+  """
+  LATEST
+  """
+  Start consuming from the earliest offset available in the topic
+  """
+  EARLIEST
+}
+
 """
 Body configuration for NATS publish operations
 """
@@ -115,98 +195,4 @@ enum KafkaProducerCompression {
   Zstandard compression algorithm
   """
   ZSTD
-}
-
-"""
-TLS/SSL configuration options for secure Kafka connections.
-Use either system CA certificates or provide a custom CA certificate.
-"""
-input KafkaTlsConfiguration @oneOf {
-  """
-  Use system's default CA certificate store
-  """
-  systemCa: Boolean
-  """
-  Custom CA certificate content for verification
-  """
-  customCa: String
-}
-
-"""
-Authentication configuration for Kafka broker access.
-Supports SASL Plain, SASL SCRAM, or mutual TLS authentication.
-"""
-input KafkaAuthenticationConfiguration @oneOf {
-  """
-  SASL Plain authentication credentials
-  """
-  saslPlain: KafkaSaslPlainAuth
-  """
-  SASL SCRAM authentication credentials
-  """
-  saslScram: KafkaSaslScramAuth
-  """
-  Mutual TLS authentication configuration
-  """
-  mtls: KafkaMtlsAuth
-}
-
-"""
-SASL Plain authentication credentials for Kafka broker access.
-"""
-input KafkaSaslPlainAuth {
-  """
-  Username for SASL Plain authentication
-  """
-  username: String!
-  """
-  Password for SASL Plain authentication
-  """
-  password: String!
-}
-
-"""
-SASL SCRAM authentication credentials and mechanism selection.
-"""
-input KafkaSaslScramAuth {
-  """
-  Username for SASL SCRAM authentication
-  """
-  username: String!
-  """
-  Password for SASL SCRAM authentication
-  """
-  password: String!
-  """
-  SCRAM mechanism to use for authentication
-  """
-  mechanism: KafkaScramMechanism!
-}
-
-"""
-Supported SASL SCRAM authentication mechanisms.
-"""
-enum KafkaScramMechanism {
-  """
-  SCRAM-SHA-256 authentication mechanism
-  """
-  SHA256
-  """
-  SCRAM-SHA-512 authentication mechanism
-  """
-  SHA512
-}
-
-"""
-Mutual TLS authentication configuration using client certificates.
-"""
-input KafkaMtlsAuth {
-  """
-  File path to the client certificate for mTLS authentication
-  """
-  clientCertPath: String!
-  """
-  File path to the client private key for mTLS authentication
-  """
-  clientKeyPath: String!
 }
