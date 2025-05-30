@@ -129,8 +129,9 @@ enable_queries = true
 
 # Schema allowlist: An array of schema names to include in the introspection.
 # If provided, only schemas in this list will be included.
-# If empty, all schemas will be included (unless in the denylist).
-schema_allowlist = []
+# If not defined or null, all schemas will be included (unless in the denylist).
+# If empty, no schemas will be included.
+schema_allowlist = null
 
 # Schema denylist: An array of schema names to exclude from the introspection.
 # Schemas in this list will be excluded even if they appear in the allowlist.
@@ -156,8 +157,9 @@ enable_queries = true
 
 # Table allowlist: An array of table names to include in the introspection.
 # If provided, only tables in this list will be included for this schema.
-# If empty, all tables will be included (unless in the denylist).
-table_allowlist = []
+# If not defined or null, all tables will be included (unless in the denylist).
+# If empty, no tables will be included for the schema.
+table_allowlist = null
 
 # Table denylist: An array of table names to exclude from the introspection.
 # Tables in this list will be excluded even if they appear in the allowlist.
@@ -459,7 +461,7 @@ You can control which database schemas and tables are included in the introspect
 
 You can include or exclude specific database schemas using the following options:
 
-- `schema_allowlist`: An array of schema names to include. If provided, only schemas in this list will be included in the introspection.
+- `schema_allowlist`: An array of schema names to include. If provided, only schemas in this list will be included in the introspection. If empty, no schemas will be included. If not defined, all schemas will be included.
 - `schema_denylist`: An array of schema names to exclude. Schemas in this list will be excluded from introspection, even if they appear in the allowlist.
 
 ```toml
@@ -473,12 +475,12 @@ schema_denylist = ["internal"]
 
 Within each schema, you can include or exclude specific tables using these options:
 
-- `table_allowlist`: An array of table names to include. If provided, only tables in this list will be included for that schema.
+- `table_allowlist`: An array of table names to include. If provided, only tables in this list will be included for that schema. If empty, no tables will be included for the schema. If not defined, all tables will be included.
 - `table_denylist`: An array of table names to exclude. Tables in this list will be excluded, even if they appear in the allowlist.
 
 ```toml
 # Example of table filtering in config.toml
-extension_url = "https://grafbase.com/extensions/postgres/0.4.7"
+extension_url = "https://grafbase.com/extensions/postgres/0.4.9"
 
 [schemas.public]
 table_allowlist = ["users", "posts"]

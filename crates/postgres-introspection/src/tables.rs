@@ -39,16 +39,16 @@ pub(crate) async fn introspect_database(
             continue;
         };
 
-        // Skip tables that are not in the allowlist or are in the denylist
-        if !config.is_table_included(&schema_name, &table_name) {
-            continue;
-        };
-
         let kind = match row.get::<i8, _>(3) as u8 as char {
             'r' => RelationKind::Relation,
             'v' => RelationKind::View,
             'm' => RelationKind::MaterializedView,
             _ => unreachable!(),
+        };
+
+        // Skip tables that are not in the allowlist or are in the denylist
+        if !kind.is_view() && !config.is_table_included(&schema_name, &table_name) {
+            continue;
         };
 
         let mut table = Table::<String>::new(schema_id, table_name, kind, None);

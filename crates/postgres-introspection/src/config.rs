@@ -37,9 +37,9 @@ pub struct Config {
     pub schemas: BTreeMap<String, SchemaConfig>,
     /// Optional list of schemas to include in the GraphQL schema.
     /// If this list is populated, only schemas in this list will be included.
-    /// If empty, all schemas will be included.
+    /// If None, all schemas will be included. If empty, no schemas will be included.
     #[serde(default)]
-    pub schema_allowlist: Vec<String>,
+    pub schema_allowlist: Option<Vec<String>>,
     /// Optional list of schemas to exclude from the GraphQL schema.
     /// If this list is populated, schemas in this list will be excluded even if they are in the allowlist.
     /// This takes precedence over the allowlist.
@@ -96,8 +96,12 @@ impl Config {
     }
 
     pub fn is_schema_included(&self, schema: &str) -> bool {
+        let Some(allowlist) = self.schema_allowlist.as_ref() else {
+            return !self.schema_denylist.contains(&schema.to_string());
+        };
+
         !self.schema_denylist.contains(&schema.to_string())
-            && (self.schema_allowlist.is_empty() || self.schema_allowlist.contains(&schema.to_string()))
+            && (!allowlist.is_empty() && allowlist.contains(&schema.to_string()))
     }
 
     /// Determines whether a table is included in the GraphQL schema based on the configuration.
@@ -109,8 +113,12 @@ impl Config {
             return true;
         };
 
+        let Some(allowlist) = schema_config.table_allowlist.as_ref() else {
+            return !schema_config.table_denylist.contains(&table.to_string());
+        };
+
         !schema_config.table_denylist.contains(&table.to_string())
-            && (schema_config.table_allowlist.is_empty() || schema_config.table_allowlist.contains(&table.to_string()))
+            && (!allowlist.is_empty() && allowlist.contains(&table.to_string()))
     }
 }
 
@@ -140,9 +148,9 @@ pub struct SchemaConfig {
     pub tables: BTreeMap<String, TableConfig>,
     /// Optional list of tables to include in the GraphQL schema.
     /// If this list is populated, only tables in this list will be included.
-    /// If empty, all tables will be included.
+    /// If None, all tables will be included. If empty, no tables will be included.
     #[serde(default)]
-    pub table_allowlist: Vec<String>,
+    pub table_allowlist: Option<Vec<String>>,
     /// Optional list of tables to exclude from the GraphQL schema.
     /// If this list is populated, tables in this list will be excluded even if they are in the allowlist.
     /// This takes precedence over the allowlist.
