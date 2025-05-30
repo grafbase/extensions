@@ -13062,734 +13062,6 @@ async fn schema_empty_allowlist() {
         ]
       )
       @pgDatabase(name: "default")
-
-    """
-    Specifies the direction for ordering results.
-    """
-    enum OrderDirection {
-      """
-      Specifies an ascending order for a given orderBy argument.
-      """
-      ASC
-      """
-      Specifies a descending order for a given orderBy argument.
-      """
-      DESC
-    }
-
-    """
-    Search filter input for Int type.
-    """
-    input IntFilterInput @oneOf {
-      """
-      The value is exactly the one given
-      """
-      eq: Int
-      """
-      The value is not the one given
-      """
-      ne: Int
-      """
-      The value is greater than the one given
-      """
-      gt: Int
-      """
-      The value is less than the one given
-      """
-      lt: Int
-      """
-      The value is greater than, or equal to the one given
-      """
-      gte: Int
-      """
-      The value is less than, or equal to the one given
-      """
-      lte: Int
-      """
-      The value is in the given array of values
-      """
-      in: [Int!]
-      """
-      The value is not in the given array of values
-      """
-      nin: [Int!]
-      """
-      A negation of the given filter
-      """
-      not: IntFilterInput
-    }
-
-    """
-    Input for creating a new Loser
-    """
-    input LoserCreateInput {
-      _: Boolean
-    }
-
-    """
-    Filter input type for Loser objects.
-    """
-    input LoserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [LoserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [LoserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [LoserFilterInput]
-    }
-
-    """
-    Input type to select a unique Loser
-    """
-    input LoserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for Loser objects for subgraph joins.
-    """
-    input LoserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Specifies the ordering for Loser results.
-    """
-    input LoserOrderByInput @oneOf {
-      """
-      Order losers by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Input for updating an existing Loser
-    """
-    input LoserUpdateInput {
-      _: Boolean
-    }
-
-    """
-    Input for creating a new User
-    """
-    input UserCreateInput {
-      _: Boolean
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
-      """
-      Filter by the given id
-      """
-      id: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [UserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [UserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [UserFilterInput]
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Specifies the ordering for User results.
-    """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      _: Boolean
-    }
-
-    type Loser
-      @key(fields: "id")
-      @pgTable(name: "losers", schema: "private")
-      @pgKey(fields: ["id"], type: PRIMARY)
-    {
-      id: Int! @pgColumn(name: "id", type: INT)
-    }
-
-    """
-    The connection type for Loser
-    """
-    type LoserConnection
-      @pgConnection(type: "Loser")
-    {
-      """
-      A list of edges
-      """
-      edges: [LoserEdge!]! @shareable
-      """
-      Information to aid in pagination
-      """
-      pageInfo: PageInfo! @shareable
-    }
-
-    """
-    Return type when creating many losers
-    """
-    type LoserCreateManyPayload
-      @pgMutation(type: "Loser")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [LoserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when creating one Loser
-    """
-    type LoserCreatePayload
-      @pgMutation(type: "Loser")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: LoserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting many losers
-    """
-    type LoserDeleteManyPayload
-      @pgMutation(type: "Loser")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [LoserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting one Loser
-    """
-    type LoserDeletePayload
-      @pgMutation(type: "Loser")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: LoserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    An edge in a connection. Contains the node and its cursor
-    """
-    type LoserEdge {
-      """
-      The item at the end of the edge
-      """
-      node: Loser! @shareable
-      """
-      A cursor for use in pagination
-      """
-      cursor: String! @shareable
-    }
-
-    """
-    Return type containing fields of the mutated or created Loser object
-    """
-    type LoserReturning
-      @pgReturning(type: "Loser")
-    {
-      """
-      The value of the id field
-      """
-      id: Int! @shareable
-    }
-
-    """
-    Return type when updating many losers
-    """
-    type LoserUpdateManyPayload
-      @pgMutation(type: "Loser")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [LoserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when updating one Loser
-    """
-    type LoserUpdatePayload
-      @pgMutation(type: "Loser")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: LoserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Information about pagination in a collection of objects
-    """
-    type PageInfo
-      @shareable
-    {
-      """
-      When paginating backwards, are there more items?
-      """
-      hasPreviousPage: Boolean! @shareable
-      """
-      When paginating forwards, are there more items?
-      """
-      hasNextPage: Boolean! @shareable
-      """
-      The cursor of the first item in the page
-      """
-      startCursor: String @shareable
-      """
-      The cursor of the last item in the page
-      """
-      endCursor: String @shareable
-    }
-
-    type User
-      @key(fields: "id")
-      @pgTable(name: "users")
-      @pgKey(fields: ["id"], type: PRIMARY)
-    {
-      id: Int! @pgColumn(name: "id", type: INT)
-    }
-
-    """
-    The connection type for User
-    """
-    type UserConnection
-      @pgConnection(type: "User")
-    {
-      """
-      A list of edges
-      """
-      edges: [UserEdge!]! @shareable
-      """
-      Information to aid in pagination
-      """
-      pageInfo: PageInfo! @shareable
-    }
-
-    """
-    Return type when creating many users
-    """
-    type UserCreateManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when creating one User
-    """
-    type UserCreatePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting many users
-    """
-    type UserDeleteManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting one User
-    """
-    type UserDeletePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    An edge in a connection. Contains the node and its cursor
-    """
-    type UserEdge {
-      """
-      The item at the end of the edge
-      """
-      node: User! @shareable
-      """
-      A cursor for use in pagination
-      """
-      cursor: String! @shareable
-    }
-
-    """
-    Return type containing fields of the mutated or created User object
-    """
-    type UserReturning
-      @pgReturning(type: "User")
-    {
-      """
-      The value of the id field
-      """
-      id: Int! @shareable
-    }
-
-    """
-    Return type when updating many users
-    """
-    type UserUpdateManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when updating one User
-    """
-    type UserUpdatePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    type Query {
-      """
-      Query a unique Loser
-      """
-      loser(
-        """
-        Input for unique Loser lookup
-        """
-        lookup: LoserLookupInput!,
-      ): Loser @pgSelectOne
-      """
-      Query and paginate multiple losers
-      """
-      losers(
-        """
-        Filter for Loser
-        """
-        filter: LoserFilterInput,
-        """
-        Limit the number of results, from the beginning
-        """
-        first: Int,
-        """
-        Limit the number of results, from the end
-        """
-        last: Int,
-        """
-        Cursor for pagination, select items before the cursor. Use together with `last`.
-        """
-        before: String,
-        """
-        Cursor for pagination, select items after the cursor. Use together with `first`.
-        """
-        after: String,
-        """
-        Order the results by selected fields
-        """
-        orderBy: [LoserOrderByInput!],
-      ): LoserConnection! @pgSelectMany
-      """
-      Lookup multiple losers for subgraph joins
-      """
-      loserLookup(
-        """
-        Filter losers with an array of keys
-        """
-        lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
-      """
-      Query a unique User
-      """
-      user(
-        """
-        Input for unique User lookup
-        """
-        lookup: UserLookupInput!,
-      ): User @pgSelectOne
-      """
-      Query and paginate multiple users
-      """
-      users(
-        """
-        Filter for User
-        """
-        filter: UserFilterInput,
-        """
-        Limit the number of results, from the beginning
-        """
-        first: Int,
-        """
-        Limit the number of results, from the end
-        """
-        last: Int,
-        """
-        Cursor for pagination, select items before the cursor. Use together with `last`.
-        """
-        before: String,
-        """
-        Cursor for pagination, select items after the cursor. Use together with `first`.
-        """
-        after: String,
-        """
-        Order the results by selected fields
-        """
-        orderBy: [UserOrderByInput!],
-      ): UserConnection! @pgSelectMany
-      """
-      Lookup multiple users for subgraph joins
-      """
-      userLookup(
-        """
-        Filter users with an array of keys
-        """
-        lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
-    }
-
-    type Mutation {
-      """
-      Create a single Loser
-      """
-      loserCreate(
-        """
-        Input for creating a single Loser
-        """
-        input: LoserCreateInput!,
-      ): LoserCreatePayload! @pgInsertOne
-      """
-      Create multiple losers
-      """
-      loserCreateMany(
-        """
-        Input for creating multiple Loser instances
-        """
-        input: [LoserCreateInput!]!,
-      ): LoserCreateManyPayload! @pgInsertMany
-      """
-      Update a unique Loser
-      """
-      loserUpdate(
-        """
-        Lookup input for unique Loser update
-        """
-        lookup: LoserLookupInput!,
-        """
-        Input for updating a Loser
-        """
-        input: LoserUpdateInput!,
-      ): LoserUpdatePayload! @pgUpdateOne
-      """
-      Update multiple losers
-      """
-      loserUpdateMany(
-        """
-        Filter for updating multiple Loser instances
-        """
-        filter: LoserFilterInput,
-        """
-        Input for updating multiple Loser instances
-        """
-        input: LoserUpdateInput!,
-      ): LoserUpdateManyPayload! @pgUpdateMany
-      """
-      Delete a unique Loser
-      """
-      loserDelete(
-        """
-        Lookup input for unique Loser deletion
-        """
-        lookup: LoserLookupInput!,
-      ): LoserDeletePayload! @pgDeleteOne
-      """
-      Delete multiple losers
-      """
-      loserDeleteMany(
-        """
-        Filter for Loser deletion
-        """
-        filter: LoserFilterInput,
-      ): LoserDeleteManyPayload! @pgDeleteMany
-      """
-      Create a single User
-      """
-      userCreate(
-        """
-        Input for creating a single User
-        """
-        input: UserCreateInput!,
-      ): UserCreatePayload! @pgInsertOne
-      """
-      Create multiple users
-      """
-      userCreateMany(
-        """
-        Input for creating multiple User instances
-        """
-        input: [UserCreateInput!]!,
-      ): UserCreateManyPayload! @pgInsertMany
-      """
-      Update a unique User
-      """
-      userUpdate(
-        """
-        Lookup input for unique User update
-        """
-        lookup: UserLookupInput!,
-        """
-        Input for updating a User
-        """
-        input: UserUpdateInput!,
-      ): UserUpdatePayload! @pgUpdateOne
-      """
-      Update multiple users
-      """
-      userUpdateMany(
-        """
-        Filter for updating multiple User instances
-        """
-        filter: UserFilterInput,
-        """
-        Input for updating multiple User instances
-        """
-        input: UserUpdateInput!,
-      ): UserUpdateManyPayload! @pgUpdateMany
-      """
-      Delete a unique User
-      """
-      userDelete(
-        """
-        Lookup input for unique User deletion
-        """
-        lookup: UserLookupInput!,
-      ): UserDeletePayload! @pgDeleteOne
-      """
-      Delete multiple users
-      """
-      userDeleteMany(
-        """
-        Filter for User deletion
-        """
-        filter: UserFilterInput,
-      ): UserDeleteManyPayload! @pgDeleteMany
-    }
     "#);
 }
 
@@ -19485,18 +18757,35 @@ async fn empty_allowlist_behavior() {
 
         api.execute_sql(schema).await;
 
-        let schema = indoc! {r#"
+        let table = indoc! {r#"
             CREATE TABLE "posts" (
                 id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY
             )
         "#};
 
-        api.execute_sql(schema).await;
+        api.execute_sql(table).await;
+
+        let view = indoc! {r#"
+            CREATE VIEW "users_posts" AS
+                SELECT users.id AS user_id, posts.id AS post_id
+                FROM "users" JOIN "posts"
+                ON "users"."id" = "posts"."id"
+        "#};
+
+        api.execute_sql(view).await;
     })
     .await;
 
     let config = indoc! {r#"
         extension_url = "https://grafbase.com/extensions/postgres/0.4.7"
+
+        [schemas.public.views.users_posts.columns.user_id]
+        unique = true
+        nullable = false
+
+        [schemas.public.views.users_posts.columns.post_id]
+        unique = true
+        nullable = false
 
         [schemas.public]
         table_allowlist = []
@@ -19608,135 +18897,71 @@ async fn empty_allowlist_behavior() {
     }
 
     """
-    Input for creating a new Post
+    Filter input type for UsersPost objects.
     """
-    input PostCreateInput {
-      _: Boolean
-    }
-
-    """
-    Filter input type for Post objects.
-    """
-    input PostFilterInput @oneOf {
+    input UsersPostFilterInput @oneOf {
       """
-      Filter by the given id
+      Filter by the given userId
       """
-      id: IntFilterInput
+      userId: IntFilterInput
+      """
+      Filter by the given postId
+      """
+      postId: IntFilterInput
       """
       All of the filters must match
       """
-      ALL: [PostFilterInput]
+      ALL: [UsersPostFilterInput]
       """
       None of the filters must match
       """
-      NONE: [PostFilterInput]
+      NONE: [UsersPostFilterInput]
       """
       At least one of the filters must match
       """
-      ANY: [PostFilterInput]
+      ANY: [UsersPostFilterInput]
     }
 
     """
-    Input type to select a unique Post
+    Input type to select a unique UsersPost
     """
-    input PostLookupInput @oneOf {
+    input UsersPostLookupInput @oneOf {
       """
-      Select by the 'id' field
+      Select by the 'postId' field
       """
-      id: Int
+      postId: Int
+      """
+      Select by the 'userId' field
+      """
+      userId: Int
     }
 
     """
-    Lookup input type for Post objects for subgraph joins.
+    Lookup input type for UsersPost objects for subgraph joins.
     """
-    input PostManyLookupInput @oneOf @inaccessible {
+    input UsersPostManyLookupInput @oneOf @inaccessible {
       """
-      Select by the 'id' field
+      Select by the 'postId' field
       """
-      id: [Int!] @inaccessible
+      postId: [Int!] @inaccessible
+      """
+      Select by the 'userId' field
+      """
+      userId: [Int!] @inaccessible
     }
 
     """
-    Specifies the ordering for Post results.
+    Specifies the ordering for UsersPost results.
     """
-    input PostOrderByInput @oneOf {
+    input UsersPostOrderByInput @oneOf {
       """
-      Order posts by id
+      Order usersPosts by userId
       """
-      id: OrderDirection
-    }
-
-    """
-    Input for updating an existing Post
-    """
-    input PostUpdateInput {
-      _: Boolean
-    }
-
-    """
-    Input for creating a new User
-    """
-    input UserCreateInput {
-      _: Boolean
-    }
-
-    """
-    Filter input type for User objects.
-    """
-    input UserFilterInput @oneOf {
+      userId: OrderDirection
       """
-      Filter by the given id
+      Order usersPosts by postId
       """
-      id: IntFilterInput
-      """
-      All of the filters must match
-      """
-      ALL: [UserFilterInput]
-      """
-      None of the filters must match
-      """
-      NONE: [UserFilterInput]
-      """
-      At least one of the filters must match
-      """
-      ANY: [UserFilterInput]
-    }
-
-    """
-    Input type to select a unique User
-    """
-    input UserLookupInput @oneOf {
-      """
-      Select by the 'id' field
-      """
-      id: Int
-    }
-
-    """
-    Lookup input type for User objects for subgraph joins.
-    """
-    input UserManyLookupInput @oneOf @inaccessible {
-      """
-      Select by the 'id' field
-      """
-      id: [Int!] @inaccessible
-    }
-
-    """
-    Specifies the ordering for User results.
-    """
-    input UserOrderByInput @oneOf {
-      """
-      Order users by id
-      """
-      id: OrderDirection
-    }
-
-    """
-    Input for updating an existing User
-    """
-    input UserUpdateInput {
-      _: Boolean
+      postId: OrderDirection
     }
 
     """
@@ -19763,24 +18988,27 @@ async fn empty_allowlist_behavior() {
       endCursor: String @shareable
     }
 
-    type Post
-      @key(fields: "id")
-      @pgTable(name: "posts")
-      @pgKey(fields: ["id"], type: PRIMARY)
+    type UsersPost
+      @key(fields: "postId")
+      @key(fields: "userId")
+      @pgTable(name: "users_posts", kind: VIEW)
+      @pgKey(fields: ["postId"], type: UNIQUE)
+      @pgKey(fields: ["userId"], type: UNIQUE)
     {
-      id: Int! @pgColumn(name: "id", type: INT)
+      userId: Int! @pgColumn(name: "user_id", type: INT)
+      postId: Int! @pgColumn(name: "post_id", type: INT)
     }
 
     """
-    The connection type for Post
+    The connection type for UsersPost
     """
-    type PostConnection
-      @pgConnection(type: "Post")
+    type UsersPostConnection
+      @pgConnection(type: "UsersPost")
     {
       """
       A list of edges
       """
-      edges: [PostEdge!]! @shareable
+      edges: [UsersPostEdge!]! @shareable
       """
       Information to aid in pagination
       """
@@ -19788,291 +19016,37 @@ async fn empty_allowlist_behavior() {
     }
 
     """
-    Return type when creating many posts
-    """
-    type PostCreateManyPayload
-      @pgMutation(type: "Post")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [PostReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when creating one Post
-    """
-    type PostCreatePayload
-      @pgMutation(type: "Post")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: PostReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting many posts
-    """
-    type PostDeleteManyPayload
-      @pgMutation(type: "Post")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [PostReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting one Post
-    """
-    type PostDeletePayload
-      @pgMutation(type: "Post")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: PostReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
     An edge in a connection. Contains the node and its cursor
     """
-    type PostEdge {
+    type UsersPostEdge {
       """
       The item at the end of the edge
       """
-      node: Post! @shareable
+      node: UsersPost! @shareable
       """
       A cursor for use in pagination
       """
       cursor: String! @shareable
-    }
-
-    """
-    Return type containing fields of the mutated or created Post object
-    """
-    type PostReturning
-      @pgReturning(type: "Post")
-    {
-      """
-      The value of the id field
-      """
-      id: Int! @shareable
-    }
-
-    """
-    Return type when updating many posts
-    """
-    type PostUpdateManyPayload
-      @pgMutation(type: "Post")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [PostReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when updating one Post
-    """
-    type PostUpdatePayload
-      @pgMutation(type: "Post")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: PostReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    type User
-      @key(fields: "id")
-      @pgTable(name: "users")
-      @pgKey(fields: ["id"], type: PRIMARY)
-    {
-      id: Int! @pgColumn(name: "id", type: INT)
-    }
-
-    """
-    The connection type for User
-    """
-    type UserConnection
-      @pgConnection(type: "User")
-    {
-      """
-      A list of edges
-      """
-      edges: [UserEdge!]! @shareable
-      """
-      Information to aid in pagination
-      """
-      pageInfo: PageInfo! @shareable
-    }
-
-    """
-    Return type when creating many users
-    """
-    type UserCreateManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when creating one User
-    """
-    type UserCreatePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting many users
-    """
-    type UserDeleteManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when deleting one User
-    """
-    type UserDeletePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    An edge in a connection. Contains the node and its cursor
-    """
-    type UserEdge {
-      """
-      The item at the end of the edge
-      """
-      node: User! @shareable
-      """
-      A cursor for use in pagination
-      """
-      cursor: String! @shareable
-    }
-
-    """
-    Return type containing fields of the mutated or created User object
-    """
-    type UserReturning
-      @pgReturning(type: "User")
-    {
-      """
-      The value of the id field
-      """
-      id: Int! @shareable
-    }
-
-    """
-    Return type when updating many users
-    """
-    type UserUpdateManyPayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: [UserReturning]! @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
-    }
-
-    """
-    Return type when updating one User
-    """
-    type UserUpdatePayload
-      @pgMutation(type: "User")
-    {
-      """
-      Returned item(s) from the mutation
-      """
-      returning: UserReturning @shareable
-      """
-      The number of rows mutated
-      """
-      rowCount: Int! @shareable
     }
 
     type Query {
       """
-      Query a unique Post
+      Query a unique UsersPost
       """
-      post(
+      usersPost(
         """
-        Input for unique Post lookup
+        Input for unique UsersPost lookup
         """
-        lookup: PostLookupInput!,
-      ): Post @pgSelectOne
+        lookup: UsersPostLookupInput!,
+      ): UsersPost @pgSelectOne
       """
-      Query and paginate multiple posts
+      Query and paginate multiple usersPosts
       """
-      posts(
+      usersPosts(
         """
-        Filter for Post
+        Filter for UsersPost
         """
-        filter: PostFilterInput,
+        filter: UsersPostFilterInput,
         """
         Limit the number of results, from the beginning
         """
@@ -20092,191 +19066,17 @@ async fn empty_allowlist_behavior() {
         """
         Order the results by selected fields
         """
-        orderBy: [PostOrderByInput!],
-      ): PostConnection! @pgSelectMany
+        orderBy: [UsersPostOrderByInput!],
+      ): UsersPostConnection! @pgSelectMany
       """
-      Lookup multiple posts for subgraph joins
+      Lookup multiple usersPosts for subgraph joins
       """
-      postLookup(
+      usersPostLookup(
         """
-        Filter posts with an array of keys
+        Filter usersPosts with an array of keys
         """
-        lookup: PostManyLookupInput @inaccessible,
-      ): [Post]! @pgLookup @lookup @inaccessible
-      """
-      Query a unique User
-      """
-      user(
-        """
-        Input for unique User lookup
-        """
-        lookup: UserLookupInput!,
-      ): User @pgSelectOne
-      """
-      Query and paginate multiple users
-      """
-      users(
-        """
-        Filter for User
-        """
-        filter: UserFilterInput,
-        """
-        Limit the number of results, from the beginning
-        """
-        first: Int,
-        """
-        Limit the number of results, from the end
-        """
-        last: Int,
-        """
-        Cursor for pagination, select items before the cursor. Use together with `last`.
-        """
-        before: String,
-        """
-        Cursor for pagination, select items after the cursor. Use together with `first`.
-        """
-        after: String,
-        """
-        Order the results by selected fields
-        """
-        orderBy: [UserOrderByInput!],
-      ): UserConnection! @pgSelectMany
-      """
-      Lookup multiple users for subgraph joins
-      """
-      userLookup(
-        """
-        Filter users with an array of keys
-        """
-        lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
-    }
-
-    type Mutation {
-      """
-      Create a single Post
-      """
-      postCreate(
-        """
-        Input for creating a single Post
-        """
-        input: PostCreateInput!,
-      ): PostCreatePayload! @pgInsertOne
-      """
-      Create multiple posts
-      """
-      postCreateMany(
-        """
-        Input for creating multiple Post instances
-        """
-        input: [PostCreateInput!]!,
-      ): PostCreateManyPayload! @pgInsertMany
-      """
-      Update a unique Post
-      """
-      postUpdate(
-        """
-        Lookup input for unique Post update
-        """
-        lookup: PostLookupInput!,
-        """
-        Input for updating a Post
-        """
-        input: PostUpdateInput!,
-      ): PostUpdatePayload! @pgUpdateOne
-      """
-      Update multiple posts
-      """
-      postUpdateMany(
-        """
-        Filter for updating multiple Post instances
-        """
-        filter: PostFilterInput,
-        """
-        Input for updating multiple Post instances
-        """
-        input: PostUpdateInput!,
-      ): PostUpdateManyPayload! @pgUpdateMany
-      """
-      Delete a unique Post
-      """
-      postDelete(
-        """
-        Lookup input for unique Post deletion
-        """
-        lookup: PostLookupInput!,
-      ): PostDeletePayload! @pgDeleteOne
-      """
-      Delete multiple posts
-      """
-      postDeleteMany(
-        """
-        Filter for Post deletion
-        """
-        filter: PostFilterInput,
-      ): PostDeleteManyPayload! @pgDeleteMany
-      """
-      Create a single User
-      """
-      userCreate(
-        """
-        Input for creating a single User
-        """
-        input: UserCreateInput!,
-      ): UserCreatePayload! @pgInsertOne
-      """
-      Create multiple users
-      """
-      userCreateMany(
-        """
-        Input for creating multiple User instances
-        """
-        input: [UserCreateInput!]!,
-      ): UserCreateManyPayload! @pgInsertMany
-      """
-      Update a unique User
-      """
-      userUpdate(
-        """
-        Lookup input for unique User update
-        """
-        lookup: UserLookupInput!,
-        """
-        Input for updating a User
-        """
-        input: UserUpdateInput!,
-      ): UserUpdatePayload! @pgUpdateOne
-      """
-      Update multiple users
-      """
-      userUpdateMany(
-        """
-        Filter for updating multiple User instances
-        """
-        filter: UserFilterInput,
-        """
-        Input for updating multiple User instances
-        """
-        input: UserUpdateInput!,
-      ): UserUpdateManyPayload! @pgUpdateMany
-      """
-      Delete a unique User
-      """
-      userDelete(
-        """
-        Lookup input for unique User deletion
-        """
-        lookup: UserLookupInput!,
-      ): UserDeletePayload! @pgDeleteOne
-      """
-      Delete multiple users
-      """
-      userDeleteMany(
-        """
-        Filter for User deletion
-        """
-        filter: UserFilterInput,
-      ): UserDeleteManyPayload! @pgDeleteMany
+        lookup: UsersPostManyLookupInput @inaccessible,
+      ): [UsersPost]! @pgLookup @lookup @inaccessible
     }
     "#);
 }
