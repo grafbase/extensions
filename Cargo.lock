@@ -2762,6 +2762,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "futures-util",
+ "fxhash",
  "grafbase-sdk",
  "indoc",
  "insta",
