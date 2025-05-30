@@ -9,6 +9,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 futures-util.workspace = true
+fxhash.workspace = true
 grafbase-sdk = { workspace = true, features = ["jq-selection"] }
 regex.workspace = true
 serde = { workspace = true, features = ["derive"] }

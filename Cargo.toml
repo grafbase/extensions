@@ -64,6 +64,7 @@ duration-str = "0.16.1"
 enumflags2 = "0.7.11"
 futures = "0.3"
 futures-util = "0.3.31"
+fxhash = "0.2.1"
 grafbase-database-definition = { version = "0.1.0", path = "crates/database-definition" }
 grafbase-postgres-introspection = { version = "0.1.0", path = "crates/postgres-introspection" }
 grafbase-sdk = "0.16.1"

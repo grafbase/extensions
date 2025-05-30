@@ -2,9 +2,10 @@ mod config;
 mod directives;
 mod subscription;
 
-use std::{cell::RefCell, collections::HashMap, rc::Rc, str::FromStr, time::Duration};
+use std::{cell::RefCell, rc::Rc, str::FromStr, time::Duration};
 
 use directives::{DirectiveKind, KafkaConsumerStartOffset, KafkaProducerBatching, KafkaPublish, KafkaSubscription};
+use fxhash::FxHashMap;
 use grafbase_sdk::{
     FieldResolverExtension, Subscription,
     host_io::kafka::{self, KafkaBatchConfig, KafkaConsumerConfig, KafkaProducerConfig},
@@ -18,16 +19,17 @@ use subscription::FilteredSubscription;
 
 #[derive(FieldResolverExtension)]
 struct Kafka {
-    producers: HashMap<String, kafka::KafkaProducer>,
-    endpoints: HashMap<String, config::Endpoint>,
+    producers: FxHashMap<String, kafka::KafkaProducer>,
+    endpoints: FxHashMap<String, config::Endpoint>,
     jq_selection: Rc<RefCell<JqSelection>>,
+    key_filters: FxHashMap<String, Regex>,
 }
 
 impl FieldResolverExtension for Kafka {
     fn new(schema_directives: Vec<SchemaDirective>, config: Configuration) -> Result<Self, Error> {
         let config: config::KafkaConfig = config.deserialize()?;
-        let mut endpoints = HashMap::new();
-        let mut producers = HashMap::new();
+        let mut endpoints = FxHashMap::default();
+        let mut producers = FxHashMap::default();
 
         for endpoint in config.endpoints {
             endpoints.insert(endpoint.name.clone(), endpoint);
@@ -89,6 +91,7 @@ impl FieldResolverExtension for Kafka {
             producers,
             endpoints,
             jq_selection,
+            key_filters: Default::default(),
         })
     }
 
@@ -193,10 +196,17 @@ impl FieldResolverExtension for Kafka {
         let consumer = kafka::consumer(&endpoint.bootstrap_servers, topic, config)?;
 
         let key_filter = match key_filter {
-            Some(filter) => Some(Regex::new(filter).map_err(|e| {
-                let msg = format!("Invalid key filter regex: {e}");
-                Error::from(msg)
-            })?),
+            Some(filter) => match self.key_filters.get(filter) {
+                Some(filter) => Some(filter.clone()),
+                None => {
+                    let regex = Regex::new(filter).map_err(|e| {
+                        let msg = format!("Invalid key filter regex: {e}");
+                        Error::from(msg)
+                    })?;
+
+                    Some(regex)
+                }
+            },
             None => None,
         };
 
