@@ -136,18 +136,16 @@ To publish messages to a Kafka topic, you need to first configure a producer usi
 ### Schema-level Producer Configuration
 
 ```graphql
-schema @kafkaProducer(
-  name: "userEvents"
-  provider: "default"
-  topic: "user-events"
-  config: {
-    compression: GZIP
-    batch: { lingerMs: 10, maxSizeBytes: 16384 }
-  }
-) {
-  query: Query
-  mutation: Mutation
-}
+extend schema
+  @link(
+    url: "https://grafbase.com/extensions/kafka/0.1.1"
+    import: ["@kafkaProducer", "@kafkaPublish", "@kafkaSubscription"]
+  )
+  @kafkaProducer(
+    name: "userEvents",
+    topic: "user-events",
+    provider: "default",
+  )
 ```
 
 - `name`: The name of the Kafka producer. This is used to reference the producer in the `@kafkaPublish` directive. Must be unique within the schema.
@@ -177,19 +175,21 @@ directive @kafkaPublish(
 ### Example
 
 ```graphql
-schema @kafkaProducer(
-  name: "userEventProducer"
-  provider: "default"
-  topic: "user-events"
-  config: {
-    compression: GZIP
-    partitions: [0, 1, 2]
-    batch: { lingerMs: 5, maxSizeBytes: 8192 }
-  }
-) {
-  query: Query
-  mutation: Mutation
-}
+extend schema
+  @link(
+    url: "https://grafbase.com/extensions/kafka/0.1.1"
+    import: ["@kafkaProducer", "@kafkaPublish", "@kafkaSubscription"]
+  )
+  @kafkaProducer(
+    name: "userEventProducer"
+    provider: "default"
+    topic: "user-events"
+    config: {
+      compression: GZIP
+      partitions: [0, 1, 2]
+      batch: { lingerMs: 5, maxSizeBytes: 8192 }
+    }
+  )
 
 type Mutation {
   publishUserEvent(id: String!, input: UserEventInput!): Boolean! @kafkaPublish(
