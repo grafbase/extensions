@@ -1,6 +1,6 @@
 [extension]
 name = "kafka"
-version = "0.1.0"
+version = "0.1.1"
 type = "resolver"
 description = "Map Kafka endpoints to GraphQL fields. Supports publishing and consuming messages."
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/kafka"
