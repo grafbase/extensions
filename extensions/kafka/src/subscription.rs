@@ -35,18 +35,19 @@ impl Subscription for FilteredSubscription {
     fn next(&mut self) -> Result<Option<SubscriptionOutput>, Error> {
         let item = match self.kafka.next() {
             Ok(Some(item)) => item,
-            Ok(None) => return Ok(None),
+            Ok(None) => {
+                return Ok(None);
+            }
             Err(e) => return Err(format!("Failed to receive message from NATS: {e}").into()),
         };
 
         let mut builder = SubscriptionOutput::builder();
 
-        match self.key_filter {
-            Some(ref filter) => match item.key() {
+        if let Some(ref filter) = self.key_filter {
+            match item.key() {
                 Some(key) if filter.is_match(&key) => {}
                 _ => return Ok(Some(builder.build())),
-            },
-            None => return Ok(Some(builder.build())),
+            }
         }
 
         let value: Option<serde_json::Value> = item
