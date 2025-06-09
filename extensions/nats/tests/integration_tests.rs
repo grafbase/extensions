@@ -101,7 +101,7 @@ fn subgraph() -> ExtensionOnlySubgraph {
         type Subscription {{
           userEvents(id: Int!): UserEvent! @natsSubscription(
             subject: "subscription.user.{{{{args.id}}}}.events",
-            selection: "{{ email, name, number }}",
+            selection: "{{ email, name }}",
           )
 
           highPriorityBankEvents(limit: Int!): BankEvent! @natsSubscription(
@@ -111,7 +111,7 @@ fn subgraph() -> ExtensionOnlySubgraph {
 
           persistenceEvents(id: Int!): UserEvent! @natsSubscription(
             subject: "persistence.user.{{{{args.id}}}}.events",
-            selection: "{{ email, name, number }}",
+            selection: "{{ email, name}}",
             streamConfig: {{
               streamName: "testStream",
               consumerName: "testConsumer",
@@ -122,7 +122,7 @@ fn subgraph() -> ExtensionOnlySubgraph {
 
           nonexistingEvents(id: Int!): UserEvent! @natsSubscription(
             subject: "persistence.user.{{{{args.id}}}}.events",
-            selection: "{{ email, name, number }}",
+            selection: "{{ email, name }}",
             streamConfig: {{
               streamName: "nonExistingStream",
               consumerName: "testConsumer",
@@ -148,7 +148,6 @@ fn subgraph() -> ExtensionOnlySubgraph {
         type UserEvent {{
           email: String!
           name: String!
-          number: Int!
         }}
 
         type User {{
@@ -197,7 +196,6 @@ async fn test_subscribe() {
           userEvents(id: 1) {
             email
             name
-            number
           }
         }
     "#};
@@ -214,7 +212,6 @@ async fn test_subscribe() {
           userEvents(id: 2) {
             email
             name
-            number
           }
         }
     "#};
@@ -227,9 +224,9 @@ async fn test_subscribe() {
         .unwrap();
 
     tokio::spawn(async move {
-        for i in 0.. {
-            let event1 = json!({ "email": "user1@example.com", "name": "User One", "number": i });
-            let event2 = json!({ "email": "user2@example.com", "name": "User Two", "number": i });
+        for _ in 0.. {
+            let event1 = json!({ "email": "user1@example.com", "name": "User One" });
+            let event2 = json!({ "email": "user2@example.com", "name": "User Two" });
 
             let event1 = serde_json::to_vec(&event1).unwrap();
             let event2 = serde_json::to_vec(&event2).unwrap();
@@ -251,8 +248,7 @@ async fn test_subscribe() {
         "data": {
           "userEvents": {
             "email": "user1@example.com",
-            "name": "User One",
-            "number": 1
+            "name": "User One"
           }
         }
       },
@@ -260,8 +256,7 @@ async fn test_subscribe() {
         "data": {
           "userEvents": {
             "email": "user1@example.com",
-            "name": "User One",
-            "number": 2
+            "name": "User One"
           }
         }
       }
@@ -278,8 +273,7 @@ async fn test_subscribe() {
         "data": {
           "userEvents": {
             "email": "user2@example.com",
-            "name": "User Two",
-            "number": 1
+            "name": "User Two"
           }
         }
       },
@@ -287,8 +281,7 @@ async fn test_subscribe() {
         "data": {
           "userEvents": {
             "email": "user2@example.com",
-            "name": "User Two",
-            "number": 2
+            "name": "User Two"
           }
         }
       }
@@ -477,8 +470,8 @@ async fn test_existing_stream() {
     let runner = TestRunner::new(config).await.unwrap();
 
     tokio::spawn(async move {
-        for i in 1.. {
-            let event = json!({ "email": "user1@example.com", "name": "User One", "number": i });
+        for _ in 1.. {
+            let event = json!({ "email": "user1@example.com", "name": "User One" });
             let event = serde_json::to_vec(&event).unwrap();
 
             context
@@ -495,7 +488,6 @@ async fn test_existing_stream() {
           persistenceEvents(id: 1) {
             email
             name
-            number
           }
         }
     "#};
@@ -517,8 +509,7 @@ async fn test_existing_stream() {
         "data": {
           "persistenceEvents": {
             "email": "user1@example.com",
-            "name": "User One",
-            "number": 1
+            "name": "User One"
           }
         }
       },
@@ -526,8 +517,7 @@ async fn test_existing_stream() {
         "data": {
           "persistenceEvents": {
             "email": "user1@example.com",
-            "name": "User One",
-            "number": 2
+            "name": "User One"
           }
         }
       }
@@ -550,7 +540,6 @@ async fn test_non_existing_stream() {
           nonexistingEvents(id: 1) {
             email
             name
-            number
           }
         }
     "#};
