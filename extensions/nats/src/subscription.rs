@@ -3,7 +3,7 @@ use std::{cell::RefCell, rc::Rc};
 use grafbase_sdk::{
     host_io::nats::{self, NatsSubscription},
     jq_selection::JqSelection,
-    types::{Error, SubscriptionOutput},
+    types::{Error, Response, SubscriptionItem},
     Subscription,
 };
 
@@ -24,14 +24,12 @@ impl FilteredSubscription {
 }
 
 impl Subscription for FilteredSubscription {
-    fn next(&mut self) -> Result<Option<SubscriptionOutput>, Error> {
+    fn next(&mut self) -> Result<Option<SubscriptionItem>, Error> {
         let item = match self.nats.next() {
             Ok(Some(item)) => item,
             Ok(None) => return Ok(None),
             Err(e) => return Err(format!("Failed to receive message from NATS: {e}").into()),
         };
-
-        let mut builder = SubscriptionOutput::builder();
 
         let payload: serde_json::Value = item
             .payload()
@@ -41,22 +39,17 @@ impl Subscription for FilteredSubscription {
             Some(ref selection) => {
                 let mut jq = self.jq_selection.borrow_mut();
 
-                let filtered = jq
+                let items = jq
                     .select(selection, payload)
-                    .map_err(|e| format!("Failed to filter with selection: {e}"))?;
-
-                for payload in filtered {
-                    match payload {
-                        Ok(payload) => builder.push(payload)?,
-                        Err(error) => builder.push_error(format!("Error parsing result value: {error}")),
-                    }
-                }
+                    .map_err(|e| format!("Failed to filter with selection: {e}"))?
+                    .map(|result| match result {
+                        Ok(value) => Response::data(value),
+                        Err(err) => Response::error(err),
+                    })
+                    .collect::<Vec<_>>();
+                Ok(Some(SubscriptionItem::Multiple(items)))
             }
-            None => {
-                builder.push(payload)?;
-            }
-        };
-
-        Ok(Some(builder.build()))
+            None => Ok(Some(SubscriptionItem::Single(Response::data(payload)))),
+        }
     }
 }

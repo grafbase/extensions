@@ -14,6 +14,7 @@ grafbase-sdk = { workspace = true, features = ["jq-selection"] }
 regex.workspace = true
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
+template.workspace = true
 
 [dev-dependencies]
 chrono = { workspace = true, features = ["clock"] }

@@ -1,0 +1,24 @@
+[package]
+name = "template"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+ramhorns = { git = "https://github.com/grafbase/ramhorns", branch = "grafbase", default-features = false, features = [
+    "indexes",
+    "export_derive",
+] }
+grafbase-sdk.workspace = true
+serde_json.workspace = true
+percent-encoding.workspace = true
+rapidhash.workspace = true
+hashbrown.workspace = true
+
+[lints]
+workspace = true
+

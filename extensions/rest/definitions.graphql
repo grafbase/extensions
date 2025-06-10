@@ -1,8 +1,5 @@
-extend schema
-  @link(
-    url: "https://specs.grafbase.com/grafbase"
-    import: ["InputValueSet", "UrlTemplate", "JsonTemplate"]
-  )
+scalar UrlTemplate
+scalar JqTemplate
 
 """
 @restEndpoint directive enables defining named REST endpoints for the
@@ -36,7 +33,6 @@ type Query {
     endpoint: "users",
     method: GET,
     path: "/users",
-    selection: "*"
   )
 }
 """
@@ -62,13 +58,13 @@ directive @rest(
   Specifies which fields from the GraphQL selection to include in the
   response.
   """
-  selection: JsonTemplate!
+  selection: JqTemplate
 
   """
   Configuration for the request body, can include static values or
   selections from the GraphQL arguments
   """
-  body: Body = { selection: "*" }
+  body: Body = { selection: "." }
 ) on FIELD_DEFINITION
 
 scalar JSON
@@ -83,7 +79,7 @@ input Body {
   Specifies which GraphQL arguments to include in the request body.
   Use "*" to include all arguments, or provide specific field names.
   """
-  selection: InputValueSet
+  selection: JqTemplate
 
   """
   Static JSON content to include in the request body,

@@ -2,7 +2,7 @@ use crate::{conversions, schema};
 use grafbase_sdk::{
     Subscription,
     host_io::grpc::GrpcStreamingResponse,
-    types::{Error, SubscriptionOutput},
+    types::{Error, Response, SubscriptionItem},
 };
 
 pub(crate) struct StreamingResponse<'a> {
@@ -12,7 +12,7 @@ pub(crate) struct StreamingResponse<'a> {
 }
 
 impl Subscription for StreamingResponse<'_> {
-    fn next(&mut self) -> Result<Option<grafbase_sdk::types::SubscriptionOutput>, Error> {
+    fn next(&mut self) -> Result<Option<SubscriptionItem>, Error> {
         let response_proto = match self.response.next_message() {
             Ok(Some(message)) => message,
             Ok(None) => return Ok(None),
@@ -25,14 +25,13 @@ impl Subscription for StreamingResponse<'_> {
             }
         };
 
-        let mut output = SubscriptionOutput::builder();
-
-        output.push(conversions::MessageSerialize::new(
-            &response_proto.into(),
-            self.output_message,
-            self.schema,
-        ))?;
-
-        Ok(Some(output.build()))
+        Ok(Some(
+            Response::data(conversions::MessageSerialize::new(
+                &response_proto.into(),
+                self.output_message,
+                self.schema,
+            ))
+            .into(),
+        ))
     }
 }
