@@ -14,6 +14,7 @@ crate-type = ["cdylib"]
 grafbase-sdk = { workspace = true, features = ["jq-selection"] }
 serde.workspace = true
 serde_json.workspace = true
+template.workspace = true
 
 [dev-dependencies]
 async-nats.workspace = true

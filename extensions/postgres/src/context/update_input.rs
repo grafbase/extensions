@@ -74,7 +74,7 @@ impl<'a> UpdateInputIterator<'a> {
     pub fn new(ctx: &'a Context<'a>, table: TableWalker<'a>) -> Result<Self, SdkError> {
         let mut input = VecDeque::new();
 
-        for (ref field_name, op) in ctx.field.arguments::<UpdateInputParameters>(ctx.arguments)?.input {
+        for (ref field_name, op) in ctx.field.arguments::<UpdateInputParameters>(ctx.variables)?.input {
             let Some(column) = ctx
                 .database_definition
                 .find_column_for_client_field(field_name, table.id())

@@ -18,6 +18,7 @@ pkcs8.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
+template.workspace = true
 
 [dev-dependencies]
 grafbase-sdk = { workspace = true, features = ["test-utils"] }

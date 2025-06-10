@@ -1,33 +1,27 @@
 mod types;
 
 use grafbase_sdk::{
-    FieldResolverExtension,
+    ResolverExtension,
     host_io::http::{self, HttpRequest, Url},
     jq_selection::JqSelection,
-    types::{
-        Configuration, Error, FieldDefinitionDirective, FieldInputs, FieldOutputs, SchemaDirective, SubgraphHeaders,
-    },
+    types::{Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema, Variables},
 };
+use serde_json::Value;
+use template::Templates;
 use types::{Rest, RestEndpoint};
 
-#[derive(FieldResolverExtension)]
+use crate::types::{Body, BodyCase};
+
+#[derive(ResolverExtension)]
 struct RestExtension {
     endpoints: Vec<RestEndpoint>,
+    templates: Templates,
     jq_selection: JqSelection,
 }
 
-impl FieldResolverExtension for RestExtension {
-    fn new(schema_directives: Vec<SchemaDirective>, _: Configuration) -> Result<Self, Error> {
+impl ResolverExtension for RestExtension {
+    fn new(schemas: Vec<SubgraphSchema<'_>>, _config: Configuration) -> Result<Self, Error> {
         let mut endpoints = Vec::<RestEndpoint>::new();
-
-        for directive in schema_directives {
-            let endpoint = RestEndpoint {
-                subgraph_name: directive.subgraph_name().to_string(),
-                args: directive.arguments()?,
-            };
-
-            endpoints.push(endpoint);
-        }
 
         endpoints.sort_by(|a, b| {
             let by_name = a.args.name.cmp(&b.args.name);
@@ -35,30 +29,42 @@ impl FieldResolverExtension for RestExtension {
             by_name.then(by_subgraph)
         });
 
+        for schema in schemas {
+            for directive in schema.directives() {
+                let endpoint = RestEndpoint {
+                    subgraph_name: schema.subgraph_name().to_string(),
+                    args: directive.arguments()?,
+                };
+
+                endpoints.push(endpoint);
+            }
+        }
+
         Ok(Self {
             endpoints,
+            templates: Default::default(),
             jq_selection: JqSelection::default(),
         })
     }
 
-    fn resolve_field(
-        &mut self,
-        headers: SubgraphHeaders,
-        subgraph_name: &str,
-        directive: FieldDefinitionDirective<'_>,
-        inputs: FieldInputs,
-    ) -> Result<FieldOutputs, Error> {
-        let rest: Rest<'_> = directive
+    fn resolve(&mut self, prepared: &[u8], headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
+        let field = ResolvedField::try_from(prepared)?;
+
+        let rest: Rest<'_> = field
+            .directive()
             .arguments()
             .map_err(|e| format!("Could not parse directive arguments: {e}"))?;
+        let field_arguments: serde_json::Value = field.arguments(&variables)?;
+        let ctx = serde_json::json!({"args": field_arguments});
 
-        let Some(endpoint) = self.get_endpoint(rest.endpoint, subgraph_name) else {
+        let Some(endpoint) = self.get_endpoint(rest.endpoint, field.subgraph_name()) else {
             return Err(format!("Endpoint not found: {}", rest.endpoint).into());
         };
 
         let mut url = Url::parse(&endpoint.args.base_url).map_err(|e| format!("Could not parse URL: {e}"))?;
 
-        let path = rest.path.strip_prefix("/").unwrap_or(rest.path);
+        let path = self.templates.get_or_insert(rest.path)?.render_url(&ctx);
+        let path = path.strip_prefix("/").unwrap_or(&path);
 
         if !path.is_empty() {
             let mut path_segments = url.path_segments_mut().map_err(|_| "Could not parse URL")?;
@@ -74,43 +80,31 @@ impl FieldResolverExtension for RestExtension {
             builder.push_header(key.to_string(), value.to_str().unwrap().to_string());
         }
 
-        let request = match rest.body() {
-            Some(ref body) => builder.json(body),
-            None => builder.build(),
+        let request = if let Some(body) = rest.body {
+            builder.json(self.render_body(body, ctx)?)
+        } else {
+            builder.build()
         };
 
-        let result = http::execute(&request).map_err(|e| format!("HTTP request failed: {e}"))?;
+        let resp = http::execute(&request).map_err(|e| format!("HTTP request failed: {e}"))?;
 
-        if !result.status().is_success() {
-            return Err(format!("HTTP request failed with status: {}", result.status()).into());
+        if !resp.status().is_success() {
+            return Err(format!("HTTP request failed with status: {}", resp.status()).into());
         }
 
-        let data: serde_json::Value = result
-            .json()
-            .map_err(|e| format!("Error deserializing response: {e}"))?;
+        if let Some(selection) = rest.selection {
+            let data: serde_json::Value = resp.json().map_err(|e| format!("Error deserializing response: {e}"))?;
 
-        if !(data.is_object() || data.is_array()) {
-            return Ok(FieldOutputs::new(inputs, data)?);
-        }
-
-        let filtered = self
-            .jq_selection
-            .select(rest.selection, data)
-            .map_err(|e| format!("Error selecting result value: {e}"))?
-            .collect::<Result<Vec<_>, _>>();
-
-        Ok(match filtered {
-            Ok(filtered) => {
-                // TODO: We don't know whether a list of a single item is expected here...
-                // Need engine to help
-                if filtered.len() == 1 {
-                    FieldOutputs::new(inputs, filtered.into_iter().next().unwrap())?
-                } else {
-                    FieldOutputs::new(inputs, filtered)?
-                }
+            if !(data.is_object() || data.is_array()) {
+                return Ok(Response::data(data));
             }
-            Err(error) => FieldOutputs::error(inputs, format!("Failed to filter with selection: {}", error)),
-        })
+
+            let data = self.render_jq_template(selection, data)?;
+
+            Ok(Response::data(data))
+        } else {
+            Ok(Response::json(resp.into_bytes()))
+        }
     }
 }
 
@@ -125,5 +119,28 @@ impl RestExtension {
             })
             .map(|i| &self.endpoints[i])
             .ok()
+    }
+
+    fn render_body(&mut self, body: Body<'_>, ctx: Value) -> Result<Value, Error> {
+        match body.into_case() {
+            Some(BodyCase::Selection(source)) => self.render_jq_template(source, ctx),
+            Some(BodyCase::Static(value)) => Ok(value),
+            None => Ok(Value::Null),
+        }
+    }
+
+    fn render_jq_template(&mut self, source: &str, ctx: Value) -> Result<Value, Error> {
+        let selection = self.templates.get_or_insert(source)?.render_json(&ctx);
+        let mut values = self
+            .jq_selection
+            .select(&selection, ctx)
+            .map_err(|e| format!("Failed to filter with selection: {}", e))?
+            .collect::<Result<Vec<Value>, _>>()
+            .map_err(|e| format!("Failed to collect filtered value: {}", e))?;
+        if values.len() == 1 {
+            Ok(values.pop().unwrap())
+        } else {
+            Ok(serde_json::Value::Array(values))
+        }
     }
 }

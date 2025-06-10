@@ -7,7 +7,7 @@ Integrate your Postgres database directly into Grafbase Gateway. This extension 
 homepage_url = "https://grafbase.com/extensions/postgres"
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/postgres"
 license = "Apache-2.0"
-type = "selection_set_resolver"
+type = "resolver"
 
 # These are the default permissions for the extension.
 # The user can enable or disable them as needed in the gateway
@@ -17,3 +17,6 @@ network = true
 stdout = true
 stderr = true
 environment_variables = true
+
+[directives]
+resolvers = ["pgSelectOne", "pgSelectMany", "pgLookup", "pgInsertOne", "pgInsertMany", "pgUpdateOne", "pgUpdateMany", "pgDeleteOne", "pgDeleteMany"]

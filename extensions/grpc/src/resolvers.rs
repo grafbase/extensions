@@ -2,47 +2,47 @@ mod streaming_response;
 
 use crate::{
     config::{self, Service},
-    conversions,
+    conversions::{self, ArgumentsDeserialize},
     directives::{self, ProtoMethodDefinition},
     schema,
 };
-use grafbase_sdk::{
-    Subscription,
-    types::{Error, FieldDefinitionDirective, FieldInputs, FieldOutputs},
-};
+use grafbase_sdk::types::{Error, ResolvedField, Response, Variables};
 use streaming_response::StreamingResponse;
 
 pub(crate) fn grpc_method(
-    directive: FieldDefinitionDirective<'_>,
-    inputs: FieldInputs,
+    field: ResolvedField<'_>,
+    variables: Variables,
     schema: &schema::Schema,
     configuration: &config::GrpcConfiguration,
-) -> Result<FieldOutputs, Error> {
+) -> Result<Response, Error> {
     let MethodInfo {
         input_message,
         output_message,
         service,
         method,
-    } = extract_method_info(&directive, schema, configuration)?;
+    } = extract_method_info(&field, schema, configuration)?;
 
     let mut input_proto = Vec::new();
 
-    directive.arguments_seed(conversions::GrpcMethodDirectiveArguments {
-        schema,
-        message: input_message,
-        out: &mut input_proto,
-    })?;
+    field.arguments_seed(
+        &variables,
+        ArgumentsDeserialize {
+            schema,
+            message: input_message,
+            out: &mut input_proto,
+        },
+    )?;
 
     let client = grafbase_sdk::host_io::grpc::GrpcClient::new(&service.address)?;
 
     let metadata = &[];
 
     match client.unary(&input_proto, &service.name, &method.name, metadata, None) {
-        Ok(response) => FieldOutputs::new(
-            inputs,
-            conversions::MessageSerialize::new(&response.into_message().into(), output_message, schema),
-        )
-        .map_err(Error::from),
+        Ok(response) => Ok(Response::data(conversions::MessageSerialize::new(
+            &response.into_message().into(),
+            output_message,
+            schema,
+        ))),
         Err(err) => Err(Error::new(format!(
             "gRPC error. Status code: {:?}. Message: {}",
             err.code(),
@@ -52,35 +52,38 @@ pub(crate) fn grpc_method(
 }
 
 pub(crate) fn grpc_method_subscription<'a>(
-    directive: FieldDefinitionDirective<'_>,
+    field: ResolvedField<'a>,
+    variables: Variables,
     schema: &'a schema::Schema,
     configuration: &'a config::GrpcConfiguration,
-) -> Result<Box<dyn Subscription + 'a>, Error> {
+) -> Result<StreamingResponse<'a>, Error> {
     let MethodInfo {
         input_message,
         output_message,
         service,
         method,
-    } = extract_method_info(&directive, schema, configuration)?;
+    } = extract_method_info(&field, schema, configuration)?;
 
     let mut input_proto = Vec::new();
-
-    directive.arguments_seed(conversions::GrpcMethodDirectiveArguments {
-        schema,
-        message: input_message,
-        out: &mut input_proto,
-    })?;
+    field.arguments_seed(
+        &variables,
+        ArgumentsDeserialize {
+            schema,
+            message: input_message,
+            out: &mut input_proto,
+        },
+    )?;
 
     let client = grafbase_sdk::host_io::grpc::GrpcClient::new(&service.address)?;
 
     let metadata = &[];
 
     match client.streaming(&input_proto, &service.name, &method.name, metadata, None) {
-        Ok(response) => Ok(Box::new(StreamingResponse {
+        Ok(response) => Ok(StreamingResponse {
             response,
             output_message,
             schema,
-        })),
+        }),
         Err(_) => todo!(),
     }
 }
@@ -93,11 +96,11 @@ struct MethodInfo<'a> {
 }
 
 fn extract_method_info<'a>(
-    directive: &FieldDefinitionDirective<'_>,
+    field: &ResolvedField<'_>,
     schema: &'a schema::Schema,
     configuration: &'a config::GrpcConfiguration,
 ) -> Result<MethodInfo<'a>, Error> {
-    let grpc_method_directive: directives::GrpcMethod = directive.arguments()?;
+    let grpc_method_directive: directives::GrpcMethod = field.directive().arguments()?;
 
     let Some(service) = schema.get_service(&grpc_method_directive.service) else {
         return Err(Error::new(format!(

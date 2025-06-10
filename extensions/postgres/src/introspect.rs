@@ -84,7 +84,7 @@ pub fn from_sdl(subgraph_schemas: Vec<SubgraphSchema<'_>>) -> HashMap<String, Da
         keys::introspect_sdl(&schema, &mut database_definition);
         field_mapping::introspect(&schema, &mut database_definition);
 
-        result.insert(schema.name().to_string(), database_definition);
+        result.insert(schema.subgraph_name().to_string(), database_definition);
     }
 
     result

@@ -18,31 +18,28 @@ pub struct Rest<'a> {
     pub endpoint: &'a str,
     pub method: HttpMethod,
     pub path: &'a str,
-    pub selection: &'a str,
-    body: Option<Body>,
-}
-
-impl Rest<'_> {
-    pub fn body(&self) -> Option<&serde_json::Value> {
-        self.body.as_ref().and_then(|body| {
-            body.r#static
-                .as_ref()
-                .or_else(|| body.selection.as_ref().and_then(|s| s.input.as_ref()))
-        })
-    }
+    pub selection: Option<&'a str>,
+    pub body: Option<Body<'a>>,
 }
 
 #[derive(Debug, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Body {
-    pub selection: Option<RestInput>,
+pub struct Body<'a> {
+    pub selection: Option<&'a str>,
     pub r#static: Option<serde_json::Value>,
 }
 
-#[derive(Debug, serde::Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct RestInput {
-    input: Option<serde_json::Value>,
+impl<'a> Body<'a> {
+    pub fn into_case(self) -> Option<BodyCase<'a>> {
+        self.r#static
+            .map(BodyCase::Static)
+            .or_else(|| self.selection.map(BodyCase::Selection))
+    }
+}
+
+pub(crate) enum BodyCase<'a> {
+    Selection(&'a str),
+    Static(serde_json::Value),
 }
 
 #[derive(Debug, Clone, Copy, serde::Deserialize)]

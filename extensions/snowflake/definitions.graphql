@@ -1,5 +1,4 @@
-extend schema
-  @link(url: "https://specs.grafbase.com/grafbase", import: ["JsonTemplate"])
+scalar JsonTempalte
 
 """
 Run a statement against Snowflake. The bindings are optional. They can

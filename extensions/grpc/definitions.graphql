@@ -1,6 +1,3 @@
-extend schema
-  @link(url: "https://specs.grafbase.com/grafbase", import: ["InputValueSet"])
-
 """
 A method in a GRPC service.
 """
@@ -13,12 +10,6 @@ directive @grpcMethod(
   The name of the GRPC method.
   """
   method: String!
-  """
-  The selection on the field arguments that should be passed to the extension to construct and issue the gRPC request.
-
-  This can generally be ignored, since the default includes everything.
-  """
-  input: InputValueSet = "*"
 ) on FIELD_DEFINITION
 
 """
