@@ -23,6 +23,11 @@ fn main() -> anyhow::Result<()> {
 
         let cargo_toml = cargo_toml::parse(&cargo_toml)?;
 
+        println!("\n** {} **", cargo_toml.name());
+        duct::cmd("grafbase", ["extension", "build", "--debug"])
+            .dir(path)
+            .run()?;
+
         test_arguments.push("-p".to_string());
         test_arguments.push(cargo_toml.name().to_string());
 
@@ -33,7 +38,11 @@ fn main() -> anyhow::Result<()> {
         return Ok(());
     }
 
-    duct::cmd("cargo", &test_arguments).run()?;
+    println!("\n** Running tests **");
+    duct::cmd("cargo", &test_arguments)
+        .env("LOCAL_EXTENSION_WASM_CACHE", "1")
+        .env("PREBUILT_EXTENSION", "1")
+        .run()?;
 
     Ok(())
 }
