@@ -2,7 +2,7 @@ use crate::ast::Expression;
 use std::ops::{Add, Div, Mul, Rem, Sub};
 
 /// Calculation operations in SQL queries.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub enum SqlOp<'a> {
     Add(Expression<'a>, Expression<'a>),
     Sub(Expression<'a>, Expression<'a>),

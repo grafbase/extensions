@@ -3,7 +3,7 @@ use crate::ast::{Expression, FunctionType}; // Assuming these paths are correct
 
 /// Represents the nature of a string to be used in SQL,
 /// particularly for functions like REPLACE where escaping might differ.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum SqlStringPattern<'a> {
     /// A literal string. During SQL rendering, this will typically be enclosed in single quotes,
     /// with internal single quotes escaped (e.g., 'a literal string', 'O''Malley').
@@ -14,7 +14,7 @@ pub enum SqlStringPattern<'a> {
     EscapedContent(&'a str),
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Replace<'a> {
     pub(crate) expression: Box<Expression<'a>>,
     pub(crate) old_value: SqlStringPattern<'a>,

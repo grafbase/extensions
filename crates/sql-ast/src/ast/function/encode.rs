@@ -2,7 +2,7 @@ use super::Function;
 use crate::ast::Expression;
 
 /// The encode format.
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy)]
 pub enum EncodeFormat {
     Base64,
     Escape,
@@ -10,7 +10,7 @@ pub enum EncodeFormat {
 }
 
 /// A representation of the `encode` function in PostgreSQL.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Encode<'a> {
     pub(crate) expression: Expression<'a>,
     pub(crate) format: EncodeFormat,

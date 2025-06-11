@@ -1,7 +1,7 @@
 use super::Function;
 use crate::ast::{Expression, FunctionType};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 /// Returns the first non-null expression
 pub struct Coalesce<'a> {
     pub(crate) exprs: Vec<Expression<'a>>,

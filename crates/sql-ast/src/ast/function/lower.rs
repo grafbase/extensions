@@ -2,7 +2,7 @@ use super::Function;
 use crate::ast::{Expression, FunctionType};
 
 /// A represention of the `LOWER` function in the database.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Lower<'a> {
     pub(crate) expression: Box<Expression<'a>>,
 }

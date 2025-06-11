@@ -3,7 +3,7 @@ use crate::ast::{Expression, ExpressionKind, Select};
 use super::Table;
 
 /// Tree structures and leaves for condition building.
-#[derive(Debug, PartialEq, Clone, Default)]
+#[derive(Debug, Clone, Default)]
 pub enum ConditionTree<'a> {
     /// `(left_expression AND right_expression)`
     And(Vec<Expression<'a>>),
@@ -81,6 +81,10 @@ impl<'a> ConditionTree<'a> {
     /// Inverts the entire condition tree if condition is met.
     pub fn invert_if(self, invert: bool) -> ConditionTree<'a> {
         if invert { Self::not(self) } else { self }
+    }
+
+    pub fn is_no_condition(&self) -> bool {
+        matches!(self, ConditionTree::NoCondition)
     }
 }
 

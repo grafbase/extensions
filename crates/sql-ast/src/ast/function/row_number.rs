@@ -2,7 +2,7 @@ use crate::ast::{Column, Expression, IntoOrderDefinition, Over};
 
 use super::{Function, FunctionType};
 
-#[derive(Debug, Default, Clone, PartialEq)]
+#[derive(Debug, Default, Clone)]
 /// A window function that assigns a sequential integer
 /// number to each row in the query’s result set.
 pub struct RowNumber<'a> {

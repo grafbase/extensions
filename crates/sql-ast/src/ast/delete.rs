@@ -2,7 +2,7 @@ use crate::ast::{ConditionTree, Query, Table};
 
 use super::Expression;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 /// A builder for a `DELETE` statement.
 pub struct Delete<'a> {
     pub(crate) table: Table<'a>,

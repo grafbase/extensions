@@ -2,7 +2,7 @@ use super::Function;
 use crate::ast::{Column, FunctionType};
 
 /// A representation of the `AVG` function in the database.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Average<'a> {
     pub(crate) column: Column<'a>,
 }

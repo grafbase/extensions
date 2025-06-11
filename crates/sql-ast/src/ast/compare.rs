@@ -3,7 +3,7 @@ use crate::ast::{Column, ConditionTree, Expression};
 use std::borrow::Cow;
 
 /// For modeling comparison expressions.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum Compare<'a> {
     /// `left = right`
     Equals(Box<Expression<'a>>, Box<Expression<'a>>),
@@ -50,7 +50,7 @@ pub enum Compare<'a> {
     IsNotDistinctFrom(Box<Expression<'a>>, Box<Expression<'a>>),
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum JsonCompare<'a> {
     ArrayOverlaps(Box<Expression<'a>>, Box<Expression<'a>>),
     ArrayContains(Box<Expression<'a>>, Box<Expression<'a>>),
@@ -60,7 +60,7 @@ pub enum JsonCompare<'a> {
     TypeNotEquals(Box<Expression<'a>>, JsonType<'a>),
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum JsonType<'a> {
     Array,
     Object,
