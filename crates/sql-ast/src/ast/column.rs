@@ -10,13 +10,6 @@ pub struct Column<'a> {
     pub(crate) alias: Option<Alias<'a>>,
 }
 
-/// Defines a default value for a `Column`.
-impl PartialEq for Column<'_> {
-    fn eq(&self, other: &Column) -> bool {
-        self.name == other.name && self.table == other.table
-    }
-}
-
 impl<'a> From<Column<'a>> for Expression<'a> {
     fn from(col: Column<'a>) -> Self {
         Expression {

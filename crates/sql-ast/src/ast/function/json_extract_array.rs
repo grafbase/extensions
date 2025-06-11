@@ -1,6 +1,6 @@
 use crate::ast::{Expression, Function, FunctionType};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct JsonExtractArrayElem<'a> {
     pub(crate) expr: Box<Expression<'a>>,
     pub(crate) index: usize,

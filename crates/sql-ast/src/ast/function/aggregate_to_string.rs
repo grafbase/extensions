@@ -1,7 +1,7 @@
 use super::Function;
 use crate::ast::{Expression, FunctionType};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 /// An aggregate function that concatenates strings from a group into a single
 /// string with various options.
 pub struct AggregateToString<'a> {

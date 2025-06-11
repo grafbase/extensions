@@ -5,7 +5,7 @@ pub struct CaseBuilder<'a> {
     when: Vec<When<'a>>,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct Case<'a> {
     pub(crate) when: Vec<When<'a>>,
     pub(crate) r#else: Box<Expression<'a>>,
@@ -17,7 +17,7 @@ impl<'a> Case<'a> {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct When<'a> {
     pub(crate) condition: Expression<'a>,
     pub(crate) result: Expression<'a>,

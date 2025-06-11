@@ -5,7 +5,7 @@ use crate::ast::{Column, Expression, Table};
 pub type GroupByDefinition<'a> = Expression<'a>;
 
 /// A list of definitions for the `GROUP BY` statement
-#[derive(Debug, Default, PartialEq, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct Grouping<'a>(pub Vec<GroupByDefinition<'a>>);
 
 impl<'a> Grouping<'a> {

@@ -5,7 +5,7 @@ use grafbase_sdk::SdkError;
 use crate::ast::{Column, Expression, Query, Row, Table, Update, Values};
 
 /// A builder for an `INSERT` statement.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct Insert<'a> {
     pub(crate) table: Option<Table<'a>>,
     pub(crate) columns: Vec<Column<'a>>,
@@ -16,7 +16,7 @@ pub struct Insert<'a> {
 }
 
 /// A builder for an `INSERT` statement for a single row.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct SingleRowInsert<'a> {
     pub(crate) table: Option<Table<'a>>,
     pub(crate) columns: Vec<Column<'a>>,
@@ -24,7 +24,7 @@ pub struct SingleRowInsert<'a> {
 }
 
 /// A builder for an `INSERT` statement for multiple rows.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct MultiRowInsert<'a> {
     pub(crate) table: Option<Table<'a>>,
     pub(crate) columns: Vec<Column<'a>>,
@@ -33,7 +33,7 @@ pub struct MultiRowInsert<'a> {
 
 /// `INSERT` conflict resolution strategies.
 #[allow(clippy::large_enum_variant)]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub enum OnConflict<'a> {
     /// When a row already exists, do nothing.
     DoNothing,
@@ -215,14 +215,6 @@ impl<'a> SingleRowInsert<'a> {
     ///
     /// Both inserts must be to the same table and must include the same columns.
     pub fn merge(self, other: SingleRowInsert<'a>) -> Result<MultiRowInsert<'a>, SdkError> {
-        if self.table != other.table {
-            return Err(SdkError::from("Merging inserts must be on the same table."));
-        }
-
-        if self.columns != other.columns {
-            return Err(SdkError::from("All insert items must have the same columns."));
-        }
-
         Ok(MultiRowInsert {
             table: self.table,
             columns: self.columns,
@@ -269,14 +261,6 @@ impl<'a> MultiRowInsert<'a> {
     ///
     /// Both inserts must be to the same table and must include the same columns.
     pub fn extend(&mut self, other: SingleRowInsert<'a>) -> Result<(), SdkError> {
-        if self.table != other.table {
-            return Err(SdkError::from("Merging inserts must be on the same table."));
-        }
-
-        if self.columns != other.columns {
-            return Err(SdkError::from("All insert items must have the same columns."));
-        }
-
         self.values.push(other.values);
 
         Ok(())

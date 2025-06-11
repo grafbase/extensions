@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use super::Column;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Alias<'a> {
     pub(crate) name: Cow<'a, str>,
     pub(crate) columns: Vec<Column<'a>>,

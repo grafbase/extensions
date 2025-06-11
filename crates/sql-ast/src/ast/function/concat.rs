@@ -2,7 +2,7 @@ use super::Function;
 use crate::ast::{Expression, FunctionType};
 
 /// A representation of the `Concat` function in the database.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Concat<'a> {
     pub(crate) exprs: Vec<Expression<'a>>,
 }

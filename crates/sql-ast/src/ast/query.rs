@@ -1,7 +1,7 @@
 use crate::ast::{Delete, Insert, Select, Update};
 
 /// A database query
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum Query<'a> {
     Select(Box<Select<'a>>),
     Insert(Box<Insert<'a>>),
