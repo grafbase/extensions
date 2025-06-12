@@ -64,7 +64,7 @@ directive @rest(
   Configuration for the request body, can include static values or
   selections from the GraphQL arguments
   """
-  body: Body = { selection: "." }
+  body: Body = { selection: ".args" }
 ) on FIELD_DEFINITION
 
 scalar JSON

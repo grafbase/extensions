@@ -16,7 +16,7 @@ use serde_json::Value;
 use subscription::FilteredSubscription;
 use template::Templates;
 
-use crate::directives::*;
+use crate::{directives::*, subscription::DeduplicationKey};
 
 #[derive(ResolverExtension)]
 struct Kafka {
@@ -107,21 +107,24 @@ impl ResolverExtension for Kafka {
             "args": arguments,
         });
 
-        let args = match KafkaDirective::try_from(field.directive())? {
+        let KafkaPublish { producer, key, body } = match KafkaDirective::try_from(field.directive())? {
             KafkaDirective::Publish(args) => args,
             KafkaDirective::Subscription(_) => {
                 return Err(format!("@{KAFKA_SUBSCRIPTION} can only be used on subscription fields.").into());
             }
         };
 
-        let body = self.render_body(args.body, ctx)?;
-        let Some(producer) = self.producers.get(args.producer) else {
-            return Err(format!("Producer not found: {}", args.producer).into());
+        let key = key
+            .map(|key| self.templates.get_or_insert(key).map(|t| t.render_unescaped(&ctx)))
+            .transpose()?;
+        let body = self.render_body(body, ctx)?;
+        let Some(producer) = self.producers.get(producer) else {
+            return Err(format!("Producer not found: {}", producer).into());
         };
 
         let body = serde_json::to_vec(&body).map_err(|err| format!("Failed to serialize body: {err}"))?;
 
-        producer.produce(args.key, &body)?;
+        producer.produce(key.as_deref(), &body)?;
 
         Ok(Response::data(true))
     }
@@ -133,41 +136,41 @@ impl ResolverExtension for Kafka {
         variables: Variables,
     ) -> Result<impl IntoSubscription<'s>, Error> {
         let field = ResolvedField::try_from(prepared)?;
-        let mut key = Vec::new();
+        let KafkaSubscription {
+            provider,
+            topic,
+            selection,
+            key_filter,
+            consumer_config,
+        } = field
+            .directive()
+            .arguments()
+            .map_err(|e| format!("Error deserializing directive arguments: {e}"))?;
+        let arguments: Value = field.arguments(&variables)?;
+        let ctx = serde_json::json!({
+            "args": arguments,
+        });
 
-        key.extend(field.subgraph_name().as_bytes());
-        key.extend(field.directive().name().as_bytes());
-        key.extend(u32::from(field.definition_id()).to_ne_bytes());
-        key.extend(field.directive().arguments_bytes());
+        let topic = self.templates.get_or_insert(topic)?.render_unescaped(&ctx);
+        let selection = selection
+            .map(|s| self.templates.get_or_insert(&s).map(|t| t.render_json(&ctx)))
+            .transpose()?;
+        let key_filter = key_filter
+            .map(|s| self.templates.get_or_insert(s).map(|t| t.render_unescaped(&ctx)))
+            .transpose()?;
+
+        let key = postcard::to_stdvec(&DeduplicationKey {
+            provider,
+            topic: &topic,
+            key_filter: key_filter.as_deref(),
+            selection: selection.as_deref(),
+        })
+        .ok();
 
         let callback = move || {
-            let KafkaSubscription {
-                provider,
-                topic,
-                selection,
-                key_filter,
-                consumer_config,
-            } = field
-                .directive()
-                .arguments()
-                .map_err(|e| format!("Error deserializing directive arguments: {e}"))?;
-            let arguments: Value = field.arguments(&variables)?;
-            let ctx = serde_json::json!({
-                "args": arguments,
-            });
-
-            let topic = self.templates.get_or_insert(topic)?.render_unescaped(&ctx);
-            let selection = selection
-                .map(|s| self.templates.get_or_insert(&s).map(|t| t.render_json(&ctx)))
-                .transpose()?;
-            let key_filter = key_filter
-                .map(|s| self.templates.get_or_insert(s).map(|t| t.render_unescaped(&ctx)))
-                .transpose()?;
-
             let Some(endpoint) = self.endpoints.get(provider) else {
                 return Err(format!("Provider not found: {provider}").into());
             };
-
             let mut config = KafkaConsumerConfig::default();
 
             if let Some(max_batch_size) = consumer_config.max_batch_size {
@@ -245,13 +248,18 @@ impl Kafka {
 
     fn render_jq_template(&mut self, source: &str, ctx: Value) -> Result<Value, Error> {
         let selection = self.templates.get_or_insert(source)?.render_json(&ctx);
-        let value = self
+        let mut values = self
             .jq_selection
             .borrow_mut()
             .select(&selection, ctx)
             .map_err(|e| format!("Failed to filter with selection: {}", e))?
-            .collect::<Result<Value, _>>()
+            .collect::<Result<Vec<Value>, _>>()
             .map_err(|e| format!("Failed to collect filtered value: {}", e))?;
-        Ok(value)
+        // TODO: Be smarter, but not sure how with jq...
+        if values.len() == 1 {
+            Ok(values.pop().unwrap())
+        } else {
+            Ok(serde_json::Value::Array(values))
+        }
     }
 }

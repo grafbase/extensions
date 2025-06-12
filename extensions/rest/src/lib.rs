@@ -50,21 +50,28 @@ impl ResolverExtension for RestExtension {
     fn resolve(&mut self, prepared: &[u8], headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
         let field = ResolvedField::try_from(prepared)?;
 
-        let rest: Rest<'_> = field
+        let Rest {
+            endpoint,
+            method,
+            path,
+            selection,
+            body,
+        }: Rest<'_> = field
             .directive()
             .arguments()
             .map_err(|e| format!("Could not parse directive arguments: {e}"))?;
         let field_arguments: serde_json::Value = field.arguments(&variables)?;
         let ctx = serde_json::json!({"args": field_arguments});
 
-        let Some(endpoint) = self.get_endpoint(rest.endpoint, field.subgraph_name()) else {
-            return Err(format!("Endpoint not found: {}", rest.endpoint).into());
+        let Some(endpoint) = self.get_endpoint(endpoint, field.subgraph_name()) else {
+            return Err(format!("Endpoint not found: {}", endpoint).into());
         };
 
         let mut url = Url::parse(&endpoint.args.base_url).map_err(|e| format!("Could not parse URL: {e}"))?;
 
-        let path = self.templates.get_or_insert(rest.path)?.render_url(&ctx);
+        let path = self.templates.get_or_insert(path)?.render_url(&ctx);
         let path = path.strip_prefix("/").unwrap_or(&path);
+        println!("== USING PATH {path} ==");
 
         if !path.is_empty() {
             let mut path_segments = url.path_segments_mut().map_err(|_| "Could not parse URL")?;
@@ -74,14 +81,17 @@ impl ResolverExtension for RestExtension {
 
         let url = url.join(path).map_err(|e| format!("Could not parse URL path: {e}"))?;
 
-        let mut builder = HttpRequest::builder(url, rest.method.into());
+        let mut builder = HttpRequest::builder(url, method.into());
 
         for (key, value) in headers.iter() {
             builder.push_header(key.to_string(), value.to_str().unwrap().to_string());
         }
 
-        let request = if let Some(body) = rest.body {
-            builder.json(self.render_body(body, ctx)?)
+        let request = if let Some(body) = body {
+            let body = self.render_body(body, ctx)?;
+            println!("== USING BODY {} ==", serde_json::to_string_pretty(&body).unwrap());
+            builder.json(body)
+            // builder.json(self.render_body(body, ctx)?)
         } else {
             builder.build()
         };
@@ -92,7 +102,7 @@ impl ResolverExtension for RestExtension {
             return Err(format!("HTTP request failed with status: {}", resp.status()).into());
         }
 
-        if let Some(selection) = rest.selection {
+        if let Some(selection) = selection {
             let data: serde_json::Value = resp.json().map_err(|e| format!("Error deserializing response: {e}"))?;
 
             if !(data.is_object() || data.is_array()) {
@@ -137,6 +147,7 @@ impl RestExtension {
             .map_err(|e| format!("Failed to filter with selection: {}", e))?
             .collect::<Result<Vec<Value>, _>>()
             .map_err(|e| format!("Failed to collect filtered value: {}", e))?;
+        // TODO: Be smarter, but not sure how with jq...
         if values.len() == 1 {
             Ok(values.pop().unwrap())
         } else {

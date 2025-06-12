@@ -7,6 +7,13 @@ use grafbase_sdk::{
     Subscription,
 };
 
+#[derive(serde::Serialize)]
+pub struct DeduplicationKey<'a> {
+    pub provider: &'a str,
+    pub subject: &'a str,
+    pub selection: Option<&'a str>,
+}
+
 pub struct FilteredSubscription {
     nats: nats::NatsSubscription,
     jq_selection: Rc<RefCell<JqSelection>>,

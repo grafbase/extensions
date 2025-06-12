@@ -66,6 +66,9 @@ async fn test_basic_responses() {
     let config = TestConfig::builder()
         .with_subgraph(subgraph)
         .enable_networking()
+        .enable_stdout()
+        .enable_stderr()
+        .log_level(grafbase_sdk::test::LogLevel::Debug)
         .build(config)
         .unwrap();
 

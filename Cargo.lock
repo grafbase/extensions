@@ -2442,6 +2442,7 @@ dependencies = [
 [[package]]
 name = "grafbase-sdk"
 version = "0.17.0"
+source = "git+https://github.com/grafbase/grafbase#a3aef5661a5f8d529d625fa631ce5be429316f6b"
 dependencies = [
  "anyhow",
  "async-tungstenite",
@@ -2486,6 +2487,7 @@ dependencies = [
 [[package]]
 name = "grafbase-sdk-derive"
 version = "0.5.0"
+source = "git+https://github.com/grafbase/grafbase#a3aef5661a5f8d529d625fa631ce5be429316f6b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2495,6 +2497,7 @@ dependencies = [
 [[package]]
 name = "grafbase-sdk-mock"
 version = "0.1.2"
+source = "git+https://github.com/grafbase/grafbase#a3aef5661a5f8d529d625fa631ce5be429316f6b"
 dependencies = [
  "anyhow",
  "async-graphql",
@@ -2511,6 +2514,7 @@ dependencies = [
 [[package]]
 name = "grafbase-workspace-hack"
 version = "0.1.0"
+source = "git+https://github.com/grafbase/grafbase#a3aef5661a5f8d529d625fa631ce5be429316f6b"
 dependencies = [
  "addr2line",
  "aho-corasick",
@@ -2666,6 +2670,7 @@ dependencies = [
 [[package]]
 name = "graphql-composition"
 version = "0.8.0"
+source = "git+https://github.com/grafbase/grafbase#a3aef5661a5f8d529d625fa631ce5be429316f6b"
 dependencies = [
  "bitflags 2.9.0",
  "cynic-parser",
@@ -2682,6 +2687,7 @@ dependencies = [
 [[package]]
 name = "graphql-wrapping-types"
 version = "0.3.0"
+source = "git+https://github.com/grafbase/grafbase#a3aef5661a5f8d529d625fa631ce5be429316f6b"
 dependencies = [
  "grafbase-workspace-hack",
  "serde",
@@ -3681,6 +3687,7 @@ dependencies = [
  "grafbase-sdk",
  "indoc",
  "insta",
+ "postcard",
  "regex",
  "rskafka",
  "serde",
@@ -4075,6 +4082,7 @@ dependencies = [
  "grafbase-sdk",
  "indoc",
  "insta",
+ "postcard",
  "serde",
  "serde_json",
  "template",

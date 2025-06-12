@@ -22,7 +22,7 @@ fn subgraph(rest_endpoint: &str) -> ExtensionOnlySubgraph {
     let extension_path = std::env::current_dir().unwrap().join("build");
     let path_str = format!("file://{}", extension_path.display());
 
-    let schema = formatdoc! {r#"
+    let mut schema = formatdoc! {r#"
         extend schema
           @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
           @link(url: "{path_str}", import: ["@restEndpoint", "@rest"])
@@ -31,65 +31,72 @@ fn subgraph(rest_endpoint: &str) -> ExtensionOnlySubgraph {
           name: "endpoint",
           baseURL: "{rest_endpoint}"
         )
+        "#
+    };
 
-        type Query {{
+    schema.push_str(
+        r#"
+        type Query {
           users: [User!]! @rest(
             endpoint: "endpoint",
             method: GET,
             path: "/users"
-            selection: "[.[] | {{ id, name, age }}]"
+            selection: "[.[] | { id, name, age }]"
           )
 
           user(id: Int!): User @rest(
             endpoint: "endpoint",
             method: GET,
-            path: "/users/{{{{ args.id }}}}"
-            selection: "{{ id, name, age }}"
+            path: "/users/{{ args.id }}"
+            selection: "{ id, name, age }"
           )
-        }}
+        }
 
-        type Mutation {{
+        type Mutation {
           createUser(input: UserInput!): User! @rest(
             endpoint: "endpoint",
             method: POST,
             path: "/users"
-            selection: "{{ id, name, age }}"
+            body: { selection: ".args.input" }
+            selection: "{ id, name, age }"
           )
 
           createStaticUser: User! @rest(
             endpoint: "endpoint",
             method: POST,
             path: "/users"
-            body: {{ static: {{ name: "John Doe", age: 30 }} }}
-            selection: "{{ id, name, age }}"
+            body: { static: { name: "John Doe", age: 30 } }
+            selection: "{ id, name, age }"
           )
 
           updateUser(id: Int!, input: UserInput!): User! @rest(
             endpoint: "endpoint",
             method: PUT,
-            path: "/users/{{{{ args.id }}}}"
-            selection: "{{ id, name, age }}"
+            path: "/users/{{ args.id }}"
+            body: { selection: ".args.input" }
+            selection: "{ id, name, age }"
           )
 
           deleteUser(id: Int!): User! @rest(
             endpoint: "endpoint",
             method: DELETE,
-            path: "/users/{{{{ args.id }}}}"
-            selection: "{{ id, name, age }}"
+            path: "/users/{{ args.id }}"
+            selection: "{ id, name, age }"
           )
-        }}
+        }
 
-        type User {{
+        type User {
           id: ID!
           name: String!
           age: Int
-        }}
+        }
 
-        input UserInput {{
+        input UserInput {
           name: String!
           age: Int!
-        }}
-    "#};
+        }
+    "#,
+    );
 
     DynamicSchema::builder(schema)
         .into_extension_only_subgraph("test", &extension_path)
@@ -587,7 +594,7 @@ async fn with_bad_jq() {
       "data": null,
       "errors": [
         {
-          "message": "Error selecting result value: The selection is not valid jq syntax: `\\||\\`",
+          "message": "Failed to filter with selection: The selection is not valid jq syntax: `\\||\\`",
           "extensions": {
             "code": "EXTENSION_ERROR"
           }
@@ -719,6 +726,8 @@ async fn update_user() {
     let config = TestConfig::builder()
         .with_subgraph(subgraph)
         .enable_networking()
+        .enable_stdout()
+        .enable_stderr()
         .build("")
         .unwrap();
 

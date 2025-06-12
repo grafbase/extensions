@@ -49,11 +49,11 @@ async fn basic() {
 
 
         type Query {{
-            getFeature(input: PointInput!): Feature @grpcMethod(service: "routeguide.RouteGuide", method: "GetFeature", input: "*")
+            getFeature(input: PointInput!): Feature @grpcMethod(service: "routeguide.RouteGuide", method: "GetFeature")
         }}
 
         type Subscription {{
-            listFeatures(input: RectangleInput!): Feature @grpcMethod(service: "routeguide.RouteGuide", method: "ListFeatures", input: "*")
+            listFeatures(input: RectangleInput!): Feature @grpcMethod(service: "routeguide.RouteGuide", method: "ListFeatures")
         }}
 
         input RectangleInput {{

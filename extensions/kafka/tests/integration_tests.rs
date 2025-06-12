@@ -19,7 +19,7 @@ fn subgraph() -> ExtensionOnlySubgraph {
     let extension_path = std::env::current_dir().unwrap().join("build");
     let path_str = format!("file://{}", extension_path.display());
 
-    let schema = formatdoc! {r#"
+    let mut schema = formatdoc! {r#"
         extend schema
           @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
           @link(
@@ -73,42 +73,6 @@ fn subgraph() -> ExtensionOnlySubgraph {
             }}
           )
 
-        type Query {{
-          hello: String!
-        }}
-
-        type Mutation {{
-          publishUserEvent(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
-            producer: "user-producer-plain",
-            key: "publish.user.{{{{args.id}}}}.events"
-          )
-
-          publishUserEventSaslPlain(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
-            producer: "user-producer-sasl-plain",
-            key: "publish.user.sasl-plain.{{{{args.id}}}}.events"
-          )
-
-          publishUserEventSaslScram(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
-            producer: "user-producer-sasl-scram",
-            key: "publish.user.sasl-scram.{{{{args.id}}}}.events"
-          )
-
-          publishUserEventTlsNoAuth(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
-            producer: "user-producer-tls-no-auth",
-            key: "publish.user.tls-no-auth.{{{{args.id}}}}.events"
-          )
-
-          publishUserEventMtls(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
-            producer: "user-producer-mtls",
-            key: "publish.user.mtls.{{{{args.id}}}}.events"
-          )
-
-          publishUserEventSinglePartition(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
-            producer: "user-producer-single-partition",
-            key: "publish.user.single-partition.{{{{args.id}}}}.events",
-          )
-        }}
-
         type Subscription {{
           userLatestEvents(filter: String!): UserEvent! @kafkaSubscription(
             topic: "{KAFKA_TOPIC}",
@@ -124,23 +88,63 @@ fn subgraph() -> ExtensionOnlySubgraph {
             selection: "select(.money > {{{{args.limit}}}}) | {{ id, account, money }}",
           )
         }}
+      "#};
 
-        input UserEventInput {{
+    schema.push_str(
+        r#"
+        type Query {
+          hello: String!
+        }
+
+        type Mutation {
+          publishUserEvent(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
+            producer: "user-producer-plain",
+            key: "publish.user.{{args.id}}.events"
+          )
+
+          publishUserEventSaslPlain(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
+            producer: "user-producer-sasl-plain",
+            key: "publish.user.sasl-plain.{{args.id}}.events"
+          )
+
+          publishUserEventSaslScram(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
+            producer: "user-producer-sasl-scram",
+            key: "publish.user.sasl-scram.{{args.id}}.events"
+          )
+
+          publishUserEventTlsNoAuth(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
+            producer: "user-producer-tls-no-auth",
+            key: "publish.user.tls-no-auth.{{args.id}}.events"
+          )
+
+          publishUserEventMtls(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
+            producer: "user-producer-mtls",
+            key: "publish.user.mtls.{{args.id}}.events"
+          )
+
+          publishUserEventSinglePartition(id: Int!, input: UserEventInput!): Boolean! @kafkaPublish(
+            producer: "user-producer-single-partition",
+            key: "publish.user.single-partition.{{args.id}}.events",
+          )
+        }
+
+        input UserEventInput {
           email: String!
           name: String!
-        }}
+        }
 
-        type UserEvent {{
+        type UserEvent {
           email: String!
           name: String!
-        }}
+        }
 
-        type BankEvent {{
+        type BankEvent {
           id: Int!
           account: String!
           money: Int!
-        }}
-    "#};
+        }
+    "#,
+    );
 
     DynamicSchema::builder(schema)
         .into_extension_only_subgraph("test", &extension_path)
@@ -458,6 +462,7 @@ async fn produce_batch() {
         let event = record.value.unwrap();
         let event: serde_json::Value = serde_json::from_slice(&event).unwrap();
 
+        println!("{event:#?}");
         events.push(event);
 
         if events.len() == 2 {
@@ -603,7 +608,7 @@ async fn connect_mtls() {
 }
 
 #[tokio::test]
-async fn test_subscribe() {
+async fn test_subscribe_latest_events() {
     let config = TestConfig::builder()
         .with_subgraph(subgraph())
         .enable_networking()
