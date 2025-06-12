@@ -1,5 +1,5 @@
 scalar JsonTemplate
-scalar Tempalte
+scalar Template
 scalar JqTemplate
 
 """
@@ -43,7 +43,7 @@ directive @kafkaPublish(
   """
   The body of the message to publish
   """
-  body: Body! = { selection: "*" }
+  body: Body! = { selection: ".args.input" }
 ) on FIELD_DEFINITION
 
 directive @kafkaSubscription(

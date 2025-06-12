@@ -11,7 +11,7 @@ Add the following to your gateway configuration ("grafbase.toml"):
 
 ```toml
 [extensions.rest]
-version = "0.4"
+version = "0.5"
 ```
 
 Then run `grafbase extension install`. The extension will be installed in the `grafbase_extensions` directory. That directory must be present when the gateway is started.
@@ -52,9 +52,11 @@ Define your REST endpoint in your subgraph schema:
 
 ```graphql
 extend schema
-  @link(url: "https://grafbase.com/extensions/rest/0.4.1", import: ["@restEndpoint", "@rest"])
-
-@restEndpoint(name: "countries", baseURL: "https://restcountries.com/v3.1")
+  @link(
+    url: "https://grafbase.com/extensions/rest/0.5.0"
+    import: ["@restEndpoint", "@rest"]
+  )
+  @restEndpoint(name: "countries", baseURL: "https://restcountries.com/v3.1")
 ```
 
 The `@restEndpoint` takes a unique name per subgraph, which you must refer to in the corresponding `@rest` directives, and a `baseURL`.
@@ -67,12 +69,12 @@ type Country {
 }
 
 type Query {
-  countries: [Country!]! @rest(
-    method: GET,
-    endpoint: "countries",
-    path: "/all",
-    selection: "[.[] | { name: .name.official }]"
-  )
+  countries: [Country!]!
+    @rest(
+      endpoint: "countries"
+      http: { GET: "/all" }
+      selection: "[.[] | { name: .name.official }]"
+    )
 }
 ```
 
@@ -144,9 +146,35 @@ You can omit the `--url` parameter from a subgraph that only acts as a virtual g
 
 ### Headers
 
-The REST extension sends headers to the REST endpoint. The resolver filters the request headers and uses the resulting subgraph headers.
+Static headers can in with the `@restEndpoint` directive:
 
-When you compose the REST subgraph to your federated graph, and you give it a name, you can define the [header rules](https://grafbase.com/docs/reference/gateway/configuration/subgraph-configuration#header-rules) in your gateway configuration.
+```graphql
+extend schema
+  @link(
+    url: "https://grafbase.com/extensions/rest/0.5.0"
+    import: ["@restEndpoint", "@rest"]
+  )
+  @restEndpoint(
+    name: "countries"
+    baseURL: "https://restcountries.com/v3.1"
+    headers: [
+      { name: "Content-Type", value: "application/csv" }
+      { name: "X-Api-Key", value: "{{ config.apiKey }}" }
+    ]
+  )
+```
+
+A header value is a template that receives `config` as a value. It'll expose the subgraph-specific configuration added to the rest extension. So this case, the extension should declared as follows:
+
+```toml
+[extensions.rest]
+version = "0.5"
+
+[extensions.rest.subgraphs.my-subgraph-name]
+apiKey = "{{ env.SECRET }}"
+```
+
+To propagate headers from the client request, you need to use [header rules](https://grafbase.com/docs/reference/gateway/configuration/subgraph-configuration#header-rules).
 
 ## Request Body
 
@@ -156,14 +184,12 @@ To send dynamic data from the input arguments, add a selection to the body. The 
 
 ```graphql
 type Mutation {
-  createCountry(input: Country!): Country! @rest(
-    endpoint: "countries",
-    http: {
-      method: POST,
-      path: "/create"
-    },
-    selection: "{ name: .name.official }"
-  )
+  createCountry(input: Country!): Country!
+    @rest(
+      endpoint: "countries"
+      http: { POST: "/create" }
+      selection: "{ name: .name.official }"
+    )
 }
 ```
 
@@ -171,13 +197,12 @@ You can also use static data in the body:
 
 ```graphql
 type Mutation {
-  createCountry: Country! @rest(
-    endpoint: "countries",
-    method: POST,
-    path: "/create"
-    body: { static: { name: "Georgia" } },
-    selection: "{ name: .name.official }"
-  )
+  createCountry: Country!
+    @rest(
+      endpoint: "countries"
+      http: { POST: "/create", body: { static: { name: "Georgia" } } }
+      selection: "{ name: .name.official }"
+    )
 }
 ```
 
@@ -189,12 +214,12 @@ The path argument is used to specify the path to the REST endpoint. You can use 
 
 ```graphql
 type Mutation {
-  getCountry(id: Int!): Country @rest(
-    endpoint: "countries",
-    method: GET,
-    path: "/fetch/{{ args.id }}"
-    selection: "{ name: .name.official }"
-  )
+  getCountry(id: Int!): Country
+    @rest(
+      endpoint: "countries"
+      http: { GET: "/fetch/{{ args.id }}" }
+      selection: "{ name: .name.official }"
+    )
 }
 ```
 

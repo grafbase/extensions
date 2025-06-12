@@ -1,5 +1,8 @@
 mod types;
 
+use std::hash::Hasher;
+
+use ::http::HeaderMap;
 use grafbase_sdk::{
     ResolverExtension,
     host_io::http::{self, HttpRequest, Url},
@@ -7,36 +10,105 @@ use grafbase_sdk::{
     types::{Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema, Variables},
 };
 use serde_json::Value;
-use template::Templates;
-use types::{Rest, RestEndpoint};
+use template::{Template, Templates};
 
-use crate::types::{Body, BodyCase};
+use crate::types::*;
 
 #[derive(ResolverExtension)]
 struct RestExtension {
-    endpoints: Vec<RestEndpoint>,
+    endpoints: hashbrown::hash_table::HashTable<EndpointConfig>,
     templates: Templates,
     jq_selection: JqSelection,
 }
 
-impl ResolverExtension for RestExtension {
-    fn new(schemas: Vec<SubgraphSchema<'_>>, _config: Configuration) -> Result<Self, Error> {
-        let mut endpoints = Vec::<RestEndpoint>::new();
+struct EndpointConfig {
+    subgraph_name: String,
+    name: String,
+    base_url: Url,
+    headers: HeaderMap,
+}
 
-        endpoints.sort_by(|a, b| {
-            let by_name = a.args.name.cmp(&b.args.name);
-            let by_subgraph = a.subgraph_name.cmp(&b.subgraph_name);
-            by_name.then(by_subgraph)
-        });
+fn hash_endpoint(subgraph_name: &str, name: &str) -> u64 {
+    let mut hasher = rapidhash::RapidHasher::default();
+    hasher.write(subgraph_name.as_bytes());
+    hasher.write(&[0x0]);
+    hasher.write(name.as_bytes());
+    hasher.finish()
+}
+
+impl ResolverExtension for RestExtension {
+    fn new(schemas: Vec<SubgraphSchema<'_>>, config: Configuration) -> Result<Self, Error> {
+        let mut endpoints = hashbrown::hash_table::HashTable::<EndpointConfig>::new();
+        let config: serde_json::Value = config.deserialize()?;
+        let subgraph_config = &config["subgraphs"];
 
         for schema in schemas {
+            let ctx = serde_json::json!({
+                "config": subgraph_config[schema.subgraph_name()].as_object()
+            });
             for directive in schema.directives() {
-                let endpoint = RestEndpoint {
-                    subgraph_name: schema.subgraph_name().to_string(),
-                    args: directive.arguments()?,
-                };
+                let RestEndpointArgs {
+                    name,
+                    headers,
+                    base_url,
+                } = directive.arguments()?;
 
-                endpoints.push(endpoint);
+                let entry = endpoints.entry(
+                    hash_endpoint(schema.subgraph_name(), &name),
+                    |cfg| name == cfg.name && schema.subgraph_name() == cfg.subgraph_name,
+                    |cfg| hash_endpoint(&cfg.subgraph_name, &cfg.name),
+                );
+                match entry {
+                    hashbrown::hash_table::Entry::Occupied(_) => {
+                        return Err(format!(
+                            "Duplicate endpoint definition for {} in subgraph {}",
+                            name,
+                            schema.subgraph_name()
+                        )
+                        .into());
+                    }
+                    hashbrown::hash_table::Entry::Vacant(entry) => {
+                        let headers = headers
+                            .into_iter()
+                            .map(|header| {
+                                let value = Template::new(header.value)
+                                    .map_err(|err| {
+                                        format!(
+                                            "Could not parse header value for {}/{}: {err}",
+                                            schema.subgraph_name(),
+                                            header.name
+                                        )
+                                    })?
+                                    .render_unescaped(&ctx);
+                                header
+                                    .name
+                                    .parse()
+                                    .map_err(|err| {
+                                        format!("Invalid header name for {}/{}: {err}", schema.subgraph_name(), name)
+                                    })
+                                    .and_then(|name| {
+                                        value
+                                            .parse()
+                                            .map_err(|err| {
+                                                format!(
+                                                    "Invalid header value for {}/{}: {err}",
+                                                    schema.subgraph_name(),
+                                                    name
+                                                )
+                                            })
+                                            .map(|value| (name, value))
+                                    })
+                            })
+                            .collect::<Result<HeaderMap, _>>()?;
+                        entry.insert(EndpointConfig {
+                            subgraph_name: schema.subgraph_name().to_string(),
+                            base_url: Url::parse(&base_url)
+                                .map_err(|e| format!("Could not parse base URL for endpoint {}: {e}", name))?,
+                            name,
+                            headers,
+                        });
+                    }
+                }
             }
         }
 
@@ -50,21 +122,26 @@ impl ResolverExtension for RestExtension {
     fn resolve(&mut self, prepared: &[u8], headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
         let field = ResolvedField::try_from(prepared)?;
 
-        let rest: Rest<'_> = field
+        let Rest {
+            endpoint,
+            http: ConnectHttp { method_path, body },
+            selection,
+        }: Rest<'_> = field
             .directive()
             .arguments()
             .map_err(|e| format!("Could not parse directive arguments: {e}"))?;
         let field_arguments: serde_json::Value = field.arguments(&variables)?;
         let ctx = serde_json::json!({"args": field_arguments});
+        let (method, path) = method_path.split();
 
-        let Some(endpoint) = self.get_endpoint(rest.endpoint, field.subgraph_name()) else {
-            return Err(format!("Endpoint not found: {}", rest.endpoint).into());
+        let path = self.templates.get_or_insert(path)?.render_url(&ctx);
+        let path = path.strip_prefix("/").unwrap_or(&path);
+
+        let Some(endpoint) = self.get_endpoint(endpoint, field.subgraph_name()) else {
+            return Err(format!("Endpoint not found: {}", endpoint).into());
         };
 
-        let mut url = Url::parse(&endpoint.args.base_url).map_err(|e| format!("Could not parse URL: {e}"))?;
-
-        let path = self.templates.get_or_insert(rest.path)?.render_url(&ctx);
-        let path = path.strip_prefix("/").unwrap_or(&path);
+        let mut url = endpoint.base_url.clone();
 
         if !path.is_empty() {
             let mut path_segments = url.path_segments_mut().map_err(|_| "Could not parse URL")?;
@@ -74,25 +151,25 @@ impl ResolverExtension for RestExtension {
 
         let url = url.join(path).map_err(|e| format!("Could not parse URL path: {e}"))?;
 
-        let mut builder = HttpRequest::builder(url, rest.method.into());
-
-        for (key, value) in headers.iter() {
-            builder.push_header(key.to_string(), value.to_str().unwrap().to_string());
+        let mut builder = HttpRequest::builder(url, method);
+        let _ = std::mem::replace(builder.headers(), headers.into());
+        for (name, value) in &endpoint.headers {
+            builder.header(name, value);
         }
 
-        let request = if let Some(body) = rest.body {
+        let request = if let Some(body) = body {
             builder.json(self.render_body(body, ctx)?)
         } else {
             builder.build()
         };
 
-        let resp = http::execute(&request).map_err(|e| format!("HTTP request failed: {e}"))?;
+        let resp = http::execute(request).map_err(|e| format!("HTTP request failed: {e}"))?;
 
         if !resp.status().is_success() {
             return Err(format!("HTTP request failed with status: {}", resp.status()).into());
         }
 
-        if let Some(selection) = rest.selection {
+        if let Some(selection) = selection {
             let data: serde_json::Value = resp.json().map_err(|e| format!("Error deserializing response: {e}"))?;
 
             if !(data.is_object() || data.is_array()) {
@@ -109,16 +186,10 @@ impl ResolverExtension for RestExtension {
 }
 
 impl RestExtension {
-    pub fn get_endpoint(&self, name: &str, subgraph_name: &str) -> Option<&RestEndpoint> {
-        self.endpoints
-            .binary_search_by(|e| {
-                let by_name = e.args.name.as_str().cmp(name);
-                let by_subgraph = e.subgraph_name.as_str().cmp(subgraph_name);
-
-                by_name.then(by_subgraph)
-            })
-            .map(|i| &self.endpoints[i])
-            .ok()
+    pub fn get_endpoint(&self, name: &str, subgraph_name: &str) -> Option<&EndpointConfig> {
+        self.endpoints.find(hash_endpoint(subgraph_name, name), |cfg| {
+            cfg.name == name && cfg.subgraph_name == subgraph_name
+        })
     }
 
     fn render_body(&mut self, body: Body<'_>, ctx: Value) -> Result<Value, Error> {
@@ -137,6 +208,7 @@ impl RestExtension {
             .map_err(|e| format!("Failed to filter with selection: {}", e))?
             .collect::<Result<Vec<Value>, _>>()
             .map_err(|e| format!("Failed to collect filtered value: {}", e))?;
+        // TODO: Be smarter, but not sure how with jq...
         if values.len() == 1 {
             Ok(values.pop().unwrap())
         } else {

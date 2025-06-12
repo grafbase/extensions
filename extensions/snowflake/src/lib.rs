@@ -57,7 +57,7 @@ impl ResolverExtension for Snowflake {
                     )));
                 };
 
-                Ok(Response::data(data.into_iter().next()))
+                Ok(Response::data(data))
             }
             other => Err(Error::new(format!("Unsupported directive \"{other}\""))),
         }

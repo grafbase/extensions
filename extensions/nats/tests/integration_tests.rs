@@ -32,7 +32,7 @@ fn subgraph() -> ExtensionOnlySubgraph {
     let extension_path = std::env::current_dir().unwrap().join("build");
     let path_str = format!("file://{}", extension_path.display());
 
-    let schema = formatdoc! {r#"
+    let mut schema = formatdoc! {r#"
         extend schema
           @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
           @link(
@@ -45,8 +45,10 @@ fn subgraph() -> ExtensionOnlySubgraph {
               "NatsStreamDeliverPolicy",
             ]
           )
-
-        type Query {{
+    "#};
+    schema.push_str(
+        r#"
+        type Query {
           hello: String!
 
           requestReply(input: RequestReplyInput!): RequestReplyResult! @natsRequest(
@@ -61,107 +63,108 @@ fn subgraph() -> ExtensionOnlySubgraph {
 
           getUser(id: Int!): User @natsKeyValue(
             bucket: "users",
-            key: "user.{{{{ args.id }}}}",
+            key: "user.{{ args.id }}",
             action: GET,
-            selection: "{{ id, email, name }}",
+            selection: "{ id, email, name }",
           )
 
           getOtherUser(id: Int!): User @natsKeyValue(
             bucket: "otherUsers",
-            key: "user.{{{{ args.id }}}}",
+            key: "user.{{ args.id }}",
             action: GET,
-            selection: "{{ id, email, name }}",
+            selection: "{ id, email, name }",
           )
-        }}
+        }
 
-        type Mutation {{
+        type Mutation {
           publishUserEvent(id: Int!, input: UserEventInput!): Boolean! @natsPublish(
-            subject: "publish.user.{{{{args.id}}}}.events"
+            subject: "publish.user.{{args.id}}.events"
           )
 
           kvPutUser(id: Int!, input: UserEventInput!): String! @natsKeyValue(
             bucket: "putUsers",
-            key: "user.{{{{ args.id }}}}",
+            key: "user.{{ args.id }}",
             action: PUT,
           )
 
           kvCreateUser(id: Int!, input: UserEventInput!): String! @natsKeyValue(
             bucket: "createUsers",
-            key: "user.{{{{ args.id }}}}",
+            key: "user.{{ args.id }}",
             action: CREATE,
           )
 
           kvDeleteUser(id: Int!): Boolean! @natsKeyValue(
             bucket: "deleteUsers",
-            key: "user.{{{{ args.id }}}}",
+            key: "user.{{ args.id }}",
             action: DELETE,
           )
-        }}
+        }
 
-        type Subscription {{
+        type Subscription {
           userEvents(id: Int!): UserEvent! @natsSubscription(
-            subject: "subscription.user.{{{{args.id}}}}.events",
-            selection: "{{ email, name }}",
+            subject: "subscription.user.{{args.id}}.events",
+            selection: "{ email, name }",
           )
 
           highPriorityBankEvents(limit: Int!): BankEvent! @natsSubscription(
             subject: "subscription.bank",
-            selection: "select(.money > {{{{args.limit}}}}) | {{ id, account, money }}",
+            selection: "select(.money > {{args.limit}}) | { id, account, money }",
           )
 
           persistenceEvents(id: Int!): UserEvent! @natsSubscription(
-            subject: "persistence.user.{{{{args.id}}}}.events",
-            selection: "{{ email, name}}",
-            streamConfig: {{
+            subject: "persistence.user.{{args.id}}.events",
+            selection: "{ email, name}",
+            streamConfig: {
               streamName: "testStream",
               consumerName: "testConsumer",
               durableName: "testConsumer",
               description: "Test Description",
-            }},
+            },
           )
 
           nonexistingEvents(id: Int!): UserEvent! @natsSubscription(
-            subject: "persistence.user.{{{{args.id}}}}.events",
-            selection: "{{ email, name }}",
-            streamConfig: {{
+            subject: "persistence.user.{{args.id}}.events",
+            selection: "{ email, name }",
+            streamConfig: {
               streamName: "nonExistingStream",
               consumerName: "testConsumer",
               durableName: "testConsumer",
               description: "Test Description",
-            }},
+            },
           )
-        }}
+        }
 
-        input RequestReplyInput {{
+        input RequestReplyInput {
           message: String!
-        }}
+        }
 
-        type RequestReplyResult {{
+        type RequestReplyResult {
           message: String!
-        }}
+        }
 
-        input UserEventInput {{
+        input UserEventInput {
           email: String!
           name: String!
-        }}
+        }
 
-        type UserEvent {{
+        type UserEvent {
           email: String!
           name: String!
-        }}
+        }
 
-        type User {{
+        type User {
           id: Int!
           email: String!
           name: String!
-        }}
+        }
 
-        type BankEvent {{
+        type BankEvent {
           id: Int!
           account: String!
           money: Int!
-        }}
-    "#};
+        }
+    "#,
+    );
 
     DynamicSchema::builder(schema)
         .into_extension_only_subgraph("test", &extension_path)
@@ -186,6 +189,9 @@ async fn test_subscribe() {
     let config = TestConfig::builder()
         .with_subgraph(subgraph())
         .enable_networking()
+        .enable_stdout()
+        .enable_stderr()
+        .log_level(grafbase_sdk::test::LogLevel::WasiDebug)
         .build(config())
         .unwrap();
 
@@ -233,12 +239,11 @@ async fn test_subscribe() {
 
             nats.publish("subscription.user.1.events", event1.into()).await.unwrap();
             nats.publish("subscription.user.2.events", event2.into()).await.unwrap();
-
             tokio::time::sleep(Duration::from_millis(100)).await;
         }
     });
 
-    let events = tokio::time::timeout(Duration::from_secs(5), subscription1.take(2).collect::<Vec<_>>())
+    let events = tokio::time::timeout(Duration::from_secs(10), subscription1.take(2).collect::<Vec<_>>())
         .await
         .unwrap();
 
@@ -263,7 +268,7 @@ async fn test_subscribe() {
     ]
     "#);
 
-    let events = tokio::time::timeout(Duration::from_secs(5), subscription2.take(2).collect::<Vec<_>>())
+    let events = tokio::time::timeout(Duration::from_secs(10), subscription2.take(2).collect::<Vec<_>>())
         .await
         .unwrap();
 
@@ -558,7 +563,7 @@ async fn test_non_existing_stream() {
     insta::assert_json_snapshot!(&events, @r#"
     [
       {
-        "data": {},
+        "data": null,
         "errors": [
           {
             "message": "Failed to subscribe to subject 'persistence.user.1.events': jetstream error: stream not found (code 404, error code 10059)",

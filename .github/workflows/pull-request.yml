@@ -55,8 +55,8 @@ jobs:
     strategy:
       matrix:
         version:
-          - gateway: "0.40.0"
-            cli: "0.96.3"
+          - gateway: "0.41.0"
+            cli: "0.97.0"
     env:
       RUSTFLAGS: -D warnings
     steps:
@@ -81,7 +81,7 @@ jobs:
           cli-version: ${{ matrix.version.cli }}
 
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@d12e869b89167df346dd0ff65da342d1fb1202fb # v2
+        uses: taiki-e/install-action@d12e869b89167df346dd0ff65da342d1fb1202fb # v2.53.2
         with:
           tool: nextest
 

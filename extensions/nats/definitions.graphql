@@ -23,7 +23,7 @@ directive @natsPublish(
   """
   The body of the message to publish
   """
-  body: Body! = { selection: "." }
+  body: Body! = { selection: ".args.input" }
 ) on FIELD_DEFINITION
 
 directive @natsSubscription(
@@ -69,7 +69,7 @@ directive @natsRequest(
   """
   The body of the message to publish
   """
-  body: Body! = { selection: "*" }
+  body: Body! = { selection: ".args.input" }
 
   """
   Timeout in milliseconds for the request. If the request does not
@@ -106,7 +106,7 @@ directive @natsKeyValue(
   The body of the message to put or create (only used for PUT and
   CREATE actions)
   """
-  body: Body = { selection: "*" }
+  body: Body = { selection: ".args.input" }
 
   """
   Selection to apply to the response payload. In jq syntax. (only

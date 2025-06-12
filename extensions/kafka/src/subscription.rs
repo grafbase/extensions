@@ -8,6 +8,14 @@ use grafbase_sdk::{
 };
 use regex::Regex;
 
+#[derive(serde::Serialize)]
+pub struct DeduplicationKey<'a> {
+    pub provider: &'a str,
+    pub topic: &'a str,
+    pub key_filter: Option<&'a str>,
+    pub selection: Option<&'a str>,
+}
+
 pub struct FilteredSubscription {
     kafka: kafka::KafkaConsumer,
     jq_selection: Rc<RefCell<JqSelection>>,

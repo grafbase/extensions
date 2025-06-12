@@ -14,7 +14,7 @@ Add the following to your Grafbase Gateway configuration file:
 
 ```toml
 [extensions.nats]
-version = "0.4"
+version = "0.5"
 ```
 
 Then run `grafbase extension install`. The extension will be installed in the `grafbase_extensions` directory. That directory must be present when the gateway is started.
@@ -112,9 +112,8 @@ directive @natsPublish(
 
 ```graphql
 type Mutation {
-  publishUserEvent(id: Int!, input: UserEventInput!): Boolean! @natsPublish(
-    subject: "publish.user.{{args.id}}.events"
-  )
+  publishUserEvent(id: Int!, input: UserEventInput!): Boolean!
+    @natsPublish(subject: "publish.user.{{args.id}}.events")
 }
 
 input UserEventInput {
@@ -218,9 +217,8 @@ enum NatsStreamDeliverPolicyType {
 
 ```graphql
 type Subscription {
-  userEvents(userId: Int!): UserEvent! @natsSubscription(
-    subject: "user.{{args.userId}}.events"
-  )
+  userEvents(userId: Int!): UserEvent!
+    @natsSubscription(subject: "user.{{args.userId}}.events")
 }
 
 type UserEvent {
@@ -237,15 +235,16 @@ This example subscribes to a subject named `user.<userId>.events`. The `userId` 
 
 ```graphql
 type Subscription {
-  orderUpdates: OrderUpdate! @natsSubscription(
-    subject: "orders.>",
-    streamConfig: {
-      streamName: "ORDERS",
-      consumerName: "order-processor",
-      durableName: "order-updates",
-      deliverPolicy: { type: LAST }
-    }
-  )
+  orderUpdates: OrderUpdate!
+    @natsSubscription(
+      subject: "orders.>"
+      streamConfig: {
+        streamName: "ORDERS"
+        consumerName: "order-processor"
+        durableName: "order-updates"
+        deliverPolicy: { type: LAST }
+      }
+    )
 }
 
 type OrderUpdate {
@@ -261,10 +260,11 @@ This example creates a JetStream subscription for the `orders.>` wildcard subjec
 
 ```graphql
 type Subscription {
-  highValueTransactions: Transaction! @natsSubscription(
-    subject: "banking.transactions",
-    selection: "select(.amount > 1000)"
-  )
+  highValueTransactions: Transaction!
+    @natsSubscription(
+      subject: "banking.transactions"
+      selection: "select(.amount > 1000)"
+    )
 }
 
 type Transaction {
@@ -281,10 +281,11 @@ The selection also supports dynamic parameters:
 
 ```graphql
 type Subscription {
-  transactionsAboveThreshold(minimumAmount: Float!): Transaction! @natsSubscription(
-    subject: "banking.transactions",
-    selection: "select(.amount > {{args.minimumAmount}})"
-  )
+  transactionsAboveThreshold(minimumAmount: Float!): Transaction!
+    @natsSubscription(
+      subject: "banking.transactions"
+      selection: "select(.amount > {{args.minimumAmount}})"
+    )
 }
 
 type Transaction {
@@ -306,7 +307,7 @@ directive @natsRequest(
   provider: String! = "default"
   subject: UrlTemplate!
   selection: UrlTemplate
-  body: Body! = { selection: "*" }
+  body: Body! = { selection: ".args.input" }
   timeoutMs: Int! = 5000
 ) on FIELD_DEFINITION
 ```
@@ -321,10 +322,8 @@ directive @natsRequest(
 
 ```graphql
 type Query {
-  getUserDetails(id: String!): UserDetails! @natsRequest(
-    subject: "user.details.{{args.id}}",
-    timeoutMs: 2000
-  )
+  getUserDetails(id: String!): UserDetails!
+    @natsRequest(subject: "user.details.{{args.id}}", timeoutMs: 2000)
 }
 
 type UserDetails {
@@ -342,10 +341,8 @@ You could also send a payload with the request:
 
 ```graphql
 type Query {
-  authenticateUser(input: AuthInput!): AuthResponse! @natsRequest(
-    subject: "auth.service",
-    timeoutMs: 3000
-  )
+  authenticateUser(input: AuthInput!): AuthResponse!
+    @natsRequest(subject: "auth.service", timeoutMs: 3000)
 }
 
 input AuthInput {
@@ -373,7 +370,7 @@ directive @natsKeyValue(
   bucket: UrlTemplate!
   key: UrlTemplate!
   action: NatsKeyValueAction!
-  body: Body = { selection: "*" }
+  body: Body = { selection: ".args.input" }
   selection: UrlTemplate
 ) on FIELD_DEFINITION
 ```
@@ -409,11 +406,8 @@ This example stores a user profile in the "user-profiles" bucket using the userI
 
 ```graphql
 type Mutation {
-  saveUserProfile(userId: String!, profile: UserProfileInput!): String! @natsKeyValue(
-    bucket: "user-profiles",
-    key: "{{args.userId}}",
-    action: PUT
-  )
+  saveUserProfile(userId: String!, profile: UserProfileInput!): String!
+    @natsKeyValue(bucket: "user-profiles", key: "{{args.userId}}", action: PUT)
 }
 
 input UserProfileInput {
@@ -428,11 +422,12 @@ This example stores a user profile in the "user-profiles" bucket using the userI
 
 ```graphql
 type Mutation {
-  saveUserProfile(userId: String!, profile: UserProfileInput!): String! @natsKeyValue(
-    bucket: "user-profiles",
-    key: "{{args.userId}}",
-    action: CREATE
-  )
+  saveUserProfile(userId: String!, profile: UserProfileInput!): String!
+    @natsKeyValue(
+      bucket: "user-profiles"
+      key: "{{args.userId}}"
+      action: CREATE
+    )
 }
 
 input UserProfileInput {
@@ -447,11 +442,8 @@ This example retrieves a user profile from the "user-profiles" bucket using the 
 
 ```graphql
 type Query {
-  getUserProfile(userId: String!): UserProfile @natsKeyValue(
-    bucket: "user-profiles",
-    key: "{{args.userId}}",
-    action: GET
-  )
+  getUserProfile(userId: String!): UserProfile
+    @natsKeyValue(bucket: "user-profiles", key: "{{args.userId}}", action: GET)
 }
 
 type UserProfile {
@@ -466,11 +458,12 @@ This example deletes a user profile from the "user-profiles" bucket using the us
 
 ```graphql
 type Mutation {
-  deleteUserProfile(userId: String!): Boolean! @natsKeyValue(
-    bucket: "user-profiles",
-    key: "{{args.userId}}",
-    action: DELETE
-  )
+  deleteUserProfile(userId: String!): Boolean!
+    @natsKeyValue(
+      bucket: "user-profiles"
+      key: "{{args.userId}}"
+      action: DELETE
+    )
 }
 ```
 
@@ -478,11 +471,12 @@ This example retrieves only the preferences field from a user profile using [jq-
 
 ```graphql
 type Query {
-  getUserPreferences(userId: String!): JSON @natsKeyValue(
-    bucket: "user-profiles",
-    key: "{{args.userId}}",
-    action: GET,
-    selection: ".preferences"
-  )
+  getUserPreferences(userId: String!): JSON
+    @natsKeyValue(
+      bucket: "user-profiles"
+      key: "{{args.userId}}"
+      action: GET
+      selection: ".preferences"
+    )
 }
 ```

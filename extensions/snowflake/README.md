@@ -8,12 +8,19 @@ The `customLimit` query demonstrates how to use the `@snowflakeQuery` directive 
 
 ```graphql
 extend schema
-  @link(url: "https://grafbase.com/extensions/snowflake/0.2.1", import: ["@snowflakeQuery"])
+  @link(
+    url: "https://grafbase.com/extensions/snowflake/0.3.0"
+    import: ["@snowflakeQuery"]
+  )
 
 scalar JSON
 
 type Query {
-    customLimit(params: [JSON!]!): String! @snowflakeQuery(sql: "SELECT * FROM my_table LIMIT ?", bindings: "{{ args.params }}")
+  customLimit(params: [JSON!]!): String!
+    @snowflakeQuery(
+      sql: "SELECT * FROM my_table LIMIT ?"
+      bindings: "{{ args.params }}"
+    )
 }
 ```
 

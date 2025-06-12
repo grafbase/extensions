@@ -215,6 +215,12 @@ impl<'a> SingleRowInsert<'a> {
     ///
     /// Both inserts must be to the same table and must include the same columns.
     pub fn merge(self, other: SingleRowInsert<'a>) -> Result<MultiRowInsert<'a>, SdkError> {
+        if self.columns.len() != other.columns.len()
+            && self.columns.iter().zip(&other.columns).all(|(a, b)| a.name == b.name)
+        {
+            return Err(SdkError::from("All insert items must have the same columns."));
+        }
+
         Ok(MultiRowInsert {
             table: self.table,
             columns: self.columns,
@@ -261,6 +267,12 @@ impl<'a> MultiRowInsert<'a> {
     ///
     /// Both inserts must be to the same table and must include the same columns.
     pub fn extend(&mut self, other: SingleRowInsert<'a>) -> Result<(), SdkError> {
+        if self.columns.len() != other.columns.len()
+            && self.columns.iter().zip(&other.columns).all(|(a, b)| a.name == b.name)
+        {
+            return Err(SdkError::from("All insert items must have the same columns."));
+        }
+
         self.values.push(other.values);
 
         Ok(())

@@ -27,7 +27,7 @@ Specify the desired version of the Postgres extension:
 ```toml
 # grafbase.toml
 [extensions.postgres]
-version = "0.1"
+version = "0.5"
 ```
 
 **Using a Local Build:**
@@ -148,45 +148,44 @@ CREATE TABLE profiles (
 The introspection tool generates the following GraphQL types based on the tables above:
 
 ```graphql
-type Profile
-  @pgTable(name: "profiles")
-  @pgKey(fields: ["id"], type: PRIMARY)
-{
+type Profile @pgTable(name: "profiles") @pgKey(fields: ["id"], type: PRIMARY) {
   id: BigInt! @pgColumn(name: "id", type: BIGINT)
   userId: BigInt! @pgColumn(name: "user_id", type: BIGINT)
   firstName: String @pgColumn(name: "first_name", type: VARCHAR)
   lastName: String @pgColumn(name: "last_name", type: VARCHAR)
-  user: User! @pgRelation(name: "profiles_user_id_fkey", fields: ["userId"], references: ["id"])
+  user: User!
+    @pgRelation(
+      name: "profiles_user_id_fkey"
+      fields: ["userId"]
+      references: ["id"]
+    )
 }
 
-type User
-  @pgTable(name: "users")
-  @pgKey(fields: ["id"], type: PRIMARY)
-{
+type User @pgTable(name: "users") @pgKey(fields: ["id"], type: PRIMARY) {
   id: BigInt! @pgColumn(name: "id", type: BIGINT)
   username: String! @pgColumn(name: "username", type: VARCHAR)
   email: String! @pgColumn(name: "email", type: VARCHAR)
   metadata: JSON @pgColumn(name: "metadata", type: JSONB)
   profiles(
-    filter: ProfileFilterInput,
-    first: Int,
-    last: Int,
-    before: String,
-    after: String,
-    orderBy: [ProfileOrderByInput!],
+    filter: ProfileFilterInput
+    first: Int
+    last: Int
+    before: String
+    after: String
+    orderBy: [ProfileOrderByInput!]
   ): ProfileConnection! @pgRelation(name: "profiles_user_id_fkey")
 }
 ```
 
 **Key Generation Principles:**
 
-*   **Naming:** Field names default to camelCase, and type names default to PascalCase. The original database names are preserved in the `@pgTable` and `@pgColumn` directives.
-*   **Schemas:** If your database uses multiple PostgreSQL schemas, the directives (e.g., `@pgTable(name: "users", schema: "public")`) will include the schema name.
-*   **Relationships:** The tool generates fields for foreign key relationships using the `@pgRelation` directive. The side defining the foreign key constraint includes `fields` and `references` arguments; the other side represents the inverse relationship.
-*   **JSON Types:** Columns with `JSON` or `JSONB` types map to the `JSON` scalar type in the SDL.
-    *   If your JSON data has a consistent structure, you can replace the `JSON` scalar with a custom GraphQL object type *after* introspection. **Note:** Queries will fail if the database returns JSON that doesn't match your custom type definition.
-*   **Customization:** You can rename generated types and fields after introspection. However, you **must** keep the original database object names within the `@pgTable`, `@pgColumn`, and `@pgRelation` directives. Ensure you also update any corresponding input types if you rename elements.
-*   **Pruning:** You can safely remove unused queries, mutations, and their associated input/output types from the generated schema if they are not needed in your API.
+- **Naming:** Field names default to camelCase, and type names default to PascalCase. The original database names are preserved in the `@pgTable` and `@pgColumn` directives.
+- **Schemas:** If your database uses multiple PostgreSQL schemas, the directives (e.g., `@pgTable(name: "users", schema: "public")`) will include the schema name.
+- **Relationships:** The tool generates fields for foreign key relationships using the `@pgRelation` directive. The side defining the foreign key constraint includes `fields` and `references` arguments; the other side represents the inverse relationship.
+- **JSON Types:** Columns with `JSON` or `JSONB` types map to the `JSON` scalar type in the SDL.
+  - If your JSON data has a consistent structure, you can replace the `JSON` scalar with a custom GraphQL object type _after_ introspection. **Note:** Queries will fail if the database returns JSON that doesn't match your custom type definition.
+- **Customization:** You can rename generated types and fields after introspection. However, you **must** keep the original database object names within the `@pgTable`, `@pgColumn`, and `@pgRelation` directives. Ensure you also update any corresponding input types if you rename elements.
+- **Pruning:** You can safely remove unused queries, mutations, and their associated input/output types from the generated schema if they are not needed in your API.
 
 ### Queries
 
@@ -196,26 +195,24 @@ The introspection generates queries for fetching single records and collections.
 # Example generated queries
 type Query {
   # Fetch a single user by primary/unique key
-  user(
-    lookup: UserLookupInput!,
-  ): User @pgSelectOne
+  user(lookup: UserLookupInput!): User @pgSelectOne
 
   # Fetch a collection of users with filtering, ordering, and pagination
   users(
-    filter: UserFilterInput,
-    first: Int,
-    last: Int,
-    before: String,
-    after: String,
-    orderBy: [UserOrderByInput!],
+    filter: UserFilterInput
+    first: Int
+    last: Int
+    before: String
+    after: String
+    orderBy: [UserOrderByInput!]
   ): UserConnection! @pgSelectMany
 }
 ```
 
-*   **Single Record (`@pgSelectOne`):** Fetches a unique row (e.g., `user`). Its `lookup` argument accepts fields corresponding to the table's primary key or unique constraints. For composite keys, the tool generates specific input types.
-*   **Collections (`@pgSelectMany`):** Fetches multiple rows (e.g., `users`). It supports filtering (`filter`), ordering (`orderBy`), and cursor-based pagination (`first`, `last`, `before`, `after`).
-*   **Performance:** When you query fields representing relationships, the extension generates efficient SQL joins (specifically lateral joins). The extension guarantees execution of exactly one SQL query per incoming GraphQL request, preventing the N+1 query problem.
-*   **Pagination:** Queries returning multiple items (including nested one-to-many relations) expose standard GraphQL connection types with pagination arguments (`first`, `last`, `before`, `after`) and `pageInfo`. (**Note:** Cursors and `pageInfo` currently return dummy values, see Missing Features).
+- **Single Record (`@pgSelectOne`):** Fetches a unique row (e.g., `user`). Its `lookup` argument accepts fields corresponding to the table's primary key or unique constraints. For composite keys, the tool generates specific input types.
+- **Collections (`@pgSelectMany`):** Fetches multiple rows (e.g., `users`). It supports filtering (`filter`), ordering (`orderBy`), and cursor-based pagination (`first`, `last`, `before`, `after`).
+- **Performance:** When you query fields representing relationships, the extension generates efficient SQL joins (specifically lateral joins). The extension guarantees execution of exactly one SQL query per incoming GraphQL request, preventing the N+1 query problem.
+- **Pagination:** Queries returning multiple items (including nested one-to-many relations) expose standard GraphQL connection types with pagination arguments (`first`, `last`, `before`, `after`) and `pageInfo`. (**Note:** Cursors and `pageInfo` currently return dummy values, see Missing Features).
 
 ### Mutations
 
@@ -225,42 +222,35 @@ The introspection also generates standard CRUD mutations.
 # Example generated mutations
 type Mutation {
   # Create a single user
-  userCreate(
-    input: UserCreateInput!,
-  ): UserCreatePayload! @pgInsertOne
+  userCreate(input: UserCreateInput!): UserCreatePayload! @pgInsertOne
 
   # Create multiple users
-  userCreateMany(
-    input: [UserCreateInput!]!,
-  ): UserCreateManyPayload! @pgInsertMany
+  userCreateMany(input: [UserCreateInput!]!): UserCreateManyPayload!
+    @pgInsertMany
 
   # Update a single user (identified by lookup)
   userUpdate(
-    lookup: UserLookupInput!,
-    input: UserUpdateInput!,
+    lookup: UserLookupInput!
+    input: UserUpdateInput!
   ): UserUpdatePayload! @pgUpdateOne
 
   # Update multiple users (identified by filter)
   userUpdateMany(
-    filter: UserFilterInput,
-    input: UserUpdateInput!,
+    filter: UserFilterInput
+    input: UserUpdateInput!
   ): UserUpdateManyPayload! @pgUpdateMany
 
   # Delete a single user (identified by lookup)
-  userDelete(
-    lookup: UserLookupInput!,
-  ): UserDeletePayload! @pgDeleteOne
+  userDelete(lookup: UserLookupInput!): UserDeletePayload! @pgDeleteOne
 
   # Delete multiple users (identified by filter)
-  userDeleteMany(
-    filter: UserFilterInput,
-  ): UserDeleteManyPayload! @pgDeleteMany
+  userDeleteMany(filter: UserFilterInput): UserDeleteManyPayload! @pgDeleteMany
 }
 ```
 
-*   **Operations:** The tool generates mutations for single-row (`@pgInsertOne`, `@pgUpdateOne`, `@pgDeleteOne`) and multi-row (`@pgInsertMany`, `@pgUpdateMany`, `@pgDeleteMany`) operations.
-*   **Returning Data:** All mutations support a `returning` selection set, allowing you to fetch data about the affected rows within the same database transaction.
-*   **Performance:** Each mutation executes as a single SQL statement.
+- **Operations:** The tool generates mutations for single-row (`@pgInsertOne`, `@pgUpdateOne`, `@pgDeleteOne`) and multi-row (`@pgInsertMany`, `@pgUpdateMany`, `@pgDeleteMany`) operations.
+- **Returning Data:** All mutations support a `returning` selection set, allowing you to fetch data about the affected rows within the same database transaction.
+- **Performance:** Each mutation executes as a single SQL statement.
 
 ### Logging
 
