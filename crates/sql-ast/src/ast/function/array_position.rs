@@ -1,7 +1,7 @@
 use super::Function;
 use crate::ast::{Expression, FunctionType};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct ArrayPosition<'a> {
     pub(crate) array: Expression<'a>,
     pub(crate) column: Expression<'a>,

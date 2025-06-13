@@ -1,7 +1,7 @@
 use crate::ast::{Expression, Function, FunctionType};
 
 /// Represents an `UNNEST` function call.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Unnest<'a> {
     pub(crate) expression: Box<Expression<'a>>,
     pub(crate) with_ordinality: bool,

@@ -11,9 +11,11 @@ crate-type = ["cdylib"]
 futures-util.workspace = true
 fxhash.workspace = true
 grafbase-sdk = { workspace = true, features = ["jq-selection"] }
+postcard.workspace = true
 regex.workspace = true
 serde = { workspace = true, features = ["derive"] }
 serde_json.workspace = true
+template.workspace = true
 
 [dev-dependencies]
 chrono = { workspace = true, features = ["clock"] }

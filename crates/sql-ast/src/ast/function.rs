@@ -55,7 +55,7 @@ pub use upper::*;
 use super::{Alias, Aliasable};
 
 /// A database function definition
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Function<'a> {
     pub(crate) r#type: FunctionType<'a>,
     pub(crate) alias: Option<Alias<'a>>,
@@ -74,7 +74,7 @@ impl Function<'_> {
 }
 
 /// A database function type
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub(crate) enum FunctionType<'a> {
     Count(Count<'a>),
     Cast(Cast<'a>),

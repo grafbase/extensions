@@ -1,8 +1,6 @@
-extend schema
-  @link(
-    url: "https://specs.grafbase.com/grafbase"
-    import: ["InputValueSet", "UrlTemplate", "JsonTemplate"]
-  )
+scalar JsonTemplate
+scalar Template
+scalar JqTemplate
 
 """
 Kafka producer directive for configuring message publishing to Kafka topics.
@@ -41,11 +39,11 @@ directive @kafkaPublish(
   The key of the message to publish.
   This supports templating using GraphQL arguments: {{args.argument}}
   """
-  key: UrlTemplate
+  key: Template
   """
   The body of the message to publish
   """
-  body: Body! = { selection: "*" }
+  body: Body! = { selection: ".args.input" }
 ) on FIELD_DEFINITION
 
 directive @kafkaSubscription(
@@ -58,7 +56,7 @@ directive @kafkaSubscription(
   The topic to subscribe to
   This supports templating using GraphQL arguments: {{args.argument}}
   """
-  topic: UrlTemplate!
+  topic: Template!
 
   """
   Selection to apply to the subscription payload. In jq syntax.
@@ -68,7 +66,7 @@ directive @kafkaSubscription(
   """
   A regular expression to filter messages by key
   """
-  keyFilter: UrlTemplate
+  keyFilter: Template
 
   """
   Kafka consumer settings
@@ -135,7 +133,7 @@ input Body {
   """
   GraphQL selection to include in the message body
   """
-  selection: InputValueSet
+  selection: JqTemplate
 
   """
   Static JSON content to include in the message body

@@ -1,7 +1,7 @@
 use super::Function;
 use crate::ast::Table;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 /// A representation of the `to_jsonb` function in PostgreSQL.
 pub struct ToJsonb<'a> {
     pub(crate) table: Table<'a>,

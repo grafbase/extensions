@@ -1,11 +1,12 @@
 use super::Function;
 use crate::ast::{FunctionType, Table};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 /// A representation of the `ROW_TO_JSON` function in the database.
 /// Only for `Postgresql`
 pub struct RowToJson<'a> {
     pub(crate) expr: Table<'a>,
+    #[allow(dead_code)]
     pub(crate) pretty_print: bool,
 }
 

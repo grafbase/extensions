@@ -4,9 +4,17 @@ use grafbase_sdk::{
     Subscription,
     host_io::kafka,
     jq_selection::JqSelection,
-    types::{Error, SubscriptionOutput},
+    types::{Error, Response, SubscriptionItem},
 };
 use regex::Regex;
+
+#[derive(serde::Serialize)]
+pub struct DeduplicationKey<'a> {
+    pub provider: &'a str,
+    pub topic: &'a str,
+    pub key_filter: Option<&'a str>,
+    pub selection: Option<&'a str>,
+}
 
 pub struct FilteredSubscription {
     kafka: kafka::KafkaConsumer,
@@ -32,7 +40,7 @@ impl FilteredSubscription {
 }
 
 impl Subscription for FilteredSubscription {
-    fn next(&mut self) -> Result<Option<SubscriptionOutput>, Error> {
+    fn next(&mut self) -> Result<Option<SubscriptionItem>, Error> {
         let item = match self.kafka.next() {
             Ok(Some(item)) => item,
             Ok(None) => {
@@ -41,44 +49,40 @@ impl Subscription for FilteredSubscription {
             Err(e) => return Err(format!("Failed to receive message from NATS: {e}").into()),
         };
 
-        let mut builder = SubscriptionOutput::builder();
-
         if let Some(ref filter) = self.key_filter {
             match item.key() {
                 Some(key) if filter.is_match(&key) => {}
-                _ => return Ok(Some(builder.build())),
+                _ => return Ok(Some(Vec::new().into())),
             }
         }
 
-        let value: Option<serde_json::Value> = item
-            .value()
-            .map_err(|e| format!("Error parsing NATS value as JSON: {e}"))?;
+        match &self.selection {
+            Some(selection) => {
+                let value: Option<serde_json::Value> = item
+                    .value()
+                    .map_err(|e| format!("Error parsing NATS value as JSON: {e}"))?;
 
-        let value = match value {
-            Some(value) => value,
-            None => return Ok(Some(builder.build())),
-        };
+                let value = match value {
+                    Some(value) => value,
+                    None => return Ok(Some(Response::null().into())),
+                };
 
-        match self.selection {
-            Some(ref selection) => {
                 let mut jq = self.jq_selection.borrow_mut();
 
-                let filtered = jq
+                let items = jq
                     .select(selection, value)
-                    .map_err(|e| format!("Failed to filter with selection: {e}"))?;
+                    .map_err(|e| format!("Failed to filter with selection: {e}"))?
+                    .map(|result| match result {
+                        Ok(value) => Response::data(value),
+                        Err(err) => Response::error(err),
+                    })
+                    .collect::<Vec<_>>();
 
-                for payload in filtered {
-                    match payload {
-                        Ok(payload) => builder.push(payload)?,
-                        Err(error) => builder.push_error(format!("Error parsing result value: {error}")),
-                    }
-                }
+                Ok(Some(items.into()))
             }
-            None => {
-                builder.push(value)?;
-            }
-        };
-
-        Ok(Some(builder.build()))
+            None => Ok(Some(
+                item.into_raw_value().map(Response::json).unwrap_or_default().into(),
+            )),
+        }
     }
 }

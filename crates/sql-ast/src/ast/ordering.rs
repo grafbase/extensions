@@ -4,7 +4,7 @@ use crate::ast::{Column, Expression};
 pub type OrderDefinition<'a> = (Expression<'a>, Option<Order>);
 
 /// A list of definitions for the `ORDER BY` statement.
-#[derive(Debug, Default, PartialEq, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct Ordering<'a>(pub Vec<OrderDefinition<'a>>);
 
 impl<'a> Ordering<'a> {

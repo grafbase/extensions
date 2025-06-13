@@ -1,6 +1,24 @@
-use std::str::FromStr;
-
 use grafbase_sdk::host_io::kafka;
+
+pub const KAFKA_PUBLISH: &str = "kafkaPublish";
+pub const KAFKA_SUBSCRIPTION: &str = "kafkaSubscription";
+
+pub enum KafkaDirective<'a> {
+    Publish(KafkaPublish<'a>),
+    #[allow(dead_code)]
+    Subscription(KafkaSubscription<'a>),
+}
+
+impl<'a> TryFrom<grafbase_sdk::types::Directive<'a>> for KafkaDirective<'a> {
+    type Error = grafbase_sdk::types::Error;
+    fn try_from(directive: grafbase_sdk::types::Directive<'a>) -> Result<Self, Self::Error> {
+        match directive.name() {
+            KAFKA_PUBLISH => Ok(KafkaDirective::Publish(directive.arguments()?)),
+            KAFKA_SUBSCRIPTION => Ok(KafkaDirective::Subscription(directive.arguments()?)),
+            name => Err(format!("Unknown directive: {name}").into()),
+        }
+    }
+}
 
 /// A Kafka producer configuration.
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -64,27 +82,6 @@ impl From<KafkaProducerCompression> for kafka::KafkaProducerCompression {
     }
 }
 
-/// Represents the different kinds of Kafka directives that can be used.
-#[derive(Debug)]
-pub enum DirectiveKind {
-    /// A publish directive for sending messages to Kafka.
-    Publish,
-    /// A subscription directive for receiving messages from Kafka.
-    Subscription,
-}
-
-impl FromStr for DirectiveKind {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "kafkaPublish" => Ok(DirectiveKind::Publish),
-            "kafkaSubscription" => Ok(DirectiveKind::Subscription),
-            _ => Err(format!("Unknown directive: {}", s)),
-        }
-    }
-}
-
 /// Configuration for publishing messages to Kafka.
 #[derive(Debug, Clone, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -94,36 +91,31 @@ pub struct KafkaPublish<'a> {
     /// Optional key for the Kafka message.
     pub key: Option<&'a str>,
     /// The message body configuration.
-    body: Option<Body>,
-}
-
-impl KafkaPublish<'_> {
-    /// Returns the body content as a JSON value.
-    pub fn body(&self) -> Option<&serde_json::Value> {
-        self.body.as_ref().and_then(|body| {
-            body.r#static
-                .as_ref()
-                .or_else(|| body.selection.as_ref().and_then(|s| s.input.as_ref()))
-        })
-    }
+    #[serde(default)]
+    pub body: Body<'a>,
 }
 
 /// Represents the body of a Kafka message.
-#[derive(Debug, Clone, serde::Deserialize)]
+#[derive(Debug, Default, Clone, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Body {
+pub struct Body<'a> {
     /// Dynamic body content based on selection.
-    pub selection: Option<BodyInput>,
+    pub selection: Option<&'a str>,
     /// Static body content as a JSON value.
     pub r#static: Option<serde_json::Value>,
 }
 
-/// Input configuration for dynamic body content.
-#[derive(Debug, Clone, serde::Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct BodyInput {
-    /// The input value as JSON.
-    input: Option<serde_json::Value>,
+impl<'a> Body<'a> {
+    pub fn into_case(self) -> Option<BodyCase<'a>> {
+        self.r#static
+            .map(BodyCase::Static)
+            .or_else(|| self.selection.map(BodyCase::Selection))
+    }
+}
+
+pub(crate) enum BodyCase<'a> {
+    Selection(&'a str),
+    Static(serde_json::Value),
 }
 
 #[derive(Debug, Clone, serde::Deserialize)]

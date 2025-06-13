@@ -8,7 +8,7 @@ use super::{
 type Type<'a> = ConditionTree<'a>;
 
 /// A builder for a `SELECT` statement.
-#[derive(Debug, PartialEq, Clone, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct Select<'a> {
     pub(crate) ctes: Vec<CommonTableExpression<'a>>,
     pub(crate) distinct: bool,
@@ -21,6 +21,7 @@ pub struct Select<'a> {
     pub(crate) limit: Option<u32>,
     pub(crate) offset: Option<u32>,
     pub(crate) joins: Vec<Join<'a>>,
+    #[allow(dead_code)]
     pub(crate) comment: Option<Cow<'a, str>>,
 }
 

@@ -1,7 +1,7 @@
 use super::Function;
 use crate::ast::{Expression, FunctionType};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 /// Returns the number of rows that matches a specified criteria.
 pub struct Count<'a> {
     pub(crate) exprs: Vec<Expression<'a>>,

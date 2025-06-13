@@ -2,7 +2,7 @@ use super::Function;
 use crate::ast::Expression;
 
 /// A representation of the `decode` function in PostgreSQL.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct ConvertFrom<'a> {
     pub(crate) expression: Expression<'a>,
     pub(crate) charset: &'static str,

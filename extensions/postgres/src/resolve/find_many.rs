@@ -16,7 +16,7 @@ fn empty() -> Data {
 pub(crate) fn execute(ctx: Context<'_>, table_id: TableId) -> Result<Data, SdkError> {
     let table = ctx.database_definition.walk(table_id);
     let mut builder = SelectBuilder::new(table, ctx.collection_selection(table)?, "node");
-    let collection_params = ctx.field.arguments::<CollectionParameters>(ctx.arguments)?;
+    let collection_params = ctx.field.arguments::<CollectionParameters>(ctx.variables)?;
 
     let args = CollectionArgs::new(ctx.database_definition, table, collection_params)?;
 

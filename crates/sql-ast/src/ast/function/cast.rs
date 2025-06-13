@@ -3,7 +3,7 @@ use std::borrow::Cow;
 use super::Function;
 use crate::ast::{Expression, FunctionType};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Cast<'a> {
     pub(crate) expr: Expression<'a>,
     pub(crate) target_type: Cow<'a, str>,

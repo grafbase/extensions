@@ -2,7 +2,7 @@ use super::{Alias, Aliasable, ExpressionKind, Join, JoinData};
 use crate::ast::{Expression, Select, Values};
 use std::borrow::Cow;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 /// Either an identifier or a nested query.
 pub enum TableType<'a> {
     Table(Cow<'a, str>),
@@ -18,12 +18,6 @@ pub struct Table<'a> {
     pub typ: TableType<'a>,
     pub alias: Option<Alias<'a>>,
     pub database: Option<Cow<'a, str>>,
-}
-
-impl PartialEq for Table<'_> {
-    fn eq(&self, other: &Table) -> bool {
-        self.typ == other.typ && self.database == other.database
-    }
 }
 
 impl<'a> Table<'a> {

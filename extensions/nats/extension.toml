@@ -1,14 +1,13 @@
 [extension]
 name = "nats"
-version = "0.4.1"
+version = "0.5.0"
 kind = "resolver"
 description = "Map NATS endpoints to GraphQL fields. Supports regular and JetStream subscriptions, as well as request/reply messaging and the key/value store."
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/nats"
 license = "Apache-2.0"
 
 [directives]
-definitions = "definitions.graphql"
-field_resolvers = [
+resolvers = [
     "natsPublish",
     "natsSubscription",
     "natsRequest",

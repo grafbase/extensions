@@ -1,7 +1,7 @@
 use crate::ast::{Expression, Function, FunctionType};
 
 /// A represention of the `UPPER` function in the database.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Upper<'a> {
     pub(crate) expression: Box<Expression<'a>>,
 }

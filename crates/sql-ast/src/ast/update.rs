@@ -3,7 +3,7 @@ use crate::ast::{Column, ConditionTree, Expression, Query, Table};
 type Type<'a> = Column<'a>;
 
 /// A builder for an `UPDATE` statement.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct Update<'a> {
     pub(crate) table: Table<'a>,
     pub(crate) columns: Vec<Column<'a>>,
