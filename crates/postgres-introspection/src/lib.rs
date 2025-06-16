@@ -41,9 +41,7 @@ static BLOCKED_SCHEMAS: &[&str] = &["pg_catalog", "pg_toast", "information_schem
 fn blocked_schemas() -> Vec<String> {
     static SCHEMAS: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
 
-    let result = SCHEMAS
+    SCHEMAS
         .get_or_init(|| BLOCKED_SCHEMAS.iter().map(|schema| (*schema).to_string()).collect())
-        .clone();
-
-    result
+        .clone()
 }
