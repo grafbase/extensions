@@ -2,7 +2,7 @@ use super::{EncodeFormat, Function};
 use crate::ast::Expression;
 
 /// A representation of the `decode` function in PostgreSQL.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Decode<'a> {
     pub(crate) expression: Expression<'a>,
     pub(crate) format: EncodeFormat,

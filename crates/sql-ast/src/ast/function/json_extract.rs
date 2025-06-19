@@ -2,7 +2,7 @@ use super::Function;
 use crate::ast::{Expression, FunctionType};
 use std::borrow::Cow;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct JsonExtract<'a> {
     pub(crate) column: Box<Expression<'a>>,
     pub(crate) path: Vec<Cow<'a, str>>,

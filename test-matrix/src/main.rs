@@ -26,7 +26,8 @@ fn main() -> anyhow::Result<()> {
         println!("\n** {} **", cargo_toml.name());
         duct::cmd("grafbase", ["extension", "build", "--debug"])
             .dir(path)
-            .run()?;
+            .run()
+            .map_err(|e| anyhow::anyhow!("Failed to build extension (is grafbase in your path?): {}", e))?;
 
         test_arguments.push("-p".to_string());
         test_arguments.push(cargo_toml.name().to_string());
@@ -40,7 +41,6 @@ fn main() -> anyhow::Result<()> {
 
     println!("\n** Running tests **");
     duct::cmd("cargo", &test_arguments)
-        .env("LOCAL_EXTENSION_WASM_CACHE", "1")
         .env("PREBUILT_EXTENSION", "1")
         .run()?;
 

@@ -10,12 +10,12 @@ use config::PostgresConfig;
 use context::Context;
 use grafbase_database_definition::DatabaseDefinition;
 use grafbase_sdk::{
-    SdkError, SelectionSetResolverExtension,
+    ResolverExtension,
     host_io::postgres,
-    types::{ArgumentValues, Configuration, Data, Error, Field, SubgraphHeaders, SubgraphSchema},
+    types::{Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema, Variables},
 };
 
-#[derive(SelectionSetResolverExtension)]
+#[derive(ResolverExtension)]
 struct PostgresExtension {
     // from database name to pool
     pools: HashMap<String, postgres::Pool>,
@@ -23,7 +23,7 @@ struct PostgresExtension {
     database_definitions: HashMap<String, DatabaseDefinition>,
 }
 
-impl SelectionSetResolverExtension for PostgresExtension {
+impl ResolverExtension for PostgresExtension {
     fn new(subgraph_schemas: Vec<SubgraphSchema<'_>>, config: Configuration) -> Result<Self, Error> {
         logger::init();
 
@@ -43,47 +43,29 @@ impl SelectionSetResolverExtension for PostgresExtension {
         })
     }
 
-    fn prepare(&mut self, _: &str, field: Field<'_>) -> Result<Vec<u8>, Error> {
-        Ok(field.into_bytes())
-    }
-
-    fn resolve(
-        &mut self,
-        _: SubgraphHeaders,
-        subgraph_name: &str,
-        prepared: &[u8],
-        arguments: ArgumentValues<'_>,
-    ) -> Result<Data, Error> {
-        let Some(database_definition) = self.database_definitions.get(subgraph_name) else {
-            return Err(Error::new(format!(
-                "Subgraph {subgraph_name} is not a Postgres subgraph"
-            )));
+    fn resolve(&mut self, prepared: &[u8], _headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
+        let field = ResolvedField::try_from(prepared)?;
+        let Some(database_definition) = self.database_definitions.get(field.subgraph_name()) else {
+            return Err(format!("Subgraph {} is not a Postgres subgraph", field.subgraph_name()).into());
         };
 
         let Some(pool) = self.pools.get(database_definition.name()) else {
-            return Err(Error::new(format!(
-                "Database {} is not configured",
-                database_definition.name()
-            )));
+            return Err(format!("Database {} is not configured", database_definition.name()).into());
         };
 
-        let data = Field::with_bytes(prepared, |field| {
-            let Some(operation) = database_definition.get_operation(field.definition_id()) else {
-                return Err(SdkError::from("operation not found"));
-            };
+        let Some(operation) = database_definition.get_operation(field.definition_id()) else {
+            return Err("operation not found".into());
+        };
 
-            let ctx = Context {
-                operation,
-                arguments,
-                database_definition,
-                pool,
-                field,
-            };
+        let ctx = Context {
+            operation,
+            variables: &variables,
+            database_definition,
+            pool,
+            field: field.as_ref(),
+        };
 
-            resolve::execute(ctx)
-        })??;
-
-        Ok(data)
+        Ok(resolve::execute(ctx).into())
     }
 }
 

@@ -1,23 +1,29 @@
-use std::{str::FromStr, time::Duration};
+use std::time::Duration;
 
 use grafbase_sdk::host_io::nats::{self, OffsetDateTime};
 
-#[derive(Debug)]
-pub enum DirectiveKind {
-    Publish,
-    Request,
-    KeyValue,
+pub const NATS_PUBLISH: &str = "natsPublish";
+pub const NATS_REQUEST: &str = "natsRequest";
+pub const NATS_KEY_VALUE: &str = "natsKeyValue";
+pub const NATS_SUBSCRIBE: &str = "natsSubscribtion";
+
+pub enum NatsDirective<'a> {
+    Publish(PublishArguments<'a>),
+    Request(RequestArguments<'a>),
+    KeyValue(KeyValueArguments<'a>),
+    #[allow(dead_code)]
+    Subscribe(SubscribeArguments<'a>),
 }
 
-impl FromStr for DirectiveKind {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "natsPublish" => Ok(DirectiveKind::Publish),
-            "natsRequest" => Ok(DirectiveKind::Request),
-            "natsKeyValue" => Ok(DirectiveKind::KeyValue),
-            _ => Err(format!("Unknown directive: {}", s)),
+impl<'a> TryFrom<grafbase_sdk::types::Directive<'a>> for NatsDirective<'a> {
+    type Error = grafbase_sdk::types::Error;
+    fn try_from(directive: grafbase_sdk::types::Directive<'a>) -> Result<Self, Self::Error> {
+        match directive.name() {
+            NATS_PUBLISH => Ok(NatsDirective::Publish(directive.arguments()?)),
+            NATS_REQUEST => Ok(NatsDirective::Request(directive.arguments()?)),
+            NATS_KEY_VALUE => Ok(NatsDirective::KeyValue(directive.arguments()?)),
+            NATS_SUBSCRIBE => Ok(NatsDirective::Subscribe(directive.arguments()?)),
+            name => Err(format!("Unknown directive: {name}").into()),
         }
     }
 }
@@ -27,17 +33,8 @@ impl FromStr for DirectiveKind {
 pub struct PublishArguments<'a> {
     pub provider: &'a str,
     pub subject: &'a str,
-    body: Option<Body>,
-}
-
-impl PublishArguments<'_> {
-    pub fn body(&self) -> Option<&serde_json::Value> {
-        self.body.as_ref().and_then(|body| {
-            body.r#static
-                .as_ref()
-                .or_else(|| body.selection.as_ref().and_then(|s| s.input.as_ref()))
-        })
-    }
+    #[serde(borrow)]
+    pub body: Body<'a>,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -45,20 +42,12 @@ impl PublishArguments<'_> {
 pub struct RequestArguments<'a> {
     pub provider: &'a str,
     pub subject: &'a str,
+    #[serde(borrow)]
     pub selection: Option<&'a str>,
     #[serde(rename = "timeoutMs", deserialize_with = "deserialize_duration_from_ms")]
     pub timeout: Duration,
-    body: Option<Body>,
-}
-
-impl RequestArguments<'_> {
-    pub fn body(&self) -> Option<&serde_json::Value> {
-        self.body.as_ref().and_then(|body| {
-            body.r#static
-                .as_ref()
-                .or_else(|| body.selection.as_ref().and_then(|s| s.input.as_ref()))
-        })
-    }
+    #[serde(borrow)]
+    pub body: Body<'a>,
 }
 
 fn deserialize_duration_from_ms<'de, D>(deserializer: D) -> Result<Duration, D::Error>
@@ -78,18 +67,10 @@ pub struct KeyValueArguments<'a> {
     pub bucket: &'a str,
     pub key: &'a str,
     pub action: KeyValueAction,
+    #[serde(borrow)]
     pub selection: Option<&'a str>,
-    body: Option<Body>,
-}
-
-impl KeyValueArguments<'_> {
-    pub fn body(&self) -> Option<&serde_json::Value> {
-        self.body.as_ref().and_then(|body| {
-            body.r#static
-                .as_ref()
-                .or_else(|| body.selection.as_ref().and_then(|s| s.input.as_ref()))
-        })
-    }
+    #[serde(borrow)]
+    pub body: Option<Body<'a>>,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -101,17 +82,25 @@ pub enum KeyValueAction {
     Delete,
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, Default, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Body {
-    pub selection: Option<RestInput>,
+pub struct Body<'a> {
+    #[serde(borrow)]
+    pub selection: Option<&'a str>,
     pub r#static: Option<serde_json::Value>,
 }
 
-#[derive(Debug, serde::Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct RestInput {
-    input: Option<serde_json::Value>,
+impl<'a> Body<'a> {
+    pub fn into_case(self) -> Option<BodyCase<'a>> {
+        self.r#static
+            .map(BodyCase::Static)
+            .or_else(|| self.selection.map(BodyCase::Selection))
+    }
+}
+
+pub(crate) enum BodyCase<'a> {
+    Selection(&'a str),
+    Static(serde_json::Value),
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -119,7 +108,9 @@ pub struct RestInput {
 pub struct SubscribeArguments<'a> {
     pub provider: &'a str,
     pub subject: &'a str,
-    pub selection: Option<String>,
+    #[serde(borrow)]
+    pub selection: Option<&'a str>,
+    #[serde(borrow)]
     pub stream_config: Option<NatsStreamConfiguration<'a>>,
 }
 
@@ -128,7 +119,9 @@ pub struct SubscribeArguments<'a> {
 pub struct NatsStreamConfiguration<'a> {
     pub stream_name: &'a str,
     pub consumer_name: &'a str,
+    #[serde(borrow)]
     pub durable_name: Option<&'a str>,
+    #[serde(borrow)]
     pub description: Option<&'a str>,
     pub inactive_threshold_ms: u64,
     deliver_policy: NatsStreamDeliverPolicy,

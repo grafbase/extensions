@@ -1,7 +1,7 @@
 use crate::ast::{Expression, Function, FunctionType};
 
 /// A represention of the `SUM` function in the database.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Sum<'a> {
     pub(crate) expr: Box<Expression<'a>>,
 }

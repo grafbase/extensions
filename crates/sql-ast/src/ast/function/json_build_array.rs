@@ -1,7 +1,7 @@
 use super::{Function, FunctionType};
 use crate::ast::Expression;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct JsonBuildArray<'a> {
     pub(crate) expressions: Vec<Expression<'a>>,
 }

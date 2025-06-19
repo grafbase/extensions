@@ -535,7 +535,7 @@ impl Renderer {
         }
 
         self.visit_table(data.table, true);
-        if data.conditions != ConditionTree::NoCondition || empty_on {
+        if !data.conditions.is_no_condition() || empty_on {
             self.write(" ON ");
             self.visit_conditions(data.conditions)
         }

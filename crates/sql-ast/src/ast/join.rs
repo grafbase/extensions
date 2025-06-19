@@ -1,7 +1,7 @@
 use crate::ast::{ConditionTree, Table};
 
 /// The `JOIN` table and conditions.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct JoinData<'a> {
     pub(crate) table: Table<'a>,
     pub(crate) conditions: ConditionTree<'a>,
@@ -34,7 +34,7 @@ where
 }
 
 /// A representation of a `JOIN` statement.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub enum Join<'a> {
     /// Implements an `INNER JOIN` with given `JoinData`.
     Inner(JoinData<'a>),

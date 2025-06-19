@@ -1,8 +1,12 @@
-extend schema
-  @link(
-    url: "https://specs.grafbase.com/grafbase"
-    import: ["InputValueSet", "UrlTemplate", "JsonTemplate"]
-  )
+"""
+Template accepting the field arguments like {{args.x}}
+"""
+scalar Template
+
+"""
+JSON template accepting the field arguments like {{args.x}} that will be interpreted as a jq command.
+"""
+scalar JqTemplate
 
 directive @natsPublish(
   """
@@ -14,12 +18,12 @@ directive @natsPublish(
   The subject to publish to
   This supports templating using GraphQL arguments: {{args.argument}}
   """
-  subject: UrlTemplate!
+  subject: Template!
 
   """
   The body of the message to publish
   """
-  body: Body! = { selection: "*" }
+  body: Body! = { selection: ".args.input" }
 ) on FIELD_DEFINITION
 
 directive @natsSubscription(
@@ -32,12 +36,12 @@ directive @natsSubscription(
   The subject to subscribe to
   This supports templating using GraphQL arguments: {{args.argument}}
   """
-  subject: UrlTemplate!
+  subject: Template!
 
   """
   Selection to apply to the subscription payload. In jq syntax.
   """
-  selection: JsonTemplate
+  selection: JqTemplate
 
   """
   Stream configuration for JetStream subscriptions
@@ -55,17 +59,17 @@ directive @natsRequest(
   The subject to publish to
   This supports templating using GraphQL arguments: {{args.argument}}
   """
-  subject: UrlTemplate!
+  subject: Template!
 
   """
   Selection to apply to the subscription payload. In jq syntax.
   """
-  selection: JsonTemplate
+  selection: JqTemplate
 
   """
   The body of the message to publish
   """
-  body: Body! = { selection: "*" }
+  body: Body! = { selection: ".args.input" }
 
   """
   Timeout in milliseconds for the request. If the request does not
@@ -85,13 +89,13 @@ directive @natsKeyValue(
   The bucket name to operate on
   This supports templating using GraphQL arguments: {{args.argument}}
   """
-  bucket: UrlTemplate!
+  bucket: Template!
 
   """
   The key name to operate on
   This supports templating using GraphQL arguments: {{args.argument}}
   """
-  key: UrlTemplate!
+  key: Template!
 
   """
   The key-value operation to perform
@@ -102,13 +106,13 @@ directive @natsKeyValue(
   The body of the message to put or create (only used for PUT and
   CREATE actions)
   """
-  body: Body = { selection: "*" }
+  body: Body = { selection: ".args.input" }
 
   """
   Selection to apply to the response payload. In jq syntax. (only
   used for GET action)
   """
-  selection: UrlTemplate
+  selection: Template
 ) on FIELD_DEFINITION
 
 """
@@ -253,9 +257,9 @@ Body configuration for NATS publish operations
 """
 input Body {
   """
-  GraphQL selection to include in the message body
+  Selection to include in the message body, from the arguments. In jq syntax.
   """
-  selection: InputValueSet
+  selection: JqTemplate
 
   """
   Static JSON content to include in the message body

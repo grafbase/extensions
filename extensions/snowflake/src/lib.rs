@@ -5,20 +5,19 @@ mod statements;
 
 use self::config::{Authentication, SnowflakeConfig};
 use grafbase_sdk::{
-    FieldResolverExtension,
-    types::{
-        Configuration, Error, FieldDefinitionDirective, FieldInputs, FieldOutputs, SchemaDirective, SubgraphHeaders,
-    },
+    ResolverExtension,
+    types::{Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema, Variables},
 };
+use template::Template;
 
-#[derive(FieldResolverExtension)]
+#[derive(ResolverExtension)]
 struct Snowflake {
     jwt: String,
     config: SnowflakeConfig,
 }
 
-impl FieldResolverExtension for Snowflake {
-    fn new(_: Vec<SchemaDirective>, config: Configuration) -> Result<Self, Error> {
+impl ResolverExtension for Snowflake {
+    fn new(_schemas: Vec<SubgraphSchema<'_>>, config: Configuration) -> Result<Self, Error> {
         let config: SnowflakeConfig = config.deserialize()?;
 
         Ok(Self {
@@ -27,23 +26,27 @@ impl FieldResolverExtension for Snowflake {
         })
     }
 
-    fn resolve_field(
-        &mut self,
-        _headers: SubgraphHeaders,
-        _subgraph_name: &str,
-        directive: FieldDefinitionDirective<'_>,
-        inputs: FieldInputs,
-    ) -> Result<FieldOutputs, Error> {
-        match directive.name() {
+    fn resolve(&mut self, prepared: &[u8], _headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
+        let field = ResolvedField::try_from(prepared)?;
+        let arguments: serde_json::Value = field.arguments(&variables)?;
+        let ctx = serde_json::json!({
+            "args": arguments,
+        });
+
+        match field.directive().name() {
             "snowflakeQuery" => {
-                let directives::SnowflakeQueryDirective { sql, bindings } = directive.arguments()?;
+                let directives::SnowflakeQueryDirective { sql, bindings } = field.directive().arguments()?;
 
                 let bindings = bindings
                     .map(|binding| {
-                        serde_json::from_str(&binding)
+                        let t = Template::new(binding)
+                            .map_err(|err| Error::new(format!("Failed to parse bindings: {err}")))?;
+                        let json = t.render_json(&ctx);
+                        serde_json::from_str(&json)
                             .map_err(|err| Error::new(format!("Failed to parse bindings: {err}")))
                     })
-                    .unwrap_or(Ok(vec![]))?;
+                    .transpose()?
+                    .unwrap_or(vec![]);
 
                 let response = self.execute_statement(&sql, &bindings)?;
 
@@ -54,7 +57,7 @@ impl FieldResolverExtension for Snowflake {
                     )));
                 };
 
-                Ok(FieldOutputs::new(inputs, data)?)
+                Ok(Response::data(data))
             }
             other => Err(Error::new(format!("Unsupported directive \"{other}\""))),
         }

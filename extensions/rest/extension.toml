@@ -1,14 +1,13 @@
 [extension]
 name = "rest"
-version = "0.4.1"
+version = "0.5.0"
 kind = "resolver"
 description = "Declarative REST resolver extension."
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/rest"
 license = "Apache-2.0"
 
 [directives]
-definitions = "definitions.graphql"
-field_resolvers = ["rest"]
+resolvers = ["rest"]
 
 [permissions]
 network = true

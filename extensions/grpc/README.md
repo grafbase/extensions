@@ -6,7 +6,12 @@ The core directive is `@grpcMethod`. It can be used on any output field, like so
 
 ```graphql
 type Query {
-  getFeature(input: PointInput!): Feature @grpcMethod(service: "routeguide.RouteGuide", method: "GetFeature", input: "*")
+  getFeature(input: PointInput!): Feature
+    @grpcMethod(
+      service: "routeguide.RouteGuide"
+      method: "GetFeature"
+      input: "*"
+    )
 }
 ```
 
@@ -20,7 +25,7 @@ The service must also be defined on a schema definition, along with the required
 
 ```graphql
 extend schema
-  @link(url: "https://grafbase.com/extensions/grpc/0.1.0", import: ["@grpcMethod", "@protoMessages", "@protoServices"])
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@grpcMethod", "@protoMessages", "@protoServices"])
   @protoMessages(definitions: [
     {
       name: "Point"

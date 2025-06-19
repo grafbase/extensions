@@ -1,8 +1,5 @@
-extend schema
-  @link(
-    url: "https://specs.grafbase.com/grafbase"
-    import: ["InputValueSet", "UrlTemplate", "JsonTemplate"]
-  )
+scalar UrlTemplate
+scalar JqTemplate
 
 """
 @restEndpoint directive enables defining named REST endpoints for the
@@ -23,7 +20,20 @@ directive @restEndpoint(
   The base URL for the REST API
   """
   baseURL: String!
+  "Header to send to the endpoint"
+  headers: [HTTPHeaderMapping!]
 ) repeatable on SCHEMA
+
+input HTTPHeaderMapping {
+  "Name of the HTTP header"
+  name: String!
+  """
+  Static header value. It's a template that accepts a `config` parameter which
+  represents the TOML config associated with this extension. So for example:
+  `value: "Bearer: {{ config.token }}"`
+  """
+  value: String!
+}
 
 """
 @rest directive allows you to define RESTful API integrations for GraphQL
@@ -36,7 +46,6 @@ type Query {
     endpoint: "users",
     method: GET,
     path: "/users",
-    selection: "*"
   )
 }
 """
@@ -47,29 +56,35 @@ directive @rest(
   endpoint: String!
 
   """
-  The HTTP method to use for the request, such as GET, POST, etc.
+  The HTTP request to execute against the endpoint.
   """
-  method: HttpMethod!
-
-  """
-  The path template for the request, which can include
-  variable substitutions from GraphQL arguments.
-  This supports templating using GraphQL arguments: {{args.myArgument}}
-  """
-  path: UrlTemplate!
+  http: ConnectHTTP!
 
   """
   Specifies which fields from the GraphQL selection to include in the
   response.
   """
-  selection: JsonTemplate!
+  selection: JqTemplate
+) on FIELD_DEFINITION
+
+"Only one of the HTTP method can be used"
+input ConnectHTTP {
+  CONNECT: UrlTemplate
+  DELETE: UrlTemplate
+  GET: UrlTemplate
+  HEAD: UrlTemplate
+  OPTIONS: UrlTemplate
+  POST: UrlTemplate
+  PUT: UrlTemplate
+  PATCH: UrlTemplate
+  TRACE: UrlTemplate
 
   """
   Configuration for the request body, can include static values or
   selections from the GraphQL arguments
   """
-  body: Body = { selection: "*" }
-) on FIELD_DEFINITION
+  body: Body = { selection: ".args.input" }
+}
 
 scalar JSON
 
@@ -78,59 +93,16 @@ Body input type defines how to construct the request body for REST
 API calls. It allows for dynamic construction from GraphQL arguments
 or static values.
 """
-input Body {
+input Body @oneOf {
   """
   Specifies which GraphQL arguments to include in the request body.
   Use "*" to include all arguments, or provide specific field names.
   """
-  selection: InputValueSet
+  selection: JqTemplate
 
   """
   Static JSON content to include in the request body,
   which will be merged with any selected values.
   """
   static: JSON
-}
-
-"""
-HttpMethod enum represents the standard HTTP methods supported
-for REST API interactions.
-"""
-enum HttpMethod {
-  """
-  HTTP GET method for retrieving resources
-  """
-  GET
-  """
-  HTTP POST method for creating resources
-  """
-  POST
-  """
-  HTTP PUT method for replacing resources
-  """
-  PUT
-  """
-  HTTP DELETE method for removing resources
-  """
-  DELETE
-  """
-  HTTP HEAD method for retrieving headers only
-  """
-  HEAD
-  """
-  HTTP OPTIONS method for describing communication options
-  """
-  OPTIONS
-  """
-  HTTP CONNECT method for establishing tunnels
-  """
-  CONNECT
-  """
-  HTTP TRACE method for diagnostic testing
-  """
-  TRACE
-  """
-  HTTP PATCH method for partial modifications
-  """
-  PATCH
 }

@@ -181,7 +181,7 @@ impl<'a> SelectionIterator<'a> {
                 .map(|c| (c.client_name(), c))
                 .collect();
 
-            if let Ok(params) = field.arguments::<CollectionParameters>(ctx.arguments) {
+            if let Ok(params) = field.arguments::<CollectionParameters>(ctx.variables) {
                 for order_input in &params.order_by {
                     for field_name in order_input.field.keys() {
                         if selection_columns.contains_key(field_name.as_str()) {
@@ -329,7 +329,7 @@ impl<'a> Iterator for SelectionIterator<'a> {
             )))
         } else {
             let params = selection_field
-                .arguments::<CollectionParameters>(self.ctx.arguments)
+                .arguments::<CollectionParameters>(self.ctx.variables)
                 .ok()
                 .unwrap_or_default();
 

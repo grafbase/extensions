@@ -10,7 +10,7 @@ Add the following to your Grafbase Gateway configuration file:
 
 ```toml
 [extensions.kafka]
-version = "0.1"
+version = "0.2"
 ```
 
 Then run `grafbase extension install`. The extension will be installed in the `grafbase_extensions` directory. That directory must be present when the gateway is started.
@@ -141,11 +141,7 @@ extend schema
     url: "https://grafbase.com/extensions/kafka/0.1.1"
     import: ["@kafkaProducer", "@kafkaPublish", "@kafkaSubscription"]
   )
-  @kafkaProducer(
-    name: "userEvents",
-    topic: "user-events",
-    provider: "default",
-  )
+  @kafkaProducer(name: "userEvents", topic: "user-events", provider: "default")
 ```
 
 - `name`: The name of the Kafka producer. This is used to reference the producer in the `@kafkaPublish` directive. Must be unique within the schema.
@@ -164,7 +160,7 @@ extend schema
 directive @kafkaPublish(
   producer: String!
   key: UrlTemplate
-  body: Body! = { selection: "*" }
+  body: Body! = { selection: ".args.input" }
 ) on FIELD_DEFINITION
 ```
 
@@ -192,10 +188,8 @@ extend schema
   )
 
 type Mutation {
-  publishUserEvent(id: String!, input: UserEventInput!): Boolean! @kafkaPublish(
-    producer: "userEventProducer"
-    key: "user-{{args.id}}"
-  )
+  publishUserEvent(id: String!, input: UserEventInput!): Boolean!
+    @kafkaPublish(producer: "userEventProducer", key: "user-{{args.id}}")
 }
 
 input UserEventInput {
@@ -209,11 +203,10 @@ This example publishes an event to the `user-events` topic using the configured 
 
 ```graphql
 mutation PublishUserEvent($id: String!, $email: String!, $name: String!) {
-  publishUserEvent(id: $id, input: {
-    email: $email,
-    name: $name,
-    eventType: "profile_update"
-  })
+  publishUserEvent(
+    id: $id
+    input: { email: $email, name: $name, eventType: "profile_update" }
+  )
 }
 ```
 
@@ -294,10 +287,8 @@ enum KafkaConsumerStartOffsetPreset {
 
 ```graphql
 type Subscription {
-  userEvents(userId: String!): UserEvent! @kafkaSubscription(
-    topic: "user-events"
-    keyFilter: "user-{{args.userId}}"
-  )
+  userEvents(userId: String!): UserEvent!
+    @kafkaSubscription(topic: "user-events", keyFilter: "user-{{args.userId}}")
 }
 
 type UserEvent {
@@ -314,15 +305,16 @@ This example subscribes to the `user-events` topic and filters messages by key u
 
 ```graphql
 type Subscription {
-  orderUpdates: OrderUpdate! @kafkaSubscription(
-    topic: "order-updates"
-    consumerConfig: {
-      startOffset: { preset: EARLIEST }
-      maxBatchSize: 100
-      maxWaitTimeMs: 5000
-      partitions: [0, 1, 2]
-    }
-  )
+  orderUpdates: OrderUpdate!
+    @kafkaSubscription(
+      topic: "order-updates"
+      consumerConfig: {
+        startOffset: { preset: EARLIEST }
+        maxBatchSize: 100
+        maxWaitTimeMs: 5000
+        partitions: [0, 1, 2]
+      }
+    )
 }
 
 type OrderUpdate {
@@ -339,10 +331,8 @@ This example subscribes to the `order-updates` topic with advanced consumer conf
 
 ```graphql
 type Subscription {
-  highValueOrders: Order! @kafkaSubscription(
-    topic: "orders"
-    selection: "select(.amount > 1000)"
-  )
+  highValueOrders: Order!
+    @kafkaSubscription(topic: "orders", selection: "select(.amount > 1000)")
 }
 
 type Order {
@@ -359,10 +349,11 @@ The selection also supports dynamic parameters:
 
 ```graphql
 type Subscription {
-  ordersAboveThreshold(minimumAmount: Float!): Order! @kafkaSubscription(
-    topic: "orders"
-    selection: "select(.amount > {{args.minimumAmount}})"
-  )
+  ordersAboveThreshold(minimumAmount: Float!): Order!
+    @kafkaSubscription(
+      topic: "orders"
+      selection: "select(.amount > {{args.minimumAmount}})"
+    )
 }
 ```
 
@@ -396,8 +387,11 @@ Then reference the specific provider in your GraphQL schema:
 ```graphql
 schema
   @kafkaProducer(name: "prodEvents", provider: "production", topic: "events")
-  @kafkaProducer(name: "analyticsEvents", provider: "analytics", topic: "analytics")
-{
+  @kafkaProducer(
+    name: "analyticsEvents"
+    provider: "analytics"
+    topic: "analytics"
+  ) {
   query: Query
   mutation: Mutation
   subscription: Subscription
@@ -405,12 +399,15 @@ schema
 
 type Mutation {
   logEvent(input: EventInput!): Boolean! @kafkaPublish(producer: "prodEvents")
-  trackAnalytics(data: AnalyticsInput!): Boolean! @kafkaPublish(producer: "analyticsEvents")
+  trackAnalytics(data: AnalyticsInput!): Boolean!
+    @kafkaPublish(producer: "analyticsEvents")
 }
 
 type Subscription {
-  productionEvents: Event! @kafkaSubscription(provider: "production", topic: "events")
-  analyticsStream: Analytics! @kafkaSubscription(provider: "analytics", topic: "analytics")
+  productionEvents: Event!
+    @kafkaSubscription(provider: "production", topic: "events")
+  analyticsStream: Analytics!
+    @kafkaSubscription(provider: "analytics", topic: "analytics")
 }
 ```
 

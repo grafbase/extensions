@@ -19,6 +19,75 @@ struct Error {
 }
 
 fn subgraph(rest_endpoint: &str) -> ExtensionOnlySubgraph {
+    let schema = [
+        &format!(
+            r#"
+        extend schema @restEndpoint(
+          name: "endpoint",
+          baseURL: "{rest_endpoint}"
+        )
+        "#
+        ),
+        r#"
+        type Query {
+          users: [User!]! @rest(
+            endpoint: "endpoint",
+            http: { GET: "/users" },
+            selection: "[.[] | { id, name, age }]"
+          )
+
+          user(id: Int!): User @rest(
+            endpoint: "endpoint",
+            http: { GET: "/users/{{ args.id }}" }
+          )
+        }
+
+        type Mutation {
+          createUser(input: UserInput!): User! @rest(
+            endpoint: "endpoint",
+            http: { POST: "/users" },
+            selection: "{ id, name, age }"
+          )
+
+          createStaticUser: User! @rest(
+            endpoint: "endpoint",
+            http: {
+                POST: "/users"
+                body: { static: { name: "John Doe", age: 30 } }
+            },
+            selection: "{ id, name, age }"
+          )
+
+          updateUser(id: Int!, input: UserInput!): User! @rest(
+            endpoint: "endpoint",
+            http: { PUT: "/users/{{ args.id }}" },
+            selection: "{ id, name, age }"
+          )
+
+          deleteUser(id: Int!): User! @rest(
+            endpoint: "endpoint",
+            http: { DELETE: "/users/{{ args.id }}" }
+            selection: "{ id, name, age }"
+          )
+        }
+
+        type User {
+          id: ID!
+          name: String!
+          age: Int
+        }
+
+        input UserInput {
+          name: String!
+          age: Int!
+        }
+    "#,
+    ]
+    .join("\n");
+    subgraph_with_schema(&schema)
+}
+
+fn subgraph_with_schema(schema: &str) -> ExtensionOnlySubgraph {
     let extension_path = std::env::current_dir().unwrap().join("build");
     let path_str = format!("file://{}", extension_path.display());
 
@@ -27,69 +96,9 @@ fn subgraph(rest_endpoint: &str) -> ExtensionOnlySubgraph {
           @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
           @link(url: "{path_str}", import: ["@restEndpoint", "@rest"])
 
-        @restEndpoint(
-          name: "endpoint",
-          baseURL: "{rest_endpoint}"
-        )
-
-        type Query {{
-          users: [User!]! @rest(
-            endpoint: "endpoint",
-            method: GET,
-            path: "/users"
-            selection: "[.[] | {{ id, name, age }}]"
-          )
-
-          user(id: Int!): User @rest(
-            endpoint: "endpoint",
-            method: GET,
-            path: "/users/{{{{ args.id }}}}"
-            selection: "{{ id, name, age }}"
-          )
-        }}
-
-        type Mutation {{
-          createUser(input: UserInput!): User! @rest(
-            endpoint: "endpoint",
-            method: POST,
-            path: "/users"
-            selection: "{{ id, name, age }}"
-          )
-
-          createStaticUser: User! @rest(
-            endpoint: "endpoint",
-            method: POST,
-            path: "/users"
-            body: {{ static: {{ name: "John Doe", age: 30 }} }}
-            selection: "{{ id, name, age }}"
-          )
-
-          updateUser(id: Int!, input: UserInput!): User! @rest(
-            endpoint: "endpoint",
-            method: PUT,
-            path: "/users/{{{{ args.id }}}}"
-            selection: "{{ id, name, age }}"
-          )
-
-          deleteUser(id: Int!): User! @rest(
-            endpoint: "endpoint",
-            method: DELETE,
-            path: "/users/{{{{ args.id }}}}"
-            selection: "{{ id, name, age }}"
-          )
-        }}
-
-        type User {{
-          id: ID!
-          name: String!
-          age: Int
-        }}
-
-        input UserInput {{
-          name: String!
-          age: Int!
-        }}
-    "#};
+        {schema}
+        "#
+    };
 
     DynamicSchema::builder(schema)
         .into_extension_only_subgraph("test", &extension_path)
@@ -244,6 +253,149 @@ async fn with_required_headers() {
 }
 
 #[tokio::test]
+async fn static_headers() {
+    let response_body = json!({
+        "id": "1",
+        "name": "John Doe",
+        "age": 30,
+    });
+
+    let template = ResponseTemplate::new(200).set_body_json(response_body);
+    let mock_server = mock_server("/me", template, &[("X-Custom", "tea")]).await;
+    let subgraph = subgraph_with_schema(&format!(
+        r#"
+        extend schema @restEndpoint(
+          name: "endpoint",
+          baseURL: "{uri}"
+          headers: [
+            {{
+                name: "X-Custom"
+                value: "tea"
+            }}
+          ]
+        )
+
+        type Query {{
+            me: User @rest(endpoint: "endpoint", http: {{ GET: "/me" }})
+        }}
+
+        type User {{
+          id: ID!
+          name: String!
+          age: Int
+        }}
+        "#,
+        uri = mock_server.uri()
+    ));
+
+    let config = TestConfig::builder()
+        .with_subgraph(subgraph)
+        .enable_networking()
+        .build("")
+        .unwrap();
+
+    let runner = TestRunner::new(config).await.unwrap();
+
+    let query = indoc! {r#"
+        query {
+          me {
+            id
+            name
+            age
+          }
+        }
+    "#};
+
+    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+
+    insta::assert_json_snapshot!(result, @r#"
+    {
+      "data": {
+        "me": {
+          "id": "1",
+          "name": "John Doe",
+          "age": 30
+        }
+      }
+    }
+    "#);
+}
+
+#[tokio::test]
+async fn headers_from_config() {
+    let response_body = json!({
+        "id": "1",
+        "name": "John Doe",
+        "age": 30,
+    });
+
+    let template = ResponseTemplate::new(200).set_body_json(response_body);
+    let mock_server = mock_server("/me", template, &[("X-Custom", "tea")]).await;
+    let subgraph = subgraph_with_schema(&format!(
+        r#"
+        extend schema @restEndpoint(
+          name: "endpoint",
+          baseURL: "{uri}"
+          headers: [
+            {{
+                name: "X-Custom"
+                value: "{{{{config.header}}}}"
+            }}
+          ]
+        )
+
+        type Query {{
+            me: User @rest(endpoint: "endpoint", http: {{ GET: "/me" }})
+        }}
+
+        type User {{
+          id: ID!
+          name: String!
+          age: Int
+        }}
+        "#,
+        uri = mock_server.uri()
+    ));
+
+    let config = TestConfig::builder()
+        .with_subgraph(subgraph)
+        .enable_networking()
+        .build(
+            r#"
+            [extensions.rest.config.subgraphs.test]
+            header = "tea"
+            "#,
+        )
+        .unwrap();
+
+    let runner = TestRunner::new(config).await.unwrap();
+
+    let query = indoc! {r#"
+        query {
+          me {
+            id
+            name
+            age
+          }
+        }
+    "#};
+
+    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+
+    insta::assert_json_snapshot!(result, @r#"
+    {
+      "data": {
+        "me": {
+          "id": "1",
+          "name": "John Doe",
+          "age": 30
+        }
+      }
+    }
+    "#);
+}
+
+#[tokio::test]
 async fn get_one() {
     let response_body = json!({
         "id": "1",
@@ -299,6 +451,8 @@ async fn get_one_missing() {
     let config = TestConfig::builder()
         .with_subgraph(subgraph)
         .enable_networking()
+        .enable_stdout()
+        .enable_stderr()
         .build("")
         .unwrap();
 
@@ -545,8 +699,7 @@ async fn with_bad_jq() {
         type Query {{
           users: [User!]! @rest(
             endpoint: "endpoint",
-            method: GET,
-            path: "/users"
+            http: {{ GET: "/users" }},
             selection: "\\||\\"
           )
         }}
@@ -587,7 +740,7 @@ async fn with_bad_jq() {
       "data": null,
       "errors": [
         {
-          "message": "Error selecting result value: The selection is not valid jq syntax: `\\||\\`",
+          "message": "Failed to filter with selection: The selection is not valid jq syntax: `\\||\\`",
           "extensions": {
             "code": "EXTENSION_ERROR"
           }
@@ -633,8 +786,7 @@ async fn with_path_in_the_endpoint() {
         type Query {{
           users: [User!]! @rest(
             endpoint: "endpoint",
-            method: GET,
-            path: "/users"
+            http: {{ GET: "/users" }},
             selection: "[.[] | {{ id, name, age }}]"
           )
         }}
@@ -719,6 +871,8 @@ async fn update_user() {
     let config = TestConfig::builder()
         .with_subgraph(subgraph)
         .enable_networking()
+        .enable_stdout()
+        .enable_stderr()
         .build("")
         .unwrap();
 
@@ -830,6 +984,9 @@ async fn dynamic_post() {
     let config = TestConfig::builder()
         .with_subgraph(subgraph)
         .enable_networking()
+        .enable_stdout()
+        .enable_stderr()
+        .log_level(grafbase_sdk::test::LogLevel::Debug)
         .build("")
         .unwrap();
 

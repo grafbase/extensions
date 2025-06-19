@@ -3,7 +3,7 @@ use crate::ast::{Comparable, Compare, Expression};
 use std::borrow::Cow;
 
 /// A collection of values surrounded by parentheses.
-#[derive(Debug, Default, PartialEq, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct Row<'a> {
     pub values: Vec<Expression<'a>>,
 }

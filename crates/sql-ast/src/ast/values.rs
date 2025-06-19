@@ -2,7 +2,7 @@ use crate::ast::Row;
 
 /// An in-memory temporary table. Can be used in some of the databases in a
 /// place of an actual table. Doesn't work in MySQL 5.7.
-#[derive(Debug, Clone, Default, PartialEq)]
+#[derive(Debug, Clone, Default)]
 pub struct Values<'a> {
     pub(crate) rows: Vec<Row<'a>>,
 }

@@ -10,7 +10,7 @@ use std::borrow::Cow;
 
 /// An expression that can be positioned in a query. Can be a single value or a
 /// statement that is evaluated into a value.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Expression<'a> {
     pub kind: ExpressionKind<'a>,
     pub alias: Option<Alias<'a>>,
@@ -54,14 +54,14 @@ impl<'a> Expression<'a> {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct ParameterizedValue<'a> {
     pub value: DatabaseValue,
     pub enum_type: Option<Cow<'a, str>>,
 }
 
 /// An expression we can compare and use in database queries.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub enum ExpressionKind<'a> {
     /// Anything that we must parameterize before querying
     Parameterized(ParameterizedValue<'a>),

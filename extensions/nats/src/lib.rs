@@ -2,28 +2,31 @@ mod config;
 mod subscription;
 mod types;
 
-use std::{cell::RefCell, collections::HashMap, rc::Rc, str::FromStr, time::Duration};
+use std::{cell::RefCell, collections::HashMap, rc::Rc, time::Duration};
 
 use config::AuthConfig;
 use grafbase_sdk::{
     host_io::nats::{self, NatsAuth, NatsClient, NatsStreamConfig},
     jq_selection::JqSelection,
-    types::{
-        Configuration, Error, FieldDefinitionDirective, FieldInputs, FieldOutputs, SchemaDirective, SubgraphHeaders,
-    },
-    FieldResolverExtension, Subscription,
+    types::{Configuration, Data, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema, Variables},
+    IntoSubscription, ResolverExtension,
 };
+use serde_json::Value;
 use subscription::FilteredSubscription;
-use types::{DirectiveKind, KeyValueAction, KeyValueArguments, PublishArguments, RequestArguments, SubscribeArguments};
+use template::Templates;
+use types::*;
 
-#[derive(FieldResolverExtension)]
+use crate::{subscription::DeduplicationKey, types::NatsDirective};
+
+#[derive(ResolverExtension)]
 struct Nats {
     clients: HashMap<String, NatsClient>,
+    templates: Templates,
     jq_selection: Rc<RefCell<JqSelection>>,
 }
 
-impl FieldResolverExtension for Nats {
-    fn new(_: Vec<SchemaDirective>, config: Configuration) -> Result<Self, Error> {
+impl ResolverExtension for Nats {
+    fn new(_schemas: Vec<SubgraphSchema<'_>>, config: Configuration) -> Result<Self, Error> {
         let mut clients = HashMap::new();
         let config: config::NatsConfig = config.deserialize()?;
 
@@ -47,222 +50,235 @@ impl FieldResolverExtension for Nats {
 
         Ok(Self {
             clients,
+            templates: Default::default(),
             jq_selection: Rc::new(RefCell::new(JqSelection::default())),
         })
     }
 
-    fn resolve_field(
-        &mut self,
-        _headers: SubgraphHeaders,
-        _subgraph_name: &str,
-        directive: FieldDefinitionDirective,
-        inputs: FieldInputs<'_>,
-    ) -> Result<FieldOutputs, Error> {
-        let Ok(directive_kind) = DirectiveKind::from_str(directive.name()) else {
-            return Err(format!("Invalid directive: {}", directive.name()).into());
-        };
-
-        match directive_kind {
-            DirectiveKind::Publish => {
-                let args: PublishArguments<'_> = directive
-                    .arguments()
-                    .map_err(|e| format!("Error deserializing directive arguments: {e}"))?;
-
-                self.publish(args, inputs)
-            }
-            DirectiveKind::Request => {
-                let args: RequestArguments<'_> = directive
-                    .arguments()
-                    .map_err(|e| format!("Error deserializing directive arguments: {e}"))?;
-
-                self.request(args, inputs)
-            }
-            DirectiveKind::KeyValue => {
-                let args: KeyValueArguments<'_> = directive
-                    .arguments()
-                    .map_err(|e| format!("Error deserializing directive arguments: {e}"))?;
-
-                self.key_value(args, inputs)
+    fn resolve(&mut self, prepared: &[u8], _headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
+        let field = ResolvedField::try_from(prepared)?;
+        let arguments: Value = field.arguments(&variables)?;
+        let ctx = serde_json::json!({
+            "args": arguments,
+        });
+        match NatsDirective::try_from(field.directive())? {
+            NatsDirective::Publish(args) => self.publish(args, ctx),
+            NatsDirective::Request(args) => self.request(args, ctx),
+            NatsDirective::KeyValue(args) => self.key_value(args, ctx),
+            NatsDirective::Subscribe(_) => {
+                return Err(format!("@{NATS_SUBSCRIBE} can only be used on subscription fields.").into())
             }
         }
+        .map(Into::into)
     }
 
-    fn subscription_key(
-        &mut self,
-        _headers: &SubgraphHeaders,
-        subgraph_name: &str,
-        directive: FieldDefinitionDirective<'_>,
-    ) -> Option<Vec<u8>> {
-        let mut identifier = Vec::new();
-
-        identifier.extend(subgraph_name.as_bytes());
-        identifier.extend(directive.name().as_bytes());
-        identifier.extend(directive.site().parent_type_name().as_bytes());
-        identifier.extend(directive.site().name().as_bytes());
-        identifier.extend(directive.arguments_bytes());
-
-        Some(identifier)
-    }
-
-    fn resolve_subscription(
-        &mut self,
+    fn resolve_subscription<'s>(
+        &'s mut self,
+        prepared: &'s [u8],
         _headers: SubgraphHeaders,
-        _subgraph_name: &str,
-        directive: FieldDefinitionDirective,
-    ) -> Result<Box<dyn Subscription>, Error> {
-        let args: SubscribeArguments<'_> = directive
+        variables: Variables,
+    ) -> Result<impl IntoSubscription<'s>, Error> {
+        let field = ResolvedField::try_from(prepared)?;
+        let SubscribeArguments {
+            provider,
+            subject,
+            selection,
+            stream_config,
+        } = field
+            .directive()
             .arguments()
             .map_err(|e| format!("Error deserializing directive arguments: {e}"))?;
+        let arguments: Value = field.arguments(&variables)?;
+        let ctx = serde_json::json!({
+            "args": arguments,
+        });
+        let subject = self.templates.get_or_insert(subject)?.render_unescaped(&ctx);
+        let selection = selection
+            .map(|s| self.templates.get_or_insert(s).map(|t| t.render_json(&ctx)))
+            .transpose()?;
 
-        let Some(client) = self.clients.get(args.provider) else {
-            return Err(format!("NATS provider not found: {}", args.provider).into());
+        let key = postcard::to_stdvec(&DeduplicationKey {
+            provider,
+            subject: &subject,
+            selection: selection.as_deref(),
+        })
+        .ok();
+
+        let callback = move || {
+            let Some(client) = self.clients.get(provider) else {
+                return Err(format!("NATS provider not found: {}", provider).into());
+            };
+
+            let stream_config = stream_config.map(|config| {
+                let mut stream_config = NatsStreamConfig::new(
+                    config.stream_name.to_string(),
+                    config.consumer_name.to_string(),
+                    config.deliver_policy(),
+                    Duration::from_millis(config.inactive_threshold_ms),
+                );
+
+                if let Some(name) = config.durable_name {
+                    stream_config = stream_config.with_durable_name(name.to_string());
+                }
+
+                if let Some(description) = config.description {
+                    stream_config = stream_config.with_description(description.to_string());
+                }
+
+                stream_config
+            });
+
+            let subscriber = client
+                .subscribe(&subject, stream_config)
+                .map_err(|e| format!("Failed to subscribe to subject '{}': {e}", subject))?;
+
+            Ok(FilteredSubscription::new(
+                subscriber,
+                self.jq_selection.clone(),
+                selection,
+            ))
         };
 
-        let stream_config = args.stream_config.map(|config| {
-            let mut stream_config = NatsStreamConfig::new(
-                config.stream_name.to_string(),
-                config.consumer_name.to_string(),
-                config.deliver_policy(),
-                Duration::from_millis(config.inactive_threshold_ms),
-            );
-
-            if let Some(name) = config.durable_name {
-                stream_config = stream_config.with_durable_name(name.to_string());
-            }
-
-            if let Some(description) = config.description {
-                stream_config = stream_config.with_description(description.to_string());
-            }
-
-            stream_config
-        });
-
-        let subscriber = client
-            .subscribe(args.subject, stream_config)
-            .map_err(|e| format!("Failed to subscribe to subject '{}': {e}", args.subject))?;
-
-        Ok(Box::new(FilteredSubscription::new(
-            subscriber,
-            self.jq_selection.clone(),
-            args.selection,
-        )))
+        Ok((key, callback))
     }
 }
 
 impl Nats {
-    fn publish(&self, request: PublishArguments<'_>, inputs: FieldInputs<'_>) -> Result<FieldOutputs, Error> {
-        let Some(client) = self.clients.get(request.provider) else {
-            return Err(format!("NATS provider not found: {}", request.provider).into());
+    fn publish(
+        &mut self,
+        PublishArguments {
+            provider,
+            subject,
+            body,
+        }: PublishArguments<'_>,
+        ctx: Value,
+    ) -> Result<Data, Error> {
+        let subject = self.templates.get_or_insert(subject)?.render_unescaped(&ctx);
+        let payload = self.render_body(body, ctx)?;
+        let Some(client) = self.clients.get(provider) else {
+            return Err(format!("NATS provider not found: {}", provider).into());
         };
 
-        let body = request.body().unwrap_or(&serde_json::Value::Null);
+        let result = client.publish(&subject, &payload);
 
-        let result = client.publish(request.subject, body);
-
-        Ok(FieldOutputs::new(inputs, result.is_ok())?)
+        Ok(Data::new(result.is_ok())?)
     }
 
-    fn request(&self, request: RequestArguments<'_>, inputs: FieldInputs<'_>) -> Result<FieldOutputs, Error> {
-        let Some(client) = self.clients.get(request.provider) else {
-            return Err(format!("NATS provider not found: {}", request.provider).into());
+    fn request(
+        &mut self,
+        RequestArguments {
+            provider,
+            subject,
+            selection,
+            timeout,
+            body,
+        }: RequestArguments<'_>,
+        ctx: Value,
+    ) -> Result<Data, Error> {
+        let subject = self.templates.get_or_insert(subject)?.render_unescaped(&ctx);
+        let payload = self.render_body(body, ctx)?;
+        let Some(client) = self.clients.get(provider) else {
+            return Err(format!("NATS provider not found: {}", provider).into());
         };
-
-        let body = request.body().unwrap_or(&serde_json::Value::Null);
 
         let message = client
-            .request::<_, serde_json::Value>(request.subject, body, Some(request.timeout))
+            .request::<_, Value>(&subject, &payload, Some(timeout))
             .map_err(|e| format!("Failed to request message: {}", e))?;
 
-        let selection = match request.selection {
-            Some(selection) => selection,
-            None => return Ok(FieldOutputs::new(inputs, message)?),
+        let message = match selection {
+            Some(selection) => self.render_jq_template(selection, message)?,
+            None => message,
         };
 
-        let mut jq = self.jq_selection.borrow_mut();
-
-        let filtered = jq
-            .select(selection, message)
-            .map_err(|e| format!("Failed to filter with selection: {}", e))?
-            .collect::<Result<Vec<_>, _>>();
-
-        Ok(match filtered {
-            Ok(filtered) => {
-                // TODO: We don't whether a list of a single item is expected here... Need engine
-                // to help
-                if filtered.len() == 1 {
-                    FieldOutputs::new(inputs, filtered.into_iter().next().unwrap())?
-                } else {
-                    FieldOutputs::new(inputs, filtered)?
-                }
-            }
-            Err(error) => FieldOutputs::error(inputs, format!("Failed to filter with selection: {}", error)),
-        })
+        Ok(Data::new(message)?)
     }
 
-    fn key_value(&self, args: KeyValueArguments<'_>, inputs: FieldInputs<'_>) -> Result<FieldOutputs, Error> {
-        let Some(client) = self.clients.get(args.provider) else {
-            return Err(format!("NATS provider not found: {}", args.provider).into());
+    fn key_value(
+        &mut self,
+        KeyValueArguments {
+            provider,
+            bucket,
+            key,
+            action,
+            selection,
+            body,
+        }: KeyValueArguments<'_>,
+        ctx: Value,
+    ) -> Result<Data, Error> {
+        let Some(client) = self.clients.get(provider) else {
+            return Err(format!("NATS provider not found: {}", provider).into());
         };
 
+        let bucket = self.templates.get_or_insert(bucket)?.render_unescaped(&ctx);
+
         let store = client
-            .key_value(args.bucket)
+            .key_value(&bucket)
             .map_err(|e| format!("Failed to get key-value store: {e}"))?;
 
-        match args.action {
-            KeyValueAction::Create => {
-                let body = args.body().unwrap_or(&serde_json::Value::Null);
+        let key = self.templates.get_or_insert(key)?.render_unescaped(&ctx);
 
-                match store.create(args.key, body) {
-                    Ok(sequence) => Ok(FieldOutputs::new(inputs, sequence.to_string())?),
+        match action {
+            KeyValueAction::Create => {
+                let payload = self.render_body(body.unwrap_or_default(), ctx)?;
+
+                match store.create(&key, &payload) {
+                    Ok(sequence) => Ok(Data::new(sequence.to_string())?),
                     Err(error) => Err(format!("Failed to create key-value pair: {error}").into()),
                 }
             }
             KeyValueAction::Put => {
-                let body = args.body().unwrap_or(&serde_json::Value::Null);
+                let payload = self.render_body(body.unwrap_or_default(), ctx)?;
 
-                match store.put(args.key, body) {
-                    Ok(sequence) => Ok(FieldOutputs::new(inputs, sequence.to_string())?),
+                match store.put(&key, &payload) {
+                    Ok(sequence) => Ok(Data::new(sequence.to_string())?),
                     Err(error) => Err(format!("Failed to put key-value pair: {error}").into()),
                 }
             }
             KeyValueAction::Get => {
-                let value = match store.get::<serde_json::Value>(args.key) {
+                let value = match store.get::<Value>(&key) {
                     Ok(Some(value)) => value,
-                    Ok(None) => return Ok(FieldOutputs::new(inputs, serde_json::Value::Null)?),
+                    Ok(None) => return Ok(Data::new(serde_json::Value::Null)?),
                     Err(error) => {
                         return Err(format!("Failed to get key-value pair: {error}").into());
                     }
                 };
 
-                let selection = match args.selection {
-                    Some(selection) => selection,
-                    None => return Ok(FieldOutputs::new(inputs, value)?),
+                let value = match selection {
+                    Some(selection) => self.render_jq_template(selection, value)?,
+                    None => value,
                 };
 
-                let mut jq = self.jq_selection.borrow_mut();
-
-                let selected = jq
-                    .select(selection, value)
-                    .map_err(|e| format!("Failed to filter with selection: {}", e))?
-                    .collect::<Result<Vec<_>, _>>();
-
-                Ok(match selected {
-                    Ok(selected) => {
-                        // TODO: We don't whether a list of a single item is expected here... Need engine
-                        // to help
-                        if selected.len() == 1 {
-                            FieldOutputs::new(inputs, selected.into_iter().next().unwrap())?
-                        } else {
-                            FieldOutputs::new(inputs, selected)?
-                        }
-                    }
-                    Err(error) => FieldOutputs::error(inputs, format!("Failed to filter with selection: {}", error)),
-                })
+                Ok(Data::new(value)?)
             }
-            KeyValueAction::Delete => match store.delete(args.key) {
-                Ok(()) => Ok(FieldOutputs::new(inputs, true)?),
+            KeyValueAction::Delete => match store.delete(&key) {
+                Ok(()) => Ok(Data::new(true)?),
                 Err(error) => Err(format!("Failed to delete key-value pair: {error}").into()),
             },
+        }
+    }
+
+    fn render_body(&mut self, body: Body<'_>, ctx: Value) -> Result<Value, Error> {
+        match body.into_case() {
+            Some(BodyCase::Selection(source)) => self.render_jq_template(source, ctx),
+            Some(BodyCase::Static(value)) => Ok(value),
+            None => Ok(Value::Null),
+        }
+    }
+
+    fn render_jq_template(&mut self, source: &str, ctx: Value) -> Result<Value, Error> {
+        let selection = self.templates.get_or_insert(source)?.render_json(&ctx);
+        let mut values = self
+            .jq_selection
+            .borrow_mut()
+            .select(&selection, ctx)
+            .map_err(|e| format!("Failed to filter with selection: {}", e))?
+            .collect::<Result<Vec<Value>, _>>()
+            .map_err(|e| format!("Failed to collect filtered value: {}", e))?;
+        // TODO: Be smarter, but not sure how with jq...
+        if values.len() == 1 {
+            Ok(values.pop().unwrap())
+        } else {
+            Ok(serde_json::Value::Array(values))
         }
     }
 }

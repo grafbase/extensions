@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use super::Query;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, Clone)]
 pub struct CommonTableExpression<'a> {
     pub(crate) name: Cow<'a, str>,
     pub(crate) query: Query<'a>,

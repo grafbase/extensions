@@ -1809,9 +1809,9 @@ dependencies = [
 
 [[package]]
 name = "grafbase-sdk"
-version = "0.16.1"
+version = "0.17.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5272f681e8baef3aa79e7e1b35a27eea7b41d2c61c03ef556f83e7247506a8e5"
+checksum = "12672540d07e79d3603c0d56071368f61f1d806e35fe2fc587b77bc3b6311382"
 dependencies = [
  "anyhow",
  "async-tungstenite",
@@ -1824,7 +1824,6 @@ dependencies = [
  "grafbase-sdk-derive",
  "grafbase-sdk-mock",
  "graphql-composition",
- "graphql-federated-graph",
  "graphql-ws-client",
  "hashbrown 0.15.2",
  "http 1.3.1",
@@ -1856,9 +1855,9 @@ dependencies = [
 
 [[package]]
 name = "grafbase-sdk-derive"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "090392542933501e5bf9abac3b2ae4eaa0018932eded82a527a3f2198b53394b"
+checksum = "a24a373c1e36970214d3ca548e85943ce39042abf996c76d95f9f32bbec03805"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1891,43 +1890,27 @@ checksum = "ebfd7fd1a0e3427f3e6c9ef7bc4e0d2f05c9e94ecf859176cdf297212fe8f06e"
 
 [[package]]
 name = "graphql-composition"
-version = "0.8.0"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "58d6cc2b721f76a5dc608fefa610b3740d4c9d547eba3ffa8e79670a5dd73ed4"
+checksum = "7420268c37c1beb02ee6d476283cefe0fe4fa1efe6cd050fbdb7dc7361f4d2bd"
 dependencies = [
  "bitflags 2.9.0",
  "cynic-parser",
  "cynic-parser-deser",
  "fixedbitset",
- "graphql-federated-graph",
+ "graphql-wrapping-types",
  "indexmap 2.9.0",
  "itertools 0.14.0",
+ "serde",
+ "serde_json",
  "url",
 ]
 
 [[package]]
-name = "graphql-federated-graph"
-version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a04f965bbdf9037c41808615d9a9f743440c89c8ded5c328a8df8aad5eebef6"
-dependencies = [
- "bitflags 2.9.0",
- "cynic-parser",
- "cynic-parser-deser",
- "grafbase-workspace-hack",
- "graphql-wrapping-types",
- "indexmap 2.9.0",
- "indoc",
- "itertools 0.14.0",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "graphql-wrapping-types"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be5b0a74822603c5fd4d656eff8736a13806964cd74e49d5c64b544be2e430e0"
+checksum = "f58cc60d2f3a2a838dfcb9f5cb9d2dfc56cf00d6a1100273eb353fef75e16005"
 dependencies = [
  "grafbase-workspace-hack",
  "serde",
@@ -2766,10 +2749,12 @@ dependencies = [
  "grafbase-sdk",
  "indoc",
  "insta",
+ "postcard",
  "regex",
  "rskafka",
  "serde",
  "serde_json",
+ "template",
  "tokio",
 ]
 
@@ -3101,8 +3086,10 @@ dependencies = [
  "grafbase-sdk",
  "indoc",
  "insta",
+ "postcard",
  "serde",
  "serde_json",
+ "template",
  "tokio",
 ]
 
@@ -3872,6 +3859,30 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dc33ff2d4973d518d823d61aa239014831e521c75da58e3df4840d3f47749d09"
 
 [[package]]
+name = "ramhorns"
+version = "1.0.1"
+source = "git+https://github.com/grafbase/ramhorns?branch=grafbase#cf17d841d507a1da7b357e7f8508a9f68be48a7a"
+dependencies = [
+ "arrayvec",
+ "beef",
+ "fnv",
+ "logos",
+ "ramhorns-derive",
+]
+
+[[package]]
+name = "ramhorns-derive"
+version = "1.0.1"
+source = "git+https://github.com/grafbase/ramhorns?branch=grafbase#cf17d841d507a1da7b357e7f8508a9f68be48a7a"
+dependencies = [
+ "fnv",
+ "heck 0.5.0",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.100",
+]
+
+[[package]]
 name = "rand"
 version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3929,6 +3940,12 @@ checksum = "99d9a13982dcf210057a8a78572b2217b667c3beacbf3a0d8b454f6f82837d38"
 dependencies = [
  "getrandom 0.3.2",
 ]
+
+[[package]]
+name = "rapidhash"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9813f789f95ee4fe6b4d01834404d7cccacbc3f6c029343af910b3c2835eb9f1"
 
 [[package]]
 name = "redox_syscall"
@@ -4104,11 +4121,14 @@ name = "rest"
 version = "0.1.3"
 dependencies = [
  "grafbase-sdk",
+ "hashbrown 0.15.2",
  "http 1.3.1",
  "indoc",
  "insta",
+ "rapidhash",
  "serde",
  "serde_json",
+ "template",
  "tokio",
  "wiremock",
 ]
@@ -4736,6 +4756,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+ "template",
  "tokio",
  "toml",
  "wiremock",
@@ -5170,6 +5191,18 @@ dependencies = [
  "once_cell",
  "rustix 1.0.5",
  "windows-sys 0.59.0",
+]
+
+[[package]]
+name = "template"
+version = "0.1.0"
+dependencies = [
+ "grafbase-sdk",
+ "hashbrown 0.15.2",
+ "percent-encoding",
+ "ramhorns",
+ "rapidhash",
+ "serde_json",
 ]
 
 [[package]]

@@ -56,6 +56,7 @@ async fn lookup_int_pk() {
     .await;
 
     let runner = api.runner_spawn().await;
+    println!("{}", runner.federated_graph());
 
     let query = indoc! {r"
         query {

@@ -1,7 +1,7 @@
 use super::Function;
 use crate::ast::{Expression, FunctionType};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct JsonUnquote<'a> {
     pub(crate) expr: Box<Expression<'a>>,
 }

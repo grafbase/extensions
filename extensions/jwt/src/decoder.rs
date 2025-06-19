@@ -61,7 +61,7 @@ impl<'a> Decoder<'a> {
         if self.jwks.is_none() {
             let jwks = cache::get("jwks", || {
                 let request = HttpRequest::get(self.config.url.clone()).build();
-                let response = http::execute(&request)?;
+                let response = http::execute(request)?;
                 let jwks: Jwks = response.json()?;
 
                 Ok(CachedItem::new(jwks, Some(self.config.poll_interval)))

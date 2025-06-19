@@ -1,7 +1,7 @@
 use super::Function;
 use crate::ast::{Expression, Ordering};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 /// A representation of the `json_agg` function in PostgreSQL.
 pub struct JsonAgg<'a> {
     pub(crate) expression: Expression<'a>,

@@ -17,7 +17,7 @@ use grafbase_sdk::{
         self,
         types::{DatabaseType as _, DatabaseValue},
     },
-    types::{ArgumentValues, Field, SelectionSet},
+    types::{Field, SelectionSet, Variables},
 };
 use order::LookupOrderIterator;
 use selection_iterator::SelectionIterator;
@@ -26,7 +26,7 @@ use update_input::UpdateInputIterator;
 
 #[derive(Clone, Copy)]
 pub struct Context<'a> {
-    pub(super) arguments: ArgumentValues<'a>,
+    pub(super) variables: &'a Variables,
     pub(super) database_definition: &'a DatabaseDefinition,
     pub(super) pool: &'a postgres::Pool,
     pub(super) operation: Operation,
@@ -121,7 +121,7 @@ impl<'a> Context<'a> {
     }
 
     pub(crate) fn create_input(&'a self, table: TableWalker<'a>) -> Result<CreateInputIterator<'a>, SdkError> {
-        let args = self.field.arguments::<CreateInputParameters>(self.arguments)?;
+        let args = self.field.arguments::<CreateInputParameters>(self.variables)?;
         let iterator = CreateInputIterator::new(self, table, args.input)?;
         Ok(iterator)
     }
@@ -130,7 +130,7 @@ impl<'a> Context<'a> {
         &'a self,
         table: TableWalker<'a>,
     ) -> Result<Vec<CreateInputIterator<'a>>, SdkError> {
-        let args = self.field.arguments::<CreateManyInputParameters>(self.arguments)?;
+        let args = self.field.arguments::<CreateManyInputParameters>(self.variables)?;
         let mut result = Vec::with_capacity(args.input.len());
 
         for args in args.input {
@@ -146,7 +146,7 @@ impl<'a> Context<'a> {
     }
 
     pub(crate) fn unique_filter(self, table: TableWalker<'a>) -> Result<FilterIterator<'a>, SdkError> {
-        let filter = self.field.arguments::<FilterUnique>(self.arguments)?;
+        let filter = self.field.arguments::<FilterUnique>(self.variables)?;
         let iterator = UniqueFilterIterator::new(self, table, filter.lookup);
 
         Ok(FilterIterator::Unique(iterator))
@@ -177,7 +177,7 @@ impl<'a> Context<'a> {
     /// A complex `user(filter: { id: { eq: 1 } })` filter, or a
     /// lookup filter `user(lookup: { id: [1, 2, 3] })`.
     pub fn filter(&'a self, table: TableWalker<'a>) -> Result<FilterIterator<'a>, SdkError> {
-        let filter = self.field.arguments::<InputManyFilter>(self.arguments)?;
+        let filter = self.field.arguments::<InputManyFilter>(self.variables)?;
 
         match filter {
             InputManyFilter::Filter { filter } => {
@@ -195,7 +195,7 @@ impl<'a> Context<'a> {
     /// to preserve the order of results based on the input lookup values.
     /// Returns `Ok(None)` if the `lookup` argument is not present or not the correct variant.
     pub fn lookup_order(&self, table: TableWalker<'a>) -> Result<Option<LookupOrderIterator>, SdkError> {
-        let InputManyFilter::Lookup { lookup } = self.field.arguments::<InputManyFilter>(self.arguments)? else {
+        let InputManyFilter::Lookup { lookup } = self.field.arguments::<InputManyFilter>(self.variables)? else {
             return Ok(None);
         };
 

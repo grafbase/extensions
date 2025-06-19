@@ -2,7 +2,7 @@ use super::{Function, FunctionType};
 use crate::ast::Expression;
 use std::borrow::Cow;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct JsonBuildObject<'a> {
     pub(crate) values: Vec<(Cow<'a, str>, Expression<'a>)>,
 }

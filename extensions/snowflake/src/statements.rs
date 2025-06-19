@@ -19,11 +19,12 @@ impl crate::Snowflake {
 
         let mut request = http::HttpRequest::post(url);
 
-        request.push_header("Content-Type", "application/json");
-        request.push_header("Accept", "application/json");
-        request.push_header("User-Agent", "grafbase-gateway");
-        request.push_header("X-Snowflake-Authorization-Token-Type", "KEYPAIR_JWT");
-        request.push_header("Authorization", format!("Bearer {}", self.jwt));
+        request
+            .header("Content-Type", "application/json")
+            .header("Accept", "application/json")
+            .header("User-Agent", "grafbase-gateway")
+            .header("X-Snowflake-Authorization-Token-Type", "KEYPAIR_JWT")
+            .header("Authorization", format!("Bearer {}", self.jwt));
 
         let mut rendered_bindings = HashMap::with_capacity(bindings.len());
 
@@ -73,7 +74,7 @@ impl crate::Snowflake {
             .unwrap(),
         );
 
-        let response = http::execute(&request).map_err(|err| Error::new(err.to_string()))?;
+        let response = http::execute(request).map_err(|err| Error::new(err.to_string()))?;
 
         let body = serde_json::from_slice(response.body()).map_err(|err| Error::new(err.to_string()))?;
 
