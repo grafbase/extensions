@@ -44,8 +44,7 @@ Example:
 type Query {
   users: [User] @rest(
     endpoint: "users",
-    method: GET,
-    path: "/users",
+    http: { GET: "/users" }
   )
 }
 """
