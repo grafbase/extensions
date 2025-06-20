@@ -7,11 +7,7 @@ The core directive is `@grpcMethod`. It can be used on any output field, like so
 ```graphql
 type Query {
   getFeature(input: PointInput!): Feature
-    @grpcMethod(
-      service: "routeguide.RouteGuide"
-      method: "GetFeature"
-      input: "*"
-    )
+    @grpcMethod(service: "routeguide.RouteGuide", method: "GetFeature")
 }
 ```
 
