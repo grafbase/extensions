@@ -3,7 +3,7 @@ use crate::introspect::PgEnum;
 use grafbase_database_definition::{DatabaseDefinition, Enum, EnumVariant};
 use grafbase_sdk::types::{SubgraphSchema, TypeDefinition};
 
-pub(crate) fn introspect_sdl(schema: &SubgraphSchema<'_>, database_definition: &mut DatabaseDefinition) {
+pub(crate) fn introspect_sdl(schema: &SubgraphSchema, database_definition: &mut DatabaseDefinition) {
     for r#type in schema.type_definitions() {
         let TypeDefinition::Enum(definition) = r#type else {
             continue;

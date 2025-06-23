@@ -25,11 +25,7 @@ async fn two_identity_by_default() {
         }
     "};
 
-    let response = runner
-        .graphql_query::<serde_json::Value>(mutation)
-        .send()
-        .await
-        .unwrap();
+    let response = runner.query(mutation).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -74,11 +70,7 @@ async fn two_identity_always() {
         }
     "};
 
-    let response = runner
-        .graphql_query::<serde_json::Value>(mutation)
-        .send()
-        .await
-        .unwrap();
+    let response = runner.query(mutation).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -123,11 +115,7 @@ async fn two_pk_ids() {
         }
     "};
 
-    let response = runner
-        .graphql_query::<serde_json::Value>(mutation)
-        .send()
-        .await
-        .unwrap();
+    let response = runner.query(mutation).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -171,11 +159,7 @@ async fn two_pk_ids_no_returning() {
         }
     "};
 
-    let response = runner
-        .graphql_query::<serde_json::Value>(mutation)
-        .send()
-        .await
-        .unwrap();
+    let response = runner.query(mutation).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -212,11 +196,7 @@ async fn wrong_keys() {
         }
     "#};
 
-    let response = runner
-        .graphql_query::<serde_json::Value>(mutation)
-        .send()
-        .await
-        .unwrap();
+    let response = runner.query(mutation).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -275,11 +255,7 @@ async fn enum_array() {
         }
     "};
 
-    let response = runner
-        .graphql_query::<serde_json::Value>(mutation)
-        .send()
-        .await
-        .unwrap();
+    let response = runner.query(mutation).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {

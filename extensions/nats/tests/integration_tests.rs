@@ -5,8 +5,8 @@ use async_nats::{
     ConnectOptions,
 };
 use futures::StreamExt;
-use grafbase_sdk::test::{DynamicSchema, ExtensionOnlySubgraph, TestConfig, TestRunner};
-use indoc::{formatdoc, indoc};
+use grafbase_sdk::test::{TestGateway, TestGatewayBuilder};
+use indoc::indoc;
 use serde_json::json;
 
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -28,174 +28,159 @@ async fn nats_client() -> async_nats::Client {
     async_nats::connect_with_options(addrs, opts).await.unwrap()
 }
 
-fn subgraph() -> ExtensionOnlySubgraph {
-    let extension_path = std::env::current_dir().unwrap().join("build");
-    let path_str = format!("file://{}", extension_path.display());
+fn gateway_builder() -> TestGatewayBuilder {
+    TestGateway::builder()
+        .subgraph(
+            r#"
+            extend schema
+              @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
+              @link(
+                url: "<self>",
+                import: [
+                  "@natsPublish",
+                  "@natsSubscription",
+                  "@natsRequest",
+                  "@natsKeyValue",
+                  "NatsStreamDeliverPolicy",
+                ]
+              )
 
-    let mut schema = formatdoc! {r#"
-        extend schema
-          @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
-          @link(
-            url: "{path_str}",
-            import: [
-              "@natsPublish",
-              "@natsSubscription",
-              "@natsRequest",
-              "@natsKeyValue",
-              "NatsStreamDeliverPolicy",
-            ]
-          )
-    "#};
-    schema.push_str(
-        r#"
-        type Query {
-          hello: String!
+            type Query {
+              hello: String!
 
-          requestReply(input: RequestReplyInput!): RequestReplyResult! @natsRequest(
-            subject: "help.please",
-            timeoutMs: 500,
-          )
+              requestReply(input: RequestReplyInput!): RequestReplyResult! @natsRequest(
+                subject: "help.please",
+                timeoutMs: 500,
+              )
 
-          timeoutReply(input: RequestReplyInput!): RequestReplyResult! @natsRequest(
-            subject: "timeout.please",
-            timeoutMs: 500,
-          )
+              timeoutReply(input: RequestReplyInput!): RequestReplyResult! @natsRequest(
+                subject: "timeout.please",
+                timeoutMs: 500,
+              )
 
-          getUser(id: Int!): User @natsKeyValue(
-            bucket: "users",
-            key: "user.{{ args.id }}",
-            action: GET,
-            selection: "{ id, email, name }",
-          )
+              getUser(id: Int!): User @natsKeyValue(
+                bucket: "users",
+                key: "user.{{ args.id }}",
+                action: GET,
+                selection: "{ id, email, name }",
+              )
 
-          getOtherUser(id: Int!): User @natsKeyValue(
-            bucket: "otherUsers",
-            key: "user.{{ args.id }}",
-            action: GET,
-            selection: "{ id, email, name }",
-          )
-        }
+              getOtherUser(id: Int!): User @natsKeyValue(
+                bucket: "otherUsers",
+                key: "user.{{ args.id }}",
+                action: GET,
+                selection: "{ id, email, name }",
+              )
+            }
 
-        type Mutation {
-          publishUserEvent(id: Int!, input: UserEventInput!): Boolean! @natsPublish(
-            subject: "publish.user.{{args.id}}.events"
-          )
+            type Mutation {
+              publishUserEvent(id: Int!, input: UserEventInput!): Boolean! @natsPublish(
+                subject: "publish.user.{{args.id}}.events"
+              )
 
-          kvPutUser(id: Int!, input: UserEventInput!): String! @natsKeyValue(
-            bucket: "putUsers",
-            key: "user.{{ args.id }}",
-            action: PUT,
-          )
+              kvPutUser(id: Int!, input: UserEventInput!): String! @natsKeyValue(
+                bucket: "putUsers",
+                key: "user.{{ args.id }}",
+                action: PUT,
+              )
 
-          kvCreateUser(id: Int!, input: UserEventInput!): String! @natsKeyValue(
-            bucket: "createUsers",
-            key: "user.{{ args.id }}",
-            action: CREATE,
-          )
+              kvCreateUser(id: Int!, input: UserEventInput!): String! @natsKeyValue(
+                bucket: "createUsers",
+                key: "user.{{ args.id }}",
+                action: CREATE,
+              )
 
-          kvDeleteUser(id: Int!): Boolean! @natsKeyValue(
-            bucket: "deleteUsers",
-            key: "user.{{ args.id }}",
-            action: DELETE,
-          )
-        }
+              kvDeleteUser(id: Int!): Boolean! @natsKeyValue(
+                bucket: "deleteUsers",
+                key: "user.{{ args.id }}",
+                action: DELETE,
+              )
+            }
 
-        type Subscription {
-          userEvents(id: Int!): UserEvent! @natsSubscription(
-            subject: "subscription.user.{{args.id}}.events",
-            selection: "{ email, name }",
-          )
+            type Subscription {
+              userEvents(id: Int!): UserEvent! @natsSubscription(
+                subject: "subscription.user.{{args.id}}.events",
+                selection: "{ email, name }",
+              )
 
-          highPriorityBankEvents(limit: Int!): BankEvent! @natsSubscription(
-            subject: "subscription.bank",
-            selection: "select(.money > {{args.limit}}) | { id, account, money }",
-          )
+              highPriorityBankEvents(limit: Int!): BankEvent! @natsSubscription(
+                subject: "subscription.bank",
+                selection: "select(.money > {{args.limit}}) | { id, account, money }",
+              )
 
-          persistenceEvents(id: Int!): UserEvent! @natsSubscription(
-            subject: "persistence.user.{{args.id}}.events",
-            selection: "{ email, name}",
-            streamConfig: {
-              streamName: "testStream",
-              consumerName: "testConsumer",
-              durableName: "testConsumer",
-              description: "Test Description",
-            },
-          )
+              persistenceEvents(id: Int!): UserEvent! @natsSubscription(
+                subject: "persistence.user.{{args.id}}.events",
+                selection: "{ email, name}",
+                streamConfig: {
+                  streamName: "testStream",
+                  consumerName: "testConsumer",
+                  durableName: "testConsumer",
+                  description: "Test Description",
+                },
+              )
 
-          nonexistingEvents(id: Int!): UserEvent! @natsSubscription(
-            subject: "persistence.user.{{args.id}}.events",
-            selection: "{ email, name }",
-            streamConfig: {
-              streamName: "nonExistingStream",
-              consumerName: "testConsumer",
-              durableName: "testConsumer",
-              description: "Test Description",
-            },
-          )
-        }
+              nonexistingEvents(id: Int!): UserEvent! @natsSubscription(
+                subject: "persistence.user.{{args.id}}.events",
+                selection: "{ email, name }",
+                streamConfig: {
+                  streamName: "nonExistingStream",
+                  consumerName: "testConsumer",
+                  durableName: "testConsumer",
+                  description: "Test Description",
+                },
+              )
+            }
 
-        input RequestReplyInput {
-          message: String!
-        }
+            input RequestReplyInput {
+              message: String!
+            }
 
-        type RequestReplyResult {
-          message: String!
-        }
+            type RequestReplyResult {
+              message: String!
+            }
 
-        input UserEventInput {
-          email: String!
-          name: String!
-        }
+            input UserEventInput {
+              email: String!
+              name: String!
+            }
 
-        type UserEvent {
-          email: String!
-          name: String!
-        }
+            type UserEvent {
+              email: String!
+              name: String!
+            }
 
-        type User {
-          id: Int!
-          email: String!
-          name: String!
-        }
+            type User {
+              id: Int!
+              email: String!
+              name: String!
+            }
 
-        type BankEvent {
-          id: Int!
-          account: String!
-          money: Int!
-        }
-    "#,
-    );
+            type BankEvent {
+              id: Int!
+              account: String!
+              money: Int!
+            }
+            "#,
+        )
+        .enable_networking()
+        .enable_stdout()
+        .enable_stderr()
+        .toml_config(
+            r#"
+            [[extensions.nats.config.endpoint]]
+            servers = ["nats://localhost:4222"]
 
-    DynamicSchema::builder(schema)
-        .into_extension_only_subgraph("test", &extension_path)
-        .unwrap()
-}
-
-fn config() -> &'static str {
-    indoc! {r#"
-        [[extensions.nats.config.endpoint]]
-        servers = ["nats://localhost:4222"]
-
-        [extensions.nats.config.endpoint.authentication]
-        username = "grafbase"
-        password = "grafbase"
-    "#}
+            [extensions.nats.config.endpoint.authentication]
+            username = "grafbase"
+            password = "grafbase"
+            "#,
+        )
 }
 
 #[tokio::test]
 async fn test_subscribe() {
     let nats = nats_client().await;
-
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .enable_stdout()
-        .enable_stderr()
-        .log_level(grafbase_sdk::test::LogLevel::WasiDebug)
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let query = indoc! {r#"
         subscription {
@@ -206,12 +191,7 @@ async fn test_subscribe() {
         }
     "#};
 
-    let subscription1 = runner
-        .graphql_subscription::<serde_json::Value>(query)
-        .unwrap()
-        .subscribe()
-        .await
-        .unwrap();
+    let subscription1 = gateway.query(query).ws_stream().await;
 
     let query = indoc! {r#"
         subscription {
@@ -222,12 +202,7 @@ async fn test_subscribe() {
         }
     "#};
 
-    let subscription2 = runner
-        .graphql_subscription::<serde_json::Value>(query)
-        .unwrap()
-        .subscribe()
-        .await
-        .unwrap();
+    let subscription2 = gateway.query(query).ws_stream().await;
 
     tokio::spawn(async move {
         for _ in 0.. {
@@ -243,7 +218,7 @@ async fn test_subscribe() {
         }
     });
 
-    let events = tokio::time::timeout(Duration::from_secs(10), subscription1.take(2).collect::<Vec<_>>())
+    let events = tokio::time::timeout(Duration::from_secs(10), subscription1.take(2))
         .await
         .unwrap();
 
@@ -268,7 +243,7 @@ async fn test_subscribe() {
     ]
     "#);
 
-    let events = tokio::time::timeout(Duration::from_secs(10), subscription2.take(2).collect::<Vec<_>>())
+    let events = tokio::time::timeout(Duration::from_secs(10), subscription2.take(2))
         .await
         .unwrap();
 
@@ -297,15 +272,7 @@ async fn test_subscribe() {
 #[tokio::test]
 async fn test_subscribe_with_filter() {
     let nats = nats_client().await;
-
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .log_level(grafbase_sdk::test::LogLevel::WasiDebug)
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let query = indoc! {r#"
         subscription {
@@ -318,12 +285,7 @@ async fn test_subscribe_with_filter() {
     "#};
 
     {
-        let subscription = runner
-            .graphql_subscription::<serde_json::Value>(query)
-            .unwrap()
-            .subscribe()
-            .await
-            .unwrap();
+        let subscription = gateway.query(query).ws_stream().await;
 
         let nats = nats_client().await;
 
@@ -337,7 +299,7 @@ async fn test_subscribe_with_filter() {
             }
         });
 
-        let events = tokio::time::timeout(Duration::from_secs(30), subscription.take(2).collect::<Vec<_>>())
+        let events = tokio::time::timeout(Duration::from_secs(30), subscription.take(2))
             .await
             .unwrap();
 
@@ -365,12 +327,7 @@ async fn test_subscribe_with_filter() {
         "#);
     }
 
-    let subscription = runner
-        .graphql_subscription::<serde_json::Value>(query)
-        .unwrap()
-        .subscribe()
-        .await
-        .unwrap();
+    let subscription = gateway.query(query).ws_stream().await;
 
     tokio::spawn(async move {
         for i in 1000..=1002 {
@@ -382,7 +339,7 @@ async fn test_subscribe_with_filter() {
         }
     });
 
-    let events = tokio::time::timeout(Duration::from_secs(30), subscription.take(2).collect::<Vec<_>>())
+    let events = tokio::time::timeout(Duration::from_secs(30), subscription.take(2))
         .await
         .unwrap();
 
@@ -414,14 +371,7 @@ async fn test_subscribe_with_filter() {
 async fn test_publish() {
     let nats = nats_client().await;
     let mut subscriber = nats.subscribe("publish.user.>").await.unwrap();
-
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let query = indoc! {r#"
         mutation {
@@ -429,8 +379,8 @@ async fn test_publish() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+    let response = gateway.query(query).send().await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "publishUserEvent": true
@@ -466,13 +416,7 @@ async fn test_existing_stream() {
         .await
         .unwrap();
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     tokio::spawn(async move {
         for _ in 1.. {
@@ -497,14 +441,9 @@ async fn test_existing_stream() {
         }
     "#};
 
-    let subscription = runner
-        .graphql_subscription::<serde_json::Value>(query)
-        .unwrap()
-        .subscribe()
-        .await
-        .unwrap();
+    let subscription = gateway.query(query).ws_stream().await;
 
-    let events = tokio::time::timeout(Duration::from_secs(5), subscription.take(2).collect::<Vec<_>>())
+    let events = tokio::time::timeout(Duration::from_secs(5), subscription.take(2))
         .await
         .unwrap();
 
@@ -532,13 +471,7 @@ async fn test_existing_stream() {
 
 #[tokio::test]
 async fn test_non_existing_stream() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let query = indoc! {r#"
         subscription {
@@ -549,14 +482,9 @@ async fn test_non_existing_stream() {
         }
     "#};
 
-    let subscription = runner
-        .graphql_subscription::<Response>(query)
-        .unwrap()
-        .subscribe()
-        .await
-        .unwrap();
+    let subscription = gateway.query(query).ws_stream().await;
 
-    let events = tokio::time::timeout(Duration::from_secs(5), subscription.take(2).collect::<Vec<_>>())
+    let events = tokio::time::timeout(Duration::from_secs(5), subscription.take(2))
         .await
         .unwrap();
 
@@ -567,6 +495,15 @@ async fn test_non_existing_stream() {
         "errors": [
           {
             "message": "Failed to subscribe to subject 'persistence.user.1.events': jetstream error: stream not found (code 404, error code 10059)",
+            "locations": [
+              {
+                "line": 2,
+                "column": 3
+              }
+            ],
+            "path": [
+              "nonexistingEvents"
+            ],
             "extensions": {
               "code": "EXTENSION_ERROR"
             }
@@ -593,13 +530,7 @@ async fn request_reply() {
         }
     });
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -609,8 +540,8 @@ async fn request_reply() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+    let response = gateway.query(query).send().await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "requestReply": {
@@ -635,13 +566,7 @@ async fn request_reply_timeout() {
         }
     });
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -651,13 +576,22 @@ async fn request_reply_timeout() {
         }
     "#};
 
-    let result: Response = runner.graphql_query(query).send().await.unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+    let response = gateway.query(query).send().await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": null,
       "errors": [
         {
           "message": "Failed to request message: deadline has elapsed",
+          "locations": [
+            {
+              "line": 2,
+              "column": 3
+            }
+          ],
+          "path": [
+            "timeoutReply"
+          ],
           "extensions": {
             "code": "EXTENSION_ERROR"
           }
@@ -681,13 +615,7 @@ async fn kv_get_missing() {
 
     jet.create_key_value(kv_config).await.unwrap();
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -699,8 +627,8 @@ async fn kv_get_missing() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+    let response = gateway.query(query).send().await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "getUser": null
@@ -733,13 +661,7 @@ async fn kv_get_existing() {
         .await
         .unwrap();
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -751,8 +673,8 @@ async fn kv_get_existing() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+    let response = gateway.query(query).send().await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "getOtherUser": {
@@ -779,13 +701,7 @@ async fn kv_put() {
 
     let bucket = jet.create_key_value(kv_config).await.unwrap();
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let query = indoc! {r#"
         mutation {
@@ -793,8 +709,8 @@ async fn kv_put() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+    let response = gateway.query(query).send().await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "kvPutUser": "1"
@@ -827,13 +743,7 @@ async fn kv_create() {
 
     let bucket = jet.create_key_value(kv_config).await.unwrap();
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let query = indoc! {r#"
         mutation {
@@ -841,8 +751,8 @@ async fn kv_create() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+    let response = gateway.query(query).send().await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "kvCreateUser": "1"
@@ -885,13 +795,7 @@ async fn kv_delete() {
         .await
         .unwrap();
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let query = indoc! {r#"
         mutation {
@@ -899,8 +803,8 @@ async fn kv_delete() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+    let response = gateway.query(query).send().await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "kvDeleteUser": true

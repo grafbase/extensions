@@ -3,7 +3,7 @@ use grafbase_sdk::types::{SubgraphSchema, TypeDefinition};
 
 use super::{PgRelation, PgTable};
 
-pub(super) fn introspect_sdl(schema: &SubgraphSchema<'_>, database_definition: &mut DatabaseDefinition) {
+pub(super) fn introspect_sdl(schema: &SubgraphSchema, database_definition: &mut DatabaseDefinition) {
     for r#type in schema.type_definitions() {
         let TypeDefinition::Object(constrained_object) = r#type else {
             continue;

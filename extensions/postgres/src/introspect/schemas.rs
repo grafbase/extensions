@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 
 use super::{PgEnum, PgTable};
 
-pub(crate) fn introspect_sdl(schema: &SubgraphSchema<'_>, database_definition: &mut DatabaseDefinition) {
+pub(crate) fn introspect_sdl(schema: &SubgraphSchema, database_definition: &mut DatabaseDefinition) {
     use TypeDefinition::*;
 
     let mut schemas = BTreeSet::new();

@@ -2,22 +2,24 @@ mod hydra;
 
 use std::collections::HashMap;
 
-use grafbase_sdk::test::{DynamicSchema, DynamicSubgraph, TestConfig, TestRunner};
+use grafbase_sdk::test::{GraphqlSubgraph, TestGateway, TestGatewayBuilder};
 use hydra::{AUDIENCE, CoreClientExt, JWKS_URI, OTHER_AUDIENCE, OryHydraOpenIDProvider, THIRD_AUDIENCE};
 use indoc::formatdoc;
 
-fn config() -> String {
-    formatdoc! {r#"
-        [extensions.jwt.config]
-        url = "{JWKS_URI}"
-    "#}
-}
-
-fn subgraph() -> DynamicSubgraph {
-    DynamicSchema::builder(r#"type Query { hi: String }"#)
-        .with_resolver("Query", "hi", String::from("hello"))
-        .into_subgraph("test")
-        .unwrap()
+fn gateway_builder() -> TestGatewayBuilder {
+    TestGateway::builder()
+        .subgraph(
+            GraphqlSubgraph::with_schema(r#"type Query { hi: String }"#).with_resolver(
+                "Query",
+                "hi",
+                String::from("hello"),
+            ),
+        )
+        .enable_networking()
+        .toml_config(formatdoc! {r#"
+            [extensions.jwt.config]
+            url = "{JWKS_URI}"
+        "#})
 }
 
 #[allow(clippy::panic)]
@@ -42,17 +44,11 @@ fn tamper_jwt(token: String) -> String {
 
 #[tokio::test]
 async fn without_token() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
-    let runner = TestRunner::new(config).await.unwrap();
+    let response = gateway.query("query { hi }").send().await;
 
-    let result: serde_json::Value = runner.graphql_query("query { hi }").send().await.unwrap();
-
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "errors": [
         {
@@ -68,22 +64,14 @@ async fn without_token() {
 
 #[tokio::test]
 async fn with_invalid_token() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
-    let runner = TestRunner::new(config).await.unwrap();
-
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c")
         .send()
-        .await
-        .unwrap();
-
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "errors": [
         {
@@ -105,22 +93,14 @@ async fn with_valid_token() {
         .get_access_token_with_client_credentials(&[])
         .await;
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
-    let runner = TestRunner::new(config).await.unwrap();
-
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "hi": "hello"
@@ -131,20 +111,16 @@ async fn with_valid_token() {
 
 #[tokio::test]
 async fn test_different_header_location() {
-    let config = formatdoc! {r#"
-        [extensions.jwt.config]
-        url = "{JWKS_URI}"
-        header_name = "X-My-JWT"
-        header_value_prefix = "Bearer2 "
-    "#};
-
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config)
+    let gateway = gateway_builder()
+        .toml_config(formatdoc! {r#"
+            [extensions.jwt.config]
+            url = "{JWKS_URI}"
+            header_name = "X-My-JWT"
+            header_value_prefix = "Bearer2 "
+        "#})
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let token = OryHydraOpenIDProvider::default()
         .create_client()
@@ -152,14 +128,12 @@ async fn test_different_header_location() {
         .get_access_token_with_client_credentials(&[])
         .await;
 
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("X-My-JWT", &format!("Bearer2 {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("X-My-JWT", &format!("Bearer2 {token}"))
         .send()
-        .await
-        .unwrap();
-
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "hi": "hello"
@@ -170,19 +144,15 @@ async fn test_different_header_location() {
 
 #[tokio::test]
 async fn test_cookie_name_location() {
-    let config = formatdoc! {r#"
-        [extensions.jwt.config]
-        url = "{JWKS_URI}"
-        cookie_name = "my_jwt"
-    "#};
-
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config)
+    let gateway = gateway_builder()
+        .toml_config(formatdoc! {r#"
+            [extensions.jwt.config]
+            url = "{JWKS_URI}"
+            cookie_name = "my_jwt"
+        "#})
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let token = OryHydraOpenIDProvider::default()
         .create_client()
@@ -190,17 +160,15 @@ async fn test_cookie_name_location() {
         .get_access_token_with_client_credentials(&[])
         .await;
 
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header(
+    let response = gateway
+        .query("query { hi }")
+        .header(
             "Cookie",
             &format!("name=value; name2=value2; my_jwt={token}; name3=value3"),
         )
         .send()
-        .await
-        .unwrap();
-
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "hi": "hello"
@@ -208,14 +176,12 @@ async fn test_cookie_name_location() {
     }
     "#);
 
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Cookie", "name=value; name2=value2; name3=value3")
+    let response = gateway
+        .query("query { hi }")
+        .header("Cookie", "name=value; name2=value2; name3=value3")
         .send()
-        .await
-        .unwrap();
-
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "errors": [
         {
@@ -231,13 +197,7 @@ async fn test_cookie_name_location() {
 
 #[tokio::test]
 async fn test_tampered_jwt() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let token = OryHydraOpenIDProvider::default()
         .create_client()
@@ -247,14 +207,12 @@ async fn test_tampered_jwt() {
 
     let token = tamper_jwt(token);
 
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "errors": [
         {
@@ -270,13 +228,7 @@ async fn test_tampered_jwt() {
 
 #[tokio::test]
 async fn test_wrong_provider() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let token = OryHydraOpenIDProvider::second_provider()
         .create_client()
@@ -284,14 +236,12 @@ async fn test_wrong_provider() {
         .get_access_token_with_client_credentials(&[])
         .await;
 
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "errors": [
         {
@@ -307,18 +257,15 @@ async fn test_wrong_provider() {
 
 #[tokio::test]
 async fn test_single_audience() {
-    let config = formatdoc! {r#"
-        [extensions.jwt.config]
-        url = "{JWKS_URI}"
-        audience = "{AUDIENCE}"
-    "#};
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config)
+    let gateway = gateway_builder()
+        .toml_config(formatdoc! {r#"
+            [extensions.jwt.config]
+            url = "{JWKS_URI}"
+            audience = "{AUDIENCE}"
+        "#})
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     // -- CORRECT AUDIENCE --
     let token = OryHydraOpenIDProvider::default()
@@ -326,13 +273,12 @@ async fn test_single_audience() {
         .await
         .get_access_token_with_client_credentials(&[("audience", AUDIENCE)])
         .await;
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "hi": "hello"
@@ -346,13 +292,12 @@ async fn test_single_audience() {
         .await
         .get_access_token_with_client_credentials(&[("audience", &format!("{AUDIENCE} {OTHER_AUDIENCE}"))])
         .await;
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "hi": "hello"
@@ -366,13 +311,12 @@ async fn test_single_audience() {
         .await
         .get_access_token_with_client_credentials(&[("audience", OTHER_AUDIENCE)])
         .await;
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "errors": [
         {
@@ -391,13 +335,12 @@ async fn test_single_audience() {
         .await
         .get_access_token_with_client_credentials(&[])
         .await;
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "errors": [
         {
@@ -413,18 +356,15 @@ async fn test_single_audience() {
 
 #[tokio::test]
 async fn test_multiple_audience() {
-    let config = formatdoc! {r#"
-        [extensions.jwt.config]
-        url = "{JWKS_URI}"
-        audience = ["{AUDIENCE}", "{OTHER_AUDIENCE}"]
-    "#};
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .build(config)
+    let gateway = gateway_builder()
+        .toml_config(formatdoc! {r#"
+            [extensions.jwt.config]
+            url = "{JWKS_URI}"
+            audience = ["{AUDIENCE}", "{OTHER_AUDIENCE}"]
+        "#})
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     // -- CORRECT AUDIENCE --
     let token = OryHydraOpenIDProvider::default()
@@ -432,13 +372,12 @@ async fn test_multiple_audience() {
         .await
         .get_access_token_with_client_credentials(&[("audience", AUDIENCE)])
         .await;
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "hi": "hello"
@@ -452,13 +391,12 @@ async fn test_multiple_audience() {
         .await
         .get_access_token_with_client_credentials(&[("audience", &format!("{AUDIENCE} {OTHER_AUDIENCE}"))])
         .await;
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "hi": "hello"
@@ -472,13 +410,12 @@ async fn test_multiple_audience() {
         .await
         .get_access_token_with_client_credentials(&[("audience", OTHER_AUDIENCE)])
         .await;
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "hi": "hello"
@@ -492,13 +429,12 @@ async fn test_multiple_audience() {
         .await
         .get_access_token_with_client_credentials(&[("audience", THIRD_AUDIENCE)])
         .await;
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "errors": [
         {
@@ -517,13 +453,12 @@ async fn test_multiple_audience() {
         .await
         .get_access_token_with_client_credentials(&[])
         .await;
-    let result: serde_json::Value = runner
-        .graphql_query("query { hi }")
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query("query { hi }")
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
-    insta::assert_json_snapshot!(result, @r#"
+        .await;
+    insta::assert_json_snapshot!(response, @r#"
     {
       "errors": [
         {

@@ -1,49 +1,45 @@
 mod hydra;
 
-use grafbase_sdk::test::{DynamicSchema, TestConfig, TestRunner};
+use grafbase_sdk::test::{GraphqlSubgraph, TestGateway};
 use hydra::{CoreClientExt as _, JWKS_URI, OryHydraOpenIDProvider};
 use indoc::formatdoc;
 
 #[tokio::test]
 async fn test_authenticated() {
-    let extension_path = std::env::current_dir().unwrap().join("build");
-    let path_str = format!("file://{}", extension_path.display());
+    let gateway = TestGateway::builder()
+        .toml_config(formatdoc!(
+            r#"
+            [[authentication.providers]]
 
-    let schema = formatdoc! {r#"
-        extend schema
-            @link(url: "{path_str}", import: ["@authenticated"])
+            [authentication.providers.jwt]
+            name = "my-jwt"
 
-        type Query {{
-            public: String
-            private: String @authenticated
-        }}
-    "#};
+            [authentication.providers.jwt.jwks]
+            url = "{JWKS_URI}"
 
-    // Create a subgraph with a single field
-    let subgraph = DynamicSchema::builder(schema)
-        .with_resolver("Query", "public", String::from("public"))
-        .with_resolver("Query", "private", String::from("private"))
-        .into_subgraph("test")
+            [[authentication.providers]]
+
+            [authentication.providers.anonymous]
+            "#,
+        ))
+        .subgraph(
+            GraphqlSubgraph::with_schema(
+                r#"
+            extend schema
+                @link(url: "<self>", import: ["@authenticated"])
+
+            type Query {
+                public: String
+                private: String @authenticated
+            }
+            "#,
+            )
+            .with_resolver("Query", "public", "public")
+            .with_resolver("Query", "private", "private"),
+        )
+        .build()
+        .await
         .unwrap();
-
-    let config = format!(
-        r#"
-        [[authentication.providers]]
-
-        [authentication.providers.jwt]
-        name = "my-jwt"
-
-        [authentication.providers.jwt.jwks]
-        url = "{JWKS_URI}"
-
-        [[authentication.providers]]
-
-        [authentication.providers.anonymous]
-        "#
-    );
-
-    let config = TestConfig::builder().with_subgraph(subgraph).build(config).unwrap();
-    let runner = TestRunner::new(config).await.unwrap();
 
     let token = OryHydraOpenIDProvider::default()
         .create_client()
@@ -51,13 +47,9 @@ async fn test_authenticated() {
         .get_access_token_with_client_credentials(&[])
         .await;
 
-    let result: serde_json::Value = runner
-        .graphql_query(r#"query { public private }"#)
-        .send()
-        .await
-        .unwrap();
+    let response = gateway.query(r#"query { public private }"#).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "public": "public",
@@ -83,14 +75,13 @@ async fn test_authenticated() {
     }
     "#);
 
-    let result: serde_json::Value = runner
-        .graphql_query(r#"query { public private }"#)
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query(r#"query { public private }"#)
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
+        .await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "public": "public",

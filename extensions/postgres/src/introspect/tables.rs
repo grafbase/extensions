@@ -5,7 +5,7 @@ use grafbase_sdk::types::{FieldDefinition, SubgraphSchema, TypeDefinition};
 
 use super::{PgColumn, PgTable};
 
-pub(crate) fn introspect_sdl(schema: &SubgraphSchema<'_>, database_definition: &mut DatabaseDefinition) {
+pub(crate) fn introspect_sdl(schema: &SubgraphSchema, database_definition: &mut DatabaseDefinition) {
     for r#type in schema.type_definitions() {
         let TypeDefinition::Object(definition) = r#type else {
             continue;

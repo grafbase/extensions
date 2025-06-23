@@ -17,7 +17,7 @@ struct Snowflake {
 }
 
 impl ResolverExtension for Snowflake {
-    fn new(_schemas: Vec<SubgraphSchema<'_>>, config: Configuration) -> Result<Self, Error> {
+    fn new(_schemas: Vec<SubgraphSchema>, config: Configuration) -> Result<Self, Error> {
         let config: SnowflakeConfig = config.deserialize()?;
 
         Ok(Self {

@@ -1,16 +1,13 @@
 mod hydra;
 
-use grafbase_sdk::test::{DynamicSchema, TestConfig, TestRunner};
+use grafbase_sdk::test::{GraphqlSubgraph, TestGateway};
 use hydra::{ADMIN_SCOPE, CoreClientExt as _, JWKS_URI, OryHydraOpenIDProvider, READ_SCOPE, WRITE_SCOPE};
 use indoc::{formatdoc, indoc};
 
-async fn setup(scopes: Option<&str>) -> (TestRunner, String) {
-    let extension_path = std::env::current_dir().unwrap().join("build");
-    let path_str = format!("file://{}", extension_path.display());
-
+async fn setup(scopes: Option<&str>) -> (TestGateway, String) {
     let schema = formatdoc! {r#"
         extend schema
-            @link(url: "{path_str}", import: ["@requiresScopes"])
+            @link(url: "<self>", import: ["@requiresScopes"])
 
         type Query {{
             public: String
@@ -21,7 +18,7 @@ async fn setup(scopes: Option<&str>) -> (TestRunner, String) {
     "#};
 
     // Create a subgraph with a single field
-    let subgraph = DynamicSchema::builder(schema)
+    let subgraph = GraphqlSubgraph::with_schema(schema)
         .with_resolver("Query", "public", String::from("public"))
         .with_resolver("Query", "hasReadScope", String::from("Has read scope"))
         .with_resolver(
@@ -29,9 +26,7 @@ async fn setup(scopes: Option<&str>) -> (TestRunner, String) {
             "hasReadAndWriteScope",
             String::from("Has read and write scope"),
         )
-        .with_resolver("Query", "hasReadOrWriteScope", String::from("Has read or write scope"))
-        .into_subgraph("test")
-        .unwrap();
+        .with_resolver("Query", "hasReadOrWriteScope", String::from("Has read or write scope"));
 
     let config = formatdoc! {r#"
         [[authentication.providers]]
@@ -47,8 +42,12 @@ async fn setup(scopes: Option<&str>) -> (TestRunner, String) {
         [authentication.providers.anonymous]
     "#};
 
-    let config = TestConfig::builder().with_subgraph(subgraph).build(config).unwrap();
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph)
+        .toml_config(config)
+        .build()
+        .await
+        .unwrap();
 
     let extra_params = if let Some(scopes) = scopes {
         vec![("scope", scopes)]
@@ -62,7 +61,7 @@ async fn setup(scopes: Option<&str>) -> (TestRunner, String) {
         .get_access_token_with_client_credentials(&extra_params)
         .await;
 
-    (runner, token)
+    (gateway, token)
 }
 
 const QUERY: &str = indoc! {r#"
@@ -76,12 +75,12 @@ const QUERY: &str = indoc! {r#"
 
 #[tokio::test]
 async fn anonymous_token() {
-    let (runner, _) = setup(None).await;
+    let (gateway, _) = setup(None).await;
 
-    let result: serde_json::Value = runner.graphql_query(QUERY).send().await.unwrap();
+    let response = gateway.query(QUERY).send().await;
 
     // The result is compared against a snapshot.
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "public": "public",
@@ -112,17 +111,16 @@ async fn anonymous_token() {
 
 #[tokio::test]
 async fn token_without_scopes() {
-    let (runner, token) = setup(None).await;
+    let (gateway, token) = setup(None).await;
 
-    let result: serde_json::Value = runner
-        .graphql_query(QUERY)
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query(QUERY)
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
+        .await;
 
     // The result is compared against a snapshot.
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "public": "public",
@@ -153,17 +151,16 @@ async fn token_without_scopes() {
 
 #[tokio::test]
 async fn token_with_insufficient_scopes() {
-    let (runner, token) = setup(Some(ADMIN_SCOPE)).await;
+    let (gateway, token) = setup(Some(ADMIN_SCOPE)).await;
 
-    let result: serde_json::Value = runner
-        .graphql_query(QUERY)
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query(QUERY)
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
+        .await;
 
     // The result is compared against a snapshot.
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "public": "public",
@@ -194,17 +191,16 @@ async fn token_with_insufficient_scopes() {
 
 #[tokio::test]
 async fn token_with_read_scope() {
-    let (runner, token) = setup(Some(READ_SCOPE)).await;
+    let (gateway, token) = setup(Some(READ_SCOPE)).await;
 
-    let result: serde_json::Value = runner
-        .graphql_query(QUERY)
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query(QUERY)
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
+        .await;
 
     // The result is compared against a snapshot.
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "public": "public",
@@ -235,17 +231,16 @@ async fn token_with_read_scope() {
 
 #[tokio::test]
 async fn token_with_write_scope() {
-    let (runner, token) = setup(Some(WRITE_SCOPE)).await;
+    let (gateway, token) = setup(Some(WRITE_SCOPE)).await;
 
-    let result: serde_json::Value = runner
-        .graphql_query(QUERY)
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query(QUERY)
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
+        .await;
 
     // The result is compared against a snapshot.
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "public": "public",
@@ -276,17 +271,16 @@ async fn token_with_write_scope() {
 
 #[tokio::test]
 async fn token_with_read_and_write_scopes() {
-    let (runner, token) = setup(Some(&format!("{READ_SCOPE} {WRITE_SCOPE} {ADMIN_SCOPE}"))).await;
+    let (gateway, token) = setup(Some(&format!("{READ_SCOPE} {WRITE_SCOPE} {ADMIN_SCOPE}"))).await;
 
-    let result: serde_json::Value = runner
-        .graphql_query(QUERY)
-        .with_header("Authorization", &format!("Bearer {token}"))
+    let response = gateway
+        .query(QUERY)
+        .header("Authorization", &format!("Bearer {token}"))
         .send()
-        .await
-        .unwrap();
+        .await;
 
     // The result is compared against a snapshot.
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "public": "public",

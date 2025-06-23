@@ -24,7 +24,7 @@ struct PostgresExtension {
 }
 
 impl ResolverExtension for PostgresExtension {
-    fn new(subgraph_schemas: Vec<SubgraphSchema<'_>>, config: Configuration) -> Result<Self, Error> {
+    fn new(subgraph_schemas: Vec<SubgraphSchema>, config: Configuration) -> Result<Self, Error> {
         logger::init();
 
         let mut pools = HashMap::new();

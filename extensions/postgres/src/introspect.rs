@@ -63,7 +63,7 @@ pub struct PgKey {
     pub r#type: KeyType,
 }
 
-pub fn from_sdl(subgraph_schemas: Vec<SubgraphSchema<'_>>) -> HashMap<String, DatabaseDefinition> {
+pub fn from_sdl(subgraph_schemas: Vec<SubgraphSchema>) -> HashMap<String, DatabaseDefinition> {
     let mut result = HashMap::new();
 
     for schema in subgraph_schemas {

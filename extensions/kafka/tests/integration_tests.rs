@@ -2,7 +2,7 @@ use std::{sync::Arc, time::Duration};
 
 use chrono::Utc;
 use futures_util::{Stream, StreamExt, TryStreamExt, stream::select_all};
-use grafbase_sdk::test::{DynamicSchema, ExtensionOnlySubgraph, LogLevel, TestConfig, TestRunner};
+use grafbase_sdk::test::{TestGateway, TestGatewayBuilder};
 use indoc::{formatdoc, indoc};
 use rskafka::{
     client::{
@@ -15,15 +15,34 @@ use serde_json::json;
 
 const KAFKA_TOPIC: &str = "producer-topic";
 
-fn subgraph() -> ExtensionOnlySubgraph {
-    let extension_path = std::env::current_dir().unwrap().join("build");
-    let path_str = format!("file://{}", extension_path.display());
+#[ctor::ctor]
+fn setup_logging() {
+    tracing_subscriber::fmt()
+        .pretty()
+        .with_env_filter(tracing_subscriber::filter::EnvFilter::from_default_env())
+        .with_file(true)
+        .with_line_number(true)
+        .with_target(true)
+        .without_time()
+        .init();
+}
 
+fn gateway_builder() -> TestGatewayBuilder {
+    TestGateway::builder()
+        .subgraph(subgraph_schema())
+        .toml_config(toml_config())
+        .enable_networking()
+        .enable_stderr()
+        .enable_stdout()
+        .log_level("info")
+}
+
+fn subgraph_schema() -> String {
     let mut schema = formatdoc! {r#"
         extend schema
           @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
           @link(
-            url: "{path_str}",
+            url: "<self>",
             import: [
               "@kafkaProducer",
               "@kafkaPublish",
@@ -146,12 +165,10 @@ fn subgraph() -> ExtensionOnlySubgraph {
     "#,
     );
 
-    DynamicSchema::builder(schema)
-        .into_extension_only_subgraph("test", &extension_path)
-        .unwrap()
+    schema
 }
 
-fn config() -> &'static str {
+fn toml_config() -> &'static str {
     indoc! {r#"
         [[extensions.kafka.config.endpoint]]
         bootstrap_servers = ["localhost:9092"]
@@ -254,16 +271,7 @@ async fn partition_consumer(topic: &str, partition: i32) -> impl Stream<Item = R
 
 #[tokio::test]
 async fn produce_no_batch() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .enable_stderr()
-        .enable_stdout()
-        .log_level(LogLevel::Error)
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let (sender, mut recv) = tokio::sync::mpsc::channel(10);
 
@@ -288,9 +296,9 @@ async fn produce_no_batch() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "publishUserEvent": true
@@ -317,16 +325,7 @@ async fn produce_no_batch() {
 
 #[tokio::test]
 async fn produce_single_partition() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .enable_stderr()
-        .enable_stdout()
-        .log_level(LogLevel::Error)
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let (sender, mut recv) = tokio::sync::mpsc::channel(10);
 
@@ -351,9 +350,9 @@ async fn produce_single_partition() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "publishUserEventSinglePartition": true
@@ -380,16 +379,7 @@ async fn produce_single_partition() {
 
 #[tokio::test]
 async fn produce_batch() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .enable_stderr()
-        .enable_stdout()
-        .log_level(LogLevel::Error)
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let (sender, mut recv) = tokio::sync::mpsc::channel(10);
 
@@ -414,9 +404,9 @@ async fn produce_batch() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "publishUserEvent": true
@@ -430,9 +420,9 @@ async fn produce_batch() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "publishUserEvent": true
@@ -446,9 +436,9 @@ async fn produce_batch() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "publishUserEvent": true
@@ -488,16 +478,7 @@ async fn produce_batch() {
 
 #[tokio::test]
 async fn connect_sasl_plain() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .enable_stderr()
-        .enable_stdout()
-        .log_level(LogLevel::Error)
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let mutation = indoc! {r#"
         mutation {
@@ -505,9 +486,9 @@ async fn connect_sasl_plain() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "publishUserEventSaslPlain": true
@@ -518,16 +499,7 @@ async fn connect_sasl_plain() {
 
 #[tokio::test]
 async fn connect_sasl_scram() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .enable_stderr()
-        .enable_stdout()
-        .log_level(LogLevel::Error)
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
     tokio::time::sleep(Duration::from_millis(500)).await;
 
     let mutation = indoc! {r#"
@@ -536,9 +508,9 @@ async fn connect_sasl_scram() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "publishUserEventSaslScram": true
@@ -549,16 +521,7 @@ async fn connect_sasl_scram() {
 
 #[tokio::test]
 async fn connect_tls_no_auth() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .enable_stderr()
-        .enable_stdout()
-        .log_level(LogLevel::Error)
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let mutation = indoc! {r#"
         mutation {
@@ -566,9 +529,9 @@ async fn connect_tls_no_auth() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "publishUserEventTlsNoAuth": true
@@ -579,16 +542,7 @@ async fn connect_tls_no_auth() {
 
 #[tokio::test]
 async fn connect_mtls() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .enable_stderr()
-        .enable_stdout()
-        .log_level(LogLevel::Error)
-        .build(config())
-        .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
     let mutation = indoc! {r#"
         mutation {
@@ -596,9 +550,9 @@ async fn connect_mtls() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "publishUserEventMtls": true
@@ -609,36 +563,25 @@ async fn connect_mtls() {
 
 #[tokio::test]
 async fn test_subscribe_latest_events() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .enable_stderr()
-        .enable_stdout()
-        .log_level(LogLevel::EngineDebug)
-        .build(config())
-        .unwrap();
+    let gateway = gateway_builder().stream_stdout_stderr().build().await.unwrap();
 
-    let runner = TestRunner::new(config).await.unwrap();
-
-    let query = indoc! {r#"
-        subscription {
-          userLatestEvents(filter: "test_subscribe") {
-            email
-            name
-          }
-        }
-    "#};
-
-    let subscription = runner
-        .graphql_subscription::<serde_json::Value>(query)
-        .unwrap()
-        .subscribe()
-        .await
-        .unwrap();
-
-    tokio::time::sleep(Duration::from_secs(4)).await;
+    let subscription = gateway
+        .query(
+            r#"
+            subscription {
+              userLatestEvents(filter: "test_subscribe") {
+                email
+                name
+              }
+            }
+            "#,
+        )
+        .ws_stream()
+        .await;
 
     tokio::spawn(async move {
+        tokio::time::sleep(Duration::from_secs(4)).await;
+
         let producer = producer(KAFKA_TOPIC).await;
         let mut records = Vec::new();
 
@@ -662,7 +605,7 @@ async fn test_subscribe_latest_events() {
         tokio::time::sleep(Duration::from_millis(100)).await;
     });
 
-    let events = tokio::time::timeout(Duration::from_secs(5), subscription.take(2).collect::<Vec<_>>())
+    let events = tokio::time::timeout(Duration::from_secs(5), subscription.take(2))
         .await
         .unwrap();
 
@@ -690,37 +633,25 @@ async fn test_subscribe_latest_events() {
 
 #[tokio::test]
 async fn xxx_test_subscribe_filter() {
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph())
-        .enable_networking()
-        .enable_stderr()
-        .enable_stdout()
-        .log_level(LogLevel::EngineDebug)
-        .build(config())
-        .unwrap();
+    let gateway = gateway_builder().build().await.unwrap();
 
-    let runner = TestRunner::new(config).await.unwrap();
-
-    let query = indoc! {r#"
-        subscription {
-          highPriorityBankEvents(filter: "test_subscribe_filter", limit: 1000) {
-            id
-            account
-            money
-          }
-        }
-    "#};
-
-    let subscription = runner
-        .graphql_subscription::<serde_json::Value>(query)
-        .unwrap()
-        .subscribe()
-        .await
-        .unwrap();
-
-    tokio::time::sleep(Duration::from_secs(4)).await;
+    let subscription = gateway
+        .query(
+            r#"
+            subscription {
+              highPriorityBankEvents(filter: "test_subscribe_filter", limit: 1000) {
+                id
+                account
+                money
+              }
+            }
+            "#,
+        )
+        .ws_stream()
+        .await;
 
     tokio::spawn(async move {
+        tokio::time::sleep(Duration::from_secs(4)).await;
         let producer = producer(KAFKA_TOPIC).await;
         let mut records = Vec::new();
 
@@ -741,7 +672,7 @@ async fn xxx_test_subscribe_filter() {
         tokio::time::sleep(Duration::from_millis(100)).await;
     });
 
-    let events = tokio::time::timeout(Duration::from_secs(5), subscription.take(2).collect::<Vec<_>>())
+    let events = tokio::time::timeout(Duration::from_secs(5), subscription.take(2))
         .await
         .unwrap();
 

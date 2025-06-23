@@ -35,7 +35,7 @@ async fn page_info_no_nesting() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -97,7 +97,7 @@ async fn page_info_long_cursor() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -145,7 +145,7 @@ async fn page_info_first_has_more_data() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -202,7 +202,7 @@ async fn page_info_last_has_more_data() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -289,7 +289,7 @@ async fn nested_page_info_no_limit() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -399,7 +399,7 @@ async fn nested_page_info_with_first() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -502,7 +502,7 @@ async fn nested_page_info_with_last() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {

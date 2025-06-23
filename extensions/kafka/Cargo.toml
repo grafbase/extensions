@@ -19,9 +19,17 @@ template.workspace = true
 
 [dev-dependencies]
 chrono = { workspace = true, features = ["clock"] }
+ctor.workspace = true
 grafbase-sdk = { workspace = true, features = ["test-utils"] }
 indoc.workspace = true
 insta = { workspace = true, features = ["json"] }
 rskafka = { workspace = true, features = ["full"] }
 serde_json.workspace = true
 tokio = { workspace = true, features = ["rt-multi-thread", "macros", "test-util"] }
+tracing.workspace = true
+tracing-subscriber = { workspace = true, features = [
+    "fmt",
+    "tracing-log",
+    "env-filter",
+    "ansi",
+] }

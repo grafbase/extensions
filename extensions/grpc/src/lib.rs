@@ -16,7 +16,7 @@ struct Grpc {
 }
 
 impl ResolverExtension for Grpc {
-    fn new(schemas: Vec<SubgraphSchema<'_>>, config: Configuration) -> Result<Self, Error> {
+    fn new(schemas: Vec<SubgraphSchema>, config: Configuration) -> Result<Self, Error> {
         let mut services = Vec::new();
         let mut messages = Vec::new();
         let mut enums = Vec::new();

@@ -1,5 +1,5 @@
 use crate::PgTestApi;
-use grafbase_sdk::test::DynamicSchema;
+use grafbase_sdk::test::GraphqlSubgraph;
 use indoc::indoc;
 use serde_json::json;
 
@@ -38,10 +38,10 @@ async fn join_one_column() {
         }
     ]);
 
-    let subgraph = DynamicSchema::builder(mock_sdl)
+    let subgraph = GraphqlSubgraph::with_schema(mock_sdl)
         .with_resolver("Query", "postFoobar", response)
-        .into_subgraph("mock")
-        .unwrap();
+        .with_name("mock")
+        .build();
 
     let api = PgTestApi::new_with_subgraphs("", vec![subgraph], |api| async move {
         let schema = indoc! {r#"
@@ -71,7 +71,7 @@ async fn join_one_column() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -138,10 +138,10 @@ async fn join_one_composite() {
         }
     ]);
 
-    let subgraph = DynamicSchema::builder(mock_sdl)
+    let subgraph = GraphqlSubgraph::with_schema(mock_sdl)
         .with_resolver("Query", "postFoobar", response)
-        .into_subgraph("mock")
-        .unwrap();
+        .with_name("mock")
+        .build();
 
     let api = PgTestApi::new_with_subgraphs("", vec![subgraph], |api| async move {
         let schema = indoc! {r#"
@@ -175,7 +175,7 @@ async fn join_one_composite() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
