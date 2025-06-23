@@ -43,7 +43,7 @@ async fn by_pk_no_rename() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -61,7 +61,7 @@ async fn by_pk_no_rename() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -77,7 +77,7 @@ async fn by_pk_no_rename() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -144,7 +144,7 @@ async fn by_composite_unique() {
         }
     "#};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {

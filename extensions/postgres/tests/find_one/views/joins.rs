@@ -76,7 +76,7 @@ async fn one_to_one_join_parent_side() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     // Assert the response, expecting the viewProfile field
     insta::assert_json_snapshot!(response, @r#"
@@ -172,7 +172,7 @@ async fn one_to_one_join_between_schemas() {
         }
     "#};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     // Expect viewSecret field
     insta::assert_json_snapshot!(response, @r#"
@@ -275,7 +275,7 @@ async fn one_to_many_join_between_schemas() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -379,7 +379,7 @@ async fn one_to_one_join_child_side() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -467,7 +467,7 @@ async fn one_to_one_join_parent_side_compound_fk() {
         }
     "#};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {

@@ -35,11 +35,7 @@ async fn string_set_with_returning() {
         }
     "#};
 
-    let mutation_response = runner
-        .graphql_query::<serde_json::Value>(mutation)
-        .send()
-        .await
-        .unwrap();
+    let mutation_response = runner.query(mutation).send().await;
 
     insta::assert_json_snapshot!(mutation_response, @r#"
     {
@@ -64,7 +60,7 @@ async fn string_set_with_returning() {
         }
     "};
 
-    let query_response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let query_response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(query_response, @r#"
     {
@@ -117,11 +113,7 @@ async fn with_returning() {
         }
     "};
 
-    let mutation_response = runner
-        .graphql_query::<serde_json::Value>(mutation)
-        .send()
-        .await
-        .unwrap();
+    let mutation_response = runner.query(mutation).send().await;
 
     insta::assert_json_snapshot!(mutation_response, @r#"
     {
@@ -153,7 +145,7 @@ async fn with_returning() {
         }
     "};
 
-    let query_response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let query_response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(query_response, @r#"
     {
@@ -222,11 +214,7 @@ async fn no_returning() {
         }
     "};
 
-    let mutation_response = runner
-        .graphql_query::<serde_json::Value>(mutation)
-        .send()
-        .await
-        .unwrap();
+    let mutation_response = runner.query(mutation).send().await;
 
     insta::assert_json_snapshot!(mutation_response, @r#"
     {
@@ -246,7 +234,7 @@ async fn no_returning() {
         }
     "};
 
-    let query_response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let query_response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(query_response, @r#"
     {

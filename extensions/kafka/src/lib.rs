@@ -28,7 +28,7 @@ struct Kafka {
 }
 
 impl ResolverExtension for Kafka {
-    fn new(schemas: Vec<SubgraphSchema<'_>>, config: Configuration) -> Result<Self, Error> {
+    fn new(schemas: Vec<SubgraphSchema>, config: Configuration) -> Result<Self, Error> {
         let config: config::KafkaConfig = config.deserialize()?;
         let mut endpoints = FxHashMap::default();
         let mut producers = FxHashMap::default();

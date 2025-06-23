@@ -1,4 +1,4 @@
-use grafbase_sdk::test::{DynamicSchema, TestConfig, TestRunner};
+use grafbase_sdk::test::TestGateway;
 use wiremock::matchers;
 
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -15,27 +15,6 @@ struct Error {
 
 #[tokio::test]
 async fn test_basic_responses() {
-    let extension_path = std::env::current_dir().unwrap().join("build");
-    let extension_path_str = format!("file://{}", extension_path.display());
-
-    let subgraph = DynamicSchema::builder(format!(
-        r#"
-        extend schema
-          @link(url: "https://specs.apollo.dev/federation/v2.7")
-          @link(url: "{extension_path_str}", import: ["@snowflakeQuery"])
-
-        scalar JSON
-
-        type Query {{
-          hi(params: [JSON!]!): [[JSON!]!] @snowflakeQuery(sql: "SELECT ?", bindings: "{{{{ args.params }}}}")
-          users(params: [JSON!]!): [[JSON!]!]
-            @snowflakeQuery(sql: "SELECT * FROM CUSTOMER LIMIT ?;", bindings: "{{{{ args.params }}}}")
-        }}
-        "#
-    ))
-    .into_extension_only_subgraph("test-subgraph", &extension_path)
-    .unwrap();
-
     let mock_server = wiremock::MockServer::start().await;
     let mock_server_url = mock_server.address();
 
@@ -63,18 +42,31 @@ async fn test_basic_responses() {
         """
     "#};
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(
+            r#"
+            extend schema
+              @link(url: "https://specs.apollo.dev/federation/v2.7")
+              @link(url: "<self>", import: ["@snowflakeQuery"])
+
+            scalar JSON
+
+            type Query {
+              hi(params: [JSON!]!): [[JSON!]!] @snowflakeQuery(sql: "SELECT ?", bindings: "{{ args.params }}")
+              users(params: [JSON!]!): [[JSON!]!]
+                @snowflakeQuery(sql: "SELECT * FROM CUSTOMER LIMIT ?;", bindings: "{{ args.params }}")
+            }
+
+            "#,
+        )
         .enable_networking()
         .enable_stdout()
         .enable_stderr()
         .log_level(grafbase_sdk::test::LogLevel::Debug)
-        .build(config)
+        .toml_config(&config)
+        .build()
+        .await
         .unwrap();
-
-    // A runner for building the extension, and executing the Grafbase Gateway together
-    // with the subgraphs. The runner composes all subgraphs into a federated schema.
-    let runner = TestRunner::new(config).await.unwrap();
 
     wiremock::Mock::given(matchers::method("POST"))
         .and(matchers::path("/api/v2/statements"))
@@ -118,13 +110,9 @@ async fn test_basic_responses() {
 "#, "application/json"
     )).mount(&mock_server).await;
 
-    let result: serde_json::Value = runner
-        .graphql_query(r#"query { hi(params: [9999]) }"#)
-        .send()
-        .await
-        .unwrap();
+    let response = gateway.query(r#"query { hi(params: [9999]) }"#).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "hi": [
@@ -165,13 +153,9 @@ async fn test_basic_responses() {
         .mount(&mock_server)
         .await;
 
-    let result: Response = runner
-        .graphql_query(r#"query { users(params: ["abcd"]) }"#)
-        .send()
-        .await
-        .unwrap();
+    let response = gateway.query(r#"query { users(params: ["abcd"]) }"#).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "users": null
@@ -179,6 +163,15 @@ async fn test_basic_responses() {
       "errors": [
         {
           "message": "No data returned from Snowflake query. SQL State: 2201W, Code: 002010. Message: SQL compilation error:\nInvalid row count '?' in limit clause",
+          "locations": [
+            {
+              "line": 1,
+              "column": 9
+            }
+          ],
+          "path": [
+            "users"
+          ],
           "extensions": {
             "code": "EXTENSION_ERROR"
           }

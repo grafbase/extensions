@@ -1,7 +1,7 @@
 mod derive_is;
 
 use crate::PgTestApi;
-use grafbase_sdk::test::DynamicSchema;
+use grafbase_sdk::test::GraphqlSubgraph;
 use indoc::indoc;
 use serde_json::json;
 
@@ -32,10 +32,10 @@ async fn lookup_int_pk() {
         }
     ]);
 
-    let subgraph = DynamicSchema::builder(mock_sdl)
+    let subgraph = GraphqlSubgraph::with_schema(mock_sdl)
         .with_resolver("Query", "userFoobar", response)
-        .into_subgraph("mock")
-        .unwrap();
+        .with_name("mock")
+        .build();
 
     let api = PgTestApi::new_with_subgraphs("", vec![subgraph], |api| async move {
         let schema = indoc! {r#"
@@ -56,7 +56,7 @@ async fn lookup_int_pk() {
     .await;
 
     let runner = api.runner_spawn().await;
-    println!("{}", runner.federated_graph());
+    println!("{}", runner.federated_sdl());
 
     let query = indoc! {r"
         query {
@@ -66,7 +66,7 @@ async fn lookup_int_pk() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -115,10 +115,10 @@ async fn lookup_unique_string() {
         }
     ]);
 
-    let subgraph = DynamicSchema::builder(mock_sdl)
+    let subgraph = GraphqlSubgraph::with_schema(mock_sdl)
         .with_resolver("Query", "userFoobar", response)
-        .into_subgraph("mock")
-        .unwrap();
+        .with_name("mock")
+        .build();
 
     let api = PgTestApi::new_with_subgraphs("", vec![subgraph], |api| async move {
         let schema = indoc! {r#"
@@ -148,7 +148,7 @@ async fn lookup_unique_string() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -197,10 +197,10 @@ async fn with_one_to_many_join() {
         }
     ]);
 
-    let subgraph = DynamicSchema::builder(mock_sdl)
+    let subgraph = GraphqlSubgraph::with_schema(mock_sdl)
         .with_resolver("Query", "userFoobar", response)
-        .into_subgraph("mock")
-        .unwrap();
+        .with_name("mock")
+        .build();
 
     let api = PgTestApi::new_with_subgraphs("", vec![subgraph], |api| async move {
         let schema = indoc! {r#"
@@ -253,7 +253,7 @@ async fn with_one_to_many_join() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -319,10 +319,10 @@ async fn with_one_to_many_join_renamed() {
         }
     ]);
 
-    let subgraph = DynamicSchema::builder(mock_sdl)
+    let subgraph = GraphqlSubgraph::with_schema(mock_sdl)
         .with_resolver("Query", "userFoobar", response)
-        .into_subgraph("mock")
-        .unwrap();
+        .with_name("mock")
+        .build();
 
     let api = PgTestApi::new_with_subgraphs("", vec![subgraph], |api| async move {
         let schema = indoc! {r#"
@@ -375,7 +375,7 @@ async fn with_one_to_many_join_renamed() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -444,10 +444,10 @@ async fn with_composite_key() {
         }
     ]);
 
-    let subgraph = DynamicSchema::builder(mock_sdl)
+    let subgraph = GraphqlSubgraph::with_schema(mock_sdl)
         .with_resolver("Query", "userFoobar", response)
-        .into_subgraph("mock")
-        .unwrap();
+        .with_name("mock")
+        .build();
 
     let api = PgTestApi::new_with_subgraphs("", vec![subgraph], |api| async move {
         let schema = indoc! {r#"
@@ -484,7 +484,7 @@ async fn with_composite_key() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -539,10 +539,10 @@ async fn with_one_missing_from_the_middle() {
         }
     ]);
 
-    let subgraph = DynamicSchema::builder(mock_sdl)
+    let subgraph = GraphqlSubgraph::with_schema(mock_sdl)
         .with_resolver("Query", "userFoobar", response)
-        .into_subgraph("mock")
-        .unwrap();
+        .with_name("mock")
+        .build();
 
     let api = PgTestApi::new_with_subgraphs("", vec![subgraph], |api| async move {
         let schema = indoc! {r#"
@@ -574,7 +574,7 @@ async fn with_one_missing_from_the_middle() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -628,10 +628,10 @@ async fn lookup_rename() {
         }
     ]);
 
-    let subgraph = DynamicSchema::builder(mock_sdl)
+    let subgraph = GraphqlSubgraph::with_schema(mock_sdl)
         .with_resolver("Query", "userFoobar", response)
-        .into_subgraph("mock")
-        .unwrap();
+        .with_name("mock")
+        .build();
 
     let api = PgTestApi::new_with_subgraphs("", vec![subgraph], |api| async move {
         let schema = indoc! {r#"
@@ -661,7 +661,7 @@ async fn lookup_rename() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {

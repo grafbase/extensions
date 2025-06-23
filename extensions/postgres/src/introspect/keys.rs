@@ -4,7 +4,7 @@ use inflector::Inflector;
 
 use super::{PgKey, PgTable};
 
-pub(super) fn introspect_sdl(schema: &SubgraphSchema<'_>, database_definition: &mut DatabaseDefinition) {
+pub(super) fn introspect_sdl(schema: &SubgraphSchema, database_definition: &mut DatabaseDefinition) {
     'main: for r#type in schema.type_definitions() {
         let TypeDefinition::Object(object) = r#type else {
             continue;

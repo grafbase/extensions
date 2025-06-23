@@ -1,4 +1,4 @@
-use grafbase_sdk::test::{DynamicSchema, ExtensionOnlySubgraph, TestConfig, TestRunner};
+use grafbase_sdk::test::TestGateway;
 use indoc::{formatdoc, indoc};
 use serde_json::json;
 use wiremock::{
@@ -18,10 +18,14 @@ struct Error {
     extensions: Option<serde_json::Value>,
 }
 
-fn subgraph(rest_endpoint: &str) -> ExtensionOnlySubgraph {
-    let schema = [
+fn subgraph(rest_endpoint: &str) -> String {
+    [
         &format!(
             r#"
+        extend schema
+          @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
+          @link(url: "<self>", import: ["@restEndpoint", "@rest"])
+
         extend schema @restEndpoint(
           name: "endpoint",
           baseURL: "{rest_endpoint}"
@@ -83,26 +87,7 @@ fn subgraph(rest_endpoint: &str) -> ExtensionOnlySubgraph {
         }
     "#,
     ]
-    .join("\n");
-    subgraph_with_schema(&schema)
-}
-
-fn subgraph_with_schema(schema: &str) -> ExtensionOnlySubgraph {
-    let extension_path = std::env::current_dir().unwrap().join("build");
-    let path_str = format!("file://{}", extension_path.display());
-
-    let schema = formatdoc! {r#"
-        extend schema
-          @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
-          @link(url: "{path_str}", import: ["@restEndpoint", "@rest"])
-
-        {schema}
-        "#
-    };
-
-    DynamicSchema::builder(schema)
-        .into_extension_only_subgraph("test", &extension_path)
-        .unwrap()
+    .join("\n")
 }
 
 async fn mock_server(listen_path: &str, template: ResponseTemplate, headers: &[(&str, &str)]) -> MockServer {
@@ -140,13 +125,12 @@ async fn get_many() {
     let mock_server = mock_server("/users", template, &[]).await;
     let subgraph = subgraph(&mock_server.uri());
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph)
         .enable_networking()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -158,9 +142,9 @@ async fn get_many() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let response = gateway.query(query).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "users": [
@@ -207,13 +191,13 @@ async fn with_required_headers() {
         name = "Authorization"
     "#};
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(("test", subgraph))
         .enable_networking()
-        .build(config)
+        .toml_config(config)
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -225,14 +209,13 @@ async fn with_required_headers() {
         }
     "#};
 
-    let result: serde_json::Value = runner
-        .graphql_query(query)
-        .with_header("Authorization", "Bearer token")
+    let response = gateway
+        .query(query)
+        .header("Authorization", "Bearer token")
         .send()
-        .await
-        .unwrap();
+        .await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "users": [
@@ -262,9 +245,12 @@ async fn static_headers() {
 
     let template = ResponseTemplate::new(200).set_body_json(response_body);
     let mock_server = mock_server("/me", template, &[("X-Custom", "tea")]).await;
-    let subgraph = subgraph_with_schema(&format!(
+    let subgraph = format!(
         r#"
-        extend schema @restEndpoint(
+        extend schema
+          @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
+          @link(url: "<self>", import: ["@restEndpoint", "@rest"])
+          @restEndpoint(
           name: "endpoint",
           baseURL: "{uri}"
           headers: [
@@ -286,15 +272,14 @@ async fn static_headers() {
         }}
         "#,
         uri = mock_server.uri()
-    ));
+    );
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph)
         .enable_networking()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -306,9 +291,9 @@ async fn static_headers() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let response = gateway.query(query).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "me": {
@@ -331,9 +316,12 @@ async fn headers_from_config() {
 
     let template = ResponseTemplate::new(200).set_body_json(response_body);
     let mock_server = mock_server("/me", template, &[("X-Custom", "tea")]).await;
-    let subgraph = subgraph_with_schema(&format!(
+    let subgraph = format!(
         r#"
-        extend schema @restEndpoint(
+        extend schema
+          @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
+          @link(url: "<self>", import: ["@restEndpoint", "@rest"])
+          @restEndpoint(
           name: "endpoint",
           baseURL: "{uri}"
           headers: [
@@ -355,20 +343,20 @@ async fn headers_from_config() {
         }}
         "#,
         uri = mock_server.uri()
-    ));
+    );
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(("test", subgraph))
         .enable_networking()
-        .build(
+        .toml_config(
             r#"
             [extensions.rest.config.subgraphs.test]
             header = "tea"
             "#,
         )
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -380,9 +368,9 @@ async fn headers_from_config() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let response = gateway.query(query).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "me": {
@@ -405,15 +393,13 @@ async fn get_one() {
 
     let template = ResponseTemplate::new(200).set_body_json(response_body);
     let mock_server = mock_server("/users/1", template, &[]).await;
-    let subgraph = subgraph(&mock_server.uri());
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph(&mock_server.uri()))
         .enable_networking()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -425,9 +411,9 @@ async fn get_one() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let response = gateway.query(query).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "user": {
@@ -446,17 +432,15 @@ async fn get_one_missing() {
 
     let template = ResponseTemplate::new(200).set_body_json(response_body);
     let mock_server = mock_server("/users/1", template, &[]).await;
-    let subgraph = subgraph(&mock_server.uri());
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph(&mock_server.uri()))
         .enable_networking()
         .enable_stdout()
         .enable_stderr()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -468,9 +452,9 @@ async fn get_one_missing() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let response = gateway.query(query).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "user": null
@@ -489,15 +473,13 @@ async fn get_one_nested_null() {
 
     let template = ResponseTemplate::new(200).set_body_json(response_body);
     let mock_server = mock_server("/users/1", template, &[]).await;
-    let subgraph = subgraph(&mock_server.uri());
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph(&mock_server.uri()))
         .enable_networking()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -509,9 +491,9 @@ async fn get_one_nested_null() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let response = gateway.query(query).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "user": {
@@ -541,15 +523,13 @@ async fn get_some_fields() {
 
     let template = ResponseTemplate::new(200).set_body_json(response_body);
     let mock_server = mock_server("/users", template, &[]).await;
-    let subgraph = subgraph(&mock_server.uri());
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph(&mock_server.uri()))
         .enable_networking()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -559,9 +539,9 @@ async fn get_some_fields() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let response = gateway.query(query).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "users": [
@@ -589,15 +569,13 @@ async fn faulty_response() {
 
     let template = ResponseTemplate::new(200).set_body_json(response_body);
     let mock_server = mock_server("/users", template, &[]).await;
-    let subgraph = subgraph(&mock_server.uri());
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph(&mock_server.uri()))
         .enable_networking()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -607,14 +585,25 @@ async fn faulty_response() {
         }
     "#};
 
-    let result: Response = runner.graphql_query(query).send().await.unwrap();
+    let response = gateway.query(query).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": null,
       "errors": [
         {
           "message": "Invalid response from subgraph",
+          "locations": [
+            {
+              "line": 3,
+              "column": 5
+            }
+          ],
+          "path": [
+            "users",
+            0,
+            "id"
+          ],
           "extensions": {
             "code": "SUBGRAPH_INVALID_RESPONSE_ERROR"
           }
@@ -630,13 +619,12 @@ async fn internal_server_error() {
     let mock_server = mock_server("/users", template, &[]).await;
     let subgraph = subgraph(&mock_server.uri());
 
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph)
         .enable_networking()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -646,14 +634,23 @@ async fn internal_server_error() {
         }
     "#};
 
-    let result: Response = runner.graphql_query(query).send().await.unwrap();
+    let response = gateway.query(query).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": null,
       "errors": [
         {
           "message": "HTTP request failed with status: 500 Internal Server Error",
+          "locations": [
+            {
+              "line": 2,
+              "column": 3
+            }
+          ],
+          "path": [
+            "users"
+          ],
           "extensions": {
             "code": "EXTENSION_ERROR"
           }
@@ -682,14 +679,12 @@ async fn with_bad_jq() {
 
     let template = ResponseTemplate::new(200).set_body_json(response_body);
     let mock_server = mock_server("/users", template, &[]).await;
-    let extension_path = std::env::current_dir().unwrap().join("build");
-    let path_str = format!("file://{}", extension_path.display());
     let rest_endpoint = mock_server.uri();
 
     let schema = formatdoc! {r#"
         extend schema
           @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
-          @link(url: "{path_str}", import: ["@restEndpoint", "@rest"])
+          @link(url: "<self>", import: ["@restEndpoint", "@rest"])
 
         @restEndpoint(
           name: "endpoint",
@@ -711,17 +706,12 @@ async fn with_bad_jq() {
         }}
     "#};
 
-    let subgraph = DynamicSchema::builder(schema)
-        .into_extension_only_subgraph("test", &extension_path)
-        .unwrap();
-
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(schema)
         .enable_networking()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -733,14 +723,23 @@ async fn with_bad_jq() {
         }
     "#};
 
-    let result: Response = runner.graphql_query(query).send().await.unwrap();
+    let response = gateway.query(query).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": null,
       "errors": [
         {
           "message": "Failed to filter with selection: The selection is not valid jq syntax: `\\||\\`",
+          "locations": [
+            {
+              "line": 2,
+              "column": 3
+            }
+          ],
+          "path": [
+            "users"
+          ],
           "extensions": {
             "code": "EXTENSION_ERROR"
           }
@@ -769,14 +768,12 @@ async fn with_path_in_the_endpoint() {
 
     let template = ResponseTemplate::new(200).set_body_json(response_body);
     let mock_server = mock_server("/admin/users", template, &[]).await;
-    let extension_path = std::env::current_dir().unwrap().join("build");
-    let path_str = format!("file://{}", extension_path.display());
     let rest_endpoint = mock_server.uri();
 
     let schema = formatdoc! {r#"
         extend schema
           @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
-          @link(url: "{path_str}", import: ["@restEndpoint", "@rest"])
+          @link(url: "<self>", import: ["@restEndpoint", "@rest"])
 
         @restEndpoint(
           name: "endpoint",
@@ -798,17 +795,12 @@ async fn with_path_in_the_endpoint() {
         }}
     "#};
 
-    let subgraph = DynamicSchema::builder(schema)
-        .into_extension_only_subgraph("test", &extension_path)
-        .unwrap();
-
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(schema)
         .enable_networking()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -820,9 +812,9 @@ async fn with_path_in_the_endpoint() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(query).send().await.unwrap();
+    let response = gateway.query(query).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "users": [
@@ -866,17 +858,14 @@ async fn update_user() {
         .mount(&mock_server)
         .await;
 
-    let subgraph = subgraph(&mock_server.uri());
-
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph(&mock_server.uri()))
         .enable_networking()
         .enable_stdout()
         .enable_stderr()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let mutation = indoc! {r#"
         mutation {
@@ -888,9 +877,9 @@ async fn update_user() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "updateUser": {
@@ -920,15 +909,12 @@ async fn delete_user() {
         .mount(&mock_server)
         .await;
 
-    let subgraph = subgraph(&mock_server.uri());
-
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph(&mock_server.uri()))
         .enable_networking()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let mutation = indoc! {r#"
         mutation {
@@ -940,9 +926,9 @@ async fn delete_user() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "deleteUser": {
@@ -979,18 +965,14 @@ async fn dynamic_post() {
         .mount(&mock_server)
         .await;
 
-    let subgraph = subgraph(&mock_server.uri());
-
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph(&mock_server.uri()))
         .enable_networking()
         .enable_stdout()
         .enable_stderr()
-        .log_level(grafbase_sdk::test::LogLevel::Debug)
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let mutation = indoc! {r#"
         mutation {
@@ -1002,9 +984,9 @@ async fn dynamic_post() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "createUser": {
@@ -1041,15 +1023,12 @@ async fn static_post() {
         .mount(&mock_server)
         .await;
 
-    let subgraph = subgraph(&mock_server.uri());
-
-    let config = TestConfig::builder()
-        .with_subgraph(subgraph)
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph(&mock_server.uri()))
         .enable_networking()
-        .build("")
+        .build()
+        .await
         .unwrap();
-
-    let runner = TestRunner::new(config).await.unwrap();
 
     let mutation = indoc! {r#"
         mutation {
@@ -1061,9 +1040,9 @@ async fn static_post() {
         }
     "#};
 
-    let result: serde_json::Value = runner.graphql_query(mutation).send().await.unwrap();
+    let response = gateway.query(mutation).send().await;
 
-    insta::assert_json_snapshot!(result, @r#"
+    insta::assert_json_snapshot!(response, @r#"
     {
       "data": {
         "createStaticUser": {

@@ -26,7 +26,7 @@ struct Nats {
 }
 
 impl ResolverExtension for Nats {
-    fn new(_schemas: Vec<SubgraphSchema<'_>>, config: Configuration) -> Result<Self, Error> {
+    fn new(_schemas: Vec<SubgraphSchema>, config: Configuration) -> Result<Self, Error> {
         let mut clients = HashMap::new();
         let config: config::NatsConfig = config.deserialize()?;
 

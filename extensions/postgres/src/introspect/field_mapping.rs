@@ -6,7 +6,7 @@ struct PgTypePointer<'a> {
     r#type: &'a str,
 }
 
-pub(super) fn introspect(schema: &SubgraphSchema<'_>, database_definition: &mut DatabaseDefinition) {
+pub(super) fn introspect(schema: &SubgraphSchema, database_definition: &mut DatabaseDefinition) {
     for r#type in schema.type_definitions() {
         let TypeDefinition::Object(object_definition) = r#type else {
             continue;
@@ -56,12 +56,12 @@ fn map_pointer_type(
 }
 
 fn map_operations(
-    schema: &SubgraphSchema<'_>,
+    schema: &SubgraphSchema,
     object_definition: &ObjectDefinition<'_>,
     database_definition: &mut DatabaseDefinition,
 ) {
     for field in object_definition.fields() {
-        let Some(TypeDefinition::Object(r#type)) = schema.type_definition(&field.ty().definition().id()) else {
+        let Some(TypeDefinition::Object(r#type)) = schema.type_definition(field.ty().definition().id()) else {
             continue;
         };
 

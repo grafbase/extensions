@@ -59,7 +59,7 @@ async fn id_pk_implicit_order_with_after() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response: Response = runner.query(query).send().await.deserialize().unwrap();
     let page_info = response.data.users.page_info;
 
     assert!(page_info.has_next_page);
@@ -77,12 +77,7 @@ async fn id_pk_implicit_order_with_after() {
         "after": page_info.end_cursor,
     });
 
-    let response = runner
-        .graphql_query::<serde_json::Value>(query)
-        .with_variables(variables)
-        .send()
-        .await
-        .unwrap();
+    let response = runner.query(query).variables(variables).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -139,7 +134,7 @@ async fn forward_back_forward() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response = runner.query(query).send().await.deserialize::<Response>().unwrap();
     let first_page_info = response.data.users.page_info;
 
     assert!(first_page_info.has_next_page);
@@ -158,10 +153,11 @@ async fn forward_back_forward() {
     });
 
     let response = runner
-        .graphql_query::<Response>(query)
-        .with_variables(variables)
+        .query(query)
+        .variables(variables)
         .send()
         .await
+        .deserialize::<Response>()
         .unwrap();
 
     let page_info = response.data.users.page_info;
@@ -183,10 +179,11 @@ async fn forward_back_forward() {
     });
 
     let response = runner
-        .graphql_query::<Response>(query)
-        .with_variables(variables)
+        .query(query)
+        .variables(variables)
         .send()
         .await
+        .deserialize::<Response>()
         .unwrap();
 
     let last_page_info = response.data.users.page_info;
@@ -223,7 +220,7 @@ async fn with_long_cursor() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response = runner.query(query).send().await.deserialize::<Response>().unwrap();
     let page_info = response.data.users.page_info;
 
     assert!(page_info.has_next_page);
@@ -241,12 +238,7 @@ async fn with_long_cursor() {
         "after": page_info.end_cursor,
     });
 
-    let response = runner
-        .graphql_query::<serde_json::Value>(query)
-        .with_variables(variables)
-        .send()
-        .await
-        .unwrap();
+    let response = runner.query(query).variables(variables).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -304,7 +296,7 @@ async fn id_pk_implicit_order_with_before() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response = runner.query(query).send().await.deserialize::<Response>().unwrap();
     let page_info = response.data.users.page_info;
 
     assert!(page_info.has_previous_page);
@@ -322,12 +314,7 @@ async fn id_pk_implicit_order_with_before() {
         "before": page_info.start_cursor,
     });
 
-    let response = runner
-        .graphql_query::<serde_json::Value>(query)
-        .with_variables(variables)
-        .send()
-        .await
-        .unwrap();
+    let response = runner.query(query).variables(variables).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -384,7 +371,7 @@ async fn id_pk_explicit_order_with_after() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response = runner.query(query).send().await.deserialize::<Response>().unwrap();
     let page_info = response.data.users.page_info;
     let cursor = page_info.end_cursor;
 
@@ -401,7 +388,7 @@ async fn id_pk_explicit_order_with_after() {
     "#
     );
 
-    let response = runner.graphql_query::<serde_json::Value>(&query).send().await.unwrap();
+    let response = runner.query(&query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -458,7 +445,7 @@ async fn id_pk_explicit_order_with_before() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response = runner.query(query).send().await.deserialize::<Response>().unwrap();
     let page_info = response.data.users.page_info;
     let cursor = page_info.start_cursor;
 
@@ -475,7 +462,7 @@ async fn id_pk_explicit_order_with_before() {
     "#
     );
 
-    let response = runner.graphql_query::<serde_json::Value>(&query).send().await.unwrap();
+    let response = runner.query(&query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -536,7 +523,7 @@ async fn compound_pk_implicit_order_with_after() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response = runner.query(query).send().await.deserialize::<Response>().unwrap();
     let page_info = response.data.users.page_info;
     let cursor = page_info.end_cursor;
 
@@ -553,7 +540,7 @@ async fn compound_pk_implicit_order_with_after() {
     "#
     );
 
-    let response = runner.graphql_query::<serde_json::Value>(&query).send().await.unwrap();
+    let response = runner.query(&query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -614,7 +601,7 @@ async fn compound_pk_implicit_order_with_before() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response = runner.query(query).send().await.deserialize::<Response>().unwrap();
     let page_info = response.data.users.page_info;
     let cursor = page_info.start_cursor;
 
@@ -631,7 +618,7 @@ async fn compound_pk_implicit_order_with_before() {
     "#
     );
 
-    let response = runner.graphql_query::<serde_json::Value>(&query).send().await.unwrap();
+    let response = runner.query(&query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -693,7 +680,7 @@ async fn compound_pk_explicit_order_with_after() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response = runner.query(query).send().await.deserialize::<Response>().unwrap();
     let page_info = response.data.users.page_info;
     let cursor = page_info.end_cursor;
 
@@ -710,7 +697,7 @@ async fn compound_pk_explicit_order_with_after() {
     "#
     );
 
-    let response = runner.graphql_query::<serde_json::Value>(&query).send().await.unwrap();
+    let response = runner.query(&query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -772,7 +759,7 @@ async fn compound_pk_explicit_order_with_before() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response = runner.query(query).send().await.deserialize::<Response>().unwrap();
     let page_info = response.data.users.page_info;
     let cursor = page_info.start_cursor;
 
@@ -789,7 +776,7 @@ async fn compound_pk_explicit_order_with_before() {
     "#
     );
 
-    let response = runner.graphql_query::<serde_json::Value>(&query).send().await.unwrap();
+    let response = runner.query(&query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -851,7 +838,7 @@ async fn compound_pk_implicit_order_with_nulls_and_after() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response = runner.query(query).send().await.deserialize::<Response>().unwrap();
     let page_info = response.data.users.page_info;
     let cursor = page_info.end_cursor;
 
@@ -868,7 +855,7 @@ async fn compound_pk_implicit_order_with_nulls_and_after() {
     "#
     );
 
-    let response = runner.graphql_query::<serde_json::Value>(&query).send().await.unwrap();
+    let response = runner.query(&query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -930,7 +917,7 @@ async fn compound_pk_implicit_order_with_nulls_and_before() {
         }
     "};
 
-    let response = runner.graphql_query::<Response>(query).send().await.unwrap();
+    let response = runner.query(query).send().await.deserialize::<Response>().unwrap();
     let page_info = response.data.users.page_info;
     let cursor = page_info.start_cursor;
 
@@ -947,7 +934,7 @@ async fn compound_pk_implicit_order_with_nulls_and_before() {
     "#
     );
 
-    let response = runner.graphql_query::<serde_json::Value>(&query).send().await.unwrap();
+    let response = runner.query(&query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {
@@ -1035,7 +1022,7 @@ async fn nested_page_info_no_limit() {
         }
     "};
 
-    let response = runner.graphql_query::<serde_json::Value>(query).send().await.unwrap();
+    let response = runner.query(query).send().await;
 
     insta::assert_json_snapshot!(response, @r#"
     {

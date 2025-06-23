@@ -14,7 +14,7 @@ use std::{cell::RefCell, fmt::Display, path::Path, sync::Arc};
 use grafbase_postgres_introspection::config::Config;
 use grafbase_sdk::{
     host_io::http::Url,
-    test::{DynamicSchema, DynamicSubgraph, TestConfig, TestRunner},
+    test::{GraphqlSubgraph, TestGateway},
 };
 use indoc::formatdoc;
 use names::{Generator, Name};
@@ -75,7 +75,7 @@ static MTLS_BASE_CONNECTION_STRING: &str = concat!(
 struct Inner {
     pool: PgPool,
     config: String,
-    subgraphs: Vec<DynamicSubgraph>,
+    subgraphs: Vec<GraphqlSubgraph>,
 }
 
 #[derive(Clone)]
@@ -100,7 +100,7 @@ impl PgTestApi {
         Self::new_mtls_with_subgraphs(config, Vec::new(), init).await
     }
 
-    async fn new_with_subgraphs<F, U>(config: impl Display, subgraphs: Vec<DynamicSubgraph>, init: F) -> Self
+    async fn new_with_subgraphs<F, U>(config: impl Display, subgraphs: Vec<GraphqlSubgraph>, init: F) -> Self
     where
         F: FnOnce(PgTestApi) -> U,
         U: Future<Output = ()>,
@@ -124,7 +124,7 @@ impl PgTestApi {
         Self::new_with_connection_string(config, subgraphs, url.as_ref(), init).await
     }
 
-    async fn new_mtls_with_subgraphs<F, U>(config: impl Display, subgraphs: Vec<DynamicSubgraph>, init: F) -> Self
+    async fn new_mtls_with_subgraphs<F, U>(config: impl Display, subgraphs: Vec<GraphqlSubgraph>, init: F) -> Self
     where
         F: FnOnce(PgTestApi) -> U,
         U: Future<Output = ()>,
@@ -150,7 +150,7 @@ impl PgTestApi {
 
     async fn new_with_connection_string<F, U>(
         config: impl Display,
-        subgraphs: Vec<DynamicSubgraph>,
+        subgraphs: Vec<GraphqlSubgraph>,
         database_url: &str,
         init: F,
     ) -> Self
@@ -185,37 +185,29 @@ impl PgTestApi {
         this
     }
 
-    async fn runner_spawn(&self) -> TestRunner {
+    async fn runner_spawn(&self) -> TestGateway {
         let extension_path = std::env::current_dir().unwrap().join("build");
         let schema = self.introspect_local_extension(&extension_path).await;
 
-        let schema = DynamicSchema::builder(schema)
-            .into_extension_only_subgraph("test", &extension_path)
-            .unwrap();
-
-        let mut config = TestConfig::builder().with_subgraph(schema);
+        let mut builder = TestGateway::builder().subgraph(("test", schema));
 
         for subgraph in &self.inner.subgraphs {
-            config = config.with_subgraph(subgraph.clone());
+            builder = builder.subgraph(subgraph.clone());
         }
 
-        if std::env::var("PREBUILT_EXTENSION").is_ok() {
-            config = config.with_extension("./build");
-        }
-
-        let config = config
+        builder
             .enable_networking()
             .enable_stderr()
             .enable_stdout()
             .enable_environment_variables()
             .log_level(grafbase_sdk::test::LogLevel::EngineDebug)
-            .build(&self.inner.config)
-            .unwrap();
-
-        TestRunner::new(config).await.unwrap()
+            .toml_config(&self.inner.config)
+            .build()
+            .await
+            .unwrap()
     }
 
-    async fn runner_spawn_with_config(&self, toml_config: &str) -> TestRunner {
+    async fn runner_spawn_with_config(&self, toml_config: &str) -> TestGateway {
         let extension_path = std::env::current_dir().unwrap().join("build");
         let extension_url = format!("file://{}", extension_path.display());
         let toml_config = format!("extension_url = \"{extension_url}\"\n\n{toml_config}");
@@ -223,30 +215,22 @@ impl PgTestApi {
         let config = toml::from_str(&toml_config).unwrap();
         let schema = self.introspect_inner(config).await;
 
-        let schema = DynamicSchema::builder(schema)
-            .into_extension_only_subgraph("test", &extension_path)
-            .unwrap();
-
-        let mut config = TestConfig::builder().with_subgraph(schema);
+        let mut builder = TestGateway::builder().subgraph(("test", schema));
 
         for subgraph in &self.inner.subgraphs {
-            config = config.with_subgraph(subgraph.clone());
+            builder = builder.subgraph(subgraph.clone());
         }
 
-        if std::env::var("PREBUILT_EXTENSION").is_ok() {
-            config = config.with_extension("./build");
-        }
-
-        let config = config
+        builder
             .enable_networking()
             .enable_stderr()
             .enable_stdout()
             .enable_environment_variables()
             .log_level(grafbase_sdk::test::LogLevel::EngineDebug)
-            .build(&self.inner.config)
-            .unwrap();
-
-        TestRunner::new(config).await.unwrap()
+            .toml_config(&self.inner.config)
+            .build()
+            .await
+            .unwrap()
     }
 
     async fn execute_sql(&self, sql: &str) {

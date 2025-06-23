@@ -37,7 +37,7 @@ fn hash_endpoint(subgraph_name: &str, name: &str) -> u64 {
 }
 
 impl ResolverExtension for RestExtension {
-    fn new(schemas: Vec<SubgraphSchema<'_>>, config: Configuration) -> Result<Self, Error> {
+    fn new(schemas: Vec<SubgraphSchema>, config: Configuration) -> Result<Self, Error> {
         let mut endpoints = hashbrown::hash_table::HashTable::<EndpointConfig>::new();
         let config: serde_json::Value = config.deserialize()?;
         let subgraph_config = &config["subgraphs"];
