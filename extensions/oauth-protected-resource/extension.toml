@@ -1,0 +1,16 @@
+[extension]
+name = "oauth-protected-resource"
+version = "0.1.0"
+type = "authentication"
+description = "Expose the OAuth protected resource metadata endpoint"
+repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/oauth-protected-resource"
+license = "Apache-2.0"
+
+# These are the default permissions for the extension.
+# The user can enable or disable them as needed in the gateway
+# configuration file.
+[permissions]
+network = false
+stdout = false
+stderr = false
+environment_variables = false

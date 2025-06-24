@@ -68,7 +68,7 @@ futures-util = "0.3.31"
 fxhash = "0.2.1"
 grafbase-database-definition = { version = "0.1.0", path = "crates/database-definition" }
 grafbase-postgres-introspection = { version = "0.1.0", path = "crates/postgres-introspection" }
-grafbase-sdk = "0.17.4"
+grafbase-sdk = { git = "https://github.com/grafbase/grafbase", "branch" = "tomhoule-upmmoowyrkyq" }
 hashbrown = "0.15"
 http = "1.3"
 indexmap = "2.9.0"
@@ -78,6 +78,7 @@ itertools = "0.14.0"
 jiff = "0.2.6"
 jwt-compact = "0.8.0"
 names = "0.14.0"
+oauth-protected-resource-shared = { version = "0.1.0", path = "crates/oauth-protected-resource-shared" }
 openidconnect = "4.0.0"
 ory-client = "=1.9.0"
 pem = "3.0.5"
