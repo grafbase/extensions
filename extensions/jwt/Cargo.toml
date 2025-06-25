@@ -20,7 +20,9 @@ jwt-compact = { workspace = true, features = [
     "ed25519-compact",
     "p256",
 ] }
+oauth-protected-resource-shared.workspace = true
 serde.workspace = true
+serde_json.workspace = true
 serde_with.workspace = true
 strum = { workspace = true, features = ["derive"] }
 url = { workspace = true, features = ["serde"] }

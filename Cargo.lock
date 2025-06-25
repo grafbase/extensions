@@ -2729,6 +2729,7 @@ dependencies = [
  "indoc",
  "insta",
  "jwt-compact",
+ "oauth-protected-resource-shared",
  "openidconnect",
  "ory-client",
  "reqwest 0.12.20",

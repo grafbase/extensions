@@ -5,7 +5,7 @@ use config::{Config, Location};
 use decoder::Decoder;
 use grafbase_sdk::{
     AuthenticationExtension,
-    types::{Configuration, Error, ErrorResponse, GatewayHeaders, Token},
+    types::{Configuration, Error, ErrorResponse, GatewayHeaders, HttpHeaders, PublicMetadataEndpoint, Token},
 };
 
 #[derive(AuthenticationExtension)]
@@ -45,6 +45,43 @@ impl AuthenticationExtension for Jwt {
                     })
                 }),
             })
-            .unwrap_or_else(|| Err(ErrorResponse::unauthorized().with_error("Unauthorized")))
+            .unwrap_or_else(|| {
+                let mut headers = HttpHeaders::new();
+
+                if let Some(metadata_endpoint) = self.config.oauth.as_ref().map(|oauth| &oauth.path) {
+                    headers.append(
+                        "WWW-Authenticate",
+                        format!("Bearer resource_metadata=\"{metadata_endpoint}\""),
+                    );
+                }
+
+                Err(ErrorResponse::unauthorized().with_error("Unauthorized"))
+            })
+    }
+
+    fn public_metadata(&mut self) -> Result<Vec<PublicMetadataEndpoint>, Error> {
+        let Some(oauth) = &self.config.oauth else {
+            return Ok(vec![]);
+        };
+
+        let mut metadata = oauth.metadata.other_parameters.clone();
+        metadata.insert("resource".to_owned(), oauth.metadata.resource.clone().into());
+
+        metadata
+            .entry("jwks_uri".to_owned())
+            .or_insert_with(|| self.config.url.to_string().into());
+
+        let response_body = serde_json::to_vec(&metadata).map_err(|err| {
+            Error::new(format!(
+                "Failed to serialize response body for public metadata endpoint: {err}",
+            ))
+        })?;
+
+        let mut headers = HttpHeaders::new();
+        headers.append("Content-Type", "application/json");
+
+        Ok(vec![
+            PublicMetadataEndpoint::new(oauth.path.clone(), response_body).with_headers(headers),
+        ])
     }
 }
