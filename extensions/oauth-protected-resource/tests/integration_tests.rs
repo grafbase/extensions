@@ -23,7 +23,7 @@ async fn test_just_resource() {
         .await
         .unwrap();
 
-    let mut endpoint = gateway.gateway_endpoint().clone();
+    let mut endpoint = gateway.url().clone();
     endpoint.set_path("/.well-known/oauth-protected-resource");
 
     let client = reqwest::Client::new();
@@ -85,7 +85,7 @@ async fn custom_path() {
         .await
         .unwrap();
 
-    let mut endpoint = gateway.gateway_endpoint().clone();
+    let mut endpoint = gateway.url().clone();
     endpoint.set_path("/yolo");
 
     let client = reqwest::Client::new();
@@ -150,7 +150,7 @@ async fn test_all_metadata() {
         .await
         .unwrap();
 
-    let mut endpoint = gateway.gateway_endpoint().clone();
+    let mut endpoint = gateway.url().clone();
     endpoint.set_path("/.well-known/oauth-protected-resource");
 
     let client = reqwest::Client::new();
