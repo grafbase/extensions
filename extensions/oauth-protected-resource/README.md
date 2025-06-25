@@ -1,4 +1,4 @@
-# OAuth Protected Resource Metadata Extension
+# OAuth 2.0 Protected Resource Metadata extension
 
 This extension implements [RFC 9728](https://datatracker.ietf.org/doc/html/rfc9728) to provide a standard endpoint for OAuth 2.0 protected resources to publish their metadata. The endpoint allows OAuth clients and authorization servers to discover information needed to interact with protected resources.
 
