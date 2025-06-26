@@ -1,4 +1,5 @@
 mod hydra;
+mod oauth_metadata_tests;
 
 use std::collections::HashMap;
 
