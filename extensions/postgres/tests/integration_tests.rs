@@ -200,7 +200,7 @@ impl PgTestApi {
             .enable_stderr()
             .enable_stdout()
             .enable_environment_variables()
-            .log_level(grafbase_sdk::test::LogLevel::EngineDebug)
+            .log_level(grafbase_sdk::test::LogLevel::Debug)
             .toml_config(&self.inner.config)
             .build()
             .await

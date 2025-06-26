@@ -1,6 +1,6 @@
 [extension]
 name = "postgres"
-version = "0.5.0"
+version = "0.6.0"
 description = """
 Integrate your Postgres database directly into Grafbase Gateway. This extension exposes your database schema and with the help of the introspection tool, automatically generates a fully-functional GraphQL subgraph, eliminating the need to build and maintain a separate service.
 """

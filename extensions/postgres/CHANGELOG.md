@@ -2,6 +2,24 @@
 
 All notable changes to the Postgres extension will be documented in this file.
 
+## [0.6.0] - 2025-07-02
+
+### Added
+- Updated to use new logging macros for improved debugging
+- New SDK resolver API integration
+
+### Changed
+- Updated SDK dependencies to latest version
+
+## [0.5.0] - 2025-05-30
+
+### Added
+- Schema and table allow/denylist configuration support
+- Empty allowlist now properly filters everything out
+
+### Fixed
+- Fixed behavior when empty allowlist is specified
+
 ## [0.4.9] - 2025-05-21
 
 ### Fixed

@@ -5,7 +5,10 @@ use config::{Config, Location};
 use decoder::Decoder;
 use grafbase_sdk::{
     AuthenticationExtension,
-    types::{Configuration, Error, ErrorResponse, GatewayHeaders, HttpHeaders, PublicMetadataEndpoint, Token},
+    types::{
+        Configuration, Error, ErrorResponse, GatewayHeaders, HttpHeaders, OwnedHttpHeaders, PublicMetadataEndpoint,
+        Token,
+    },
 };
 
 #[derive(AuthenticationExtension)]
@@ -46,7 +49,7 @@ impl AuthenticationExtension for Jwt {
                 }),
             })
             .unwrap_or_else(|| {
-                let mut headers = HttpHeaders::new();
+                let mut headers = OwnedHttpHeaders::new();
 
                 if let Some(metadata_endpoint) = self.config.oauth.as_ref().map(|oauth| &oauth.path) {
                     headers.append(
@@ -77,7 +80,7 @@ impl AuthenticationExtension for Jwt {
             ))
         })?;
 
-        let mut headers = HttpHeaders::new();
+        let mut headers = OwnedHttpHeaders::new();
         headers.append("Content-Type", "application/json");
 
         Ok(vec![

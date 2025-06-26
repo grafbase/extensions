@@ -259,7 +259,7 @@ The extension logs parameterized queries at the debug level without revealing an
 Enable query logging by setting the environment variable:
 
 ```bash
-GRAFBASE_LOG=info,postgres=debug
+GRAFBASE_LOG=info,extension=debug
 ```
 
 ### Supported Postgres Versions

@@ -1,4 +1,4 @@
-use grafbase_sdk::{SdkError, types::Data};
+use grafbase_sdk::{SdkError, host_io::logger::log, types::Data};
 use sql_ast::renderer;
 
 use crate::resolve::{builder::SelectBuilder, query};
@@ -21,7 +21,7 @@ pub(crate) fn execute(
     let ast = query::lookup::build(builder)?;
     let query = renderer::postgres::render(ast);
 
-    tracing::debug!("Executing query: {}", query);
+    log::debug!(query = query.to_string(); "executing query");
 
     let connection = ctx.pool.acquire()?;
     let mut rows = query.fetch(&connection)?;
