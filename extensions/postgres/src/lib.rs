@@ -1,7 +1,6 @@
 mod config;
 mod context;
 mod introspect;
-mod logger;
 mod resolve;
 
 use std::{collections::HashMap, time::Duration};
@@ -25,8 +24,6 @@ struct PostgresExtension {
 
 impl ResolverExtension for PostgresExtension {
     fn new(subgraph_schemas: Vec<SubgraphSchema>, config: Configuration) -> Result<Self, Error> {
-        logger::init();
-
         let mut pools = HashMap::new();
         let config: PostgresConfig = config.deserialize()?;
 

@@ -1,6 +1,6 @@
 use grafbase_sdk::{
     AuthenticationExtension,
-    types::{Configuration, Error, ErrorResponse, GatewayHeaders, HttpHeaders, PublicMetadataEndpoint, Token},
+    types::{Configuration, Error, ErrorResponse, GatewayHeaders, OwnedHttpHeaders, PublicMetadataEndpoint, Token},
 };
 use oauth_protected_resource_shared::OAuthConfig;
 
@@ -25,7 +25,7 @@ impl AuthenticationExtension for OauthProtectedResourceMetadata {
         response_body.insert("resource".to_owned(), config.metadata.resource.clone().into());
         let response_body = serde_json::to_vec(&response_body).map_err(|err| Error::new(err.to_string()))?;
 
-        let mut response_headers = HttpHeaders::new();
+        let mut response_headers = OwnedHttpHeaders::new();
 
         response_headers.append("content-type", "application/json");
 

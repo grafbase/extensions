@@ -1,5 +1,5 @@
 use grafbase_database_definition::TableId;
-use grafbase_sdk::{SdkError, types::Data};
+use grafbase_sdk::{SdkError, host_io::logger::log, types::Data};
 use sql_ast::renderer;
 
 use crate::context::Context;
@@ -11,7 +11,7 @@ pub(crate) fn execute(ctx: Context<'_>, table_id: TableId) -> Result<Data, SdkEr
     let ast = query::insert::build(&ctx, table, [ctx.create_input(table)?])?;
     let query = renderer::postgres::render(ast);
 
-    tracing::debug!("Executing query: {}", query);
+    log::debug!(query = query.to_string(); "executing query");
 
     let connection = ctx.pool.acquire()?;
 
