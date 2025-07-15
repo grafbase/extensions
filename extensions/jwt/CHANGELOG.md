@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.0] - 2025-07-15
+## [1.3.0] - 2025-07-15
 
 - Added support for static headers returned with 401 responses.
 - Renamed the `[extensions.jwt.config.oauth]` section of the configuration to `[extensions.jwt.config.oauth.protected_resource.metadata]`.
