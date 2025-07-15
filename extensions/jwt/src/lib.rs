@@ -51,14 +51,25 @@ impl AuthenticationExtension for Jwt {
             .unwrap_or_else(|| {
                 let mut headers = OwnedHttpHeaders::new();
 
-                if let Some(metadata_endpoint) = self.config.oauth.as_ref().map(|oauth| &oauth.path) {
+                if let Some(metadata_endpoint) = self
+                    .config
+                    .oauth
+                    .as_ref()
+                    .map(|oauth| &oauth.protected_resource.metadata_path)
+                {
                     headers.append(
                         "WWW-Authenticate",
                         format!("Bearer resource_metadata=\"{metadata_endpoint}\""),
                     );
                 }
 
-                Err(ErrorResponse::unauthorized().with_error("Unauthorized"))
+                let mut error_response = ErrorResponse::unauthorized().with_error("Unauthorized");
+
+                for header in &self.config.unauthenticated_headers {
+                    error_response.push_header(&header.name, header.value.as_bytes()).ok();
+                }
+
+                Err(error_response)
             })
     }
 
@@ -67,8 +78,11 @@ impl AuthenticationExtension for Jwt {
             return Ok(vec![]);
         };
 
-        let mut metadata = oauth.metadata.other_parameters.clone();
-        metadata.insert("resource".to_owned(), oauth.metadata.resource.clone().into());
+        let mut metadata = oauth.protected_resource.metadata.other_parameters.clone();
+        metadata.insert(
+            "resource".to_owned(),
+            oauth.protected_resource.metadata.resource.clone().into(),
+        );
 
         metadata
             .entry("jwks_uri".to_owned())
@@ -84,7 +98,8 @@ impl AuthenticationExtension for Jwt {
         headers.append("Content-Type", "application/json");
 
         Ok(vec![
-            PublicMetadataEndpoint::new(oauth.path.clone(), response_body).with_headers(headers),
+            PublicMetadataEndpoint::new(oauth.protected_resource.metadata_path.clone(), response_body)
+                .with_headers(headers),
         ])
     }
 }

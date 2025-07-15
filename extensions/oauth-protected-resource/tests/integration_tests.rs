@@ -77,7 +77,7 @@ async fn custom_path() {
         .toml_config(
             r#"
             [extensions.oauth-protected-resource.config]
-            path = "/yolo"
+            metadata_path = "/yolo"
             metadata.resource = "https://protected.example.com"
         "#,
         )

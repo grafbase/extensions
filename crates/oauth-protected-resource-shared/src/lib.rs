@@ -5,7 +5,7 @@ use std::collections::BTreeMap;
 pub struct OAuthConfig {
     /// https://datatracker.ietf.org/doc/html/rfc9728#name-obtaining-protected-resourc
     #[serde(default = "default_path")]
-    pub path: String,
+    pub metadata_path: String,
     pub metadata: Metadata,
 }
 
