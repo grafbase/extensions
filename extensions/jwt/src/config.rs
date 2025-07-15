@@ -1,5 +1,4 @@
 use duration_str::deserialize_duration;
-use oauth_protected_resource_shared::OAuthConfig;
 use std::time::Duration;
 use url::Url;
 
@@ -11,6 +10,20 @@ pub(crate) struct Config {
     pub audience: Option<Vec<String>>,
     pub locations: Vec<Location>,
     pub oauth: Option<OAuthConfig>,
+    pub unauthenticated_headers: Vec<StaticHeader>,
+}
+
+#[derive(Debug, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct OAuthConfig {
+    pub protected_resource: oauth_protected_resource_shared::OAuthConfig,
+}
+
+#[derive(Debug, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct StaticHeader {
+    pub name: String,
+    pub value: String,
 }
 
 #[derive(Debug)]
@@ -33,6 +46,7 @@ impl<'de> serde::Deserialize<'de> for Config {
             header_value_prefix,
             cookie_name,
             oauth,
+            unauthenticated_headers,
         } = TomlConfig::deserialize(deserializer)?;
         let mut locations = Vec::new();
         if let Some(header_name) = header_name {
@@ -57,6 +71,7 @@ impl<'de> serde::Deserialize<'de> for Config {
             audience,
             locations,
             oauth,
+            unauthenticated_headers,
         })
     }
 }
@@ -76,6 +91,8 @@ struct TomlConfig {
     cookie_name: Option<String>,
     #[serde(default)]
     oauth: Option<OAuthConfig>,
+    #[serde(default)]
+    unauthenticated_headers: Vec<StaticHeader>,
 }
 
 fn default_poll_interval() -> Duration {

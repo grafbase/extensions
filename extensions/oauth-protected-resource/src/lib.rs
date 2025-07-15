@@ -30,7 +30,7 @@ impl AuthenticationExtension for OauthProtectedResourceMetadata {
         response_headers.append("content-type", "application/json");
 
         Ok(vec![
-            PublicMetadataEndpoint::new(config.path.clone(), response_body).with_headers(response_headers),
+            PublicMetadataEndpoint::new(config.metadata_path.clone(), response_body).with_headers(response_headers),
         ])
     }
 }

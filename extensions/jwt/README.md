@@ -50,12 +50,17 @@ poll_interval = 60
 # cookie_name = "my-cookie"
 
 # Optional - OAuth Protected Resource Metadata configuration (RFC 9728)
-# [extensions.jwt.config.oauth]
-# path = "/.well-known/oauth-protected-resource"  # Optional custom path
-# [extensions.jwt.config.oauth.metadata]
+# [extensions.jwt.config.oauth.protected_resource]
+# metadata_path = "/.well-known/oauth-protected-resource"  # Optional custom path
+# [extensions.jwt.config.oauth.protected_resource.metadata]
 # resource = "https://api.example.com"  # Required to enable the metadata endpoint
 # authorization_servers = ["https://auth.example.com"]
 # scopes_supported = ["read", "write"]
+
+# Optional - Static headers that are returned with 401 Unauthorized responses
+# [[extensions.jwt.config.unauthenticated_headers]]
+# name = "WWW-Authenticate"
+# value = 'Bearer realm="grafbase", error="invalid_token", error_description="Invalid JWT token" resource_metadata="https://api.grafbase.com/.well-known/oauth-protected-resource"'
 ```
 
 If neither a header nor a cookie is specified, the extension will default to the following:
@@ -80,11 +85,11 @@ default = "anonymous"
 
 The JWT extension can optionally expose an OAuth Protected Resource Metadata endpoint according to [RFC 9728](https://datatracker.ietf.org/doc/html/rfc9728). This allows OAuth clients to discover information about your protected resource.
 
-To enable this feature, add the `oauth.metadata.resource` configuration inside your extension configuration:
+To enable this feature, add the `oauth.protected_resource.metadata.resource` configuration inside your extension configuration:
 
 ```toml
 # grafbase.toml
-[extensions.jwt.config.oauth.metadata]
+[extensions.jwt.config.oauth.protected_resource.metadata]
 resource = "https://api.example.com"  # Required to enable the metadata endpoint
 ```
 
@@ -104,11 +109,11 @@ This extension validates JWT ([RFC 7519](https://datatracker.ietf.org/doc/html/r
 
 The JWT extension can optionally expose an OAuth Protected Resource Metadata endpoint according to [RFC 9728](https://datatracker.ietf.org/doc/html/rfc9728). This allows OAuth clients to discover information about your protected resource.
 
-To enable this feature, add the `oauth.metadata.resource` configuration inside your extension configuration:
+To enable this feature, add the `oauth.protected_resource.metadata.resource` configuration inside your extension configuration:
 
 ```toml
 # grafbase.toml
-[extensions.jwt.config.oauth.metadata]
+[extensions.jwt.config.oauth.protected_resource.metadata]
 resource = "https://api.example.com"  # Required to enable the metadata endpoint
 ```
 
@@ -118,9 +123,9 @@ resource = "https://api.example.com"  # Required to enable the metadata endpoint
 # grafbase.toml
 [extensions.jwt.config.oauth]
 # Optional - Override the default path (defaults to "/.well-known/oauth-protected-resource")
-path = "/.well-known/oauth-protected-resource"
+metadata_path = "/.well-known/oauth-protected-resource"
 
-[extensions.jwt.config.oauth.metadata]
+[extensions.jwt.config.oauth.protected_resource.metadata]
 # Required - The resource identifier URL for this protected resource
 resource = "https://api.example.com"
 
@@ -146,4 +151,4 @@ resource_tos_uri = "https://example.com/api/terms"
 tls_client_certificate_bound_access_tokens = true
 ```
 
-When this feature is enabled, the JWT extension will serve the OAuth Protected Resource Metadata at the configured path (defaulting to `/.well-known/oauth-protected-resource`). This eliminates the need to install the separate `oauth-protected-resource` extension if you're already using JWT authentication.
+When at least the resource is defined, the JWT extension will serve the OAuth Protected Resource Metadata at the configured path (defaulting to `/.well-known/oauth-protected-resource`). This eliminates the need to install the separate `oauth-protected-resource` extension if you're already using JWT authentication.

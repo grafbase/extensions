@@ -24,7 +24,7 @@ async fn test_just_resource() {
             [extensions.jwt.config]
             url = "{JWKS_URI}"
 
-            [extensions.jwt.config.oauth.metadata]
+            [extensions.jwt.config.oauth.protected_resource.metadata]
             resource = "https://protected.example.com"
         "#})
         .build()
@@ -80,10 +80,10 @@ async fn test_custom_path() {
             [extensions.jwt.config]
             url = "{JWKS_URI}"
 
-            [extensions.jwt.config.oauth]
-            path = "/custom-oauth-metadata"
+            [extensions.jwt.config.oauth.protected_resource]
+            metadata_path = "/custom-oauth-metadata"
 
-            [extensions.jwt.config.oauth.metadata]
+            [extensions.jwt.config.oauth.protected_resource.metadata]
             resource = "https://protected.example.com"
         "#})
         .build()
@@ -126,7 +126,7 @@ async fn test_jwks_uri_default() {
             [extensions.jwt.config]
             url = "{JWKS_URI}"
 
-            [extensions.jwt.config.oauth.metadata]
+            [extensions.jwt.config.oauth.protected_resource.metadata]
             resource = "https://protected.example.com"
         "#})
         .build()
@@ -154,7 +154,7 @@ async fn test_all_metadata() {
         .toml_config(formatdoc! {r#"
             [extensions.jwt.config]
             url = "{JWKS_URI}"
-            [extensions.jwt.config.oauth.metadata]
+            [extensions.jwt.config.oauth.protected_resource.metadata]
             resource = "https://protected.example.com"
             authorization_servers = ["https://auth.example.com"]
             jwks_uri = "https://auth.example.com/.well-known/jwks.json"
@@ -235,7 +235,7 @@ async fn test_metadata_with_authentication() {
             [extensions.jwt.config]
             url = "{JWKS_URI}"
 
-            [extensions.jwt.config.oauth.metadata]
+            [extensions.jwt.config.oauth.protected_resource.metadata]
             resource = "https://protected.example.com"
         "#})
         .build()

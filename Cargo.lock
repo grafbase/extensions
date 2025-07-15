@@ -2742,7 +2742,7 @@ dependencies = [
 
 [[package]]
 name = "jwt"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "base64 0.22.1",
  "duration-str",
@@ -3255,7 +3255,7 @@ dependencies = [
 
 [[package]]
 name = "oauth-protected-resource"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "grafbase-sdk",
  "insta",
