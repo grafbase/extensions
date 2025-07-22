@@ -47,7 +47,7 @@ impl<'a> Decoder<'a> {
         // We just validated the JWT token. Instead of de-serializing and re-serializing the
         // payload, we re-use the original token payload.
         let [_headers, payload, _signature] = token_str.split('.').collect::<Vec<_>>()[..] else {
-            unreachable!("Token was successfully valdiated");
+            unreachable!("Token was successfully validated");
         };
 
         Some(Ok(Token::from_bytes(
