@@ -152,7 +152,7 @@ impl ResolverExtension for RestExtension {
         let url = url.join(path).map_err(|e| format!("Could not parse URL path: {e}"))?;
 
         let mut builder = HttpRequest::builder(url, method);
-        let _ = std::mem::replace(builder.headers(), headers.into());
+        let _ = std::mem::replace(builder.headers(), headers);
         for (name, value) in &endpoint.headers {
             builder.header(name, value);
         }

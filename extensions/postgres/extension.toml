@@ -18,5 +18,5 @@ stdout = true
 stderr = true
 environment_variables = true
 
-[directives]
-resolvers = ["pgSelectOne", "pgSelectMany", "pgLookup", "pgInsertOne", "pgInsertMany", "pgUpdateOne", "pgUpdateMany", "pgDeleteOne", "pgDeleteMany"]
+[resolver]
+directives = ["pgSelectOne", "pgSelectMany", "pgLookup", "pgInsertOne", "pgInsertMany", "pgUpdateOne", "pgUpdateMany", "pgDeleteOne", "pgDeleteMany"]

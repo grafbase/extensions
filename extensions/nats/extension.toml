@@ -6,8 +6,8 @@ description = "Map NATS endpoints to GraphQL fields. Supports regular and JetStr
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/nats"
 license = "Apache-2.0"
 
-[directives]
-resolvers = [
+[resolver]
+directives = [
     "natsPublish",
     "natsSubscription",
     "natsRequest",

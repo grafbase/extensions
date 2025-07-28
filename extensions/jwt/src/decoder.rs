@@ -1,47 +1,39 @@
 use base64::Engine as _;
-use grafbase_sdk::{
-    host_io::{
-        cache::{self, CachedItem},
-        http::{self, HttpRequest},
-    },
-    types::{ErrorResponse, Token},
-};
+use grafbase_sdk::types::{ErrorResponse, Token};
 use jwt_compact::{Algorithm, AlgorithmExt, TimeOptions, UntrustedToken, jwk::JsonWebKey};
 use serde::de::DeserializeOwned;
 use std::borrow::Cow;
 
-use crate::Config;
+use crate::config::Config;
 
 pub(crate) struct Decoder<'a> {
-    config: &'a Config,
-    jwks: Option<Jwks<'static>>,
+    pub config: &'a Config,
+    pub jwks: &'a Jwks,
 }
 
 impl<'a> Decoder<'a> {
-    pub fn new(config: &'a Config) -> Self {
-        Self { config, jwks: None }
-    }
-
     pub fn decode(&mut self, token_str: &str) -> Option<Result<Token, ErrorResponse>> {
         let token = UntrustedToken::new(&token_str).ok()?;
-        let token = match self.jwks() {
-            Ok(jwks) => decode_untrusted_token(&jwks.keys, token)?,
-            Err(err) => {
-                return Some(Err(err));
-            }
-        };
+        let token = decode_untrusted_token(&self.jwks.keys, token)?;
 
-        if let Some(expected) = self.config.issuer.as_ref() {
-            if token.claims().custom.issuer.as_ref() != Some(expected) {
-                return None;
-            }
-        }
+        let has_expected_issuer = self
+            .config
+            .issuer
+            .as_ref()
+            .is_none_or(|expected| token.claims().custom.issuer.as_ref() == Some(expected));
 
-        if let Some(expected) = self.config.audience.as_ref() {
-            let aud_claims = token.claims().custom.audience.as_ref()?;
-            if aud_claims.iter().all(|claim| !expected.contains(claim)) {
-                return None;
-            }
+        let has_expected_audience = self.config.audience.as_ref().is_none_or(|expected| {
+            token
+                .claims()
+                .custom
+                .audience
+                .as_ref()
+                .is_some_and(|aud_claims| aud_claims.iter().any(|claim| expected.contains(claim)))
+        });
+
+        // Prevent timing attacks
+        if !has_expected_issuer || !has_expected_audience {
+            return None;
         }
 
         // We just validated the JWT token. Instead of de-serializing and re-serializing the
@@ -56,26 +48,11 @@ impl<'a> Decoder<'a> {
                 .expect("Token was successfully validated"),
         )))
     }
-
-    fn jwks(&mut self) -> Result<&Jwks<'static>, ErrorResponse> {
-        if self.jwks.is_none() {
-            let jwks = cache::get("jwks", || {
-                let request = HttpRequest::get(self.config.url.clone()).build();
-                let response = http::execute(request)?;
-                let jwks: Jwks = response.json()?;
-
-                Ok(CachedItem::new(jwks, Some(self.config.poll_interval)))
-            })
-            .map_err(|_| ErrorResponse::internal_server_error())?;
-            self.jwks = Some(jwks);
-        }
-        Ok(self.jwks.as_ref().unwrap())
-    }
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
-struct Jwks<'a> {
-    keys: Vec<Jwk<'a>>,
+pub struct Jwks {
+    keys: Vec<Jwk<'static>>,
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]

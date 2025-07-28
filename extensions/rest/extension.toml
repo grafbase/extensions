@@ -6,8 +6,8 @@ description = "Declarative REST resolver extension."
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/rest"
 license = "Apache-2.0"
 
-[directives]
-resolvers = ["rest"]
+[resolver]
+directives = ["rest"]
 
 [permissions]
 network = true

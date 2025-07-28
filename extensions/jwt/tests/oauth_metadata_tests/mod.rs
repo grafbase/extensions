@@ -6,15 +6,13 @@ use indoc::formatdoc;
 use reqwest::Client;
 
 fn gateway_builder() -> TestGatewayBuilder {
-    TestGateway::builder()
-        .subgraph(
-            GraphqlSubgraph::with_schema(r#"type Query { hi: String }"#).with_resolver(
-                "Query",
-                "hi",
-                String::from("hello"),
-            ),
-        )
-        .enable_networking()
+    TestGateway::builder().subgraph(
+        GraphqlSubgraph::with_schema(r#"type Query { hi: String }"#).with_resolver(
+            "Query",
+            "hi",
+            String::from("hello"),
+        ),
+    )
 }
 
 #[tokio::test]

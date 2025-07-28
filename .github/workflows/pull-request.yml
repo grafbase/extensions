@@ -55,8 +55,8 @@ jobs:
     strategy:
       matrix:
         version:
-          - gateway: "0.43.1"
-            cli: "0.99.1"
+          - gateway: "0.46.0"
+            cli: "0.101.0"
     env:
       RUSTFLAGS: -D warnings
     steps:
@@ -73,6 +73,11 @@ jobs:
 
       - name: Install Rust
         uses: ./.github/actions/install-rust
+
+      - uses: Swatinem/rust-cache@a8b36e3f740d2ae4fa6e44a424a7b296af51cbef # v2.8.0
+        with:
+          cache-workspace-crates: true
+          prefix-key: cargo-v1
 
       - name: Install Grafbase
         uses: ./.github/actions/install-grafbase

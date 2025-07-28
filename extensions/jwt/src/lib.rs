@@ -1,32 +1,45 @@
 mod config;
 mod decoder;
 
+use std::time::Instant;
+
 use config::{Config, Location};
 use decoder::Decoder;
 use grafbase_sdk::{
     AuthenticationExtension,
-    types::{
-        Configuration, Error, ErrorResponse, GatewayHeaders, HttpHeaders, OwnedHttpHeaders, PublicMetadataEndpoint,
-        Token,
+    host_io::{
+        cache::Cache,
+        http::{self, HttpRequest},
+        logger::log,
     },
+    types::{Configuration, Error, ErrorResponse, GatewayHeaders, Headers, PublicMetadataEndpoint, Token},
 };
+
+use crate::decoder::Jwks;
 
 #[derive(AuthenticationExtension)]
 struct Jwt {
     pub config: Config,
+    jwks_cache: Cache,
+    jwks: Option<(Jwks, Instant)>,
 }
 
 impl AuthenticationExtension for Jwt {
     fn new(config: Configuration) -> Result<Self, Error> {
-        let config = config.deserialize()?;
+        let config: Config = config.deserialize()?;
 
-        Ok(Self { config })
+        Ok(Self {
+            jwks_cache: Cache::builder("jwks", 1).timeout(config.poll_interval).build(),
+            jwks: None,
+            config,
+        })
     }
 
     fn authenticate(&mut self, headers: &GatewayHeaders) -> Result<Token, ErrorResponse> {
-        let mut decoder = Decoder::new(&self.config);
+        let mut decoder = self.decoder()?;
 
-        self.config
+        decoder
+            .config
             .locations
             .iter()
             .find_map(|location| match location {
@@ -49,7 +62,7 @@ impl AuthenticationExtension for Jwt {
                 }),
             })
             .unwrap_or_else(|| {
-                let mut headers = OwnedHttpHeaders::new();
+                let mut headers = Headers::new();
 
                 if let Some(metadata_endpoint) = self
                     .config
@@ -94,12 +107,49 @@ impl AuthenticationExtension for Jwt {
             ))
         })?;
 
-        let mut headers = OwnedHttpHeaders::new();
+        let mut headers = Headers::new();
         headers.append("Content-Type", "application/json");
 
         Ok(vec![
             PublicMetadataEndpoint::new(oauth.protected_resource.metadata_path.clone(), response_body)
                 .with_headers(headers),
         ])
+    }
+}
+
+impl Jwt {
+    fn decoder(&mut self) -> Result<Decoder<'_>, ErrorResponse> {
+        if self
+            .jwks
+            .as_ref()
+            .is_none_or(|(_, ts)| ts.elapsed() > self.config.poll_interval)
+        {
+            let ts = Instant::now();
+            let (jwks, bytes) = self
+                .jwks_cache
+                .get_or_insert(self.config.url.as_str(), || {
+                    let request = HttpRequest::get(self.config.url.clone()).build();
+                    let response = http::execute(request)?;
+                    let bytes = response.into_bytes();
+                    let jwks: Jwks = serde_json::from_slice(&bytes).map_err(|err| err.to_string())?;
+                    Ok((jwks, bytes))
+                })
+                .map_err(|err: Error| {
+                    log::error!("Failed to retrieve JWKS: {err}");
+                    ErrorResponse::internal_server_error()
+                })?;
+            let jwks: Jwks = match jwks {
+                Some(jwks) => jwks,
+                _ => serde_json::from_slice(&bytes).map_err(|err| {
+                    log::error!("Failed to parse JWKS: {err}");
+                    ErrorResponse::internal_server_error()
+                })?,
+            };
+            self.jwks = Some((jwks, ts));
+        }
+        Ok(Decoder {
+            config: &self.config,
+            jwks: &self.jwks.as_ref().unwrap().0,
+        })
     }
 }

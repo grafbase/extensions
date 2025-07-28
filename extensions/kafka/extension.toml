@@ -6,8 +6,8 @@ description = "Map Kafka endpoints to GraphQL fields. Supports publishing and co
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/kafka"
 license = "Apache-2.0"
 
-[directives]
-resolvers = [ "kafkaPublish", "kafkaSubscription" ]
+[resolver]
+directives = [ "kafkaPublish", "kafkaSubscription" ]
 
 [permissions]
 network = true

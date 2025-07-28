@@ -1,4 +1,4 @@
-use std::{sync::Arc, time::Duration};
+use std::{path::Path, sync::Arc, time::Duration};
 
 use chrono::Utc;
 use futures_util::{Stream, StreamExt, TryStreamExt, stream::select_all};
@@ -31,9 +31,6 @@ fn gateway_builder() -> TestGatewayBuilder {
     TestGateway::builder()
         .subgraph(subgraph_schema())
         .toml_config(toml_config())
-        .enable_networking()
-        .enable_stderr()
-        .enable_stdout()
         .log_level("info")
 }
 
@@ -168,8 +165,14 @@ fn subgraph_schema() -> String {
     schema
 }
 
-fn toml_config() -> &'static str {
-    indoc! {r#"
+fn toml_config() -> String {
+    let project_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap();
+    let path = project_dir.display();
+    indoc::formatdoc! {r#"
         [[extensions.kafka.config.endpoint]]
         bootstrap_servers = ["localhost:9092"]
 
@@ -198,7 +201,7 @@ fn toml_config() -> &'static str {
 
         [extensions.kafka.config.endpoint.tls]
         type = "custom_ca"
-        ca_path = "../../docker/kafka/config/ssl/ca-cert"
+        ca_path = "{path}/docker/kafka/config/ssl/ca-cert"
 
         [[extensions.kafka.config.endpoint]]
         name = "mtls"
@@ -206,12 +209,12 @@ fn toml_config() -> &'static str {
 
         [extensions.kafka.config.endpoint.tls]
         type = "custom_ca"
-        ca_path = "../../docker/kafka/config/ssl/ca-cert"
+        ca_path = "{path}/docker/kafka/config/ssl/ca-cert"
 
         [extensions.kafka.config.endpoint.authentication]
         type = "mtls"
-        certificate = "../../docker/kafka/config/ssl/client.crt"
-        key = "../../docker/kafka/config/ssl/client.key"
+        certificate = "{path}/docker/kafka/config/ssl/client.crt"
+        key = "{path}/docker/kafka/config/ssl/client.key"
     "#}
 }
 

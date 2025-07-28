@@ -12,5 +12,5 @@ stdout = false
 stderr = true
 environment_variables = true
 
-[directives]
-resolvers = ["snowflakeQuery"]
+[resolver]
+directives = ["snowflakeQuery"]

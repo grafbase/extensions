@@ -162,11 +162,12 @@ fn gateway_builder() -> TestGatewayBuilder {
             }
             "#,
         )
-        .enable_networking()
-        .enable_stdout()
-        .enable_stderr()
         .toml_config(
             r#"
+            [extensions.nats]
+            stdout = true
+            stderr = true
+
             [[extensions.nats.config.endpoint]]
             servers = ["nats://localhost:4222"]
 

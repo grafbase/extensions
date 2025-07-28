@@ -35,18 +35,26 @@ pub async fn admin_pool() -> &'static PgPool {
 }
 
 pub async fn admin_mtls_pool() -> &'static PgPool {
+    let project_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .unwrap()
+        .parent()
+        .unwrap();
+    let path = project_dir.display();
+
     // this is for creating/dropping databases, which _should not be done_ over pgbouncer.
-    static MTLS_ADMIN_CONNECTION_STRING: &str = concat!(
+    let mtls_admin_connection_string = [
         "postgresql://testuser@localhost:5433/postgres?",
         "sslmode=verify-full&",
-        "sslrootcert=../../docker/postgres-mtls/certs/ca.crt&",
-        "sslcert=../../docker/postgres-mtls/certs/client.crt&",
-        "sslkey=../../docker/postgres-mtls/certs/client.key",
-    );
+        &format!("sslrootcert={path}/docker/postgres-mtls/certs/ca.crt&"),
+        &format!("sslcert={path}/docker/postgres-mtls/certs/client.crt&"),
+        &format!("sslkey={path}/docker/postgres-mtls/certs/client.key"),
+    ]
+    .join("");
 
     static POOL: OnceCell<PgPool> = OnceCell::const_new();
 
-    POOL.get_or_init(|| async { PgPool::connect(MTLS_ADMIN_CONNECTION_STRING).await.unwrap() })
+    POOL.get_or_init(|| async { PgPool::connect(&mtls_admin_connection_string).await.unwrap() })
         .await
 }
 
@@ -63,14 +71,6 @@ fn random_name() -> String {
 
 // url for the engine for introspecting, querying and mutating the database.
 static BASE_CONNECTION_STRING: &str = "postgres://postgres:grafbase@localhost:5432/";
-
-static MTLS_BASE_CONNECTION_STRING: &str = concat!(
-    "postgresql://testuser@localhost:5433/?",
-    "sslmode=verify-full&",
-    "sslrootcert=../../docker/postgres-mtls/certs/ca.crt&",
-    "sslcert=../../docker/postgres-mtls/certs/client.crt&",
-    "sslkey=../../docker/postgres-mtls/certs/client.key",
-);
 
 struct Inner {
     pool: PgPool,
@@ -142,7 +142,23 @@ impl PgTestApi {
             .await
             .unwrap();
 
-        let mut url = Url::parse(MTLS_BASE_CONNECTION_STRING).unwrap();
+        let project_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap();
+        let path = project_dir.display();
+
+        let mtls_base_connection_string = [
+            "postgresql://testuser@localhost:5433/?",
+            "sslmode=verify-full&",
+            &format!("sslrootcert={path}/docker/postgres-mtls/certs/ca.crt&"),
+            &format!("sslcert={path}/docker/postgres-mtls/certs/client.crt&"),
+            &format!("sslkey={path}/docker/postgres-mtls/certs/client.key"),
+        ]
+        .join("");
+
+        let mut url = Url::parse(&mtls_base_connection_string).unwrap();
         url.set_path(&database_name);
 
         Self::new_with_connection_string(config, subgraphs, url.as_ref(), init).await
@@ -196,10 +212,6 @@ impl PgTestApi {
         }
 
         builder
-            .enable_networking()
-            .enable_stderr()
-            .enable_stdout()
-            .enable_environment_variables()
             .log_level(grafbase_sdk::test::LogLevel::Debug)
             .toml_config(&self.inner.config)
             .build()
@@ -222,10 +234,6 @@ impl PgTestApi {
         }
 
         builder
-            .enable_networking()
-            .enable_stderr()
-            .enable_stdout()
-            .enable_environment_variables()
             .log_level(grafbase_sdk::test::LogLevel::EngineDebug)
             .toml_config(&self.inner.config)
             .build()
