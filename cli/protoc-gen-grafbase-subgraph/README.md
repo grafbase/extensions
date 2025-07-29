@@ -58,7 +58,7 @@ service SearchService {
   option (grafbase.graphql.default_to_query_fields) = true;
 
   rpc Search(SearchRequest) returns (SearchResponse) {
-    option (grafbase.graphql.method_field_directives) = "@lookup";
+    option (grafbase.graphql.directives) = "@lookup";
   }
 }
 ```
@@ -83,7 +83,7 @@ service SearchService {
 import "grafbase/options.proto";
 
 message MyMessage {
-  option (grafbase.graphql.output_object_directives) = "@key(fields: \"id\")";
+  option (grafbase.graphql.object_directives) = "@key(fields: \"id\")";
 
   string id = 1 [(grafbase.graphql.output_field_directives) = "@deprecated"];
 }
