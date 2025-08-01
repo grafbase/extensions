@@ -22,7 +22,7 @@ grafbase extension install
 
 ```toml
 # grafbase.toml
-[extension.jwt.config]
+[extensions.jwt.config]
 # == Required ==
 # URL to download the JWKS for signature validation.
 url = "https://example.com/.well-known/jwks.json"

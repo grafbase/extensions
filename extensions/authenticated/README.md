@@ -6,7 +6,7 @@ Provides an `@authenticated` directive, for subgraphs, which prevents access to 
 
 ```toml
 # grafbase.toml
-[extension.authenticated]
+[extensions.authenticated]
 version = "1.0"
 ```
 

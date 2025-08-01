@@ -17,7 +17,6 @@ fn gateway_builder() -> TestGatewayBuilder {
                 String::from("hello"),
             ),
         )
-        .enable_networking()
         .toml_config(formatdoc! {r#"
             [extensions.jwt.config]
             url = "{JWKS_URI}"

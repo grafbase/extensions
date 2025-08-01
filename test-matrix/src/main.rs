@@ -24,7 +24,7 @@ fn main() -> anyhow::Result<()> {
         let cargo_toml = cargo_toml::parse(&cargo_toml)?;
 
         println!("\n** {} **", cargo_toml.name());
-        duct::cmd("grafbase", ["extension", "build", "--debug"])
+        duct::cmd("grafbase", ["extension", "build", "--scratch-dir", "../../target"])
             .dir(path)
             .run()
             .map_err(|e| anyhow::anyhow!("Failed to build extension (is grafbase in your path?): {}", e))?;

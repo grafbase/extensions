@@ -125,12 +125,7 @@ async fn get_many() {
     let mock_server = mock_server("/users", template, &[]).await;
     let subgraph = subgraph(&mock_server.uri());
 
-    let gateway = TestGateway::builder()
-        .subgraph(subgraph)
-        .enable_networking()
-        .build()
-        .await
-        .unwrap();
+    let gateway = TestGateway::builder().subgraph(subgraph).build().await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -193,7 +188,6 @@ async fn with_required_headers() {
 
     let gateway = TestGateway::builder()
         .subgraph(("test", subgraph))
-        .enable_networking()
         .toml_config(config)
         .build()
         .await
@@ -274,12 +268,7 @@ async fn static_headers() {
         uri = mock_server.uri()
     );
 
-    let gateway = TestGateway::builder()
-        .subgraph(subgraph)
-        .enable_networking()
-        .build()
-        .await
-        .unwrap();
+    let gateway = TestGateway::builder().subgraph(subgraph).build().await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -347,7 +336,6 @@ async fn headers_from_config() {
 
     let gateway = TestGateway::builder()
         .subgraph(("test", subgraph))
-        .enable_networking()
         .toml_config(
             r#"
             [extensions.rest.config.subgraphs.test]
@@ -396,7 +384,6 @@ async fn get_one() {
 
     let gateway = TestGateway::builder()
         .subgraph(subgraph(&mock_server.uri()))
-        .enable_networking()
         .build()
         .await
         .unwrap();
@@ -435,9 +422,6 @@ async fn get_one_missing() {
 
     let gateway = TestGateway::builder()
         .subgraph(subgraph(&mock_server.uri()))
-        .enable_networking()
-        .enable_stdout()
-        .enable_stderr()
         .build()
         .await
         .unwrap();
@@ -476,7 +460,6 @@ async fn get_one_nested_null() {
 
     let gateway = TestGateway::builder()
         .subgraph(subgraph(&mock_server.uri()))
-        .enable_networking()
         .build()
         .await
         .unwrap();
@@ -526,7 +509,6 @@ async fn get_some_fields() {
 
     let gateway = TestGateway::builder()
         .subgraph(subgraph(&mock_server.uri()))
-        .enable_networking()
         .build()
         .await
         .unwrap();
@@ -572,7 +554,6 @@ async fn faulty_response() {
 
     let gateway = TestGateway::builder()
         .subgraph(subgraph(&mock_server.uri()))
-        .enable_networking()
         .build()
         .await
         .unwrap();
@@ -619,12 +600,7 @@ async fn internal_server_error() {
     let mock_server = mock_server("/users", template, &[]).await;
     let subgraph = subgraph(&mock_server.uri());
 
-    let gateway = TestGateway::builder()
-        .subgraph(subgraph)
-        .enable_networking()
-        .build()
-        .await
-        .unwrap();
+    let gateway = TestGateway::builder().subgraph(subgraph).build().await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -706,12 +682,7 @@ async fn with_bad_jq() {
         }}
     "#};
 
-    let gateway = TestGateway::builder()
-        .subgraph(schema)
-        .enable_networking()
-        .build()
-        .await
-        .unwrap();
+    let gateway = TestGateway::builder().subgraph(schema).build().await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -795,12 +766,7 @@ async fn with_path_in_the_endpoint() {
         }}
     "#};
 
-    let gateway = TestGateway::builder()
-        .subgraph(schema)
-        .enable_networking()
-        .build()
-        .await
-        .unwrap();
+    let gateway = TestGateway::builder().subgraph(schema).build().await.unwrap();
 
     let query = indoc! {r#"
         query {
@@ -860,9 +826,6 @@ async fn update_user() {
 
     let gateway = TestGateway::builder()
         .subgraph(subgraph(&mock_server.uri()))
-        .enable_networking()
-        .enable_stdout()
-        .enable_stderr()
         .build()
         .await
         .unwrap();
@@ -911,7 +874,6 @@ async fn delete_user() {
 
     let gateway = TestGateway::builder()
         .subgraph(subgraph(&mock_server.uri()))
-        .enable_networking()
         .build()
         .await
         .unwrap();
@@ -967,9 +929,6 @@ async fn dynamic_post() {
 
     let gateway = TestGateway::builder()
         .subgraph(subgraph(&mock_server.uri()))
-        .enable_networking()
-        .enable_stdout()
-        .enable_stderr()
         .build()
         .await
         .unwrap();
@@ -1025,7 +984,6 @@ async fn static_post() {
 
     let gateway = TestGateway::builder()
         .subgraph(subgraph(&mock_server.uri()))
-        .enable_networking()
         .build()
         .await
         .unwrap();

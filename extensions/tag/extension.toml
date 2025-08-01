@@ -1,0 +1,7 @@
+[extension]
+name = "tag"
+version = "1.0.0"
+type = "contracts"
+description = "Build schema contracts with the @tag directive"
+repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/rest"
+license = "Apache-2.0"

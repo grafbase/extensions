@@ -83,9 +83,6 @@ async fn basic() {
             address = "http://{grpc_server_addr}"
             "#
         ))
-        .enable_networking()
-        .enable_stdout()
-        .enable_stderr()
         .build()
         .await.unwrap();
 

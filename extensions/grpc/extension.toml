@@ -12,5 +12,5 @@ stdout = false
 stderr = false
 environment_variables = false
 
-[directives]
-resolvers = ["grpcMethod"]
+[resolver]
+directives = ["grpcMethod"]
