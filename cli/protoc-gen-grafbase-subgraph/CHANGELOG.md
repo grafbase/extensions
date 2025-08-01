@@ -1,3 +1,9 @@
+## Unreleased
+
+### Fixed
+
+- In some scenarios, the plugin would panic because packages were not provided in alphabetical order. This is fixed. (https://github.com/grafbase/extensions/pull/144)
+
 ## 0.2.0 - 2025-07-24
 
 ### Added
