@@ -15,9 +15,11 @@ pub(crate) fn render_graphql_sdl(schema: &GrpcSchema, mut out: impl fmt::Write) 
     out.write_fmt(format_args!(
         "{}",
         crate::display_utils::display_fn(|f| {
-            schema_directives::render_schema_directives(schema, f)?;
+            let types_to_render = services::collect_types_to_render(schema);
 
-            let types_to_render = services::render_services(schema, f)?;
+            schema_directives::render_schema_directives(schema, &types_to_render, f)?;
+
+            services::render_services(schema, f)?;
 
             graphql_types::render_graphql_types(schema, &types_to_render, f)
         })
