@@ -11,7 +11,8 @@ use self::frozen_sorted_vec::FrozenSortedVec;
 
 #[derive(Debug, Default)]
 pub(crate) struct GrpcSchema {
-    pub(crate) packages: FrozenSortedVec<ProtoPackage>,
+    // Not sorted!
+    pub(crate) packages: Vec<ProtoPackage>,
     // Not sorted!
     pub(crate) messages: Vec<ProtoMessage>,
     pub(crate) fields: FrozenSortedVec<ProtoField>,
