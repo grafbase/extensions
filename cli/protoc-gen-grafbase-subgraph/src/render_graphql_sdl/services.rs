@@ -3,10 +3,8 @@ use crate::schema::{GraphQLOperationType, GrpcSchema, ProtoMethod, ProtoMethodId
 use std::fmt;
 
 pub(super) fn render_services(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -> Result<TypesToRender, fmt::Error> {
-    let mut types_to_render = TypesToRender::default();
-
     if schema.services.is_empty() {
-        return Ok(types_to_render);
+        return Ok(TypesToRender::default());
     }
 
     let mut query_methods = schema
@@ -27,7 +25,7 @@ pub(super) fn render_services(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -
     if query_methods.peek().is_some() {
         f.write_str("type Query {\n")?;
         for method in query_methods {
-            render_method_field(schema, &mut types_to_render, method, f)?;
+            render_method_field(schema, method, f)?;
         }
 
         f.write_str("}\n\n")?;
@@ -36,7 +34,7 @@ pub(super) fn render_services(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -
     if mutation_methods.peek().is_some() {
         f.write_str("type Mutation {\n")?;
         for method in mutation_methods {
-            render_method_field(schema, &mut types_to_render, method, f)?;
+            render_method_field(schema, method, f)?;
         }
 
         f.write_str("}\n\n")?;
@@ -45,18 +43,43 @@ pub(super) fn render_services(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -
     if subscription_methods.peek().is_some() {
         f.write_str("type Subscription {\n")?;
         for method in subscription_methods {
-            render_method_field(schema, &mut types_to_render, method, f)?;
+            render_method_field(schema, method, f)?;
         }
 
         f.write_str("}\n\n")?;
     }
 
-    Ok(types_to_render)
+    Ok(collect_types_to_render(schema))
+}
+
+pub(super) fn collect_types_to_render(schema: &GrpcSchema) -> TypesToRender {
+    let mut types_to_render = TypesToRender::default();
+
+    if schema.services.is_empty() {
+        return types_to_render;
+    }
+
+    for method in schema.iter_methods() {
+        collect_message_id_and_enum_ids_recursively(
+            schema,
+            &method.input_type,
+            &mut types_to_render.messages_to_render_as_input,
+            &mut types_to_render.enums_to_render,
+        );
+
+        collect_message_id_and_enum_ids_recursively(
+            schema,
+            &method.output_type,
+            &mut types_to_render.messages_to_render_as_output,
+            &mut types_to_render.enums_to_render,
+        );
+    }
+
+    types_to_render
 }
 
 fn render_method_field(
     schema: &GrpcSchema,
-    types_to_render: &mut TypesToRender,
     method: View<'_, ProtoMethodId, ProtoMethod>,
     f: &mut fmt::Formatter<'_>,
 ) -> fmt::Result {
@@ -86,20 +109,6 @@ fn render_method_field(
     }
 
     f.write_str("\n")?;
-
-    collect_message_id_and_enum_ids_recursively(
-        schema,
-        &method.input_type,
-        &mut types_to_render.messages_to_render_as_input,
-        &mut types_to_render.enums_to_render,
-    );
-
-    collect_message_id_and_enum_ids_recursively(
-        schema,
-        &method.output_type,
-        &mut types_to_render.messages_to_render_as_output,
-        &mut types_to_render.enums_to_render,
-    );
 
     Ok(())
 }

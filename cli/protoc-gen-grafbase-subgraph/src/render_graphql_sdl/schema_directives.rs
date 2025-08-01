@@ -1,11 +1,15 @@
 use super::*;
 
-pub(super) fn render_schema_directives(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+pub(super) fn render_schema_directives(
+    schema: &GrpcSchema,
+    types_to_render: &services::TypesToRender,
+    f: &mut fmt::Formatter<'_>,
+) -> fmt::Result {
     f.write_str("extend schema\n  @link(url: \"https://grafbase.com/extensions/grpc/0.1.2\", import: [\"@protoServices\", \"@protoEnums\", \"@protoMessages\", \"@grpcMethod\"])\n")?;
 
     render_proto_services(schema, f)?;
-    render_proto_messages(schema, f)?;
-    render_proto_enums(schema, f)?;
+    render_proto_messages(schema, types_to_render, f)?;
+    render_proto_enums(schema, types_to_render, f)?;
 
     f.write_str("\n")
 }
@@ -67,8 +71,20 @@ fn render_proto_services(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -> fmt
     Ok(())
 }
 
-fn render_proto_messages(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    if schema.messages.is_empty() {
+fn render_proto_messages(
+    schema: &GrpcSchema,
+    types_to_render: &services::TypesToRender,
+    f: &mut fmt::Formatter<'_>,
+) -> fmt::Result {
+    let mut messages_to_render = schema
+        .iter_messages()
+        .filter(|message| {
+            types_to_render.messages_to_render_as_input.contains(&message.id)
+                || types_to_render.messages_to_render_as_output.contains(&message.id)
+        })
+        .peekable();
+
+    if messages_to_render.peek().is_none() {
         return Ok(());
     }
 
@@ -78,7 +94,7 @@ fn render_proto_messages(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -> fmt
     f.write_str(INDENT)?;
     f.write_str("definitions: [\n")?;
 
-    for message in schema.iter_messages() {
+    for message in messages_to_render {
         writeln!(f, "{INDENT}{INDENT}{INDENT}{{")?;
         writeln!(f, "{INDENT}{INDENT}{INDENT}{INDENT}name: \"{}\"", message.name)?;
         writeln!(f, "{INDENT}{INDENT}{INDENT}{INDENT}fields: [")?;
@@ -123,8 +139,17 @@ fn render_proto_messages(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -> fmt
     Ok(())
 }
 
-fn render_proto_enums(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    if schema.enums.is_empty() {
+fn render_proto_enums(
+    schema: &GrpcSchema,
+    types_to_render: &services::TypesToRender,
+    f: &mut fmt::Formatter<'_>,
+) -> fmt::Result {
+    let mut enums_to_render = schema
+        .iter_enums()
+        .filter(|r#enum| types_to_render.enums_to_render.contains(&r#enum.id))
+        .peekable();
+
+    if enums_to_render.peek().is_none() {
         return Ok(());
     }
 
@@ -134,12 +159,12 @@ fn render_proto_enums(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -> fmt::R
     f.write_str(INDENT)?;
     f.write_str("definitions: [\n")?;
 
-    for enum_ in schema.iter_enums() {
+    for r#enum in enums_to_render {
         writeln!(f, "{INDENT}{INDENT}{INDENT}{{")?;
-        writeln!(f, "{INDENT}{INDENT}{INDENT}{INDENT}name: \"{}\"", enum_.name)?;
+        writeln!(f, "{INDENT}{INDENT}{INDENT}{INDENT}name: \"{}\"", r#enum.name)?;
         writeln!(f, "{INDENT}{INDENT}{INDENT}{INDENT}values: [")?;
 
-        for value in &enum_.values {
+        for value in &r#enum.values {
             writeln!(f, "{INDENT}{INDENT}{INDENT}{INDENT}{INDENT}{{")?;
             writeln!(
                 f,
