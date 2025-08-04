@@ -1,8 +1,10 @@
 ---
 source: cli/protoc-gen-grafbase-subgraph/tests/codegen_tests.rs
-expression: "fs::read_to_string(entry.path()).unwrap()"
-input_file: cli/protoc-gen-grafbase-subgraph/tests/codegen/options/inventory.proto
+expression: combined_output
+input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/inventory.proto
 ---
+#--- schema.graphql ---#
+
 extend schema
   @link(url: "https://grafbase.com/extensions/grpc/0.1.2", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
   @protoServices(
