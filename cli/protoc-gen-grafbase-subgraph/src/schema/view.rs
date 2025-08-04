@@ -2,6 +2,7 @@ use std::ops::{Deref, Index};
 
 use super::*;
 
+#[derive(Clone, Copy)]
 pub(crate) struct View<'a, Id, Record> {
     pub(crate) id: Id,
     pub(crate) record: &'a Record,

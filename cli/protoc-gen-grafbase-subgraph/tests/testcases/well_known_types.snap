@@ -6,7 +6,7 @@ input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/well_known_types.pr
 #--- schema.graphql ---#
 
 extend schema
-  @link(url: "https://grafbase.com/extensions/grpc/0.1.2", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
   @protoServices(
     definitions: [
       {

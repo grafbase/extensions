@@ -11,15 +11,23 @@ use std::{
 
 const INDENT: &str = "  ";
 
-pub(crate) fn render_graphql_sdl(schema: &GrpcSchema, mut out: impl fmt::Write) -> fmt::Result {
+pub(crate) fn render_graphql_sdl(schema: &GrpcSchema, out: impl fmt::Write) -> fmt::Result {
+    render_graphql_sdl_filtered(schema, None, out)
+}
+
+pub(crate) fn render_graphql_sdl_filtered(
+    schema: &GrpcSchema,
+    service_ids: Option<&[crate::schema::ProtoServiceId]>,
+    mut out: impl fmt::Write,
+) -> fmt::Result {
     out.write_fmt(format_args!(
         "{}",
         crate::display_utils::display_fn(|f| {
-            let types_to_render = services::collect_types_to_render(schema);
+            let types_to_render = services::collect_types_to_render_filtered(schema, service_ids);
 
-            schema_directives::render_schema_directives(schema, &types_to_render, f)?;
+            schema_directives::render_schema_directives_filtered(schema, service_ids, &types_to_render, f)?;
 
-            services::render_services(schema, f)?;
+            services::render_services_filtered(schema, service_ids, f)?;
 
             graphql_types::render_graphql_types(schema, &types_to_render, f)
         })

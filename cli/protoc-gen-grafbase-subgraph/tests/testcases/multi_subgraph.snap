@@ -1,0 +1,434 @@
+---
+source: cli/protoc-gen-grafbase-subgraph/tests/codegen_tests.rs
+expression: combined_output
+input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/multi_subgraph.proto
+---
+#--- orders.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @protoServices(
+    definitions: [
+      {
+        name: "example.OrderService"
+        methods: [
+          {
+            name: "CreateOrder"
+            inputType: ".example.CreateOrderRequest"
+            outputType: ".example.Order"
+          }
+          {
+            name: "GetOrder"
+            inputType: ".example.GetOrderRequest"
+            outputType: ".example.Order"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".example.Order"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "user_id"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "product_ids"
+            number: 3
+            repeated: true
+            type: "string"
+          }
+          {
+            name: "total"
+            number: 4
+            repeated: false
+            type: "double"
+          }
+        ]
+      }
+      {
+        name: ".example.GetOrderRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.CreateOrderRequest"
+        fields: [
+          {
+            name: "user_id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "product_ids"
+            number: 2
+            repeated: true
+            type: "string"
+          }
+        ]
+      }
+    ]
+  )
+
+type Mutation {
+  example_OrderService_CreateOrder(input: example_CreateOrderRequestInput): example_Order @grpcMethod(service: "example.OrderService", method: "CreateOrder")
+  example_OrderService_GetOrder(input: example_GetOrderRequestInput): example_Order @grpcMethod(service: "example.OrderService", method: "GetOrder")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+input example_GetOrderRequestInput {
+  id: String
+}
+
+input example_CreateOrderRequestInput {
+  user_id: String
+  product_ids: [String!]
+}
+
+type example_Order {
+  id: String
+  user_id: String
+  product_ids: [String!]
+  total: Float
+}
+
+#--- products.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @protoServices(
+    definitions: [
+      {
+        name: "example.ProductService"
+        methods: [
+          {
+            name: "GetProduct"
+            inputType: ".example.GetProductRequest"
+            outputType: ".example.Product"
+          }
+          {
+            name: "CreateProduct"
+            inputType: ".example.CreateProductRequest"
+            outputType: ".example.Product"
+          }
+          {
+            name: "ListProducts"
+            inputType: ".example.ListProductsRequest"
+            outputType: ".example.ListProductsResponse"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".example.Product"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "name"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "price"
+            number: 3
+            repeated: false
+            type: "double"
+          }
+          {
+            name: "owner_id"
+            number: 4
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.GetProductRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.CreateProductRequest"
+        fields: [
+          {
+            name: "name"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "price"
+            number: 2
+            repeated: false
+            type: "double"
+          }
+          {
+            name: "owner_id"
+            number: 3
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.ListProductsRequest"
+        fields: [
+          {
+            name: "limit"
+            number: 1
+            repeated: false
+            type: "int32"
+          }
+          {
+            name: "cursor"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.ListProductsResponse"
+        fields: [
+          {
+            name: "products"
+            number: 1
+            repeated: true
+            type: ".example.Product"
+          }
+          {
+            name: "next_cursor"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+    ]
+  )
+
+type Mutation {
+  example_ProductService_GetProduct(input: example_GetProductRequestInput): example_Product @grpcMethod(service: "example.ProductService", method: "GetProduct")
+  example_ProductService_CreateProduct(input: example_CreateProductRequestInput): example_Product @grpcMethod(service: "example.ProductService", method: "CreateProduct")
+  example_ProductService_ListProducts(input: example_ListProductsRequestInput): example_ListProductsResponse @grpcMethod(service: "example.ProductService", method: "ListProducts")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+input example_GetProductRequestInput {
+  id: String
+}
+
+input example_CreateProductRequestInput {
+  name: String
+  price: Float
+  owner_id: String
+}
+
+input example_ListProductsRequestInput {
+  limit: Int
+  cursor: String
+}
+
+type example_Product {
+  id: String
+  name: String
+  price: Float
+  owner_id: String
+}
+
+type example_ListProductsResponse {
+  products: [example_Product!]
+  next_cursor: String
+}
+
+#--- users.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @protoServices(
+    definitions: [
+      {
+        name: "example.UserService"
+        methods: [
+          {
+            name: "GetUser"
+            inputType: ".example.GetUserRequest"
+            outputType: ".example.User"
+          }
+          {
+            name: "CreateUser"
+            inputType: ".example.CreateUserRequest"
+            outputType: ".example.User"
+          }
+          {
+            name: "ListUsers"
+            inputType: ".example.ListUsersRequest"
+            outputType: ".example.ListUsersResponse"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".example.User"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "name"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "email"
+            number: 3
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.GetUserRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.CreateUserRequest"
+        fields: [
+          {
+            name: "name"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "email"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.ListUsersRequest"
+        fields: [
+          {
+            name: "limit"
+            number: 1
+            repeated: false
+            type: "int32"
+          }
+          {
+            name: "cursor"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.ListUsersResponse"
+        fields: [
+          {
+            name: "users"
+            number: 1
+            repeated: true
+            type: ".example.User"
+          }
+          {
+            name: "next_cursor"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+    ]
+  )
+
+type Mutation {
+  example_UserService_GetUser(input: example_GetUserRequestInput): example_User @grpcMethod(service: "example.UserService", method: "GetUser")
+  example_UserService_CreateUser(input: example_CreateUserRequestInput): example_User @grpcMethod(service: "example.UserService", method: "CreateUser")
+  example_UserService_ListUsers(input: example_ListUsersRequestInput): example_ListUsersResponse @grpcMethod(service: "example.UserService", method: "ListUsers")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+input example_GetUserRequestInput {
+  id: String
+}
+
+input example_CreateUserRequestInput {
+  name: String
+  email: String
+}
+
+input example_ListUsersRequestInput {
+  limit: Int
+  cursor: String
+}
+
+"""
+Shared types
+"""
+type example_User {
+  id: String
+  name: String
+  email: String
+}
+
+type example_ListUsersResponse {
+  users: [example_User!]
+  next_cursor: String
+}

@@ -1,0 +1,93 @@
+//!file:grafbase/options.proto
+syntax = "proto2";
+
+import "google/protobuf/descriptor.proto";
+
+package grafbase.graphql;
+
+extend google.protobuf.MessageOptions {
+  optional string object_directives = 58301;
+  optional string input_object_directives = 58302;
+}
+
+extend google.protobuf.FieldOptions {
+  optional string output_field_directives = 58301;
+  optional string input_field_directives = 58302;
+}
+
+extend google.protobuf.EnumOptions {
+  optional string enum_directives = 58301;
+}
+
+extend google.protobuf.EnumValueOptions {
+  optional string enum_value_directives = 58301;
+}
+
+extend google.protobuf.ServiceOptions {
+  optional bool default_to_query_fields = 58301;
+  optional bool default_to_mutation_fields = 58302;
+  optional string subgraph_name = 58303;
+}
+
+extend google.protobuf.MethodOptions {
+  optional string directives = 58301;
+  optional bool is_query = 58302;
+  optional bool is_mutation = 58303;
+}
+
+//!file:shared_subgraphs.proto
+syntax = "proto3";
+
+import "grafbase/options.proto";
+
+package example;
+
+// Two services mapping to "accounts" subgraph
+service UserService {
+  option (grafbase.graphql.subgraph_name) = "accounts";
+  
+  rpc GetUser(GetUserRequest) returns (User);
+}
+
+service AuthService {
+  option (grafbase.graphql.subgraph_name) = "accounts";
+  
+  rpc Login(LoginRequest) returns (LoginResponse);
+}
+
+// One service mapping to "products" subgraph
+service ProductService {
+  option (grafbase.graphql.subgraph_name) = "products";
+  
+  rpc GetProduct(GetProductRequest) returns (Product);
+}
+
+// Request/Response messages
+message GetUserRequest {
+  string id = 1;
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string token = 1;
+  User user = 2;
+}
+
+message GetProductRequest {
+  string id = 1;
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  double price = 3;
+}

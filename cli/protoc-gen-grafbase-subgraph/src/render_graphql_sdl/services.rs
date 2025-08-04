@@ -2,30 +2,43 @@ use super::*;
 use crate::schema::{GraphQLOperationType, GrpcSchema, ProtoMethod, ProtoMethodId, View};
 use std::fmt;
 
-pub(super) fn render_services(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -> Result<TypesToRender, fmt::Error> {
+pub(super) fn render_services_filtered(
+    schema: &GrpcSchema,
+    service_ids: Option<&[crate::schema::ProtoServiceId]>,
+    f: &mut fmt::Formatter<'_>,
+) -> fmt::Result {
     if schema.services.is_empty() {
-        return Ok(TypesToRender::default());
+        return Ok(());
     }
 
-    let mut query_methods = schema
-        .iter_methods()
+    // Collect methods based on service filter
+    let methods: Vec<_> = match service_ids {
+        Some(ids) => schema
+            .iter_methods()
+            .filter(|method| ids.contains(&method.service_id))
+            .collect(),
+        None => schema.iter_methods().collect(),
+    };
+
+    let mut query_methods = methods
+        .iter()
         .filter(|method| method.graphql_operation_type(schema) == GraphQLOperationType::Query)
         .peekable();
 
-    let mut mutation_methods = schema
-        .iter_methods()
+    let mut mutation_methods = methods
+        .iter()
         .filter(|method| method.graphql_operation_type(schema) == GraphQLOperationType::Mutation)
         .peekable();
 
-    let mut subscription_methods = schema
-        .iter_methods()
+    let mut subscription_methods = methods
+        .iter()
         .filter(|method| method.graphql_operation_type(schema) == GraphQLOperationType::Subscription)
         .peekable();
 
     if query_methods.peek().is_some() {
         f.write_str("type Query {\n")?;
         for method in query_methods {
-            render_method_field(schema, method, f)?;
+            render_method_field(schema, View::new(method.id, method.record), f)?;
         }
 
         f.write_str("}\n\n")?;
@@ -34,7 +47,7 @@ pub(super) fn render_services(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -
     if mutation_methods.peek().is_some() {
         f.write_str("type Mutation {\n")?;
         for method in mutation_methods {
-            render_method_field(schema, method, f)?;
+            render_method_field(schema, View::new(method.id, method.record), f)?;
         }
 
         f.write_str("}\n\n")?;
@@ -43,23 +56,35 @@ pub(super) fn render_services(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -
     if subscription_methods.peek().is_some() {
         f.write_str("type Subscription {\n")?;
         for method in subscription_methods {
-            render_method_field(schema, method, f)?;
+            render_method_field(schema, View::new(method.id, method.record), f)?;
         }
 
         f.write_str("}\n\n")?;
     }
 
-    Ok(collect_types_to_render(schema))
+    Ok(())
 }
 
-pub(super) fn collect_types_to_render(schema: &GrpcSchema) -> TypesToRender {
+pub(super) fn collect_types_to_render_filtered(
+    schema: &GrpcSchema,
+    service_ids: Option<&[crate::schema::ProtoServiceId]>,
+) -> TypesToRender {
     let mut types_to_render = TypesToRender::default();
 
     if schema.services.is_empty() {
         return types_to_render;
     }
 
-    for method in schema.iter_methods() {
+    let methods_iter: Box<dyn Iterator<Item = _>> = match service_ids {
+        Some(ids) => Box::new(
+            schema
+                .iter_methods()
+                .filter(move |method| ids.contains(&method.service_id)),
+        ),
+        None => Box::new(schema.iter_methods()),
+    };
+
+    for method in methods_iter {
         collect_message_id_and_enum_ids_recursively(
             schema,
             &method.input_type,

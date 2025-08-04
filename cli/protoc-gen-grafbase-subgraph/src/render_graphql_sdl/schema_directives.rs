@@ -1,21 +1,35 @@
 use super::*;
 
-pub(super) fn render_schema_directives(
+pub(super) fn render_schema_directives_filtered(
     schema: &GrpcSchema,
+    service_ids: Option<&[crate::schema::ProtoServiceId]>,
     types_to_render: &services::TypesToRender,
     f: &mut fmt::Formatter<'_>,
 ) -> fmt::Result {
-    f.write_str("extend schema\n  @link(url: \"https://grafbase.com/extensions/grpc/0.1.2\", import: [\"@protoServices\", \"@protoEnums\", \"@protoMessages\", \"@grpcMethod\"])\n")?;
+    f.write_str("extend schema\n  @link(url: \"https://grafbase.com/extensions/grpc/0.2.0\", import: [\"@protoServices\", \"@protoEnums\", \"@protoMessages\", \"@grpcMethod\"])\n")?;
 
-    render_proto_services(schema, f)?;
+    render_proto_services_filtered(schema, service_ids, f)?;
     render_proto_messages(schema, types_to_render, f)?;
     render_proto_enums(schema, types_to_render, f)?;
 
     f.write_str("\n")
 }
 
-fn render_proto_services(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    if schema.services.is_empty() {
+fn render_proto_services_filtered(
+    schema: &GrpcSchema,
+    service_ids: Option<&[crate::schema::ProtoServiceId]>,
+    f: &mut fmt::Formatter<'_>,
+) -> fmt::Result {
+    let services_to_render: Vec<_> = if let Some(ids) = service_ids {
+        schema
+            .iter_services()
+            .filter(|service| ids.contains(&service.id))
+            .collect()
+    } else {
+        schema.iter_services().collect()
+    };
+
+    if services_to_render.is_empty() {
         return Ok(());
     }
 
@@ -25,7 +39,7 @@ fn render_proto_services(schema: &GrpcSchema, f: &mut fmt::Formatter<'_>) -> fmt
     f.write_str(INDENT)?;
     f.write_str("definitions: [\n")?;
 
-    for service in schema.iter_services() {
+    for service in services_to_render {
         writeln!(f, "{INDENT}{INDENT}{INDENT}{{")?;
         writeln!(f, "{INDENT}{INDENT}{INDENT}{INDENT}name: \"{}\"", service.name)?;
         writeln!(f, "{INDENT}{INDENT}{INDENT}{INDENT}methods: [")?;

@@ -1,0 +1,203 @@
+---
+source: cli/protoc-gen-grafbase-subgraph/tests/codegen_tests.rs
+expression: combined_output
+input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/shared_subgraphs.proto
+---
+#--- accounts.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @protoServices(
+    definitions: [
+      {
+        name: "example.UserService"
+        methods: [
+          {
+            name: "GetUser"
+            inputType: ".example.GetUserRequest"
+            outputType: ".example.User"
+          }
+        ]
+      }
+      {
+        name: "example.AuthService"
+        methods: [
+          {
+            name: "Login"
+            inputType: ".example.LoginRequest"
+            outputType: ".example.LoginResponse"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".example.GetUserRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.User"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "name"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.LoginRequest"
+        fields: [
+          {
+            name: "username"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "password"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.LoginResponse"
+        fields: [
+          {
+            name: "token"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "user"
+            number: 2
+            repeated: false
+            type: ".example.User"
+          }
+        ]
+      }
+    ]
+  )
+
+type Mutation {
+  example_UserService_GetUser(input: example_GetUserRequestInput): example_User @grpcMethod(service: "example.UserService", method: "GetUser")
+  example_AuthService_Login(input: example_LoginRequestInput): example_LoginResponse @grpcMethod(service: "example.AuthService", method: "Login")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+"""
+Request/Response messages
+"""
+input example_GetUserRequestInput {
+  id: String
+}
+
+input example_LoginRequestInput {
+  username: String
+  password: String
+}
+
+type example_User {
+  id: String
+  name: String
+}
+
+type example_LoginResponse {
+  token: String
+  user: example_User
+}
+
+#--- products.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @protoServices(
+    definitions: [
+      {
+        name: "example.ProductService"
+        methods: [
+          {
+            name: "GetProduct"
+            inputType: ".example.GetProductRequest"
+            outputType: ".example.Product"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".example.GetProductRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".example.Product"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "name"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "price"
+            number: 3
+            repeated: false
+            type: "double"
+          }
+        ]
+      }
+    ]
+  )
+
+type Mutation {
+  example_ProductService_GetProduct(input: example_GetProductRequestInput): example_Product @grpcMethod(service: "example.ProductService", method: "GetProduct")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+input example_GetProductRequestInput {
+  id: String
+}
+
+type example_Product {
+  id: String
+  name: String
+  price: Float
+}

@@ -130,6 +130,11 @@ fn codegen_tests() {
                 }
             }
 
+            // Debug: print what files were generated
+            if test_name.contains("multi") {
+                eprintln!("Generated files for {}: {:?}", test_name, graphql_files.keys().collect::<Vec<_>>());
+            }
+
             // Concatenate all files in deterministic order
             let mut combined_output = String::new();
             for (filename, content) in graphql_files {

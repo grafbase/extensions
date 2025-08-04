@@ -74,3 +74,16 @@ message Bird {
   uint32 average_lifespan_years = 10;
   repeated string conservation_status = 11;
 }
+
+service BirdService {
+  rpc GetBirds(GetBirdsRequest) returns (GetBirdsResponse);
+}
+
+message GetBirdsRequest {
+  string name = 1;
+  string scientific_name = 2;
+}
+
+message GetBirdsResponse {
+  repeated Bird birds = 1;
+}
