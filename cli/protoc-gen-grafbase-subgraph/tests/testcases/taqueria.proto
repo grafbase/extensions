@@ -1,3 +1,4 @@
+//!file:tacotruck.proto
 syntax = "proto3";
 
 package taqueria;
