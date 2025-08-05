@@ -235,7 +235,7 @@ jobs:
         run: mkdir -p flat_artifacts
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: artifacts
 
