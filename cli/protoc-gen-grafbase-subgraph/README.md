@@ -97,6 +97,49 @@ enum Color {
 }
 ```
 
+### Mapping specific services to different subgraphs
+
+By default, the plugin generates a single `schema.graphql` file containing all services. However, you can map different services to different subgraph files using the `subgraph_name` option:
+
+```protobuf
+import "grafbase/options.proto";
+
+service UserService {
+  option (grafbase.graphql.subgraph_name) = "users";
+
+  rpc GetUser(GetUserRequest) returns (User);
+  rpc CreateUser(CreateUserRequest) returns (User);
+}
+
+service ProductService {
+  option (grafbase.graphql.subgraph_name) = "products";
+
+  rpc GetProduct(GetProductRequest) returns (Product);
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+}
+
+service OrderService {
+  option (grafbase.graphql.subgraph_name) = "orders";
+
+  rpc CreateOrder(CreateOrderRequest) returns (Order);
+}
+```
+
+This will generate three files:
+- `users.graphql` - Contains only the UserService and its related types
+- `products.graphql` - Contains only the ProductService and its related types
+- `orders.graphql` - Contains only the OrderService and its related types
+
+#### Multi-file mode behavior
+
+- **Automatic mode detection**: As soon as any service has a `subgraph_name` option, the plugin switches to multi-file mode
+- **Service filtering**: Each generated file only includes the services mapped to that subgraph
+- **Type filtering**: Only types actually used by the services in a subgraph are included in that file
+- **Shared subgraphs**: Multiple services can map to the same subgraph by using the same `subgraph_name`
+- **Validation**: Subgraph names must match the pattern `[a-zA-Z][a-zA-Z0-9-]*`
+- **Backward compatibility**: If no services have `subgraph_name`, the default single `schema.graphql` is generated
+- **Services without subgraph_name**: In multi-file mode, services without a `subgraph_name` are ignored
+
 ## Limitations
 
 - Methods with client streaming are supported, but only one message can be sent from the client side.

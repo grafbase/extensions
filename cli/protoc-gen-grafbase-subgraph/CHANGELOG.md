@@ -1,5 +1,17 @@
 ## Unreleased
 
+### Added
+
+- **Multiple subgraphs support** added. Support for generating multiple GraphQL files based on service annotations:
+
+  - Services can now have a `subgraph_name` option that maps them to different subgraph files
+  - When any service has a `subgraph_name`, the tool automatically switches to multi-file mode
+  - Generated files are named `<subgraph_name>.graphql` instead of the default `schema.graphql`
+  - Each subgraph file only includes the services and types relevant to that specific subgraph
+  - Multiple services can map to the same subgraph
+  - Subgraph names must match the pattern `[a-zA-Z][a-zA-Z0-9-]*`
+  - Services without `subgraph_name` in multi-file mode are ignored without warning
+
 ### Fixed
 
 - In some scenarios, the plugin would panic because packages were not provided in alphabetical order. This is fixed. (https://github.com/grafbase/extensions/pull/144)

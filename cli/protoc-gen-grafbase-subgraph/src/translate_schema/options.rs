@@ -8,7 +8,8 @@ pub(super) const ENUM_DIRECTIVES: u32 = 58301;
 pub(super) const ENUM_VALUE_DIRECTIVES: u32 = 58301;
 
 pub(super) const DEFAULT_TO_QUERY_FIELDS: u32 = 58301;
-pub(super) const DEFAULT_TO_MUTATION_FIELDS: u32 = 58301;
+pub(super) const DEFAULT_TO_MUTATION_FIELDS: u32 = 58302;
+pub(super) const SUBGRAPH_NAME: u32 = 58303;
 
 pub(super) const DIRECTIVES: u32 = 58301;
 pub(super) const IS_QUERY: u32 = 58302;

@@ -1,3 +1,4 @@
+//!file:grafbase/options.proto
 syntax = "proto2";
 
 import "google/protobuf/descriptor.proto";
@@ -32,4 +33,30 @@ extend google.protobuf.MethodOptions {
   optional string directives = 58301;
   optional bool is_query = 58302;
   optional bool is_mutation = 58303;
+}
+
+//!file:no_services.proto
+syntax = "proto3";
+
+import "grafbase/options.proto";
+
+package example;
+
+// Just messages and enums, no services
+message User {
+  string id = 1;
+  string name = 2;
+  UserStatus status = 3;
+}
+
+message Product {
+  string id = 1;
+  string name = 2;
+  double price = 3;
+}
+
+enum UserStatus {
+  UNKNOWN = 0;
+  ACTIVE = 1;
+  INACTIVE = 2;
 }
