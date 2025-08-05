@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "grafbase/options.proto";
+
+package test.composite;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  option (grafbase.graphql.derive) = {
+    entity: "CustomerAddress",
+    field: "delivery_address",
+    is: "{ customerId: customer_id addressId: address_id }"
+  };
+
+  string id = 1;
+  string description = 2;
+
+  // Composite key reference to CustomerAddress entity
+  string customer_id = 3;
+  string address_id = 4;
+
+  // This creates a reference using both fields
+  string dummy_composite = 5;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}

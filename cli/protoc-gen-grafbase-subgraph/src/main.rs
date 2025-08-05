@@ -1,4 +1,5 @@
 mod display_utils;
+mod options_proto;
 mod render_graphql_sdl;
 mod schema;
 mod translate_schema;
@@ -70,7 +71,8 @@ fn generate(raw_request: &[u8]) -> CodeGeneratorResponse {
         // Generate a file for each subgraph
         for (subgraph_name, service_ids) in services_by_subgraph {
             let mut graphql_schema = String::new();
-            render_graphql_sdl_filtered(&translated_schema, Some(&service_ids), &mut graphql_schema).unwrap();
+            render_graphql_sdl_filtered(&translated_schema, Some(&service_ids), &mut graphql_schema)
+                .expect("Failed to render GraphQL schema");
 
             let mut file = File::new();
             file.set_name(format!("{}.graphql", subgraph_name));
@@ -80,7 +82,7 @@ fn generate(raw_request: &[u8]) -> CodeGeneratorResponse {
     } else {
         // Single-file mode: generate schema.graphql
         let mut graphql_schema = String::new();
-        render_graphql_sdl(&translated_schema, &mut graphql_schema).unwrap();
+        render_graphql_sdl(&translated_schema, &mut graphql_schema).expect("Failed to render GraphQL schema");
 
         let mut file = File::new();
         file.set_name("schema.graphql".to_owned());

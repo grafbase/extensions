@@ -3,7 +3,10 @@ use std::{
     str::FromStr,
 };
 
-use crate::display_utils::{self, display_fn, grpc_path_to_graphql_name};
+use crate::{
+    display_utils::{self, display_fn, grpc_path_to_graphql_name},
+    translate_schema::derive::SimpleIs,
+};
 
 use super::{Parent, ids::*};
 
@@ -21,6 +24,7 @@ pub(crate) struct ProtoMessage {
     pub(crate) description: Option<String>,
     pub(crate) input_object_directives: Option<String>,
     pub(crate) object_directives: Option<String>,
+    pub(crate) derives: Vec<CompositeSchemaEntity>,
 }
 
 impl ProtoMessage {
@@ -34,6 +38,13 @@ impl ProtoMessage {
             f.write_str("Input")
         })
     }
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub(crate) struct CompositeSchemaEntity {
+    pub(crate) entity: String,
+    pub(crate) field: Option<String>,
+    pub(crate) is: Option<SimpleIs>,
 }
 
 #[derive(Debug, PartialEq)]

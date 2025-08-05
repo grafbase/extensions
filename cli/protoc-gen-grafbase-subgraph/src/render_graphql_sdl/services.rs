@@ -121,7 +121,7 @@ fn render_method_field(
 
     f.write_str("): ")?;
 
-    render_output_field_type(schema, &method.output_type, false, f)?;
+    render_output_field_type(schema, &method.output_type, false, true, f)?;
 
     write!(
         f,

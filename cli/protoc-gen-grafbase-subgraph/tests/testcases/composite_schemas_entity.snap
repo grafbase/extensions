@@ -1,0 +1,236 @@
+---
+source: cli/protoc-gen-grafbase-subgraph/tests/codegen_tests.rs
+expression: combined_output
+input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/composite_schemas_entity.proto
+---
+#--- schema.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @protoServices(
+    definitions: [
+      {
+        name: "test.composite.ProductService"
+        methods: [
+          {
+            name: "GetProduct"
+            inputType: ".test.composite.GetProductRequest"
+            outputType: ".test.composite.Product"
+          }
+          {
+            name: "CreateProduct"
+            inputType: ".test.composite.CreateProductRequest"
+            outputType: ".test.composite.Product"
+          }
+          {
+            name: "ListProducts"
+            inputType: ".test.composite.ListProductsRequest"
+            outputType: ".test.composite.ListProductsResponse"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".test.composite.Product"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "name"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "description"
+            number: 3
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "user_id"
+            number: 4
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "owner_id"
+            number: 5
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "category_id"
+            number: 6
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "shop"
+            number: 7
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "store_id"
+            number: 8
+            repeated: false
+            type: "int32"
+          }
+        ]
+      }
+      {
+        name: ".test.composite.GetProductRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.composite.CreateProductRequest"
+        fields: [
+          {
+            name: "name"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "description"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "user_id"
+            number: 3
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "owner_id"
+            number: 4
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "category_id"
+            number: 5
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.composite.ListProductsRequest"
+        fields: [
+          {
+            name: "limit"
+            number: 1
+            repeated: false
+            type: "int32"
+          }
+          {
+            name: "cursor"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.composite.ListProductsResponse"
+        fields: [
+          {
+            name: "products"
+            number: 1
+            repeated: true
+            type: ".test.composite.Product"
+          }
+          {
+            name: "next_cursor"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+    ]
+  )
+
+type Mutation {
+  test_composite_ProductService_GetProduct(input: test_composite_GetProductRequestInput): test_composite_Product @grpcMethod(service: "test.composite.ProductService", method: "GetProduct")
+  test_composite_ProductService_CreateProduct(input: test_composite_CreateProductRequestInput): test_composite_Product @grpcMethod(service: "test.composite.ProductService", method: "CreateProduct")
+  test_composite_ProductService_ListProducts(input: test_composite_ListProductsRequestInput): test_composite_ListProductsResponse @grpcMethod(service: "test.composite.ProductService", method: "ListProducts")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+input test_composite_GetProductRequestInput {
+  id: String
+}
+
+input test_composite_CreateProductRequestInput {
+  name: String
+  description: String
+  user_id: String
+  owner_id: String
+  category_id: String
+}
+
+input test_composite_ListProductsRequestInput {
+  limit: Int
+  cursor: String
+}
+
+"""
+Test messages with composite schema entities
+"""
+type test_composite_Product {
+  id: String
+  name: String
+  description: String
+"""
+Basic usage - entity User with field id
+"""
+  user_id: String
+"""
+With custom relation field name - these won't generate derive fields
+"""
+  owner_id: String
+  category_id: String
+  shop: String
+  store_id: Int
+  user: User @derive @is(field: "{ id: user_id }")
+  category: Category @derive @is(field: "{ categoryId: category_id }")
+  shop_ref: Shop @derive @is(field: "{ slug: shop }")
+}
+
+type test_composite_ListProductsResponse {
+  products: [test_composite_Product!]
+  next_cursor: String
+}
+
+type Category @key(fields: "categoryId") {
+  categoryId: String
+}
+
+type Shop @key(fields: "slug") {
+  slug: String
+}
+
+type User @key(fields: "id") {
+  id: String
+}

@@ -2,6 +2,17 @@
 
 ### Added
 
+- **Input argument directives** added. You can now add GraphQL directives to RPC method input arguments using the `input_argument_directives` option on methods.
+
+- **Composite schema entity references with @derive** added. You can now create federation-style entity references using the `derive` option on messages:
+  - Use `option (grafbase.graphql.derive) = {entity: "User", is: "{ id: user_id }"};` on fields
+  - Automatically generates reference fields with `@derive` and `@is` directives
+  - Creates stub entity types with `@key` directives if the type is not already defined
+  - Supports custom relation field names with the `field` parameter
+  - The `is` parameter defines the field mapping using format `"{ <entity_key_field>: <proto_field> }"`
+  - The `@is` directive uses the value from the `is` parameter directly
+  - Enables cross-subgraph entity references in federated schemas
+
 - **Multiple subgraphs support** added. Support for generating multiple GraphQL files based on service annotations:
 
   - Services can now have a `subgraph_name` option that maps them to different subgraph files

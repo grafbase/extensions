@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+import "grafbase/options.proto";
+
+package test.composite;
+
+service ProductService {
+  rpc GetProduct(GetProductRequest) returns (Product);
+  rpc CreateProduct(CreateProductRequest) returns (Product);
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+}
+
+// Test messages with composite schema entities
+message Product {
+  option (grafbase.graphql.derive) = {entity: "User", is: "{ id: user_id }"};
+  option (grafbase.graphql.derive) = {entity: "Category", is: "{ categoryId: category_id }"};
+  option (grafbase.graphql.derive) = {entity: "Shop", field: "shop_ref", is: "{ slug: shop }"};
+
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  // Basic usage - entity User with field id
+  string user_id = 4;
+  // With custom relation field name - these won't generate derive fields
+  string owner_id = 5;
+  string category_id = 6;
+  string shop = 7;
+  int32 store_id = 8;
+}
+
+message Review {
+  option (grafbase.graphql.derive) = {entity: "Product", is: "{ id: product_id }"};
+
+  string id = 1;
+  string content = 2;
+  // Test multiple references to same entity
+  string product_id = 3;
+  string reviewer_id = 4;
+}
+
+message GetProductRequest {
+  string id = 1;
+}
+
+message CreateProductRequest {
+  string name = 1;
+  string description = 2;
+  string user_id = 3;
+  string owner_id = 4;
+  string category_id = 5;
+}
+
+message ListProductsRequest {
+  int32 limit = 1;
+  string cursor = 2;
+}
+
+message ListProductsResponse {
+  repeated Product products = 1;
+  string next_cursor = 2;
+}

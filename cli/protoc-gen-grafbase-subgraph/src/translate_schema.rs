@@ -1,3 +1,4 @@
+pub(crate) mod derive;
 mod options;
 
 use self::options::*;
@@ -236,6 +237,7 @@ fn translate_message(
         description: location_to_description(location, source_code_info),
         input_object_directives: None,
         object_directives: None,
+        derives: Vec::new(),
     };
 
     extract_message_graphql_directives_from_options(message, &mut translated_message);
@@ -400,6 +402,41 @@ fn extract_message_graphql_directives_from_options(message: &DescriptorProto, tr
 
     translated_message.object_directives = graphql_output_object_directives;
     translated_message.input_object_directives = graphql_input_object_directives;
+
+    if let Some(options) = message.options.as_ref() {
+        for (field_number, value) in options.special_fields.unknown_fields().iter() {
+            if field_number == DERIVE {
+                if let protobuf::UnknownValueRef::LengthDelimited(bytes) = value {
+                    use protobuf::Message;
+                    if let Ok(entity_proto) =
+                        crate::options_proto::options::CompositeSchemaEntity::parse_from_bytes(bytes)
+                    {
+                        if entity_proto.has_entity() {
+                            translated_message.derives.push(crate::schema::CompositeSchemaEntity {
+                                entity: entity_proto.entity().to_owned(),
+                                field: if entity_proto.has_field() {
+                                    Some(entity_proto.field().to_owned())
+                                } else {
+                                    None
+                                },
+                                is: if entity_proto.has_is() {
+                                    match derive::extract_is(entity_proto.is()) {
+                                        Ok(is) => Some(is),
+                                        Err(err) => {
+                                            eprintln!("Error reading derive.is at {}: {err}", message.name());
+                                            None
+                                        }
+                                    }
+                                } else {
+                                    None
+                                },
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 fn extract_field_graphql_directives_from_options(

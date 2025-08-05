@@ -1,0 +1,97 @@
+---
+source: cli/protoc-gen-grafbase-subgraph/tests/codegen_tests.rs
+expression: combined_output
+input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/composite_schemas_entity_message_level.proto
+---
+#--- schema.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @protoServices(
+    definitions: [
+      {
+        name: "test.composite.OrderService"
+        methods: [
+          {
+            name: "GetOrder"
+            inputType: ".test.composite.GetOrderRequest"
+            outputType: ".test.composite.Order"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".test.composite.Order"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "description"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "customer_id"
+            number: 3
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "address_id"
+            number: 4
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.composite.GetOrderRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+    ]
+  )
+
+type Mutation {
+  test_composite_OrderService_GetOrder(input: test_composite_GetOrderRequestInput): test_composite_Order @grpcMethod(service: "test.composite.OrderService", method: "GetOrder")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+input test_composite_GetOrderRequestInput {
+  id: String
+}
+
+"""
+Test message-level composite schema entity with composite key
+"""
+type test_composite_Order {
+  id: String
+  description: String
+"""
+Composite key reference to CustomerAddress entity
+"""
+  customer_id: String
+  address_id: String
+  delivery_address: CustomerAddress @derive @is(field: "{ customerId: customer_id, addressId: address_id }")
+}
+
+type CustomerAddress @key(fields: "customerId addressId") {
+  customerId: String
+  addressId: String
+}
