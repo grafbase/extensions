@@ -62,6 +62,7 @@ pub(crate) struct ProtoService {
     pub(crate) default_to_query_fields: bool,
     pub(crate) default_to_mutation_fields: bool,
     pub(crate) subgraph_name: Option<String>,
+    pub(crate) schema_directives: Option<String>,
 }
 
 impl ProtoService {

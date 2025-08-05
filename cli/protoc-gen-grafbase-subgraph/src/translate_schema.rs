@@ -123,6 +123,7 @@ fn translate_service(
         default_to_query_fields: false,
         default_to_mutation_fields: false,
         subgraph_name: None,
+        schema_directives: None,
     };
 
     extract_service_graphql_options_from_options(service, &mut proto_service);
@@ -491,9 +492,20 @@ fn extract_service_graphql_options_from_options(service: &ServiceDescriptorProto
             _ => None,
         });
 
+    let schema_directives = service
+        .options
+        .special_fields
+        .unknown_fields()
+        .get(SCHEMA_DIRECTIVES)
+        .and_then(|unknown_value_ref| match unknown_value_ref {
+            protobuf::UnknownValueRef::LengthDelimited(items) => Some(str::from_utf8(items).unwrap().to_owned()),
+            _ => None,
+        });
+
     proto_service.default_to_query_fields = graphql_default_to_query_fields;
     proto_service.default_to_mutation_fields = graphql_default_to_mutation_fields;
     proto_service.subgraph_name = subgraph_name;
+    proto_service.schema_directives = schema_directives;
 }
 
 fn extract_method_graphql_options_from_options(

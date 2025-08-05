@@ -26,6 +26,7 @@ extend google.protobuf.ServiceOptions {
   optional bool default_to_query_fields = 58301;
   optional bool default_to_mutation_fields = 58302;
   optional string subgraph_name = 58303;
+  optional string schema_directives = 58304;
 }
 
 extend google.protobuf.MethodOptions {

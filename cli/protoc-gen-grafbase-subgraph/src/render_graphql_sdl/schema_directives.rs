@@ -6,7 +6,36 @@ pub(super) fn render_schema_directives_filtered(
     types_to_render: &services::TypesToRender,
     f: &mut fmt::Formatter<'_>,
 ) -> fmt::Result {
+    // Collect all unique schema directives from the services
+    let mut all_schema_directives = Vec::new();
+
+    let services = if let Some(ids) = service_ids {
+        schema
+            .iter_services()
+            .filter(|service| ids.contains(&service.id))
+            .collect::<Vec<_>>()
+    } else {
+        schema.iter_services().collect::<Vec<_>>()
+    };
+
+    for service in &services {
+        if let Some(directives) = &service.schema_directives {
+            all_schema_directives.push(directives.as_str());
+        }
+    }
+
+    // Remove duplicates while preserving order
+    let mut seen = std::collections::HashSet::new();
+    let unique_directives: Vec<_> = all_schema_directives.into_iter().filter(|d| seen.insert(*d)).collect();
+
     f.write_str("extend schema\n  @link(url: \"https://grafbase.com/extensions/grpc/0.2.0\", import: [\"@protoServices\", \"@protoEnums\", \"@protoMessages\", \"@grpcMethod\"])\n")?;
+
+    // Add additional schema directives
+    for directive in unique_directives {
+        f.write_str("  ")?;
+        f.write_str(directive)?;
+        f.write_str("\n")?;
+    }
 
     render_proto_services_filtered(schema, service_ids, f)?;
     render_proto_messages(schema, types_to_render, f)?;
