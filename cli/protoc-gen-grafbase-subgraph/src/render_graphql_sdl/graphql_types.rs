@@ -28,6 +28,8 @@ pub(super) fn render_graphql_types(
         render_enum_definition(schema, *enum_id, f)?;
     }
 
+    render_entity_types(schema, messages_to_render_as_output, f)?;
+
     Ok(())
 }
 
@@ -110,6 +112,36 @@ fn render_message(
         }
 
         f.write_str("\n")?;
+
+        if !input && field.composite_schemas_entity.is_some() {
+            if let Some(entity_info) = &field.composite_schemas_entity {
+                f.write_str(INDENT)?;
+
+                let derived_field_name = if let Some(name) = &entity_info.relation_field_name {
+                    name.clone()
+                } else {
+                    let base_name = &field.name;
+                    if base_name.ends_with("_id") {
+                        base_name[..base_name.len() - 3].to_string()
+                    } else if base_name.ends_with("Id") {
+                        base_name[..base_name.len() - 2].to_string()
+                    } else {
+                        base_name.clone()
+                    }
+                };
+
+                f.write_str(&derived_field_name)?;
+                f.write_str(": ")?;
+                f.write_str(&entity_info.entity)?;
+                f.write_str(" @derive")?;
+
+                // Add @is directive
+                let key_field = entity_info.key_field_name.as_deref().unwrap_or("id");
+                write!(f, " @is(field: \"{{ {}: {} }}\")", key_field, &field.name)?;
+
+                f.write_str("\n")?;
+            }
+        }
     }
 
     f.write_str("}\n")
@@ -234,4 +266,45 @@ fn render_message_type_name(
             }
         }
     }
+}
+
+fn render_entity_types(
+    schema: &GrpcSchema,
+    messages_to_render_as_output: &BTreeSet<ProtoMessageId>,
+    f: &mut fmt::Formatter<'_>,
+) -> fmt::Result {
+    use std::collections::HashMap;
+
+    let mut entities: HashMap<String, (String, FieldType)> = HashMap::new();
+
+    for message_id in messages_to_render_as_output {
+        for field in message_id.fields(schema) {
+            if let Some(entity_info) = &field.composite_schemas_entity {
+                let key_field_name = entity_info.key_field_name.as_deref().unwrap_or("id");
+                entities.insert(
+                    entity_info.entity.clone(),
+                    (key_field_name.to_string(), field.r#type.clone()),
+                );
+            }
+        }
+    }
+
+    let mut sorted_entities: Vec<_> = entities.into_iter().collect();
+    sorted_entities.sort_by_key(|(entity_name, _)| entity_name.clone());
+
+    for (entity_name, (key_field_name, field_type)) in sorted_entities {
+        f.write_str("\n")?;
+        write!(f, "type {} @key(fields: \"{}\")", entity_name, key_field_name)?;
+        f.write_str(" {\n")?;
+
+        f.write_str(INDENT)?;
+        f.write_str(&key_field_name)?;
+        f.write_str(": ")?;
+        render_output_field_type(schema, &field_type, false, f)?;
+        f.write_str("\n")?;
+
+        f.write_str("}\n")?;
+    }
+
+    Ok(())
 }
