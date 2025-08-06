@@ -97,6 +97,42 @@ enum Color {
 }
 ```
 
+### Adding schema directives
+
+You can add directives to the GraphQL schema extension using the `schema_directives` option at the service level:
+
+```protobuf
+import "grafbase/options.proto";
+
+service MyService {
+  option (grafbase.graphql.schema_directives) = "@contact(name: \"API Support\", url: \"https://api.example.com/support\")";
+  
+  rpc GetItem(GetItemRequest) returns (Item);
+}
+
+service AnotherService {
+  option (grafbase.graphql.schema_directives) = "@tag(name: \"backend\") @auth(rules: [{allow: \"admin\"}])";
+  
+  rpc UpdateItem(UpdateItemRequest) returns (Item);
+}
+```
+
+This will generate:
+
+```graphql
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @contact(name: "API Support", url: "https://api.example.com/support")
+  @tag(name: "backend") @auth(rules: [{allow: "admin"}])
+  ...
+```
+
+#### Schema directive behavior
+
+- **Deduplication**: If multiple services specify the same directive, it will only appear once in the schema extension
+- **Multi-file mode**: When using `subgraph_name`, only directives from services in that subgraph are included
+- **Multiple directives**: You can include multiple directives in a single string, separated by spaces
+
 ### Mapping specific services to different subgraphs
 
 By default, the plugin generates a single `schema.graphql` file containing all services. However, you can map different services to different subgraph files using the `subgraph_name` option:

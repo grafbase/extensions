@@ -1,0 +1,124 @@
+---
+source: cli/protoc-gen-grafbase-subgraph/tests/codegen_tests.rs
+expression: combined_output
+input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/schema_directives.proto
+---
+#--- items.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @contact(name: "API Support", url: "https://api.example.com/support")
+  @tag(name: "backend")
+  @protoServices(
+    definitions: [
+      {
+        name: "test.schema.ThirdService"
+        methods: [
+          {
+            name: "DeleteItem"
+            inputType: ".test.schema.DeleteItemRequest"
+            outputType: ".test.schema.DeleteItemResponse"
+          }
+        ]
+      }
+      {
+        name: "test.schema.SixthService"
+        methods: [
+          {
+            name: "GetItemDetails"
+            inputType: ".test.schema.GetItemRequest"
+            outputType: ".test.schema.Item"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".test.schema.Item"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "name"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "description"
+            number: 3
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.schema.GetItemRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.schema.DeleteItemRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.schema.DeleteItemResponse"
+        fields: [
+          {
+            name: "success"
+            number: 1
+            repeated: false
+            type: "bool"
+          }
+        ]
+      }
+    ]
+  )
+
+type Mutation {
+  test_schema_ThirdService_DeleteItem(input: test_schema_DeleteItemRequestInput): test_schema_DeleteItemResponse @grpcMethod(service: "test.schema.ThirdService", method: "DeleteItem")
+  test_schema_SixthService_GetItemDetails(input: test_schema_GetItemRequestInput): test_schema_Item @grpcMethod(service: "test.schema.SixthService", method: "GetItemDetails")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+input test_schema_GetItemRequestInput {
+  id: String
+}
+
+input test_schema_DeleteItemRequestInput {
+  id: String
+}
+
+"""
+Messages
+"""
+type test_schema_Item {
+  id: String
+  name: String
+  description: String
+}
+
+type test_schema_DeleteItemResponse {
+  success: Boolean
+}
