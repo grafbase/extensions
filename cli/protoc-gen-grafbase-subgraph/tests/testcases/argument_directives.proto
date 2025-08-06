@@ -1,0 +1,125 @@
+//!file:grafbase/options.proto
+syntax = "proto2";
+
+import "google/protobuf/descriptor.proto";
+
+package grafbase.graphql;
+
+message CompositeSchemaEntity {
+  optional string entity = 1;
+  optional string field = 2;
+  optional string field_name = 3;
+}
+
+extend google.protobuf.MessageOptions {
+  optional string object_directives = 58301;
+  optional string input_object_directives = 58302;
+}
+
+extend google.protobuf.FieldOptions {
+  optional string output_field_directives = 58301;
+  optional string input_field_directives = 58302;
+  optional CompositeSchemaEntity composite_schemas_entity = 58303;
+}
+
+extend google.protobuf.EnumOptions {
+  optional string enum_directives = 58301;
+}
+
+extend google.protobuf.EnumValueOptions {
+  optional string enum_value_directives = 58301;
+}
+
+extend google.protobuf.ServiceOptions {
+  optional bool default_to_query_fields = 58301;
+  optional bool default_to_mutation_fields = 58302;
+  optional string subgraph_name = 58303;
+  optional string schema_directives = 58304;
+}
+
+extend google.protobuf.MethodOptions {
+  optional string directives = 58301;
+  optional bool is_query = 58302;
+  optional bool is_mutation = 58303;
+  optional string argument_directives = 58304;
+}
+
+//!file:argument_directives.proto
+syntax = "proto3";
+
+import "grafbase/options.proto";
+
+package test.input_arg_directives;
+
+// Test service with input argument directives on methods
+service UserService {
+  // Method with a single directive on input argument
+  rpc CreateUser(CreateUserRequest) returns (User) {
+    option (grafbase.graphql.argument_directives) = "@constraint(minLength: 1)";
+  }
+
+  // Method with multiple directives on input argument
+  rpc UpdateUser(UpdateUserRequest) returns (User) {
+    option (grafbase.graphql.argument_directives) = "@constraint(minLength: 1) @auth(rules: [{allow: owner}])";
+  }
+
+  // Method with no input argument directives
+  rpc GetUser(GetUserRequest) returns (User) {
+    option (grafbase.graphql.is_query) = true;
+  }
+
+  // Method with both input argument directives and method directives
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (grafbase.graphql.argument_directives) = "@constraint(format: \"uuid\")";
+    option (grafbase.graphql.directives) = "@deprecated(reason: \"Use removeUser instead\")";
+  }
+}
+
+// Another service to test different patterns
+service AdminService {
+  // Query method with validation directive
+  rpc SearchUsers(SearchUsersRequest) returns (SearchUsersResponse) {
+    option (grafbase.graphql.is_query) = true;
+    option (grafbase.graphql.argument_directives) = "@constraint(maxLength: 100)";
+  }
+}
+
+// Messages
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+}
+
+message SearchUsersRequest {
+  string query = 1;
+  int32 limit = 2;
+}
+
+message SearchUsersResponse {
+  repeated User users = 1;
+  int32 total_count = 2;
+}

@@ -1,0 +1,253 @@
+---
+source: cli/protoc-gen-grafbase-subgraph/tests/codegen_tests.rs
+expression: combined_output
+input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/argument_directives.proto
+---
+#--- schema.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @protoServices(
+    definitions: [
+      {
+        name: "test.input_arg_directives.UserService"
+        methods: [
+          {
+            name: "CreateUser"
+            inputType: ".test.input_arg_directives.CreateUserRequest"
+            outputType: ".test.input_arg_directives.User"
+          }
+          {
+            name: "UpdateUser"
+            inputType: ".test.input_arg_directives.UpdateUserRequest"
+            outputType: ".test.input_arg_directives.User"
+          }
+          {
+            name: "GetUser"
+            inputType: ".test.input_arg_directives.GetUserRequest"
+            outputType: ".test.input_arg_directives.User"
+          }
+          {
+            name: "DeleteUser"
+            inputType: ".test.input_arg_directives.DeleteUserRequest"
+            outputType: ".test.input_arg_directives.DeleteUserResponse"
+          }
+        ]
+      }
+      {
+        name: "test.input_arg_directives.AdminService"
+        methods: [
+          {
+            name: "SearchUsers"
+            inputType: ".test.input_arg_directives.SearchUsersRequest"
+            outputType: ".test.input_arg_directives.SearchUsersResponse"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".test.input_arg_directives.User"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "name"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "email"
+            number: 3
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.input_arg_directives.CreateUserRequest"
+        fields: [
+          {
+            name: "name"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "email"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.input_arg_directives.UpdateUserRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "name"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "email"
+            number: 3
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.input_arg_directives.GetUserRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.input_arg_directives.DeleteUserRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.input_arg_directives.DeleteUserResponse"
+        fields: [
+          {
+            name: "success"
+            number: 1
+            repeated: false
+            type: "bool"
+          }
+        ]
+      }
+      {
+        name: ".test.input_arg_directives.SearchUsersRequest"
+        fields: [
+          {
+            name: "query"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "limit"
+            number: 2
+            repeated: false
+            type: "int32"
+          }
+        ]
+      }
+      {
+        name: ".test.input_arg_directives.SearchUsersResponse"
+        fields: [
+          {
+            name: "users"
+            number: 1
+            repeated: true
+            type: ".test.input_arg_directives.User"
+          }
+          {
+            name: "total_count"
+            number: 2
+            repeated: false
+            type: "int32"
+          }
+        ]
+      }
+    ]
+  )
+
+type Query {
+"""
+Method with no input argument directives
+"""
+  test_input_arg_directives_UserService_GetUser(input: test_input_arg_directives_GetUserRequestInput): test_input_arg_directives_User @grpcMethod(service: "test.input_arg_directives.UserService", method: "GetUser")
+"""
+Query method with validation directive
+"""
+  test_input_arg_directives_AdminService_SearchUsers(input: test_input_arg_directives_SearchUsersRequestInput @constraint(maxLength: 100)): test_input_arg_directives_SearchUsersResponse @grpcMethod(service: "test.input_arg_directives.AdminService", method: "SearchUsers")
+}
+
+type Mutation {
+"""
+Method with a single directive on input argument
+"""
+  test_input_arg_directives_UserService_CreateUser(input: test_input_arg_directives_CreateUserRequestInput @constraint(minLength: 1)): test_input_arg_directives_User @grpcMethod(service: "test.input_arg_directives.UserService", method: "CreateUser")
+"""
+Method with multiple directives on input argument
+"""
+  test_input_arg_directives_UserService_UpdateUser(input: test_input_arg_directives_UpdateUserRequestInput @constraint(minLength: 1) @auth(rules: [{allow: owner}])): test_input_arg_directives_User @grpcMethod(service: "test.input_arg_directives.UserService", method: "UpdateUser")
+"""
+Method with both input argument directives and method directives
+"""
+  test_input_arg_directives_UserService_DeleteUser(input: test_input_arg_directives_DeleteUserRequestInput @constraint(format: "uuid")): test_input_arg_directives_DeleteUserResponse @grpcMethod(service: "test.input_arg_directives.UserService", method: "DeleteUser") @deprecated(reason: "Use removeUser instead")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+input test_input_arg_directives_CreateUserRequestInput {
+  name: String
+  email: String
+}
+
+input test_input_arg_directives_UpdateUserRequestInput {
+  id: String
+  name: String
+  email: String
+}
+
+input test_input_arg_directives_GetUserRequestInput {
+  id: String
+}
+
+input test_input_arg_directives_DeleteUserRequestInput {
+  id: String
+}
+
+input test_input_arg_directives_SearchUsersRequestInput {
+  query: String
+  limit: Int
+}
+
+"""
+Messages
+"""
+type test_input_arg_directives_User {
+  id: String
+  name: String
+  email: String
+}
+
+type test_input_arg_directives_DeleteUserResponse {
+  success: Boolean
+}
+
+type test_input_arg_directives_SearchUsersResponse {
+  users: [test_input_arg_directives_User!]
+  total_count: Int
+}

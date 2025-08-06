@@ -119,6 +119,10 @@ fn render_method_field(
 
     render_input_field_type(schema, &method.input_type, false, f)?;
 
+    if let Some(directives) = method.argument_directives.as_deref() {
+        write!(f, " {directives}")?;
+    }
+
     f.write_str("): ")?;
 
     render_output_field_type(schema, &method.output_type, false, true, f)?;

@@ -40,4 +40,5 @@ extend google.protobuf.MethodOptions {
   optional string directives = 58301;
   optional bool is_query = 58302;
   optional bool is_mutation = 58303;
+  optional string argument_directives = 58304;
 }
