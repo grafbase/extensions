@@ -158,7 +158,7 @@ impl ResolverExtension for RestExtension {
         }
 
         let request = if let Some(body) = body {
-            builder.json(self.render_body(body, ctx)?)
+            builder.json(self.render_body(body, &ctx)?)
         } else {
             builder.build()
         };
@@ -176,7 +176,7 @@ impl ResolverExtension for RestExtension {
                 return Ok(Response::data(data));
             }
 
-            let data = self.render_jq_template(selection, data)?;
+            let data = self.render_jq_template(selection, &ctx, data)?;
 
             Ok(Response::data(data))
         } else {
@@ -192,19 +192,19 @@ impl RestExtension {
         })
     }
 
-    fn render_body(&mut self, body: Body<'_>, ctx: Value) -> Result<Value, Error> {
+    fn render_body(&mut self, body: Body<'_>, ctx: &Value) -> Result<Value, Error> {
         match body.into_case() {
-            Some(BodyCase::Selection(source)) => self.render_jq_template(source, ctx),
+            Some(BodyCase::Selection(source)) => self.render_jq_template(source, ctx, ctx.clone()),
             Some(BodyCase::Static(value)) => Ok(value),
             None => Ok(Value::Null),
         }
     }
 
-    fn render_jq_template(&mut self, source: &str, ctx: Value) -> Result<Value, Error> {
-        let selection = self.templates.get_or_insert(source)?.render_json(&ctx);
+    fn render_jq_template(&mut self, source: &str, ctx: &Value, jq_value: Value) -> Result<Value, Error> {
+        let selection = self.templates.get_or_insert(source)?.render_json(ctx);
         let mut values = self
             .jq_selection
-            .select(&selection, ctx)
+            .select(&selection, jq_value)
             .map_err(|e| format!("Failed to filter with selection: {}", e))?
             .collect::<Result<Vec<Value>, _>>()
             .map_err(|e| format!("Failed to collect filtered value: {}", e))?;

@@ -19,19 +19,8 @@ struct Error {
 }
 
 fn subgraph(rest_endpoint: &str) -> String {
-    [
-        &format!(
-            r#"
-        extend schema
-          @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
-          @link(url: "<self>", import: ["@restEndpoint", "@rest"])
-
-        extend schema @restEndpoint(
-          name: "endpoint",
-          baseURL: "{rest_endpoint}"
-        )
-        "#
-        ),
+    subgraph_sdl(
+        rest_endpoint,
         r#"
         type Query {
           users: [User!]! @rest(
@@ -86,6 +75,24 @@ fn subgraph(rest_endpoint: &str) -> String {
           age: Int!
         }
     "#,
+    )
+}
+
+fn subgraph_sdl(url: &str, sdl: &str) -> String {
+    [
+        &format!(
+            r#"
+        extend schema
+          @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
+          @link(url: "<self>", import: ["@restEndpoint", "@rest"])
+
+        extend schema @restEndpoint(
+          name: "endpoint",
+          baseURL: "{url}"
+        )
+        "#
+        ),
+        sdl,
     ]
     .join("\n")
 }
@@ -1007,6 +1014,72 @@ async fn static_post() {
           "id": "1",
           "name": "John Doe",
           "age": 30
+        }
+      }
+    }
+    "#);
+}
+
+#[tokio::test]
+async fn arguments_in_selection() {
+    let mock_server = MockServer::builder().start().await;
+
+    Mock::given(method("GET"))
+        .and(path("/my-summary"))
+        .and(header("Content-Type", "application/json"))
+        .respond_with(ResponseTemplate::new(201).set_body_json(json!({
+            "text": "Summary for John Doe",
+        })))
+        .mount(&mock_server)
+        .await;
+
+    let gateway = TestGateway::builder()
+        .subgraph(subgraph_sdl(
+            &mock_server.uri(),
+            r#"
+            type Query {
+              test(myContext: Context!): Summary
+                @rest(
+                  endpoint: "endpoint"
+                  http: {
+                    GET: "/my-summary"
+                  }
+                  selection: "{ text: {{ args.myContext.name }} }"
+                )
+            }
+
+            input Context {
+                name: String!
+            }
+
+            type Summary {
+                text: String!
+            }
+            "#,
+        ))
+        .stream_stdout_stderr()
+        .build()
+        .await
+        .unwrap();
+
+    let response = gateway
+        .query(
+            r#"
+            query {
+              test(myContext: { name: "John Doe" }) {
+                text
+              }
+            }
+            "#,
+        )
+        .send()
+        .await;
+
+    insta::assert_json_snapshot!(response, @r#"
+    {
+      "data": {
+        "test": {
+          "text": "John Doe"
         }
       }
     }
