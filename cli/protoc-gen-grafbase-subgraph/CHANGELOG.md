@@ -13,6 +13,12 @@
   - The `@is` directive maps the key field to the annotated field using format `@is(field: "{ <key_field_name>: <field_name> }")`
   - Enables cross-subgraph entity references in federated schemas
 
+- **Input argument directives support** added. You can now add GraphQL directives to RPC method input arguments using the `input_argument_directives` option:
+  - Use `option (grafbase.graphql.input_argument_directives) = "@constraint(minLength: 1)";` in method options
+  - Supports multiple directives in a single string, separated by spaces
+  - Works with both Query and Mutation fields
+  - Can be combined with existing method directives
+
 - **Multiple subgraphs support** added. Support for generating multiple GraphQL files based on service annotations:
 
   - Services can now have a `subgraph_name` option that maps them to different subgraph files

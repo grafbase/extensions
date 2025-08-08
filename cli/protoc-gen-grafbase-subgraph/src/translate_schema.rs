@@ -162,6 +162,7 @@ fn translate_service(
             is_query: None,
             is_mutation: None,
             directives: None,
+            input_argument_directives: None,
         };
 
         extract_method_graphql_options_from_options(method, &mut proto_method);
@@ -569,7 +570,18 @@ fn extract_method_graphql_options_from_options(
             _ => None,
         });
 
+    let input_argument_directives = method
+        .options
+        .special_fields
+        .unknown_fields()
+        .get(INPUT_ARGUMENT_DIRECTIVES)
+        .and_then(|unknown_value_ref| match unknown_value_ref {
+            protobuf::UnknownValueRef::LengthDelimited(items) => Some(str::from_utf8(items).unwrap().to_owned()),
+            _ => None,
+        });
+
     proto_method.directives = directives;
+    proto_method.input_argument_directives = input_argument_directives;
     proto_method.is_query = is_query;
     proto_method.is_mutation = is_mutation;
 }
