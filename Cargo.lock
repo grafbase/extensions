@@ -3974,6 +3974,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "protobuf-codegen"
+version = "3.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5d3976825c0014bbd2f3b34f0001876604fe87e0c86cd8fa54251530f1544ace"
+dependencies = [
+ "anyhow",
+ "once_cell",
+ "protobuf",
+ "protobuf-parse",
+ "regex",
+ "tempfile",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "protobuf-parse"
+version = "3.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b4aeaa1f2460f1d348eeaeed86aea999ce98c1bded6f089ff8514c9d9dbdc973"
+dependencies = [
+ "anyhow",
+ "indexmap 2.9.0",
+ "log",
+ "protobuf",
+ "protobuf-support",
+ "tempfile",
+ "thiserror 1.0.69",
+ "which 4.4.2",
+]
+
+[[package]]
 name = "protobuf-support"
 version = "3.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3990,6 +4021,7 @@ dependencies = [
  "insta",
  "paste",
  "protobuf",
+ "protobuf-codegen",
  "protobuf-support",
  "tempfile",
  "walkdir",

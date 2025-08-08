@@ -1,4 +1,5 @@
 mod display_utils;
+mod options_proto;
 mod render_graphql_sdl;
 mod schema;
 mod translate_schema;

@@ -133,6 +133,73 @@ extend schema
 - **Multi-file mode**: When using `subgraph_name`, only directives from services in that subgraph are included
 - **Multiple directives**: You can include multiple directives in a single string, separated by spaces
 
+### Composite schema entity references
+
+You can create federation-style entity references using the `composite_schemas_entity` option on message fields. This allows you to reference entities from other subgraphs:
+
+```protobuf
+import "grafbase/options.proto";
+
+message Product {
+  string id = 1;
+  string name = 2;
+  
+  // Basic usage: creates a user field that references User entity by id
+  string user_id = 3 [(grafbase.graphql.composite_schemas_entity) = {
+    entity: "User"
+  }];
+  
+  // Custom relation field name: creates an owner field instead of user
+  string owner_id = 4 [(grafbase.graphql.composite_schemas_entity) = {
+    entity: "User", 
+    relation_field_name: "owner"
+  }];
+  
+  // Custom key field name: uses categoryId instead of id in the entity type
+  string category_id = 5 [(grafbase.graphql.composite_schemas_entity) = {
+    entity: "Category", 
+    key_field_name: "categoryId"
+  }];
+  
+  // Reference by non-id field
+  string shop_slug = 6 [(grafbase.graphql.composite_schemas_entity) = {
+    entity: "Shop", 
+    key_field_name: "slug"
+  }];
+}
+```
+
+This generates GraphQL with entity references:
+
+```graphql
+type Product {
+  id: String
+  name: String
+  user_id: String
+  user: User @derive @is(field: "{ id: user_id }")  # Automatically added reference field
+  owner_id: String  
+  owner: User @derive @is(field: "{ id: owner_id }")  # Custom name for the reference
+  shop_slug: String
+  shop: Shop @derive @is(field: "{ slug: shop_slug }")
+}
+
+# Stub entities are automatically created
+type User @key(fields: "id") {
+  id: String
+}
+
+type Shop @key(fields: "slug") {
+  slug: String
+}
+```
+
+#### Composite schema entity features
+
+- **Automatic reference fields**: For each field with `composite_schemas_entity`, a corresponding reference field with `@derive` and `@is` directives is added
+- **Custom field names**: Use `relation_field_name` to customize the generated reference field name
+- **Entity stubs**: Stub types with `@key` directives are automatically generated for referenced entities
+- **Multiple references**: You can have multiple fields referencing the same or different entities
+
 ### Mapping specific services to different subgraphs
 
 By default, the plugin generates a single `schema.graphql` file containing all services. However, you can map different services to different subgraph files using the `subgraph_name` option:

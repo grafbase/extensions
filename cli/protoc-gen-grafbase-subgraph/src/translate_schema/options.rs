@@ -4,6 +4,7 @@ pub(super) const OBJECT_DIRECTIVES: u32 = 58301;
 pub(super) const INPUT_OBJECT_DIRECTIVES: u32 = 58302;
 pub(super) const OUTPUT_FIELD_DIRECTIVES: u32 = 58301;
 pub(super) const INPUT_FIELD_DIRECTIVES: u32 = 58302;
+pub(super) const COMPOSITE_SCHEMAS_ENTITY: u32 = 58303;
 pub(super) const ENUM_DIRECTIVES: u32 = 58301;
 pub(super) const ENUM_VALUE_DIRECTIVES: u32 = 58301;
 

@@ -36,6 +36,13 @@ impl ProtoMessage {
     }
 }
 
+#[derive(Debug, PartialEq, Clone)]
+pub(crate) struct CompositeSchemaEntity {
+    pub(crate) entity: String,
+    pub(crate) relation_field_name: Option<String>,
+    pub(crate) key_field_name: Option<String>,
+}
+
 #[derive(Debug, PartialEq)]
 pub(crate) struct ProtoField {
     pub(crate) message_id: ProtoMessageId,
@@ -46,6 +53,7 @@ pub(crate) struct ProtoField {
     pub(crate) description: Option<String>,
     pub(crate) input_field_directives: Option<String>,
     pub(crate) output_field_directives: Option<String>,
+    pub(crate) composite_schemas_entity: Option<CompositeSchemaEntity>,
 }
 
 impl PartialOrd for ProtoField {

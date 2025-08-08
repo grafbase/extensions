@@ -340,6 +340,7 @@ fn translate_fields(
             description,
             input_field_directives: None,
             output_field_directives: None,
+            composite_schemas_entity: None,
         };
 
         extract_field_graphql_directives_from_options(field, &mut proto_field);
@@ -423,6 +424,32 @@ fn extract_field_graphql_directives_from_options(
 
     proto_field.output_field_directives = graphql_output_field_directives;
     proto_field.input_field_directives = graphql_input_field_directives;
+
+    if let Some(protobuf::UnknownValueRef::LengthDelimited(bytes)) = field
+        .options
+        .special_fields
+        .unknown_fields()
+        .get(COMPOSITE_SCHEMAS_ENTITY)
+    {
+        use protobuf::Message;
+        if let Ok(entity_proto) = crate::options_proto::options::CompositeSchemaEntity::parse_from_bytes(bytes) {
+            if entity_proto.has_entity() {
+                proto_field.composite_schemas_entity = Some(crate::schema::CompositeSchemaEntity {
+                    entity: entity_proto.entity().to_owned(),
+                    relation_field_name: if entity_proto.has_relation_field_name() {
+                        Some(entity_proto.relation_field_name().to_owned())
+                    } else {
+                        None
+                    },
+                    key_field_name: if entity_proto.has_key_field_name() {
+                        Some(entity_proto.key_field_name().to_owned())
+                    } else {
+                        None
+                    },
+                });
+            }
+        }
+    }
 }
 
 fn extract_enum_graphql_directives_from_options(
