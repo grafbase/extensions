@@ -199,20 +199,20 @@ input test_composite_ListProductsRequestInput {
 Test messages with composite schema entities
 """
 type test_composite_Product {
-  id: String
-  name: String
-  description: String
+  id: String!
+  name: String!
+  description: String!
 """
 Basic usage - entity User with field id
 """
-  user_id: String
+  user_id: String!
 """
 With custom relation field name - these won't generate derive fields
 """
-  owner_id: String
-  category_id: String
-  shop: String
-  store_id: Int
+  owner_id: String!
+  category_id: String!
+  shop: String!
+  store_id: Int!
   user: User @derive @is(field: "{ id: user_id }")
   category: Category @derive @is(field: "{ categoryId: category_id }")
   shop_ref: Shop @derive @is(field: "{ slug: shop }")
@@ -220,17 +220,17 @@ With custom relation field name - these won't generate derive fields
 
 type test_composite_ListProductsResponse {
   products: [test_composite_Product!]
-  next_cursor: String
+  next_cursor: String!
 }
 
 type Category @key(fields: "categoryId") {
-  categoryId: String
+  categoryId: String!
 }
 
 type Shop @key(fields: "slug") {
-  slug: String
+  slug: String!
 }
 
 type User @key(fields: "id") {
-  id: String
+  id: String!
 }

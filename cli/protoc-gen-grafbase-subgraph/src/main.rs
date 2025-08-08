@@ -5,7 +5,7 @@ mod schema;
 mod translate_schema;
 
 use protobuf::plugin::{CodeGeneratorRequest, CodeGeneratorResponse, code_generator_response::File};
-use protobuf::{CodedOutputStream, Message};
+use protobuf::{CodedOutputStream, Enum, Message};
 use render_graphql_sdl::{render_graphql_sdl, render_graphql_sdl_filtered};
 use std::{
     env,
@@ -33,6 +33,10 @@ fn generate(raw_request: &[u8]) -> CodeGeneratorResponse {
     let translated_schema = translate_schema(request);
 
     let mut response = CodeGeneratorResponse::new();
+
+    response.set_supported_features(
+        protobuf::plugin::code_generator_response::Feature::FEATURE_PROTO3_OPTIONAL.value() as u64,
+    );
 
     if translated_schema.services.is_empty() {
         return response;

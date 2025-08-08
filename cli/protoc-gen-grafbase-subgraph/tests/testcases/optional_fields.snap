@@ -1,0 +1,221 @@
+---
+source: cli/protoc-gen-grafbase-subgraph/tests/codegen_tests.rs
+expression: combined_output
+input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/optional_fields.proto
+---
+#--- schema.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @protoServices(
+    definitions: [
+      {
+        name: "test.optional.TestService"
+        methods: [
+          {
+            name: "GetTest"
+            inputType: ".test.optional.TestMessage"
+            outputType: ".test.optional.TestMessage"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".test.optional.TestMessage"
+        fields: [
+          {
+            name: "required_string"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "required_int"
+            number: 2
+            repeated: false
+            type: "int32"
+          }
+          {
+            name: "required_bool"
+            number: 3
+            repeated: false
+            type: "bool"
+          }
+          {
+            name: "optional_string"
+            number: 4
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "optional_int"
+            number: 5
+            repeated: false
+            type: "int32"
+          }
+          {
+            name: "optional_bool"
+            number: 6
+            repeated: false
+            type: "bool"
+          }
+          {
+            name: "repeated_string"
+            number: 7
+            repeated: true
+            type: "string"
+          }
+          {
+            name: "nested_message"
+            number: 8
+            repeated: false
+            type: ".test.optional.NestedMessage"
+          }
+          {
+            name: "optional_nested_message"
+            number: 9
+            repeated: false
+            type: ".test.optional.NestedMessage"
+          }
+          {
+            name: "required_enum"
+            number: 10
+            repeated: false
+            type: ".test.optional.TestEnum"
+          }
+          {
+            name: "optional_enum"
+            number: 11
+            repeated: false
+            type: ".test.optional.TestEnum"
+          }
+        ]
+      }
+      {
+        name: ".test.optional.NestedMessage"
+        fields: [
+          {
+            name: "value"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+    ]
+  )
+  @protoEnums(
+    definitions: [
+      {
+        name: ".test.optional.TestEnum"
+        values: [
+          {
+            name: "UNKNOWN"
+            number: 0
+          }
+          {
+            name: "FIRST"
+            number: 1
+          }
+          {
+            name: "SECOND"
+            number: 2
+          }
+        ]
+      }
+    ]
+  )
+
+type Mutation {
+  test_optional_TestService_GetTest(input: test_optional_TestMessageInput): test_optional_TestMessage @grpcMethod(service: "test.optional.TestService", method: "GetTest")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+"""
+Test message with a mix of optional and non-optional fields
+"""
+input test_optional_TestMessageInput {
+"""
+Non-optional scalar fields (should render as Type! in output types, Type in input types)
+"""
+  required_string: String
+  required_int: Int
+  required_bool: Boolean
+"""
+Optional scalar fields (should render as Type in both output and input types)
+"""
+  optional_string: String
+  optional_int: Int
+  optional_bool: Boolean
+"""
+Repeated field (should render as [Type!])
+"""
+  repeated_string: [String!]
+"""
+Message type field (should always be nullable)
+"""
+  nested_message: test_optional_NestedMessageInput
+"""
+Optional message type field (should still be nullable)
+"""
+  optional_nested_message: test_optional_NestedMessageInput
+"""
+Enum fields (non-optional renders as Type! in output types, Type in input types)
+"""
+  required_enum: test_optional_TestEnum
+  optional_enum: test_optional_TestEnum
+}
+
+input test_optional_NestedMessageInput {
+  value: String
+}
+
+"""
+Test message with a mix of optional and non-optional fields
+"""
+type test_optional_TestMessage {
+"""
+Non-optional scalar fields (should render as Type! in output types, Type in input types)
+"""
+  required_string: String!
+  required_int: Int!
+  required_bool: Boolean!
+"""
+Optional scalar fields (should render as Type in both output and input types)
+"""
+  optional_string: String
+  optional_int: Int
+  optional_bool: Boolean
+"""
+Repeated field (should render as [Type!])
+"""
+  repeated_string: [String!]
+"""
+Message type field (should always be nullable)
+"""
+  nested_message: test_optional_NestedMessage
+"""
+Optional message type field (should still be nullable)
+"""
+  optional_nested_message: test_optional_NestedMessage
+"""
+Enum fields (non-optional renders as Type! in output types, Type in input types)
+"""
+  required_enum: test_optional_TestEnum!
+  optional_enum: test_optional_TestEnum
+}
+
+type test_optional_NestedMessage {
+  value: String!
+}
+
+enum test_optional_TestEnum {
+  UNKNOWN,
+  FIRST,
+  SECOND,
+}

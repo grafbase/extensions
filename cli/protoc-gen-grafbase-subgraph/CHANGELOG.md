@@ -2,7 +2,14 @@
 
 ### Added
 
-- **Input argument directives** added. You can now add GraphQL directives to RPC method input arguments using the `argument_directives` option on methods.
+- **Input argument directives** added. You can now add GraphQL directives to RPC method input argument, that corresponds to the input of the RPC method, using the `argument_directives` option on methods.
+
+- **Proto3 optional field support** added. The generator now properly handles proto3 optional fields:
+  - Non-optional scalar and enum fields in proto3 are rendered as non-nullable (`Type!`) in GraphQL output types
+  - Optional scalar and enum fields are rendered as nullable (`Type`) in GraphQL output types
+  - Message type fields are always nullable regardless of the optional flag
+  - Input types remain nullable for all fields
+  - The generator now declares support for `FEATURE_PROTO3_OPTIONAL` to work with proto3 files containing optional fields
 
 - **Composite schema entity references with @derive** added. You can now create federation-style entity references using the `derive` option on messages:
   - Use `option (grafbase.graphql.derive) = {entity: "User", is: "{ id: user_id }"};` on fields

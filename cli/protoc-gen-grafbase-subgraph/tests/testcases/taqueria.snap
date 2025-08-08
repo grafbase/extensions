@@ -576,18 +576,18 @@ input taqueria_DailySalesRequestInput {
 Menu item message
 """
 type taqueria_MenuItem {
-  id: String
-  name: String
+  id: String!
+  name: String!
 """
 The price of the item in €.
 """
-  price: Float
-  description: String
-  meat: taqueria_MeatType
-  spice_level: taqueria_SpiceLevel
+  price: Float!
+  description: String!
+  meat: taqueria_MeatType!
+  spice_level: taqueria_SpiceLevel!
   toppings: [String!]
-  vegetarian: Boolean
-  vegan: Boolean
+  vegetarian: Boolean!
+  vegan: Boolean!
 }
 
 """
@@ -601,25 +601,25 @@ type taqueria_MenuResponse {
 Order response
 """
 type taqueria_OrderResponse {
-  order_id: String
-  estimated_ready_time: String
-  total_amount: Float
+  order_id: String!
+  estimated_ready_time: String!
+  total_amount: Float!
 }
 
 type taqueria_OrderStatusResponse {
-  order_id: String
-  status: taqueria_OrderStatus
-  status_updated_at: String
-  estimated_completion_time: String
+  order_id: String!
+  status: taqueria_OrderStatus!
+  status_updated_at: String!
+  estimated_completion_time: String!
 }
 
 """
 Daily sales response
 """
 type taqueria_DailySalesResponse {
-  date: String
-  total_orders: Int
-  total_revenue: Float
+  date: String!
+  total_orders: Int!
+  total_revenue: Float!
 """
 Map of menu_item_id to quantity sold
 """
@@ -628,13 +628,13 @@ Map of menu_item_id to quantity sold
 }
 
 type taqueria_DailySalesResponse_ItemsSoldEntry {
-  key: String
-  value: Int
+  key: String!
+  value: Int!
 }
 
 type taqueria_DailySalesResponse_MeatTypeCountsEntry {
-  key: Int
-  value: Int
+  key: Int!
+  value: Int!
 }
 
 """

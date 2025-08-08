@@ -96,7 +96,7 @@ fn render_message(
         if input {
             render_input_field_type(schema, &field.r#type, field.repeated, f)?;
         } else {
-            render_output_field_type(schema, &field.r#type, field.repeated, true, f)?;
+            render_output_field_type(schema, &field.r#type, field.repeated, field.optional, f)?;
         }
 
         let field_directives = if input {
@@ -356,7 +356,7 @@ fn render_entity_types(
                     let field_found = message_id.fields(schema).find(|f| f.name == is_field.input_field_name);
 
                     if let Some(field) = field_found {
-                        render_output_field_type(schema, &field.r#type, false, true, f)?;
+                        render_output_field_type(schema, &field.r#type, false, field.optional, f)?;
                     } else {
                         // Default to String if field not found
                         f.write_str("String")?;

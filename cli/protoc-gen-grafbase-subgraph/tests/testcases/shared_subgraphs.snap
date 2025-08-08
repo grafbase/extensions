@@ -119,12 +119,12 @@ input example_LoginRequestInput {
 }
 
 type example_User {
-  id: String
-  name: String
+  id: String!
+  name: String!
 }
 
 type example_LoginResponse {
-  token: String
+  token: String!
   user: example_User
 }
 
@@ -197,7 +197,7 @@ input example_GetProductRequestInput {
 }
 
 type example_Product {
-  id: String
-  name: String
-  price: Float
+  id: String!
+  name: String!
+  price: Float!
 }

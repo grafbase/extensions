@@ -326,32 +326,32 @@ input GetBirdsRequestInput {
 }
 
 type Bird {
-  name: String
-  scientific_name: String
-  weight_in_kg: Float
-  is_migratory: Boolean
-  size: Bird_Size
-  primary_habitat: Bird_Habitat
+  name: String!
+  scientific_name: String!
+  weight_in_kg: Float!
+  is_migratory: Boolean!
+  size: Bird_Size!
+  primary_habitat: Bird_Habitat!
   secondary_habitats: [Bird_Habitat!]
   diet: Bird_Diet
   plumage: Bird_Plumage
-  average_lifespan_years: Int
+  average_lifespan_years: Int!
   conservation_status: [String!]
 }
 
 type Bird_Diet {
-  carnivorous: Boolean
-  herbivorous: Boolean
-  omnivorous: Boolean
+  carnivorous: Boolean!
+  herbivorous: Boolean!
+  omnivorous: Boolean!
   favorite_foods: [String!]
-  feeding_style: Bird_Diet_FeedingStyle
+  feeding_style: Bird_Diet_FeedingStyle!
 }
 
 type Bird_Plumage {
-  primary_color: String
+  primary_color: String!
   secondary_colors: [String!]
-  has_distinct_mating_colors: Boolean
-  pattern: Bird_Plumage_Pattern
+  has_distinct_mating_colors: Boolean!
+  pattern: Bird_Plumage_Pattern!
 }
 
 type GetBirdsResponse {

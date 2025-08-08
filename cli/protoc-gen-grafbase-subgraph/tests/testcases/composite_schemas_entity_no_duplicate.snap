@@ -170,9 +170,9 @@ This message is already rendered as output, so it shouldn't
  be rendered again as an entity stub
 """
 type test_nodedup_User {
-  id: String
-  name: String
-  email: String
+  id: String!
+  name: String!
+  email: String!
 }
 
 """
@@ -180,10 +180,10 @@ This references User, but since User is already rendered,
  we shouldn't create a duplicate User type
 """
 type test_nodedup_Post {
-  id: String
-  title: String
-  content: String
-  author_id: String
+  id: String!
+  title: String!
+  content: String!
+  author_id: String!
   author: test_nodedup_User @derive @is(field: "{ id: author_id }")
 }
 
@@ -192,12 +192,12 @@ This references a non-existent Category type, so it should
  be rendered as an entity stub
 """
 type test_nodedup_Product {
-  id: String
-  name: String
-  category_id: String
+  id: String!
+  name: String!
+  category_id: String!
   category: Category @derive @is(field: "{ id: category_id }")
 }
 
 type Category @key(fields: "id") {
-  id: String
+  id: String!
 }

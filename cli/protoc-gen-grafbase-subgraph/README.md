@@ -178,20 +178,20 @@ import "grafbase/options.proto";
 
 message Product {
   // Basic usage: creates a user field that references User entity by id
-  (grafbase.graphql.derive) = {
+  option (grafbase.graphql.derive) = {
     entity: "User",
     is: "{ id: user_id }"
   };
 
   // Custom relation field name: creates an owner field instead of user
-  (grafbase.graphql.derive) = {
+  option (grafbase.graphql.derive) = {
     entity: "User",
     field: "owner"
     is: "{ id: owner_id }"
   };
 
   // Reference by non-id field
-  (grafbase.graphql.composite_schemas_entity) = {
+  option (grafbase.graphql.composite_schemas_entity) = {
     entity: "Shop",
     is: "{ slug: shop_slug }"
   };

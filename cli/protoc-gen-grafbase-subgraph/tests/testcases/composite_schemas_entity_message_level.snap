@@ -81,17 +81,17 @@ input test_composite_GetOrderRequestInput {
 Test message-level composite schema entity with composite key
 """
 type test_composite_Order {
-  id: String
-  description: String
+  id: String!
+  description: String!
 """
 Composite key reference to CustomerAddress entity
 """
-  customer_id: String
-  address_id: String
+  customer_id: String!
+  address_id: String!
   delivery_address: CustomerAddress @derive @is(field: "{ customerId: customer_id, addressId: address_id }")
 }
 
 type CustomerAddress @key(fields: "customerId addressId") {
-  customerId: String
-  addressId: String
+  customerId: String!
+  addressId: String!
 }
