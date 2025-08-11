@@ -100,6 +100,7 @@ pub(crate) struct ProtoMethod {
     pub(crate) is_query: Option<bool>,
     pub(crate) is_mutation: Option<bool>,
     pub(crate) directives: Option<String>,
+    pub(crate) argument_directives: Option<String>,
 }
 
 impl PartialOrd for ProtoMethod {

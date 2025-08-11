@@ -16,3 +16,4 @@ pub(super) const SCHEMA_DIRECTIVES: u32 = 58304;
 pub(super) const DIRECTIVES: u32 = 58301;
 pub(super) const IS_QUERY: u32 = 58302;
 pub(super) const IS_MUTATION: u32 = 58303;
+pub(super) const ARGUMENT_DIRECTIVES: u32 = 58304;

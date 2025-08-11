@@ -97,6 +97,42 @@ enum Color {
 }
 ```
 
+### Adding directives on RPC method input arguments
+
+You can add GraphQL directives to the input argument of RPC methods using the `argument_directives` option:
+
+```protobuf
+import "grafbase/options.proto";
+
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns (User) {
+    option (grafbase.graphql.argument_directives) = "@constraint(minLength: 1)";
+  }
+
+  rpc UpdateUser(UpdateUserRequest) returns (User) {
+    option (grafbase.graphql.argument_directives) = "@constraint(minLength: 1) @auth(rules: [{allow: owner}])";
+  }
+
+  rpc SearchUsers(SearchUsersRequest) returns (SearchUsersResponse) {
+    option (grafbase.graphql.is_query) = true;
+    option (grafbase.graphql.argument_directives) = "@constraint(maxLength: 100)";
+  }
+}
+```
+
+This will generate GraphQL with directives on the input arguments:
+
+```graphql
+type Query {
+  UserService_SearchUsers(input: SearchUsersRequestInput @constraint(maxLength: 100)): SearchUsersResponse @grpcMethod(...)
+}
+
+type Mutation {
+  UserService_CreateUser(input: CreateUserRequestInput @constraint(minLength: 1)): User @grpcMethod(...)
+  UserService_UpdateUser(input: UpdateUserRequestInput @constraint(minLength: 1) @auth(rules: [{allow: owner}])): User @grpcMethod(...)
+}
+```
+
 ### Adding schema directives
 
 You can add directives to the GraphQL schema extension using the `schema_directives` option at the service level:
