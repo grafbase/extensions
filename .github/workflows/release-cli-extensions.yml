@@ -18,7 +18,7 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -73,7 +73,7 @@ jobs:
           - aarch64-apple-darwin
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Rust
         uses: ./.github/actions/install-rust
@@ -115,7 +115,7 @@ jobs:
     runs-on: depot-windows-2022-8
     steps:
       - name: Get sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Rust
         uses: ./.github/actions/install-rust
@@ -174,7 +174,7 @@ jobs:
     runs-on: ${{ matrix.archs.runner }}
     steps:
       - name: Get sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Rust
         uses: ./.github/actions/install-rust
@@ -227,7 +227,7 @@ jobs:
       matrix: ${{ fromJson(needs.check-versions.outputs.matrix) }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
