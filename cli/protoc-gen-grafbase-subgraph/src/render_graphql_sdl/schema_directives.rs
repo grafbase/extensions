@@ -6,7 +6,6 @@ pub(super) fn render_schema_directives_filtered(
     types_to_render: &services::TypesToRender,
     f: &mut fmt::Formatter<'_>,
 ) -> fmt::Result {
-    // Collect all unique schema directives from the services
     let mut all_schema_directives = Vec::new();
 
     let services = if let Some(ids) = service_ids {
@@ -24,13 +23,11 @@ pub(super) fn render_schema_directives_filtered(
         }
     }
 
-    // Remove duplicates while preserving order
     let mut seen = std::collections::HashSet::new();
     let unique_directives: Vec<_> = all_schema_directives.into_iter().filter(|d| seen.insert(*d)).collect();
 
     f.write_str("extend schema\n  @link(url: \"https://grafbase.com/extensions/grpc/0.2.0\", import: [\"@protoServices\", \"@protoEnums\", \"@protoMessages\", \"@grpcMethod\"])\n")?;
 
-    // Add additional schema directives
     for directive in unique_directives {
         f.write_str("  ")?;
         f.write_str(directive)?;

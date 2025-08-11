@@ -1,6 +1,5 @@
-use crate::schema::ScalarType;
-
 use super::*;
+use crate::schema::{ProtoMessage, ScalarType, View};
 
 pub(super) fn render_graphql_types(
     schema: &GrpcSchema,
@@ -27,6 +26,8 @@ pub(super) fn render_graphql_types(
     for enum_id in enums_to_render {
         render_enum_definition(schema, *enum_id, f)?;
     }
+
+    render_entity_types(schema, messages_to_render_as_output, f)?;
 
     Ok(())
 }
@@ -95,7 +96,7 @@ fn render_message(
         if input {
             render_input_field_type(schema, &field.r#type, field.repeated, f)?;
         } else {
-            render_output_field_type(schema, &field.r#type, field.repeated, f)?;
+            render_output_field_type(schema, &field.r#type, field.repeated, true, f)?;
         }
 
         let field_directives = if input {
@@ -112,13 +113,54 @@ fn render_message(
         f.write_str("\n")?;
     }
 
+    if !input {
+        render_derives(message, f)?;
+    }
+
     f.write_str("}\n")
+}
+
+fn render_derives(message: View<'_, ProtoMessageId, ProtoMessage>, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    for entity_info in &message.derives {
+        f.write_str(INDENT)?;
+
+        let derived_field_name = if let Some(name) = &entity_info.field {
+            name.clone()
+        } else {
+            entity_info
+                .is
+                .as_ref()
+                .and_then(|is| is.fields.first())
+                .map(|first_field| {
+                    first_field
+                        .input_field_name
+                        .trim_end_matches("_id")
+                        .trim_end_matches("Id")
+                        .to_owned()
+                })
+                .unwrap_or_else(|| entity_info.entity.to_lowercase())
+        };
+
+        f.write_str(&derived_field_name)?;
+        f.write_str(": ")?;
+        f.write_str(&entity_info.entity)?;
+        f.write_str(" @derive")?;
+
+        if let Some(is) = &entity_info.is {
+            write!(f, " @is(field: \"{is}\")")?;
+        }
+
+        f.write_str("\n")?;
+    }
+
+    Ok(())
 }
 
 pub(super) fn render_output_field_type(
     schema: &GrpcSchema,
     ty: &FieldType,
     repeated: bool,
+    optional: bool,
     f: &mut fmt::Formatter<'_>,
 ) -> fmt::Result {
     if repeated {
@@ -133,6 +175,10 @@ pub(super) fn render_output_field_type(
 
     if repeated {
         f.write_str("!]")?;
+    } else if !optional && matches!(ty, FieldType::Scalar(_) | FieldType::Enum(_)) {
+        // Only scalar and enum types can be non-null based on optional flag
+        // Message types are always nullable
+        f.write_str("!")?;
     }
 
     Ok(())
@@ -234,4 +280,105 @@ fn render_message_type_name(
             }
         }
     }
+}
+
+fn render_entity_types(
+    schema: &GrpcSchema,
+    messages_to_render_as_output: &BTreeSet<ProtoMessageId>,
+    f: &mut fmt::Formatter<'_>,
+) -> fmt::Result {
+    use std::collections::{HashMap, HashSet};
+
+    // entity name -> (list of key fields, message ID for field type lookup)
+    let mut entities: HashMap<String, (Vec<&str>, ProtoMessageId)> = HashMap::new();
+
+    let mut rendered_output_types: HashSet<String> = HashSet::new();
+    for message_id in messages_to_render_as_output {
+        let message = &schema[*message_id];
+        rendered_output_types.insert(message.graphql_output_name().to_string());
+    }
+
+    for message_id in messages_to_render_as_output {
+        let message = &schema[*message_id];
+        for entity_info in &message.derives {
+            if rendered_output_types.contains(&entity_info.entity) {
+                continue;
+            }
+
+            match &entity_info.is {
+                Some(simple_is) => {
+                    let key_fields: Vec<&str> = simple_is.fields.iter().map(|f| f.output_field_name.as_str()).collect();
+
+                    entities.insert(entity_info.entity.clone(), (key_fields, *message_id));
+                }
+                None => {
+                    entities.insert(entity_info.entity.clone(), (vec!["id"], *message_id));
+                }
+            }
+        }
+    }
+
+    let mut sorted_entities: Vec<_> = entities.into_iter().collect();
+    sorted_entities.sort_by_key(|(entity_name, _)| entity_name.clone());
+
+    for (entity_name, (key_fields, message_id)) in sorted_entities {
+        f.write_str("\n")?;
+
+        // Format the @key directive
+        if key_fields.len() == 1 {
+            write!(f, "type {} @key(fields: \"{}\")", entity_name, key_fields[0])?;
+        } else {
+            // For composite keys, use space-separated format
+            write!(f, "type {} @key(fields: \"", entity_name)?;
+            for (i, field) in key_fields.iter().enumerate() {
+                if i > 0 {
+                    f.write_str(" ")?;
+                }
+                f.write_str(field)?;
+            }
+            f.write_str("\")")?;
+        }
+
+        f.write_str(" {\n")?;
+
+        let message = &schema[message_id];
+        let matching_entity_info = message.derives.iter().find(|info| info.entity == entity_name);
+
+        if let Some(entity_info) = matching_entity_info {
+            if let Some(simple_is) = &entity_info.is {
+                // Render each key field with its corresponding type from the message
+                for is_field in &simple_is.fields {
+                    f.write_str(INDENT)?;
+                    f.write_str(&is_field.output_field_name)?;
+                    f.write_str(": ")?;
+
+                    // Find the corresponding field in the message
+                    let field_found = message_id.fields(schema).find(|f| f.name == is_field.input_field_name);
+
+                    if let Some(field) = field_found {
+                        render_output_field_type(schema, &field.r#type, false, true, f)?;
+                    } else {
+                        // Default to String if field not found
+                        f.write_str("String")?;
+                    }
+                    f.write_str("\n")?;
+                }
+            } else {
+                // No is mapping, default to id: String
+                f.write_str(INDENT)?;
+                f.write_str("id: String\n")?;
+            }
+        } else {
+            // No entity info, render all key fields as String
+            for field in &key_fields {
+                f.write_str(INDENT)?;
+                f.write_str(field)?;
+                f.write_str(": String\n")?;
+            }
+        }
+
+        f.write_str("}\n")?;
+    }
+
+    Ok(())
 }

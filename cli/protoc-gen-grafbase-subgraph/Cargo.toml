@@ -8,10 +8,15 @@ keywords.workspace = true
 repository.workspace = true
 
 [dependencies]
+anyhow.workspace = true
+field-selection-map.workspace = true
 indexmap.workspace = true
 paste.workspace = true
 protobuf.workspace = true
 protobuf-support.workspace = true
+
+[build-dependencies]
+protobuf-codegen = "3"
 
 [dev-dependencies]
 insta.workspace = true

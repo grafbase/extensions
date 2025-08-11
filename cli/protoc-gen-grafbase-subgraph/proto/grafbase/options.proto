@@ -4,9 +4,16 @@ import "google/protobuf/descriptor.proto";
 
 package grafbase.graphql;
 
+message CompositeSchemaEntity {
+  optional string entity = 1;
+  optional string field = 2;
+  optional string is = 3;
+}
+
 extend google.protobuf.MessageOptions {
   optional string object_directives = 58301;
   optional string input_object_directives = 58302;
+  repeated CompositeSchemaEntity derive = 58303;
 }
 
 extend google.protobuf.FieldOptions {

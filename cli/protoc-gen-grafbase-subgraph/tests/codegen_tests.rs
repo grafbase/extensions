@@ -72,19 +72,24 @@ fn codegen_tests() {
             snapshot_suffix => "",
         }, {
             let test_content = fs::read_to_string(test_path).unwrap();
-            let files = parse_test_file(&test_content);
+            let mut files = parse_test_file(&test_content);
 
             // If no //!file: markers, treat as single file for backwards compatibility
-            let files = if files.is_empty() {
-                let mut single_file = BTreeMap::new();
-                single_file.insert(
+            if files.is_empty() {
+                files.insert(
                     test_path.file_name().unwrap().to_str().unwrap().to_string(),
                     test_content,
                 );
-                single_file
-            } else {
-                files
-            };
+            }
+
+            // Always insert the options.proto from the source of truth
+            // This will override any inline options.proto in test files
+            let options_proto_path = Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("proto")
+                .join("grafbase")
+                .join("options.proto");
+            let options_content = fs::read_to_string(options_proto_path).unwrap();
+            files.insert("grafbase/options.proto".to_string(), options_content);
 
             let proto_tmp = tempfile::tempdir().unwrap();
             let main_protos = setup_proto_files(proto_tmp.path(), &files);

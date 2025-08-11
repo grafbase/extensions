@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+import "grafbase/options.proto";
+
+package test.nodedup;
+
+service UserService {
+  rpc GetUser(GetUserRequest) returns (User);
+  rpc GetPost(GetPostRequest) returns (Post);
+  rpc GetProduct(GetProductRequest) returns (Product);
+}
+
+// This message is already rendered as output, so it shouldn't
+// be rendered again as an entity stub
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+// This references User, but since User is already rendered,
+// we shouldn't create a duplicate User type
+message Post {
+  option (grafbase.graphql.derive) = {
+    entity: "test_nodedup_User",
+    field: "author",
+    is: "{ id: author_id }"
+  };
+
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  string author_id = 4;
+}
+
+// This references a non-existent Category type, so it should
+// be rendered as an entity stub
+message Product {
+  option (grafbase.graphql.derive) = {
+    entity: "Category",
+    is: "{ id: category_id }"
+  };
+
+  string id = 1;
+  string name = 2;
+  string category_id = 3;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message GetPostRequest {
+  string id = 1;
+}
+
+message GetProductRequest {
+  string id = 1;
+}

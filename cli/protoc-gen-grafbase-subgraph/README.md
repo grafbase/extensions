@@ -106,13 +106,13 @@ import "grafbase/options.proto";
 
 service MyService {
   option (grafbase.graphql.schema_directives) = "@contact(name: \"API Support\", url: \"https://api.example.com/support\")";
-  
+
   rpc GetItem(GetItemRequest) returns (Item);
 }
 
 service AnotherService {
   option (grafbase.graphql.schema_directives) = "@tag(name: \"backend\") @auth(rules: [{allow: \"admin\"}])";
-  
+
   rpc UpdateItem(UpdateItemRequest) returns (Item);
 }
 ```
@@ -132,6 +132,69 @@ extend schema
 - **Deduplication**: If multiple services specify the same directive, it will only appear once in the schema extension
 - **Multi-file mode**: When using `subgraph_name`, only directives from services in that subgraph are included
 - **Multiple directives**: You can include multiple directives in a single string, separated by spaces
+
+### Composite schema entity references
+
+You can create federation-style entity references using the `derive` option on message fields. This allows you to reference entities from other subgraphs:
+
+```protobuf
+import "grafbase/options.proto";
+
+message Product {
+  // Basic usage: creates a user field that references User entity by id
+  (grafbase.graphql.derive) = {
+    entity: "User",
+    is: "{ id: user_id }"
+  };
+
+  // Custom relation field name: creates an owner field instead of user
+  (grafbase.graphql.derive) = {
+    entity: "User",
+    field: "owner"
+    is: "{ id: owner_id }"
+  };
+
+  // Reference by non-id field
+  (grafbase.graphql.composite_schemas_entity) = {
+    entity: "Shop",
+    is: "{ slug: shop_slug }"
+  };
+
+  string id = 1;
+  string name = 2;
+
+  string user_id = 3;
+  string owner_id = 4;
+
+  string shop_slug = 6;
+}
+```
+
+This generates GraphQL with entity references:
+
+```graphql
+type Product {
+  id: String
+  name: String
+  user_id: String
+  user: User @derive @is(field: "{ id: user_id }")  # Automatically added reference field
+  owner_id: String
+  owner: User @derive @is(field: "{ id: owner_id }")  # Custom name for the reference
+  shop_slug: String
+  shop: Shop @derive @is(field: "{ slug: shop_slug }")
+}
+
+# Stub entities are automatically created
+type User @key(fields: "id") {
+  id: String
+}
+
+type Shop @key(fields: "slug") {
+  slug: String
+}
+```
+
+Composite (multiple fields) and list derives are also supported.
 
 ### Mapping specific services to different subgraphs
 
