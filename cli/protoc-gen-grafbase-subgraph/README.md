@@ -97,6 +97,24 @@ enum Color {
 }
 ```
 
+### Adding extra fields to output types
+
+You can add custom fields to GraphQL output types using the `object_extra_field` option:
+
+```protobuf
+import "grafbase/options.proto";
+
+message Product {
+  option (grafbase.graphql.object_extra_field) = "computedPrice: Float @custom";
+  option (grafbase.graphql.object_extra_field) = "isAvailable: Boolean!";
+
+  string id = 1;
+  string name = 2;
+}
+```
+
+This will generate a GraphQL type with the extra fields included verbatim. Note that extra fields only appear on output types, not input types.
+
 ### Adding directives on RPC method input arguments
 
 You can add GraphQL directives to the input argument of RPC methods using the `argument_directives` option:

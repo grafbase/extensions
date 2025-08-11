@@ -1,0 +1,118 @@
+---
+source: cli/protoc-gen-grafbase-subgraph/tests/codegen_tests.rs
+expression: combined_output
+input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/object_extra_fields.proto
+---
+#--- schema.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @protoServices(
+    definitions: [
+      {
+        name: "test.extra_fields.TestService"
+        methods: [
+          {
+            name: "GetItem"
+            inputType: ".test.extra_fields.GetItemRequest"
+            outputType: ".test.extra_fields.Item"
+          }
+          {
+            name: "CreateItem"
+            inputType: ".test.extra_fields.CreateItemRequest"
+            outputType: ".test.extra_fields.Item"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".test.extra_fields.Item"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "name"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "description"
+            number: 3
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.extra_fields.GetItemRequest"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".test.extra_fields.CreateItemRequest"
+        fields: [
+          {
+            name: "name"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "description"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+    ]
+  )
+
+type Mutation {
+  test_extra_fields_TestService_GetItem(input: test_extra_fields_GetItemRequestInput): test_extra_fields_Item @grpcMethod(service: "test.extra_fields.TestService", method: "GetItem")
+  test_extra_fields_TestService_CreateItem(input: test_extra_fields_CreateItemRequestInput): test_extra_fields_Item @grpcMethod(service: "test.extra_fields.TestService", method: "CreateItem")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+"""
+Message without extra fields
+"""
+input test_extra_fields_GetItemRequestInput {
+  id: String
+}
+
+"""
+Message with extra fields to test that they don't appear on input types
+"""
+input test_extra_fields_CreateItemRequestInput {
+  name: String
+  description: String
+}
+
+"""
+Test message with extra fields
+"""
+type test_extra_fields_Item {
+  id: String!
+  name: String!
+  description: String!
+  computedField: String @custom
+  anotherField: Int! @deprecated(reason: "Use computedField instead")
+  # This is a comment in the extra field
+}

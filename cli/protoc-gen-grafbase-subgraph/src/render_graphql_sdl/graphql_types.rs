@@ -114,6 +114,12 @@ fn render_message(
     }
 
     if !input {
+        for extra_field in &message.object_extra_fields {
+            f.write_str(INDENT)?;
+            f.write_str(extra_field)?;
+            f.write_str("\n")?;
+        }
+
         render_derives(message, f)?;
     }
 

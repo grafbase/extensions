@@ -25,6 +25,7 @@ pub(crate) struct ProtoMessage {
     pub(crate) input_object_directives: Option<String>,
     pub(crate) object_directives: Option<String>,
     pub(crate) derives: Vec<CompositeSchemaEntity>,
+    pub(crate) object_extra_fields: Vec<String>,
 }
 
 impl ProtoMessage {

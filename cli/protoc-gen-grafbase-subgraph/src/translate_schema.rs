@@ -239,6 +239,7 @@ fn translate_message(
         input_object_directives: None,
         object_directives: None,
         derives: Vec::new(),
+        object_extra_fields: Vec::new(),
     };
 
     extract_message_graphql_directives_from_options(message, &mut translated_message);
@@ -435,6 +436,12 @@ fn extract_message_graphql_directives_from_options(message: &DescriptorProto, tr
                                 },
                             });
                         }
+                    }
+                }
+            } else if field_number == OBJECT_EXTRA_FIELD {
+                if let protobuf::UnknownValueRef::LengthDelimited(bytes) = value {
+                    if let Ok(field_str) = str::from_utf8(bytes) {
+                        translated_message.object_extra_fields.push(field_str.to_owned());
                     }
                 }
             }

@@ -14,6 +14,7 @@ extend google.protobuf.MessageOptions {
   optional string object_directives = 58301;
   optional string input_object_directives = 58302;
   repeated CompositeSchemaEntity derive = 58303;
+  repeated string object_extra_field = 58304;
 }
 
 extend google.protobuf.FieldOptions {

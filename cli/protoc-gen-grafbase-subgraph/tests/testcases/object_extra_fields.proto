@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+import "grafbase/options.proto";
+
+package test.extra_fields;
+
+service TestService {
+  rpc GetItem(GetItemRequest) returns (Item);
+  rpc CreateItem(CreateItemRequest) returns (Item);
+}
+
+// Test message with extra fields
+message Item {
+  option (grafbase.graphql.object_extra_field) = "computedField: String @custom";
+  option (grafbase.graphql.object_extra_field) = "anotherField: Int! @deprecated(reason: \"Use computedField instead\")";
+  option (grafbase.graphql.object_extra_field) = "# This is a comment in the extra field";
+
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+// Message without extra fields
+message GetItemRequest {
+  string id = 1;
+}
+
+// Message with extra fields to test that they don't appear on input types
+message CreateItemRequest {
+  option (grafbase.graphql.object_extra_field) = "shouldNotAppearOnInput: String";
+  
+  string name = 1;
+  string description = 2;
+}

@@ -2,6 +2,8 @@
 
 ### Added
 
+- **Object extra fields** added. You can now add custom fields to GraphQL output types using the repeatable `object_extra_field` option on messages. Fields are rendered verbatim and only appear on output types, not input types.
+
 - **Input argument directives** added. You can now add GraphQL directives to RPC method input argument, that corresponds to the input of the RPC method, using the `argument_directives` option on methods.
 
 - **Proto3 optional field support** added. The generator now properly handles proto3 optional fields:
