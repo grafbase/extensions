@@ -1,5 +1,5 @@
 use super::*;
-use crate::schema::{GraphQLOperationType, GrpcSchema, ProtoMethod, ProtoMethodId, View};
+use crate::schema::{CompositeSchemaEntity, GraphQLOperationType, GrpcSchema, ProtoMethod, ProtoMethodId, View};
 use std::fmt;
 
 pub(super) fn render_services_filtered(
@@ -65,7 +65,7 @@ pub(super) fn render_services_filtered(
     Ok(())
 }
 
-pub(super) fn collect_types_to_render_filtered(
+pub(super) fn collect_types_to_render(
     schema: &GrpcSchema,
     service_ids: Option<&[crate::schema::ProtoServiceId]>,
 ) -> TypesToRender {
@@ -164,6 +164,22 @@ fn collect_message_id_and_enum_ids_recursively(
             if message_ids.insert(*proto_message_id) {
                 for field in proto_message_id.fields(schema) {
                     collect_message_id_and_enum_ids_recursively(schema, &field.r#type, message_ids, enum_ids);
+                }
+
+                for CompositeSchemaEntity { entity, .. } in &schema.view(*proto_message_id).derives {
+                    let Some(referenced) = schema
+                        .iter_messages()
+                        .find(|message| &message.graphql_output_name().to_string() == entity)
+                    else {
+                        continue;
+                    };
+
+                    collect_message_id_and_enum_ids_recursively(
+                        schema,
+                        &FieldType::Message(referenced.id),
+                        message_ids,
+                        enum_ids,
+                    )
                 }
             }
         }

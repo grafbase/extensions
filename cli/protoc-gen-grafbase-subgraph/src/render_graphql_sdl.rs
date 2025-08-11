@@ -23,7 +23,7 @@ pub(crate) fn render_graphql_sdl_filtered(
     out.write_fmt(format_args!(
         "{}",
         crate::display_utils::display_fn(|f| {
-            let types_to_render = services::collect_types_to_render_filtered(schema, service_ids);
+            let types_to_render = services::collect_types_to_render(schema, service_ids);
 
             schema_directives::render_schema_directives_filtered(schema, service_ids, &types_to_render, f)?;
 

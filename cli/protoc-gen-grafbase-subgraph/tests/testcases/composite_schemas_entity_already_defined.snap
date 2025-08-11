@@ -1,0 +1,97 @@
+---
+source: cli/protoc-gen-grafbase-subgraph/tests/codegen_tests.rs
+expression: combined_output
+input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/composite_schemas_entity_already_defined.proto
+---
+#--- schema.graphql ---#
+
+extend schema
+  @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @protoServices(
+    definitions: [
+      {
+        name: "TestService"
+        methods: [
+          {
+            name: "RunTest"
+            inputType: ".a_input"
+            outputType: ".a_output"
+          }
+        ]
+      }
+    ]
+  )
+  @protoMessages(
+    definitions: [
+      {
+        name: ".a_input"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".a_output"
+        fields: [
+          {
+            name: "id"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "referenced_identifier"
+            number: 2
+            repeated: false
+            type: "string"
+          }
+        ]
+      }
+      {
+        name: ".referenced_entity"
+        fields: [
+          {
+            name: "identifier"
+            number: 1
+            repeated: false
+            type: "string"
+          }
+          {
+            name: "qty"
+            number: 2
+            repeated: false
+            type: "uint32"
+          }
+        ]
+      }
+    ]
+  )
+
+type Mutation {
+  TestService_RunTest(input: a_inputInput): a_output @grpcMethod(service: "TestService", method: "RunTest")
+}
+
+"64 bit signed integer" scalar I64
+"64 bit unsigned integer" scalar U64
+
+input a_inputInput {
+  id: String
+}
+
+type a_output {
+  id: String!
+  referenced_identifier: String!
+  referenced_identifier: referenced_entity @derive @is(field: "{ identifier: referenced_identifier }")
+}
+
+type referenced_entity @key(fields: "identifier") @important(field: "qty") {
+  identifier: String!
+"""
+This is the field we want to see in the GraphQL schema.
+"""
+  qty: Int!
+}

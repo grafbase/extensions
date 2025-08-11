@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "grafbase/options.proto";
+
+message a_input {
+    string id = 1;
+}
+
+message a_output {
+    option (grafbase.graphql.derive) = { entity: "referenced_entity", is: "{ identifier: referenced_identifier }" };
+
+    string id = 1;
+    string referenced_identifier = 2;
+}
+
+message referenced_entity {
+    option (grafbase.graphql.object_directives) = "@key(fields: \"identifier\") @important(field: \"qty\")";
+
+    string identifier = 1;
+    // This is the field we want to see in the GraphQL schema.
+    uint32 qty = 2;
+}
+
+service TestService {
+    rpc RunTest(a_input) returns (a_output) {}
+}
