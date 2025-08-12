@@ -114,11 +114,11 @@ input test_schema_DeleteItemRequestInput {
 Messages
 """
 type test_schema_Item {
-  id: String
-  name: String
-  description: String
+  id: String!
+  name: String!
+  description: String!
 }
 
 type test_schema_DeleteItemResponse {
-  success: Boolean
+  success: Boolean!
 }

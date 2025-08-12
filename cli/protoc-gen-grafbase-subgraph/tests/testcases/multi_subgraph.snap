@@ -106,10 +106,10 @@ input example_CreateOrderRequestInput {
 }
 
 type example_Order {
-  id: String
-  user_id: String
+  id: String!
+  user_id: String!
   product_ids: [String!]
-  total: Float
+  total: Float!
 }
 
 #--- products.graphql ---#
@@ -267,15 +267,15 @@ input example_ListProductsRequestInput {
 }
 
 type example_Product {
-  id: String
-  name: String
-  price: Float
-  owner_id: String
+  id: String!
+  name: String!
+  price: Float!
+  owner_id: String!
 }
 
 type example_ListProductsResponse {
   products: [example_Product!]
-  next_cursor: String
+  next_cursor: String!
 }
 
 #--- users.graphql ---#
@@ -423,12 +423,12 @@ input example_ListUsersRequestInput {
 Shared types
 """
 type example_User {
-  id: String
-  name: String
-  email: String
+  id: String!
+  name: String!
+  email: String!
 }
 
 type example_ListUsersResponse {
   users: [example_User!]
-  next_cursor: String
+  next_cursor: String!
 }

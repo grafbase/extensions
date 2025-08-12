@@ -84,21 +84,21 @@ input test_composite_GetOrderRequestInput {
 }
 
 type test_composite_Order {
-  id: String
-  description: String
+  id: String!
+  description: String!
 """
 Composite key reference to CustomerAddress entity
 """
-  customer_id: String
-  address_id: String
+  customer_id: String!
+  address_id: String!
 """
 This creates a reference using both fields
 """
-  dummy_composite: String
+  dummy_composite: String!
   delivery_address: CustomerAddress @derive @is(field: "{ customerId: customer_id, addressId: address_id }")
 }
 
 type CustomerAddress @key(fields: "customerId addressId") {
-  customerId: String
-  addressId: String
+  customerId: String!
+  addressId: String!
 }

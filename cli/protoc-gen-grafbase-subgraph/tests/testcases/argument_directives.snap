@@ -238,16 +238,16 @@ input test_input_arg_directives_SearchUsersRequestInput {
 Messages
 """
 type test_input_arg_directives_User {
-  id: String
-  name: String
-  email: String
+  id: String!
+  name: String!
+  email: String!
 }
 
 type test_input_arg_directives_DeleteUserResponse {
-  success: Boolean
+  success: Boolean!
 }
 
 type test_input_arg_directives_SearchUsersResponse {
   users: [test_input_arg_directives_User!]
-  total_count: Int
+  total_count: Int!
 }

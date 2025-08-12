@@ -1,0 +1,44 @@
+//!file:optional_fields.proto
+syntax = "proto3";
+
+package test.optional;
+
+// Test message with a mix of optional and non-optional fields
+message TestMessage {
+  // Non-optional scalar fields (should render as Type! in output types, Type in input types)
+  string required_string = 1;
+  int32 required_int = 2;
+  bool required_bool = 3;
+  
+  // Optional scalar fields (should render as Type in both output and input types)
+  optional string optional_string = 4;
+  optional int32 optional_int = 5;
+  optional bool optional_bool = 6;
+  
+  // Repeated field (should render as [Type!])
+  repeated string repeated_string = 7;
+  
+  // Message type field (should always be nullable)
+  NestedMessage nested_message = 8;
+  
+  // Optional message type field (should still be nullable)
+  optional NestedMessage optional_nested_message = 9;
+  
+  // Enum fields (non-optional renders as Type! in output types, Type in input types)
+  TestEnum required_enum = 10;
+  optional TestEnum optional_enum = 11;
+}
+
+message NestedMessage {
+  string value = 1;
+}
+
+enum TestEnum {
+  UNKNOWN = 0;
+  FIRST = 1;
+  SECOND = 2;
+}
+
+service TestService {
+  rpc GetTest(TestMessage) returns (TestMessage) {}
+}

@@ -333,6 +333,7 @@ fn translate_fields(
         };
 
         let repeated = field.label.unwrap_or_default().enum_value_or_default() == Label::LABEL_REPEATED;
+        let optional = field.proto3_optional();
 
         let mut proto_field = ProtoField {
             message_id,
@@ -340,6 +341,7 @@ fn translate_fields(
             r#type,
             number,
             repeated,
+            optional,
             description,
             input_field_directives: None,
             output_field_directives: None,

@@ -101,5 +101,5 @@ input grpc_examples_echo_EchoRequestInput {
 EchoResponse is the response for echo.
 """
 type grpc_examples_echo_EchoResponse {
-  message: String
+  message: String!
 }

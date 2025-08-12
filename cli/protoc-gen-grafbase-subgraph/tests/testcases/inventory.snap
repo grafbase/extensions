@@ -113,7 +113,7 @@ input test_inventory_SearchRequestInput @oneOf {
 }
 
 type test_inventory_SearchResponse @key(fields: "id") {
-  id: String @deprecated(reason: "Use IDV2")
+  id: String! @deprecated(reason: "Use IDV2")
 }
 
 enum test_inventory_Color @deprecated(reason: "Use ColorV2") {

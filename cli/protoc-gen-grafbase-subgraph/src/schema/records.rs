@@ -54,6 +54,7 @@ pub(crate) struct ProtoField {
     pub(crate) r#type: FieldType,
     pub(crate) number: u16,
     pub(crate) repeated: bool,
+    pub(crate) optional: bool,
     pub(crate) description: Option<String>,
     pub(crate) input_field_directives: Option<String>,
     pub(crate) output_field_directives: Option<String>,
