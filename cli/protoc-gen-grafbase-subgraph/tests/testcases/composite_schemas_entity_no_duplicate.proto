@@ -21,9 +21,9 @@ message User {
 // This references User, but since User is already rendered,
 // we shouldn't create a duplicate User type
 message Post {
-  option (grafbase.graphql.derive) = {
+  option (grafbase.graphql.derive_field) = {
     entity: "test_nodedup_User",
-    field: "author",
+    field_name: "author",
     is: "{ id: author_id }"
   };
 
@@ -36,7 +36,7 @@ message Post {
 // This references a non-existent Category type, so it should
 // be rendered as an entity stub
 message Product {
-  option (grafbase.graphql.derive) = {
+  option (grafbase.graphql.derive_field) = {
     entity: "Category",
     is: "{ id: category_id }"
   };

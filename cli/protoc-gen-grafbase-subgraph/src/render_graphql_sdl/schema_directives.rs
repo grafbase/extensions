@@ -26,7 +26,64 @@ pub(super) fn render_schema_directives_filtered(
     let mut seen = std::collections::HashSet::new();
     let unique_directives: Vec<_> = all_schema_directives.into_iter().filter(|d| seen.insert(*d)).collect();
 
+    let needs_composite_schemas = {
+        let messages_with_features = schema
+            .iter_messages()
+            .any(|m| !m.keys.is_empty() || !m.derive_fields.is_empty() || !m.join_fields.is_empty());
+
+        let methods_with_lookup = if let Some(ids) = service_ids {
+            schema
+                .iter_methods()
+                .any(|m| ids.contains(&m.service_id) && m.lookup.is_some())
+        } else {
+            schema.iter_methods().any(|m| m.lookup.is_some())
+        };
+
+        messages_with_features || methods_with_lookup
+    };
+
     f.write_str("extend schema\n  @link(url: \"https://grafbase.com/extensions/grpc/0.2.0\", import: [\"@protoServices\", \"@protoEnums\", \"@protoMessages\", \"@grpcMethod\"])\n")?;
+
+    if needs_composite_schemas {
+        f.write_str("  @link(url: \"https://specs.grafbase.com/composite-schemas/v1\", import: [")?;
+        let mut imports = Vec::new();
+
+        if schema
+            .iter_messages()
+            .any(|m| !m.keys.is_empty() || !m.derive_fields.is_empty())
+        {
+            imports.push("\"@key\"");
+        }
+
+        if schema.iter_messages().any(|m| !m.derive_fields.is_empty()) {
+            imports.push("\"@derive\"");
+        }
+
+        if schema
+            .iter_messages()
+            .any(|m| m.derive_fields.iter().any(|d| d.is.is_some()))
+            || schema.iter_methods().any(|m| m.lookup.is_some())
+        {
+            imports.push("\"@is\"");
+        }
+
+        if schema.iter_methods().any(|m| m.lookup.is_some()) {
+            imports.push("\"@lookup\"");
+        }
+
+        if schema.iter_messages().any(|m| !m.join_fields.is_empty()) {
+            imports.push("\"@require\"");
+        }
+
+        for (i, import) in imports.iter().enumerate() {
+            if i > 0 {
+                f.write_str(", ")?;
+            }
+            f.write_str(import)?;
+        }
+
+        f.write_str("])\n")?;
+    }
 
     for directive in unique_directives {
         f.write_str("  ")?;

@@ -2,6 +2,11 @@
 
 ### Added
 
+- **Composite schemas shortcuts** added. New protobuf options for simplified composite schemas directives:
+  - `key` option generates `@key` directives on types
+  - `lookup` option generates `@lookup` directive with optional `@is` mapping
+  - `join_field` option generates fields with `@require` and `@grpcMethod` directives, with proper type resolution
+
 - **Input argument directives** added. You can now add GraphQL directives to RPC method input argument, that corresponds to the input of the RPC method, using the `argument_directives` option on methods.
 
 - **Proto3 optional field support** added. The generator now properly handles proto3 optional fields:
@@ -11,12 +16,11 @@
   - Input types remain nullable for all fields
   - The generator now declares support for `FEATURE_PROTO3_OPTIONAL` to work with proto3 files containing optional fields
 
-- **Composite schema entity references with @derive** added. You can now create federation-style entity references using the `derive` option on messages:
-  - Use `option (grafbase.graphql.derive) = {entity: "User", is: "{ id: user_id }"};` on fields
+- **Composite schema entity references with @derive** added. You can now create federation-style entity references using the `derive_field` option on messages:
+  - Use `option (grafbase.graphql.derive_field) = {entity: "User", is: "{ id: user_id }"};` on fields
   - Automatically generates reference fields with `@derive` and `@is` directives
   - Creates stub entity types with `@key` directives if the type is not already defined
-  - Supports custom relation field names with the `field` parameter
-  - The `is` parameter defines the field mapping using format `"{ <entity_key_field>: <proto_field> }"`
+  - Supports custom relation field names with the `field_name` parameter
   - The `@is` directive uses the value from the `is` parameter directly
   - Enables cross-subgraph entity references in federated schemas
 

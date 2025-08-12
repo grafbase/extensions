@@ -9,9 +9,9 @@ service OrderService {
 }
 
 message Order {
-  option (grafbase.graphql.derive) = {
+  option (grafbase.graphql.derive_field) = {
     entity: "CustomerAddress",
-    field: "delivery_address",
+    field_name: "delivery_address",
     is: "{ customerId: customer_id addressId: address_id }"
   };
 
