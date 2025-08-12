@@ -7,6 +7,7 @@ input_file: cli/protoc-gen-grafbase-subgraph/tests/testcases/composite_schemas_e
 
 extend schema
   @link(url: "https://grafbase.com/extensions/grpc/0.2.0", import: ["@protoServices", "@protoEnums", "@protoMessages", "@grpcMethod"])
+  @link(url: "https://specs.grafbase.com/composite-schemas/v1", import: ["@key", "@derive", "@is"])
   @protoServices(
     definitions: [
       {

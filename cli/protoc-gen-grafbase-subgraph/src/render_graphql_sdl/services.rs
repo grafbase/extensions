@@ -123,6 +123,12 @@ fn render_method_field(
         write!(f, " {directives}")?;
     }
 
+    if let Some(lookup) = &method.lookup {
+        if let Some(argument_is) = &lookup.argument_is {
+            write!(f, " @is(field: \"{}\")", argument_is)?;
+        }
+    }
+
     f.write_str("): ")?;
 
     render_output_field_type(schema, &method.output_type, false, true, f)?;
@@ -135,6 +141,10 @@ fn render_method_field(
 
     if let Some(directives) = method.directives.as_deref() {
         write!(f, " {directives}")?;
+    }
+
+    if method.lookup.is_some() {
+        f.write_str(" @lookup")?;
     }
 
     f.write_str("\n")?;

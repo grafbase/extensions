@@ -24,7 +24,9 @@ pub(crate) struct ProtoMessage {
     pub(crate) description: Option<String>,
     pub(crate) input_object_directives: Option<String>,
     pub(crate) object_directives: Option<String>,
-    pub(crate) derives: Vec<CompositeSchemaEntity>,
+    pub(crate) derive_fields: Vec<DeriveField>,
+    pub(crate) keys: Vec<Key>,
+    pub(crate) join_fields: Vec<JoinField>,
 }
 
 impl ProtoMessage {
@@ -41,10 +43,28 @@ impl ProtoMessage {
 }
 
 #[derive(Debug, PartialEq, Clone)]
-pub(crate) struct CompositeSchemaEntity {
+pub(crate) struct DeriveField {
     pub(crate) entity: String,
-    pub(crate) field: Option<String>,
+    pub(crate) field_name: Option<String>,
     pub(crate) is: Option<SimpleIs>,
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub(crate) struct Key {
+    pub(crate) fields: String,
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub(crate) struct JoinField {
+    pub(crate) name: String,
+    pub(crate) service: String,
+    pub(crate) method: String,
+    pub(crate) require: String,
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub(crate) struct Lookup {
+    pub(crate) argument_is: Option<String>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -102,6 +122,7 @@ pub(crate) struct ProtoMethod {
     pub(crate) is_mutation: Option<bool>,
     pub(crate) directives: Option<String>,
     pub(crate) argument_directives: Option<String>,
+    pub(crate) lookup: Option<Lookup>,
 }
 
 impl PartialOrd for ProtoMethod {

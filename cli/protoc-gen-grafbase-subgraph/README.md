@@ -169,24 +169,71 @@ extend schema
 - **Multi-file mode**: When using `subgraph_name`, only directives from services in that subgraph are included
 - **Multiple directives**: You can include multiple directives in a single string, separated by spaces
 
-### Composite schema entity references
+### Mapping specific services to different subgraphs
 
-You can create federation-style entity references using the `derive` option on message fields. This allows you to reference entities from other subgraphs:
+By default, the plugin generates a single `schema.graphql` file containing all services. However, you can map different services to different subgraph files using the `subgraph_name` option:
 
 ```protobuf
 import "grafbase/options.proto";
 
+service UserService {
+  option (grafbase.graphql.subgraph_name) = "users";
+
+  rpc GetUser(GetUserRequest) returns (User);
+  rpc CreateUser(CreateUserRequest) returns (User);
+}
+
+service ProductService {
+  option (grafbase.graphql.subgraph_name) = "products";
+
+  rpc GetProduct(GetProductRequest) returns (Product);
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+}
+
+service OrderService {
+  option (grafbase.graphql.subgraph_name) = "orders";
+
+  rpc CreateOrder(CreateOrderRequest) returns (Order);
+}
+```
+
+This will generate three files:
+- `users.graphql` - Contains only the UserService and its related types
+- `products.graphql` - Contains only the ProductService and its related types
+- `orders.graphql` - Contains only the OrderService and its related types
+
+#### Multi-file mode behavior
+
+- **Automatic mode detection**: As soon as any service has a `subgraph_name` option, the plugin switches to multi-file mode
+- **Service filtering**: Each generated file only includes the services mapped to that subgraph
+- **Type filtering**: Only types actually used by the services in a subgraph are included in that file
+- **Shared subgraphs**: Multiple services can map to the same subgraph by using the same `subgraph_name`
+- **Validation**: Subgraph names must match the pattern `[a-zA-Z][a-zA-Z0-9-]*`
+- **Backward compatibility**: If no services have `subgraph_name`, the default single `schema.graphql` is generated
+- **Services without subgraph_name**: In multi-file mode, services without a `subgraph_name` are ignored
+
+## Options for composite schemas directives
+
+The following options build upon the previous ones to make annotating your schemas with [Composite Schemas spec](https://github.com/graphql/composite-schemas-spec/) directives more convenient.
+
+### Composite schema entity references
+
+You can create federation-style entity references using the `derive_field` option on messages. This allows you to reference entities from other subgraphs:
+
+```proto
+import "grafbase/options.proto";
+
 message Product {
   // Basic usage: creates a user field that references User entity by id
-  option (grafbase.graphql.derive) = {
+  option (grafbase.graphql.derive_field) = {
     entity: "User",
     is: "{ id: user_id }"
   };
 
   // Custom relation field name: creates an owner field instead of user
-  option (grafbase.graphql.derive) = {
+  option (grafbase.graphql.derive_field) = {
     entity: "User",
-    field: "owner"
+    field_name: "owner"
     is: "{ id: owner_id }"
   };
 
@@ -232,48 +279,122 @@ type Shop @key(fields: "slug") {
 
 Composite (multiple fields) and list derives are also supported.
 
-### Mapping specific services to different subgraphs
+### Key
 
-By default, the plugin generates a single `schema.graphql` file containing all services. However, you can map different services to different subgraph files using the `subgraph_name` option:
+This is a shortcut for `output_field_directives` for `@key`, as in `option (grafbase.graphql.output_field_directives) = "@key(fields: \"id\")"`:
 
-```protobuf
-import "grafbase/options.proto";
+```proto
+message User {
+  option (grafbase.graphql.key) = { fields: "id" };
+  option (grafbase.graphql.key) = { fields: "alias email" };
 
-service UserService {
-  option (grafbase.graphql.subgraph_name) = "users";
-
-  rpc GetUser(GetUserRequest) returns (User);
-  rpc CreateUser(CreateUserRequest) returns (User);
-}
-
-service ProductService {
-  option (grafbase.graphql.subgraph_name) = "products";
-
-  rpc GetProduct(GetProductRequest) returns (Product);
-  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
-}
-
-service OrderService {
-  option (grafbase.graphql.subgraph_name) = "orders";
-
-  rpc CreateOrder(CreateOrderRequest) returns (Order);
+  string id = 1;
+  string alias = 2;
+  string email = 3;
 }
 ```
 
-This will generate three files:
-- `users.graphql` - Contains only the UserService and its related types
-- `products.graphql` - Contains only the ProductService and its related types
-- `orders.graphql` - Contains only the OrderService and its related types
+Will generate:
 
-#### Multi-file mode behavior
+```graphql
+extend schema @link(url: "https://specs.grafbase.com/composite-schemas/v1", import: ["@key"])
 
-- **Automatic mode detection**: As soon as any service has a `subgraph_name` option, the plugin switches to multi-file mode
-- **Service filtering**: Each generated file only includes the services mapped to that subgraph
-- **Type filtering**: Only types actually used by the services in a subgraph are included in that file
-- **Shared subgraphs**: Multiple services can map to the same subgraph by using the same `subgraph_name`
-- **Validation**: Subgraph names must match the pattern `[a-zA-Z][a-zA-Z0-9-]*`
-- **Backward compatibility**: If no services have `subgraph_name`, the default single `schema.graphql` is generated
-- **Services without subgraph_name**: In multi-file mode, services without a `subgraph_name` are ignored
+# ...
+
+type User @key(fields: "id") @key(fields: "alias email") {
+  id: String!
+  alias: String!
+  email: String!
+}
+```
+
+### Lookup
+
+This is a shortcut for the `@link`, `@lookup` and `@is` directives needed to define a lookup field:
+
+```proto
+service MyService {
+  option (grafbase.graphql.default_to_query_fields) = true;
+
+  rpc GetUser (GetUserRequest) returns (GetUserResponse) {
+    option (grafbase.graphql.lookup) = { argument_is: "{ user_id: user.id }" };
+  }
+}
+```
+
+Will generate:
+
+```graphql
+extend schema @link(url: "https://specs.grafbase.com/composite-schemas/v1", import: ["@is", "@lookup"])
+
+# ...
+
+type Query {
+  GetUser(input: GetUserRequest @is(field: "{ user_id: user.id }")) @lookup
+}
+```
+
+### Join fields
+
+This option corresponds to a join with a gRPC method that isn't a lookup. It will define a field that will be resolved by calling the gRPC method, with data from the parent object used to populate the input message, through an `@require` directive.
+
+```proto
+message Product {
+    option (grafbase.graphql.join_field) = {
+        name: "parts",
+        service: "products.ProductService",
+        method: "GetProductParts",
+        require: "{ product_id: id }"
+    };
+
+    string id = 1;For
+    string name = 2;
+    string sku = 3;
+}
+
+rpc ProductService {
+    rpc GetProductParts(GetProductPartsRequest) returns (stream GetProductPartsResponse);
+}
+
+message GetProductPartsRequest {
+    string product_id = 1;
+}
+
+message GetProductPartsResponse {
+    repeated Part part = 1;
+}
+
+message Part {
+    string id = 1;
+    string name = 2;
+    uint32 quantity_in_stock = 3;
+}
+```
+
+Will generate:
+
+```graphql
+extend schema @link(url: "https://specs.grafbase.com/composite-schemas/v1", imports: ["@require"])
+
+# ...
+
+type Product {
+    id: String!
+    name: String!
+    sku: String!
+    parts(input: products_GetProductPartsRequest @require(field: "{ product_id: id }")): product_GetProductPartsResponse @grpcMethod(service: "products.ProductService", method: "GetProductParts")
+}
+
+type Part {
+    id: ID!
+    name: String!
+    quantityInStock: Int!
+}
+
+type Mutation {
+    product_GetProductParts(input: products_GetProductPartsRequest): product_GetProductPartsResponse
+}
+```
 
 ## Limitations
 

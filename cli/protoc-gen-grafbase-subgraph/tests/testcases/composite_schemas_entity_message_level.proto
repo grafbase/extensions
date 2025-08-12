@@ -10,9 +10,9 @@ service OrderService {
 
 // Test message-level composite schema entity with composite key
 message Order {
-  option (grafbase.graphql.derive) = {
+  option (grafbase.graphql.derive_field) = {
     entity: "CustomerAddress",
-    field: "delivery_address",
+    field_name: "delivery_address",
     is: "{ customerId: customer_id addressId: address_id }"
   };
 
@@ -25,9 +25,9 @@ message Order {
 
 // Test message-level composite schema entity with single key
 message Product {
-  option (grafbase.graphql.derive) = {
+  option (grafbase.graphql.derive_field) = {
     entity: "User",
-    field: "owner",
+    field_name: "owner",
     is: "{ id: user_id }"
   };
 

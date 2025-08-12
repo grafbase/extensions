@@ -164,6 +164,7 @@ fn translate_service(
             is_mutation: None,
             directives: None,
             argument_directives: None,
+            lookup: None,
         };
 
         extract_method_graphql_options_from_options(method, &mut proto_method);
@@ -238,7 +239,9 @@ fn translate_message(
         description: location_to_description(location, source_code_info),
         input_object_directives: None,
         object_directives: None,
-        derives: Vec::new(),
+        derive_fields: Vec::new(),
+        keys: Vec::new(),
+        join_fields: Vec::new(),
     };
 
     extract_message_graphql_directives_from_options(message, &mut translated_message);
@@ -408,35 +411,70 @@ fn extract_message_graphql_directives_from_options(message: &DescriptorProto, tr
 
     if let Some(options) = message.options.as_ref() {
         for (field_number, value) in options.special_fields.unknown_fields().iter() {
-            if field_number == DERIVE {
-                if let protobuf::UnknownValueRef::LengthDelimited(bytes) = value {
-                    use protobuf::Message;
-                    if let Ok(entity_proto) =
-                        crate::options_proto::options::CompositeSchemaEntity::parse_from_bytes(bytes)
-                    {
-                        if entity_proto.has_entity() {
-                            translated_message.derives.push(crate::schema::CompositeSchemaEntity {
-                                entity: entity_proto.entity().to_owned(),
-                                field: if entity_proto.has_field() {
-                                    Some(entity_proto.field().to_owned())
-                                } else {
-                                    None
-                                },
-                                is: if entity_proto.has_is() {
-                                    match derive::extract_is(entity_proto.is()) {
-                                        Ok(is) => Some(is),
-                                        Err(err) => {
-                                            eprintln!("Error reading derive.is at {}: {err}", message.name());
-                                            None
+            match field_number {
+                DERIVE_FIELD => {
+                    if let protobuf::UnknownValueRef::LengthDelimited(bytes) = value {
+                        use protobuf::Message;
+                        if let Ok(derive_field_proto) =
+                            crate::options_proto::options::DeriveField::parse_from_bytes(bytes)
+                        {
+                            if derive_field_proto.has_entity() {
+                                translated_message.derive_fields.push(crate::schema::DeriveField {
+                                    entity: derive_field_proto.entity().to_owned(),
+                                    field_name: if derive_field_proto.has_field_name() {
+                                        Some(derive_field_proto.field_name().to_owned())
+                                    } else {
+                                        None
+                                    },
+                                    is: if derive_field_proto.has_is() {
+                                        match derive::extract_is(derive_field_proto.is()) {
+                                            Ok(is) => Some(is),
+                                            Err(err) => {
+                                                eprintln!("Error reading derive_field.is at {}: {err}", message.name());
+                                                None
+                                            }
                                         }
-                                    }
-                                } else {
-                                    None
-                                },
-                            });
+                                    } else {
+                                        None
+                                    },
+                                });
+                            }
                         }
                     }
                 }
+                KEY => {
+                    if let protobuf::UnknownValueRef::LengthDelimited(bytes) = value {
+                        use protobuf::Message;
+                        if let Ok(key_proto) = crate::options_proto::options::Key::parse_from_bytes(bytes) {
+                            if key_proto.has_fields() {
+                                translated_message.keys.push(crate::schema::Key {
+                                    fields: key_proto.fields().to_owned(),
+                                });
+                            }
+                        }
+                    }
+                }
+                JOIN_FIELD => {
+                    if let protobuf::UnknownValueRef::LengthDelimited(bytes) = value {
+                        use protobuf::Message;
+                        if let Ok(join_field_proto) = crate::options_proto::options::JoinField::parse_from_bytes(bytes)
+                        {
+                            if join_field_proto.has_name()
+                                && join_field_proto.has_service()
+                                && join_field_proto.has_method()
+                                && join_field_proto.has_require()
+                            {
+                                translated_message.join_fields.push(crate::schema::JoinField {
+                                    name: join_field_proto.name().to_owned(),
+                                    service: join_field_proto.service().to_owned(),
+                                    method: join_field_proto.method().to_owned(),
+                                    require: join_field_proto.require().to_owned(),
+                                });
+                            }
+                        }
+                    }
+                }
+                _ => {}
             }
         }
     }
@@ -592,10 +630,32 @@ fn extract_method_graphql_options_from_options(
             _ => None,
         });
 
+    let lookup =
+        method.options.special_fields.unknown_fields().get(LOOKUP).and_then(
+            |unknown_value_ref| match unknown_value_ref {
+                protobuf::UnknownValueRef::LengthDelimited(bytes) => {
+                    use protobuf::Message;
+                    if let Ok(lookup_proto) = crate::options_proto::options::Lookup::parse_from_bytes(bytes) {
+                        Some(crate::schema::Lookup {
+                            argument_is: if lookup_proto.has_argument_is() {
+                                Some(lookup_proto.argument_is().to_owned())
+                            } else {
+                                None
+                            },
+                        })
+                    } else {
+                        None
+                    }
+                }
+                _ => None,
+            },
+        );
+
     proto_method.directives = directives;
     proto_method.argument_directives = argument_directives;
     proto_method.is_query = is_query;
     proto_method.is_mutation = is_mutation;
+    proto_method.lookup = lookup;
 }
 
 fn location_to_description(path: &[i32], source_code_info: &SourceCodeInfo) -> Option<String> {

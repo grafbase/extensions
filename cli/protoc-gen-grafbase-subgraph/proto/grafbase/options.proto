@@ -4,16 +4,33 @@ import "google/protobuf/descriptor.proto";
 
 package grafbase.graphql;
 
-message CompositeSchemaEntity {
+message DeriveField {
   optional string entity = 1;
-  optional string field = 2;
+  optional string field_name = 2;
   optional string is = 3;
+}
+
+message Key {
+  optional string fields = 1;
+}
+
+message Lookup {
+  optional string argument_is = 1;
+}
+
+message JoinField {
+  optional string name = 1;
+  optional string service = 2;
+  optional string method = 3;
+  optional string require = 4;
 }
 
 extend google.protobuf.MessageOptions {
   optional string object_directives = 58301;
   optional string input_object_directives = 58302;
-  repeated CompositeSchemaEntity derive = 58303;
+  repeated DeriveField derive_field = 58304;
+  repeated Key key = 58305;
+  repeated JoinField join_field = 58306;
 }
 
 extend google.protobuf.FieldOptions {
@@ -41,4 +58,5 @@ extend google.protobuf.MethodOptions {
   optional bool is_query = 58302;
   optional bool is_mutation = 58303;
   optional string argument_directives = 58304;
+  optional Lookup lookup = 58305;
 }

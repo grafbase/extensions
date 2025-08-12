@@ -12,9 +12,9 @@ service ProductService {
 
 // Test messages with composite schema entities
 message Product {
-  option (grafbase.graphql.derive) = {entity: "User", is: "{ id: user_id }"};
-  option (grafbase.graphql.derive) = {entity: "Category", is: "{ categoryId: category_id }"};
-  option (grafbase.graphql.derive) = {entity: "Shop", field: "shop_ref", is: "{ slug: shop }"};
+  option (grafbase.graphql.derive_field) = {entity: "User", is: "{ id: user_id }"};
+  option (grafbase.graphql.derive_field) = {entity: "Category", is: "{ categoryId: category_id }"};
+  option (grafbase.graphql.derive_field) = {entity: "Shop", field_name: "shop_ref", is: "{ slug: shop }"};
 
   string id = 1;
   string name = 2;
@@ -29,7 +29,7 @@ message Product {
 }
 
 message Review {
-  option (grafbase.graphql.derive) = {entity: "Product", is: "{ id: product_id }"};
+  option (grafbase.graphql.derive_field) = {entity: "Product", is: "{ id: product_id }"};
 
   string id = 1;
   string content = 2;

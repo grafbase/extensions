@@ -1,0 +1,224 @@
+//!file:grafbase/options.proto
+syntax = "proto2";
+
+import "google/protobuf/descriptor.proto";
+
+package grafbase.graphql;
+
+message DeriveField {
+  optional string entity = 1;
+  optional string field_name = 2;
+  optional string is = 3;
+}
+
+message Key {
+  optional string fields = 1;
+}
+
+message Lookup {
+  optional string argument_is = 1;
+}
+
+message JoinField {
+  optional string name = 1;
+  optional string service = 2;
+  optional string method = 3;
+  optional string require = 4;
+}
+
+extend google.protobuf.MessageOptions {
+  optional string object_directives = 58301;
+  optional string input_object_directives = 58302;
+  repeated DeriveField derive_field = 58304;
+  repeated Key key = 58305;
+  repeated JoinField join_field = 58306;
+}
+
+extend google.protobuf.FieldOptions {
+  optional string output_field_directives = 58301;
+  optional string input_field_directives = 58302;
+}
+
+extend google.protobuf.EnumOptions {
+  optional string enum_directives = 58301;
+}
+
+extend google.protobuf.EnumValueOptions {
+  optional string enum_value_directives = 58301;
+}
+
+extend google.protobuf.ServiceOptions {
+  optional bool default_to_query_fields = 58301;
+  optional bool default_to_mutation_fields = 58302;
+  optional string subgraph_name = 58303;
+  optional string schema_directives = 58304;
+}
+
+extend google.protobuf.MethodOptions {
+  optional string directives = 58301;
+  optional bool is_query = 58302;
+  optional bool is_mutation = 58303;
+  optional string argument_directives = 58304;
+  optional Lookup lookup = 58305;
+}
+
+//!file:composite_schemas_shortcuts.proto
+syntax = "proto3";
+
+import "grafbase/options.proto";
+
+package test.composite_schemas;
+
+// Test for key directive shortcut
+message User {
+  option (grafbase.graphql.key) = { fields: "id" };
+  option (grafbase.graphql.key) = { fields: "email" };
+
+  string id = 1;
+  string email = 2;
+  string name = 3;
+}
+
+// Test for derive_field directive
+message Product {
+  // derive_field with custom field name
+  option (grafbase.graphql.derive_field) = {
+    entity: "Brand",
+    field_name: "brand",
+    is: "{ id: brand_id }"
+  };
+
+  // derive_field with default field name
+  option (grafbase.graphql.derive_field) = {
+    entity: "User",
+    is: "{ id: owner_id }"
+  };
+
+  // derive_field with custom field name
+  option (grafbase.graphql.derive_field) = {
+    entity: "Category",
+    field_name: "primaryCategory"
+    is: "{ slug: category_slug }"
+  };
+
+  string id = 1;
+  string name = 2;
+  string brand_id = 3;
+  string owner_id = 4;
+  string category_slug = 5;
+}
+
+// Test for join_field directive
+message Order {
+  option (grafbase.graphql.key) = { fields: "id" };
+
+  option (grafbase.graphql.join_field) = {
+    name: "orderItems",
+    service: "test.composite_schemas.InventoryService",
+    method: "GetOrderItems",
+    require: "{ order_id: id }"
+  };
+
+  option (grafbase.graphql.join_field) = {
+    name: "shippingStatus",
+    service: "test.composite_schemas.ShippingService",
+    method: "GetShippingStatus",
+    require: "{ tracking_number: tracking_number }"
+  };
+
+  string id = 1;
+  string customer_id = 2;
+  string tracking_number = 3;
+}
+
+// Test messages for join fields
+message GetOrderItemsRequest {
+  string order_id = 1;
+}
+
+message GetOrderItemsResponse {
+  repeated OrderItem items = 1;
+}
+
+message OrderItem {
+  string id = 1;
+  string product_id = 2;
+  int32 quantity = 3;
+}
+
+message GetShippingStatusRequest {
+  string tracking_number = 1;
+}
+
+message GetShippingStatusResponse {
+  string status = 1;
+  string estimated_delivery = 2;
+}
+
+// Test for lookup directive
+message GetUserRequest {
+  string user_id = 1;
+}
+
+message GetProductRequest {
+  string product_id = 1;
+}
+
+message FindProductByNameRequest {
+  string name = 1;
+}
+
+service UserService {
+  option (grafbase.graphql.default_to_query_fields) = true;
+
+  // Test lookup directive
+  rpc GetUser (GetUserRequest) returns (User) {
+    option (grafbase.graphql.lookup) = { argument_is: "{ user_id: user.id }" };
+  }
+
+  // Regular query without lookup
+  rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
+}
+
+service ProductService {
+  option (grafbase.graphql.default_to_query_fields) = true;
+
+  // Another lookup example with argument_is
+  rpc GetProduct (GetProductRequest) returns (Product) {
+    option (grafbase.graphql.lookup) = { argument_is: "{ product_id: product.id }" };
+  }
+
+  // Lookup without argument_is - should not generate @is
+  rpc FindProductByName (FindProductByNameRequest) returns (Product) {
+    option (grafbase.graphql.lookup) = {};
+  }
+}
+
+// Service for join fields
+service InventoryService {
+  rpc GetOrderItems (GetOrderItemsRequest) returns (GetOrderItemsResponse);
+}
+
+service ShippingService {
+  rpc GetShippingStatus (GetShippingStatusRequest) returns (GetShippingStatusResponse);
+}
+
+// Service to output Order type
+service OrderService {
+  rpc GetOrder (GetOrderRequest) returns (Order);
+}
+
+message GetOrderRequest {
+  string order_id = 1;
+}
+
+// Supporting messages
+message ListUsersRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+  int32 total_count = 2;
+}

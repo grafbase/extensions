@@ -82,6 +82,12 @@ fn render_message(
         f.write_str(" ")?;
     }
 
+    if !input {
+        for key in &message.keys {
+            write!(f, "@key(fields: \"{}\") ", key.fields)?;
+        }
+    }
+
     f.write_str("{\n")?;
 
     for field in message_id.fields(schema) {
@@ -114,20 +120,21 @@ fn render_message(
     }
 
     if !input {
-        render_derives(message, f)?;
+        render_derive_fields(&message, f)?;
+        render_join_fields(schema, &message, f)?;
     }
 
     f.write_str("}\n")
 }
 
-fn render_derives(message: View<'_, ProtoMessageId, ProtoMessage>, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    for entity_info in &message.derives {
+fn render_derive_fields(message: &View<'_, ProtoMessageId, ProtoMessage>, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    for derive_field in &message.derive_fields {
         f.write_str(INDENT)?;
 
-        let derived_field_name = if let Some(name) = &entity_info.field {
+        let field_name = if let Some(name) = &derive_field.field_name {
             name.clone()
         } else {
-            entity_info
+            derive_field
                 .is
                 .as_ref()
                 .and_then(|is| is.fields.first())
@@ -138,16 +145,81 @@ fn render_derives(message: View<'_, ProtoMessageId, ProtoMessage>, f: &mut fmt::
                         .trim_end_matches("Id")
                         .to_owned()
                 })
-                .unwrap_or_else(|| entity_info.entity.to_lowercase())
+                .unwrap_or_else(|| derive_field.entity.to_lowercase())
         };
 
-        f.write_str(&derived_field_name)?;
+        f.write_str(&field_name)?;
         f.write_str(": ")?;
-        f.write_str(&entity_info.entity)?;
+        f.write_str(&derive_field.entity)?;
         f.write_str(" @derive")?;
 
-        if let Some(is) = &entity_info.is {
+        if let Some(is) = &derive_field.is {
             write!(f, " @is(field: \"{is}\")")?;
+        }
+
+        f.write_str("\n")?;
+    }
+
+    Ok(())
+}
+
+fn render_join_fields(
+    schema: &GrpcSchema,
+    message: &View<'_, ProtoMessageId, ProtoMessage>,
+    f: &mut fmt::Formatter<'_>,
+) -> fmt::Result {
+    for join_field in &message.join_fields {
+        f.write_str(INDENT)?;
+        f.write_str(&join_field.name)?;
+        f.write_str("(input: ")?;
+
+        let method = schema.iter_methods().find(|m| {
+            let service = &schema[m.service_id];
+
+            let full_service_name = service.parent.child_name(schema, &service.name);
+
+            let normalized_full_name = full_service_name.trim_start_matches('.');
+            let normalized_join_service = join_field.service.trim_start_matches('.');
+
+            let service_name_only = service.name.trim_start_matches('.');
+
+            (normalized_full_name == normalized_join_service || service_name_only == normalized_join_service)
+                && m.name == join_field.method
+        });
+
+        if let Some(method) = method {
+            match &method.input_type {
+                FieldType::Message(msg_id) => {
+                    let input_msg = schema.view(*msg_id);
+                    input_msg.graphql_input_name().fmt(f)?;
+                }
+                _ => f.write_str("String")?,
+            }
+
+            write!(f, " @require(field: \"{}\")): ", join_field.require)?;
+
+            match &method.output_type {
+                FieldType::Message(msg_id) => {
+                    let output_msg = schema.view(*msg_id);
+                    output_msg.graphql_output_name().fmt(f)?;
+                }
+                _ => f.write_str("String")?,
+            }
+
+            write!(
+                f,
+                " @grpcMethod(service: \"{}\", method: \"{}\")",
+                join_field.service, join_field.method
+            )?;
+        } else {
+            f.write_str("String @require(field: \"")?;
+            f.write_str(&join_field.require)?;
+            f.write_str("\"): String")?;
+            write!(
+                f,
+                " @grpcMethod(service: \"{}\", method: \"{}\")",
+                join_field.service, join_field.method
+            )?;
         }
 
         f.write_str("\n")?;
@@ -300,19 +372,20 @@ fn render_entity_types(
 
     for message_id in messages_to_render_as_output {
         let message = &schema[*message_id];
-        for entity_info in &message.derives {
-            if rendered_output_types.contains(&entity_info.entity) {
+
+        for derive_field in &message.derive_fields {
+            if rendered_output_types.contains(&derive_field.entity) {
                 continue;
             }
 
-            match &entity_info.is {
+            match &derive_field.is {
                 Some(simple_is) => {
                     let key_fields: Vec<&str> = simple_is.fields.iter().map(|f| f.output_field_name.as_str()).collect();
 
-                    entities.insert(entity_info.entity.clone(), (key_fields, *message_id));
+                    entities.insert(derive_field.entity.clone(), (key_fields, *message_id));
                 }
                 None => {
-                    entities.insert(entity_info.entity.clone(), (vec!["id"], *message_id));
+                    entities.insert(derive_field.entity.clone(), (vec!["id"], *message_id));
                 }
             }
         }
@@ -342,7 +415,7 @@ fn render_entity_types(
         f.write_str(" {\n")?;
 
         let message = &schema[message_id];
-        let matching_entity_info = message.derives.iter().find(|info| info.entity == entity_name);
+        let matching_entity_info = message.derive_fields.iter().find(|info| info.entity == entity_name);
 
         if let Some(entity_info) = matching_entity_info {
             if let Some(simple_is) = &entity_info.is {
