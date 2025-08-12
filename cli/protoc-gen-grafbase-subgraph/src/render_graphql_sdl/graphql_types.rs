@@ -131,7 +131,7 @@ fn render_derive_fields(message: &View<'_, ProtoMessageId, ProtoMessage>, f: &mu
     for derive_field in &message.derive_fields {
         f.write_str(INDENT)?;
 
-        let field_name = if let Some(name) = &derive_field.field_name {
+        let field_name = if let Some(name) = &derive_field.name {
             name.clone()
         } else {
             derive_field

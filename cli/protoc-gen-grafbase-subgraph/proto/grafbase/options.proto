@@ -6,7 +6,7 @@ package grafbase.graphql;
 
 message DeriveField {
   optional string entity = 1;
-  optional string field_name = 2;
+  optional string name = 2;
   optional string is = 3;
 }
 

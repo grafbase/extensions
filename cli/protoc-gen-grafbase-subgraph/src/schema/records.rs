@@ -45,7 +45,7 @@ impl ProtoMessage {
 #[derive(Debug, PartialEq, Clone)]
 pub(crate) struct DeriveField {
     pub(crate) entity: String,
-    pub(crate) field_name: Option<String>,
+    pub(crate) name: Option<String>,
     pub(crate) is: Option<SimpleIs>,
 }
 

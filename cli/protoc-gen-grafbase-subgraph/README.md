@@ -233,12 +233,12 @@ message Product {
   // Custom relation field name: creates an owner field instead of user
   option (grafbase.graphql.derive_field) = {
     entity: "User",
-    field_name: "owner"
+    name: "owner"
     is: "{ id: owner_id }"
   };
 
   // Reference by non-id field
-  option (grafbase.graphql.composite_schemas_entity) = {
+  option (grafbase.graphql.derive_field) = {
     entity: "Shop",
     is: "{ slug: shop_slug }"
   };

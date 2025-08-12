@@ -23,7 +23,7 @@ message User {
 message Post {
   option (grafbase.graphql.derive_field) = {
     entity: "test_nodedup_User",
-    field_name: "author",
+    name: "author",
     is: "{ id: author_id }"
   };
 
