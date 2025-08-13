@@ -63,9 +63,7 @@ pub(crate) struct JoinField {
 }
 
 #[derive(Debug, PartialEq, Clone)]
-pub(crate) struct Lookup {
-    pub(crate) argument_is: Option<String>,
-}
+pub(crate) struct Lookup {}
 
 #[derive(Debug, PartialEq)]
 pub(crate) struct ProtoField {
@@ -123,6 +121,7 @@ pub(crate) struct ProtoMethod {
     pub(crate) directives: Option<String>,
     pub(crate) argument_directives: Option<String>,
     pub(crate) lookup: Option<Lookup>,
+    pub(crate) argument_is: Option<String>,
 }
 
 impl PartialOrd for ProtoMethod {

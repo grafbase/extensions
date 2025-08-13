@@ -39,7 +39,15 @@ pub(super) fn render_schema_directives_filtered(
             schema.iter_methods().any(|m| m.lookup.is_some())
         };
 
-        messages_with_features || methods_with_lookup
+        let methods_with_argument_is = if let Some(ids) = service_ids {
+            schema
+                .iter_methods()
+                .any(|m| ids.contains(&m.service_id) && m.argument_is.is_some())
+        } else {
+            schema.iter_methods().any(|m| m.argument_is.is_some())
+        };
+
+        messages_with_features || methods_with_lookup || methods_with_argument_is
     };
 
     f.write_str("extend schema\n  @link(url: \"https://grafbase.com/extensions/grpc/0.2.0\", import: [\"@protoServices\", \"@protoEnums\", \"@protoMessages\", \"@grpcMethod\"])\n")?;
@@ -59,15 +67,33 @@ pub(super) fn render_schema_directives_filtered(
             imports.push("\"@derive\"");
         }
 
-        if schema
+        let has_derive_is = schema
             .iter_messages()
-            .any(|m| m.derive_fields.iter().any(|d| d.is.is_some()))
-            || schema.iter_methods().any(|m| m.lookup.is_some())
-        {
+            .any(|m| m.derive_fields.iter().any(|d| d.is.is_some()));
+
+        let has_lookup_or_argument_is = if let Some(ids) = service_ids {
+            schema
+                .iter_methods()
+                .any(|m| ids.contains(&m.service_id) && (m.lookup.is_some() || m.argument_is.is_some()))
+        } else {
+            schema
+                .iter_methods()
+                .any(|m| m.lookup.is_some() || m.argument_is.is_some())
+        };
+
+        if has_derive_is || has_lookup_or_argument_is {
             imports.push("\"@is\"");
         }
 
-        if schema.iter_methods().any(|m| m.lookup.is_some()) {
+        let has_lookup = if let Some(ids) = service_ids {
+            schema
+                .iter_methods()
+                .any(|m| ids.contains(&m.service_id) && m.lookup.is_some())
+        } else {
+            schema.iter_methods().any(|m| m.lookup.is_some())
+        };
+
+        if has_lookup {
             imports.push("\"@lookup\"");
         }
 

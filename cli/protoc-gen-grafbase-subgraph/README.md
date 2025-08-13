@@ -310,14 +310,41 @@ type User @key(fields: "id") @key(fields: "alias email") {
 
 ### Lookup
 
-This is a shortcut for the `@link`, `@lookup` and `@is` directives needed to define a lookup field:
+This is a shortcut for the `@link` and `@lookup` directives needed to define a lookup field:
 
 ```proto
 service MyService {
   option (grafbase.graphql.default_to_query_fields) = true;
 
   rpc GetUser (GetUserRequest) returns (GetUserResponse) {
-    option (grafbase.graphql.lookup) = { argument_is: "{ user_id: user.id }" };
+    option (grafbase.graphql.lookup) = {};
+  }
+}
+```
+
+Will generate:
+
+```graphql
+extend schema @link(url: "https://specs.grafbase.com/composite-schemas/v1", import: ["@lookup"])
+
+# ...
+
+type Query {
+  GetUser(input: GetUserRequest) @lookup
+}
+```
+
+### Argument @is directive
+
+The `argument_is` option is a shortcut for adding an `@is` directive to RPC method input arguments. It's equivalent to using `argument_directives` with `@is(field: "...")`:
+
+```proto
+service MyService {
+  option (grafbase.graphql.default_to_query_fields) = true;
+
+  rpc GetUser (GetUserRequest) returns (GetUserResponse) {
+    option (grafbase.graphql.lookup) = {};
+    option (grafbase.graphql.argument_is) = "{ user_id: user.id }";
   }
 }
 ```
@@ -332,6 +359,11 @@ extend schema @link(url: "https://specs.grafbase.com/composite-schemas/v1", impo
 type Query {
   GetUser(input: GetUserRequest @is(field: "{ user_id: user.id }")) @lookup
 }
+```
+
+This is a shortcut for:
+```proto
+option (grafbase.graphql.argument_directives) = "@is(field: \"{ user_id: user.id }\")";
 ```
 
 ### Join fields
