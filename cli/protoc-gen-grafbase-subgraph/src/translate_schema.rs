@@ -421,8 +421,8 @@ fn extract_message_graphql_directives_from_options(message: &DescriptorProto, tr
                             if derive_field_proto.has_entity() {
                                 translated_message.derive_fields.push(crate::schema::DeriveField {
                                     entity: derive_field_proto.entity().to_owned(),
-                                    field_name: if derive_field_proto.has_field_name() {
-                                        Some(derive_field_proto.field_name().to_owned())
+                                    name: if derive_field_proto.has_name() {
+                                        Some(derive_field_proto.name().to_owned())
                                     } else {
                                         None
                                     },

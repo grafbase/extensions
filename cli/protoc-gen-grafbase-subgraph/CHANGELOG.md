@@ -20,7 +20,7 @@
   - Use `option (grafbase.graphql.derive_field) = {entity: "User", is: "{ id: user_id }"};` on fields
   - Automatically generates reference fields with `@derive` and `@is` directives
   - Creates stub entity types with `@key` directives if the type is not already defined
-  - Supports custom relation field names with the `field_name` parameter
+  - Supports custom relation field names with the `name` parameter
   - The `@is` directive uses the value from the `is` parameter directly
   - Enables cross-subgraph entity references in federated schemas
 
