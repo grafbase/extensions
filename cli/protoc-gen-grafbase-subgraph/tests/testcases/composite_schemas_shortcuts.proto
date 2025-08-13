@@ -109,7 +109,8 @@ service UserService {
 
   // Test lookup directive
   rpc GetUser (GetUserRequest) returns (User) {
-    option (grafbase.graphql.lookup) = { argument_is: "{ user_id: user.id }" };
+    option (grafbase.graphql.lookup) = {};
+    option (grafbase.graphql.argument_is) = "{ user_id: user.id }";
   }
 
   // Regular query without lookup
@@ -121,7 +122,8 @@ service ProductService {
 
   // Another lookup example with argument_is
   rpc GetProduct (GetProductRequest) returns (Product) {
-    option (grafbase.graphql.lookup) = { argument_is: "{ product_id: product.id }" };
+    option (grafbase.graphql.lookup) = {};
+    option (grafbase.graphql.argument_is) = "{ product_id: product.id }";
   }
 
   // Lookup without argument_is - should not generate @is

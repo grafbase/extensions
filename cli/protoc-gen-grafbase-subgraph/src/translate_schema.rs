@@ -165,6 +165,7 @@ fn translate_service(
             directives: None,
             argument_directives: None,
             lookup: None,
+            argument_is: None,
         };
 
         extract_method_graphql_options_from_options(method, &mut proto_method);
@@ -635,14 +636,8 @@ fn extract_method_graphql_options_from_options(
             |unknown_value_ref| match unknown_value_ref {
                 protobuf::UnknownValueRef::LengthDelimited(bytes) => {
                     use protobuf::Message;
-                    if let Ok(lookup_proto) = crate::options_proto::options::Lookup::parse_from_bytes(bytes) {
-                        Some(crate::schema::Lookup {
-                            argument_is: if lookup_proto.has_argument_is() {
-                                Some(lookup_proto.argument_is().to_owned())
-                            } else {
-                                None
-                            },
-                        })
+                    if let Ok(_lookup_proto) = crate::options_proto::options::Lookup::parse_from_bytes(bytes) {
+                        Some(crate::schema::Lookup {})
                     } else {
                         None
                     }
@@ -651,11 +646,22 @@ fn extract_method_graphql_options_from_options(
             },
         );
 
+    let argument_is = method
+        .options
+        .special_fields
+        .unknown_fields()
+        .get(ARGUMENT_IS)
+        .and_then(|unknown_value_ref| match unknown_value_ref {
+            protobuf::UnknownValueRef::LengthDelimited(items) => Some(str::from_utf8(items).unwrap().to_owned()),
+            _ => None,
+        });
+
     proto_method.directives = directives;
     proto_method.argument_directives = argument_directives;
     proto_method.is_query = is_query;
     proto_method.is_mutation = is_mutation;
     proto_method.lookup = lookup;
+    proto_method.argument_is = argument_is;
 }
 
 fn location_to_description(path: &[i32], source_code_info: &SourceCodeInfo) -> Option<String> {

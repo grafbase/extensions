@@ -4,7 +4,8 @@
 
 - **Composite schemas shortcuts** added. New protobuf options for simplified composite schemas directives:
   - `key` option generates `@key` directives on types
-  - `lookup` option generates `@lookup` directive with optional `@is` mapping
+  - `lookup` option generates `@lookup` directive on RPC methods
+  - `argument_is` option on RPC methods generates `@is` directive on the input argument - a shortcut for `grafbase.graphql.argument_directives = "@is(field: \"...\")"`
   - `join_field` option generates fields with `@require` and `@grpcMethod` directives, with proper type resolution
 
 - **Input argument directives** added. You can now add GraphQL directives to RPC method input argument, that corresponds to the input of the RPC method, using the `argument_directives` option on methods.

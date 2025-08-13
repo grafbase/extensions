@@ -15,7 +15,6 @@ message Key {
 }
 
 message Lookup {
-  optional string argument_is = 1;
 }
 
 message JoinField {
@@ -59,4 +58,5 @@ extend google.protobuf.MethodOptions {
   optional bool is_mutation = 58303;
   optional string argument_directives = 58304;
   optional Lookup lookup = 58305;
+  optional string argument_is = 58306;
 }
