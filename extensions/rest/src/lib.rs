@@ -7,7 +7,10 @@ use grafbase_sdk::{
     ResolverExtension,
     host_io::http::{self, HttpRequest, Url},
     jq_selection::JqSelection,
-    types::{Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema, Variables},
+    types::{
+        AuthorizedOperationContext, Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema,
+        Variables,
+    },
 };
 use serde_json::Value;
 use template::{Template, Templates};
@@ -119,7 +122,13 @@ impl ResolverExtension for RestExtension {
         })
     }
 
-    fn resolve(&mut self, prepared: &[u8], headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
+    fn resolve(
+        &mut self,
+        _ctx: &AuthorizedOperationContext,
+        prepared: &[u8],
+        headers: SubgraphHeaders,
+        variables: Variables,
+    ) -> Result<Response, Error> {
         let field = ResolvedField::try_from(prepared)?;
 
         let Rest {

@@ -11,7 +11,10 @@ use grafbase_database_definition::DatabaseDefinition;
 use grafbase_sdk::{
     ResolverExtension,
     host_io::postgres,
-    types::{Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema, Variables},
+    types::{
+        AuthorizedOperationContext, Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema,
+        Variables,
+    },
 };
 
 #[derive(ResolverExtension)]
@@ -40,7 +43,13 @@ impl ResolverExtension for PostgresExtension {
         })
     }
 
-    fn resolve(&mut self, prepared: &[u8], _headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
+    fn resolve(
+        &mut self,
+        _ctx: &AuthorizedOperationContext,
+        prepared: &[u8],
+        _headers: SubgraphHeaders,
+        variables: Variables,
+    ) -> Result<Response, Error> {
         let field = ResolvedField::try_from(prepared)?;
         let Some(database_definition) = self.database_definitions.get(field.subgraph_name()) else {
             return Err(format!("Subgraph {} is not a Postgres subgraph", field.subgraph_name()).into());
