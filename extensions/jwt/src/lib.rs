@@ -12,7 +12,9 @@ use grafbase_sdk::{
         http::{self, HttpRequest},
         logger::log,
     },
-    types::{Configuration, Error, ErrorResponse, GatewayHeaders, Headers, PublicMetadataEndpoint, RequestContext, Token},
+    types::{
+        Configuration, Error, ErrorResponse, GatewayHeaders, Headers, PublicMetadataEndpoint, RequestContext, Token,
+    },
 };
 
 use crate::decoder::Jwks;

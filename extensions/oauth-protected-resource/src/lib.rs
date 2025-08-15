@@ -1,6 +1,8 @@
 use grafbase_sdk::{
     AuthenticationExtension,
-    types::{Configuration, Error, ErrorResponse, GatewayHeaders, Headers, PublicMetadataEndpoint, RequestContext, Token},
+    types::{
+        Configuration, Error, ErrorResponse, GatewayHeaders, Headers, PublicMetadataEndpoint, RequestContext, Token,
+    },
 };
 use oauth_protected_resource_shared::OAuthConfig;
 

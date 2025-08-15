@@ -9,7 +9,10 @@ use grafbase_sdk::{
     IntoSubscription, ResolverExtension,
     host_io::kafka::{self, KafkaBatchConfig, KafkaConsumerConfig, KafkaProducerConfig},
     jq_selection::JqSelection,
-    types::{AuthorizedOperationContext, Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema, Variables},
+    types::{
+        AuthorizedOperationContext, Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema,
+        Variables,
+    },
 };
 use regex::Regex;
 use serde_json::Value;
@@ -100,7 +103,13 @@ impl ResolverExtension for Kafka {
         })
     }
 
-    fn resolve(&mut self, _ctx: &AuthorizedOperationContext, prepared: &[u8], _headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
+    fn resolve(
+        &mut self,
+        _ctx: &AuthorizedOperationContext,
+        prepared: &[u8],
+        _headers: SubgraphHeaders,
+        variables: Variables,
+    ) -> Result<Response, Error> {
         let field = ResolvedField::try_from(prepared)?;
         let arguments: Value = field.arguments(&variables)?;
         let ctx = serde_json::json!({
