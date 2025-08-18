@@ -418,8 +418,7 @@ fn extract_message_graphql_directives_from_options(message: &DescriptorProto, tr
                         use protobuf::Message;
                         if let Ok(derive_field_proto) =
                             crate::options_proto::options::DeriveField::parse_from_bytes(bytes)
-                        {
-                            if derive_field_proto.has_entity() {
+                            && derive_field_proto.has_entity() {
                                 translated_message.derive_fields.push(crate::schema::DeriveField {
                                     entity: derive_field_proto.entity().to_owned(),
                                     name: if derive_field_proto.has_name() {
@@ -440,27 +439,24 @@ fn extract_message_graphql_directives_from_options(message: &DescriptorProto, tr
                                     },
                                 });
                             }
-                        }
                     }
                 }
                 KEY => {
                     if let protobuf::UnknownValueRef::LengthDelimited(bytes) = value {
                         use protobuf::Message;
-                        if let Ok(key_proto) = crate::options_proto::options::Key::parse_from_bytes(bytes) {
-                            if key_proto.has_fields() {
+                        if let Ok(key_proto) = crate::options_proto::options::Key::parse_from_bytes(bytes)
+                            && key_proto.has_fields() {
                                 translated_message.keys.push(crate::schema::Key {
                                     fields: key_proto.fields().to_owned(),
                                 });
                             }
-                        }
                     }
                 }
                 JOIN_FIELD => {
                     if let protobuf::UnknownValueRef::LengthDelimited(bytes) = value {
                         use protobuf::Message;
                         if let Ok(join_field_proto) = crate::options_proto::options::JoinField::parse_from_bytes(bytes)
-                        {
-                            if join_field_proto.has_name()
+                            && join_field_proto.has_name()
                                 && join_field_proto.has_service()
                                 && join_field_proto.has_method()
                                 && join_field_proto.has_require()
@@ -472,7 +468,6 @@ fn extract_message_graphql_directives_from_options(message: &DescriptorProto, tr
                                     require: join_field_proto.require().to_owned(),
                                 });
                             }
-                        }
                     }
                 }
                 _ => {}

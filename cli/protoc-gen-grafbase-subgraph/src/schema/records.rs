@@ -268,18 +268,16 @@ impl ProtoMethod {
         }
 
         // Priority 2: Method-level override for query
-        if let Some(is_query) = self.is_query {
-            if is_query {
+        if let Some(is_query) = self.is_query
+            && is_query {
                 return GraphQLOperationType::Query;
             }
-        }
 
         // Priority 2: Method-level override for mutation
-        if let Some(is_mutation) = self.is_mutation {
-            if is_mutation {
+        if let Some(is_mutation) = self.is_mutation
+            && is_mutation {
                 return GraphQLOperationType::Mutation;
             }
-        }
 
         // Priority 3: Service-level default
         let service = &schema[self.service_id];

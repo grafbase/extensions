@@ -173,11 +173,10 @@ fn render_column<'a>(render: &mut Type<'a>, table: TableWalker<'a>, column: Tabl
         directive.push_argument(Argument::string("name", column.database_name()));
         directive.push_argument(Argument::constant("type", column.database_type().as_str()));
 
-        if let DatabaseType::Enum(r#enum) = column.database_type() {
-            if r#enum.schema() != table.schema() {
+        if let DatabaseType::Enum(r#enum) = column.database_type()
+            && r#enum.schema() != table.schema() {
                 directive.push_argument(Argument::string("enumSchema", r#enum.schema()));
             }
-        }
 
         directive
     });

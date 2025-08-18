@@ -194,7 +194,7 @@ impl<'a> Context<'a> {
     /// Parses the `lookup` argument if present and creates a `LookupOrderIterator`
     /// to preserve the order of results based on the input lookup values.
     /// Returns `Ok(None)` if the `lookup` argument is not present or not the correct variant.
-    pub fn lookup_order(&self, table: TableWalker<'a>) -> Result<Option<LookupOrderIterator>, SdkError> {
+    pub fn lookup_order(&self, table: TableWalker<'a>) -> Result<Option<LookupOrderIterator<'_>>, SdkError> {
         let InputManyFilter::Lookup { lookup } = self.field.arguments::<InputManyFilter>(self.variables)? else {
             return Ok(None);
         };
