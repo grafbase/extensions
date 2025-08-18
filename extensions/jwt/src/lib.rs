@@ -78,7 +78,7 @@ impl AuthenticationExtension for Jwt {
                     );
                 }
 
-                let mut error_response = ErrorResponse::unauthorized().with_error("Unauthorized");
+                let mut error_response = ErrorResponse::unauthorized().with_error("Unauthenticated");
 
                 for header in &self.config.unauthenticated_headers {
                     error_response.push_header(&header.name, header.value.as_bytes()).ok();

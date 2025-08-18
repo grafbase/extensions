@@ -61,7 +61,7 @@ async fn test_just_resource() {
     {
       "errors": [
         {
-          "message": "Unauthorized",
+          "message": "Unauthenticated",
           "extensions": {
             "code": "UNAUTHENTICATED"
           }
@@ -261,7 +261,7 @@ async fn test_metadata_with_authentication() {
     {
       "errors": [
         {
-          "message": "Unauthorized",
+          "message": "Unauthenticated",
           "extensions": {
             "code": "UNAUTHENTICATED"
           }
