@@ -1,6 +1,6 @@
 [extension]
 name = "jwt"
-version = "1.3.0"
+version = "1.4.0"
 kind = "authentication"
 description = "Restrict access to your graph with JWT"
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/jwt"

@@ -1,6 +1,8 @@
 use grafbase_sdk::{
     AuthenticationExtension,
-    types::{Configuration, Error, ErrorResponse, GatewayHeaders, Headers, PublicMetadataEndpoint, Token},
+    types::{
+        Configuration, Error, ErrorResponse, GatewayHeaders, Headers, PublicMetadataEndpoint, RequestContext, Token,
+    },
 };
 use oauth_protected_resource_shared::OAuthConfig;
 
@@ -14,7 +16,7 @@ impl AuthenticationExtension for OauthProtectedResourceMetadata {
         Ok(Self(config))
     }
 
-    fn authenticate(&mut self, _headers: &GatewayHeaders) -> Result<Token, ErrorResponse> {
+    fn authenticate(&mut self, _ctx: &RequestContext, _headers: &GatewayHeaders) -> Result<Token, ErrorResponse> {
         Ok(Token::anonymous())
     }
 

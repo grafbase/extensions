@@ -160,12 +160,12 @@ impl Renderer {
             None => (),
         }
 
-        if let Some(returning) = insert.returning {
-            if !returning.is_empty() {
-                let values = returning.into_iter().map(|r| r.into()).collect();
-                self.write(" RETURNING ");
-                self.visit_columns(values);
-            }
+        if let Some(returning) = insert.returning
+            && !returning.is_empty()
+        {
+            let values = returning.into_iter().map(|r| r.into()).collect();
+            self.write(" RETURNING ");
+            self.visit_columns(values);
         };
     }
 
@@ -738,12 +738,12 @@ impl Renderer {
             self.visit_conditions(conditions);
         }
 
-        if let Some(returning) = update.returning {
-            if !returning.is_empty() {
-                let values = returning.into_iter().map(|r| r.into()).collect();
-                self.write(" RETURNING ");
-                self.visit_columns(values);
-            }
+        if let Some(returning) = update.returning
+            && !returning.is_empty()
+        {
+            let values = returning.into_iter().map(|r| r.into()).collect();
+            self.write(" RETURNING ");
+            self.visit_columns(values);
         }
     }
 
@@ -945,11 +945,9 @@ impl Renderer {
             }
         };
 
-        if include_alias {
-            if let Some(alias) = table.alias {
-                self.visit_alias(alias);
-            };
-        }
+        if include_alias && let Some(alias) = table.alias {
+            self.visit_alias(alias);
+        };
     }
 
     /// A database column identifier

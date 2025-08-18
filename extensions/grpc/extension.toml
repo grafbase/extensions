@@ -1,6 +1,6 @@
 [extension]
 name = "grpc"
-version = "0.2.0"
+version = "0.2.1"
 kind = "resolver"
 description = "Integrate the Grafbase Gateway with your gRPC services declaratively."
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/grpc"

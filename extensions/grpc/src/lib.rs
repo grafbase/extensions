@@ -6,7 +6,10 @@ mod schema;
 
 use grafbase_sdk::{
     IntoSubscription, ResolverExtension,
-    types::{Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema, Variables},
+    types::{
+        AuthorizedOperationContext, Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema,
+        Variables,
+    },
 };
 
 #[derive(ResolverExtension)]
@@ -58,13 +61,20 @@ impl ResolverExtension for Grpc {
         })
     }
 
-    fn resolve(&mut self, prepared: &[u8], _headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
+    fn resolve(
+        &mut self,
+        _ctx: &AuthorizedOperationContext,
+        prepared: &[u8],
+        _headers: SubgraphHeaders,
+        variables: Variables,
+    ) -> Result<Response, Error> {
         let field = ResolvedField::try_from(prepared)?;
         resolvers::grpc_method(field, variables, &self.schema, &self.configuration)
     }
 
     fn resolve_subscription<'s>(
         &'s mut self,
+        _ctx: &'s AuthorizedOperationContext,
         prepared: &'s [u8],
         _headers: SubgraphHeaders,
         variables: Variables,

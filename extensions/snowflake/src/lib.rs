@@ -6,7 +6,10 @@ mod statements;
 use self::config::{Authentication, SnowflakeConfig};
 use grafbase_sdk::{
     ResolverExtension,
-    types::{Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema, Variables},
+    types::{
+        AuthorizedOperationContext, Configuration, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema,
+        Variables,
+    },
 };
 use template::Template;
 
@@ -26,7 +29,13 @@ impl ResolverExtension for Snowflake {
         })
     }
 
-    fn resolve(&mut self, prepared: &[u8], _headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
+    fn resolve(
+        &mut self,
+        _ctx: &AuthorizedOperationContext,
+        prepared: &[u8],
+        _headers: SubgraphHeaders,
+        variables: Variables,
+    ) -> Result<Response, Error> {
         let field = ResolvedField::try_from(prepared)?;
         let arguments: serde_json::Value = field.arguments(&variables)?;
         let ctx = serde_json::json!({

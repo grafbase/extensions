@@ -605,7 +605,7 @@ dependencies = [
 
 [[package]]
 name = "authenticated"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "grafbase-sdk",
  "indoc",
@@ -2503,9 +2503,9 @@ dependencies = [
 
 [[package]]
 name = "grafbase-sdk"
-version = "0.20.0"
+version = "0.21.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "306cf640ff45c1146e0c131926638d7c032884cb716fecb7fef1459f699c0e8c"
+checksum = "f3a063bce1cf4e07e579e2bf075ed58a27a303243aba95a404bf2741cc470e92"
 dependencies = [
  "anyhow",
  "async-tungstenite",
@@ -3546,7 +3546,7 @@ checksum = "e04d7f318608d35d4b61ddd75cbdaee86b023ebe2bd5a66ee0915f0bf93095a9"
 dependencies = [
  "hermit-abi 0.5.2",
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]

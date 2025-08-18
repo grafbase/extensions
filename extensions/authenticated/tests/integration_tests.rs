@@ -9,17 +9,14 @@ async fn test_authenticated() {
     let gateway = TestGateway::builder()
         .toml_config(formatdoc!(
             r#"
-            [[authentication.providers]]
+            [extensions.jwt]
+            version = "1.3.0"
 
-            [authentication.providers.jwt]
-            name = "my-jwt"
-
-            [authentication.providers.jwt.jwks]
+            [extensions.jwt.config]
             url = "{JWKS_URI}"
 
-            [[authentication.providers]]
-
-            [authentication.providers.anonymous]
+            [authentication]
+            default = "anonymous"
             "#,
         ))
         .subgraph(

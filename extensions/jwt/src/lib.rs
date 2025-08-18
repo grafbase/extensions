@@ -12,7 +12,9 @@ use grafbase_sdk::{
         http::{self, HttpRequest},
         logger::log,
     },
-    types::{Configuration, Error, ErrorResponse, GatewayHeaders, Headers, PublicMetadataEndpoint, Token},
+    types::{
+        Configuration, Error, ErrorResponse, GatewayHeaders, Headers, PublicMetadataEndpoint, RequestContext, Token,
+    },
 };
 
 use crate::decoder::Jwks;
@@ -35,7 +37,7 @@ impl AuthenticationExtension for Jwt {
         })
     }
 
-    fn authenticate(&mut self, headers: &GatewayHeaders) -> Result<Token, ErrorResponse> {
+    fn authenticate(&mut self, _ctx: &RequestContext, headers: &GatewayHeaders) -> Result<Token, ErrorResponse> {
         let mut decoder = self.decoder()?;
 
         decoder
@@ -76,7 +78,7 @@ impl AuthenticationExtension for Jwt {
                     );
                 }
 
-                let mut error_response = ErrorResponse::unauthorized().with_error("Unauthorized");
+                let mut error_response = ErrorResponse::unauthorized().with_error("Unauthenticated");
 
                 for header in &self.config.unauthenticated_headers {
                     error_response.push_header(&header.name, header.value.as_bytes()).ok();

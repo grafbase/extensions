@@ -53,7 +53,7 @@ async fn without_token() {
     {
       "errors": [
         {
-          "message": "Unauthorized",
+          "message": "Unauthenticated",
           "extensions": {
             "code": "UNAUTHENTICATED"
           }
@@ -76,7 +76,7 @@ async fn with_invalid_token() {
     {
       "errors": [
         {
-          "message": "Unauthorized",
+          "message": "Unauthenticated",
           "extensions": {
             "code": "UNAUTHENTICATED"
           }
@@ -186,7 +186,7 @@ async fn test_cookie_name_location() {
     {
       "errors": [
         {
-          "message": "Unauthorized",
+          "message": "Unauthenticated",
           "extensions": {
             "code": "UNAUTHENTICATED"
           }
@@ -217,7 +217,7 @@ async fn test_tampered_jwt() {
     {
       "errors": [
         {
-          "message": "Unauthorized",
+          "message": "Unauthenticated",
           "extensions": {
             "code": "UNAUTHENTICATED"
           }
@@ -246,7 +246,7 @@ async fn test_wrong_provider() {
     {
       "errors": [
         {
-          "message": "Unauthorized",
+          "message": "Unauthenticated",
           "extensions": {
             "code": "UNAUTHENTICATED"
           }
@@ -321,7 +321,7 @@ async fn test_single_audience() {
     {
       "errors": [
         {
-          "message": "Unauthorized",
+          "message": "Unauthenticated",
           "extensions": {
             "code": "UNAUTHENTICATED"
           }
@@ -345,7 +345,7 @@ async fn test_single_audience() {
     {
       "errors": [
         {
-          "message": "Unauthorized",
+          "message": "Unauthenticated",
           "extensions": {
             "code": "UNAUTHENTICATED"
           }
@@ -439,7 +439,7 @@ async fn test_multiple_audience() {
     {
       "errors": [
         {
-          "message": "Unauthorized",
+          "message": "Unauthenticated",
           "extensions": {
             "code": "UNAUTHENTICATED"
           }
@@ -463,7 +463,7 @@ async fn test_multiple_audience() {
     {
       "errors": [
         {
-          "message": "Unauthorized",
+          "message": "Unauthenticated",
           "extensions": {
             "code": "UNAUTHENTICATED"
           }

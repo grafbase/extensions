@@ -1,6 +1,6 @@
 [extension]
 name = "oauth-protected-resource"
-version = "0.1.0"
+version = "0.1.1"
 type = "authentication"
 description = "Expose the OAuth protected resource metadata endpoint"
 repository_url = "https://github.com/grafbase/extensions/tree/main/extensions/oauth-protected-resource"

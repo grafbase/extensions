@@ -8,7 +8,10 @@ use config::AuthConfig;
 use grafbase_sdk::{
     host_io::nats::{self, NatsAuth, NatsClient, NatsStreamConfig},
     jq_selection::JqSelection,
-    types::{Configuration, Data, Error, ResolvedField, Response, SubgraphHeaders, SubgraphSchema, Variables},
+    types::{
+        AuthorizedOperationContext, Configuration, Data, Error, ResolvedField, Response, SubgraphHeaders,
+        SubgraphSchema, Variables,
+    },
     IntoSubscription, ResolverExtension,
 };
 use serde_json::Value;
@@ -55,7 +58,13 @@ impl ResolverExtension for Nats {
         })
     }
 
-    fn resolve(&mut self, prepared: &[u8], _headers: SubgraphHeaders, variables: Variables) -> Result<Response, Error> {
+    fn resolve(
+        &mut self,
+        _ctx: &AuthorizedOperationContext,
+        prepared: &[u8],
+        _headers: SubgraphHeaders,
+        variables: Variables,
+    ) -> Result<Response, Error> {
         let field = ResolvedField::try_from(prepared)?;
         let arguments: Value = field.arguments(&variables)?;
         let ctx = serde_json::json!({
@@ -74,6 +83,7 @@ impl ResolverExtension for Nats {
 
     fn resolve_subscription<'s>(
         &'s mut self,
+        _ctx: &'s AuthorizedOperationContext,
         prepared: &'s [u8],
         _headers: SubgraphHeaders,
         variables: Variables,

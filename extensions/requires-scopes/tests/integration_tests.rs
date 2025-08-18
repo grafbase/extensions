@@ -28,23 +28,20 @@ async fn setup(scopes: Option<&str>) -> (TestGateway, String) {
         )
         .with_resolver("Query", "hasReadOrWriteScope", String::from("Has read or write scope"));
 
-    let config = formatdoc! {r#"
-        [[authentication.providers]]
-
-        [authentication.providers.jwt]
-        name = "my-jwt"
-
-        [authentication.providers.jwt.jwks]
-        url = "{JWKS_URI}"
-
-        [[authentication.providers]]
-
-        [authentication.providers.anonymous]
-    "#};
-
     let gateway = TestGateway::builder()
         .subgraph(subgraph)
-        .toml_config(config)
+        .toml_config(formatdoc!(
+            r#"
+            [extensions.jwt]
+            version = "1.3.0"
+
+            [extensions.jwt.config]
+            url = "{JWKS_URI}"
+
+            [authentication]
+            default = "anonymous"
+            "#,
+        ))
         .build()
         .await
         .unwrap();
