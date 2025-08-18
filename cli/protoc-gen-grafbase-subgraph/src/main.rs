@@ -106,9 +106,10 @@ fn is_valid_subgraph_name(name: &str) -> bool {
 
     // First character must be a letter
     if let Some(first) = chars.next()
-        && !first.is_ascii_alphabetic() {
-            return false;
-        }
+        && !first.is_ascii_alphabetic()
+    {
+        return false;
+    }
 
     // Remaining characters must be letters, digits, or hyphens
     chars.all(|c| c.is_ascii_alphanumeric() || c == '-')

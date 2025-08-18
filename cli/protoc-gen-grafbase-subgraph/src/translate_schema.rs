@@ -418,38 +418,40 @@ fn extract_message_graphql_directives_from_options(message: &DescriptorProto, tr
                         use protobuf::Message;
                         if let Ok(derive_field_proto) =
                             crate::options_proto::options::DeriveField::parse_from_bytes(bytes)
-                            && derive_field_proto.has_entity() {
-                                translated_message.derive_fields.push(crate::schema::DeriveField {
-                                    entity: derive_field_proto.entity().to_owned(),
-                                    name: if derive_field_proto.has_name() {
-                                        Some(derive_field_proto.name().to_owned())
-                                    } else {
-                                        None
-                                    },
-                                    is: if derive_field_proto.has_is() {
-                                        match derive::extract_is(derive_field_proto.is()) {
-                                            Ok(is) => Some(is),
-                                            Err(err) => {
-                                                eprintln!("Error reading derive_field.is at {}: {err}", message.name());
-                                                None
-                                            }
+                            && derive_field_proto.has_entity()
+                        {
+                            translated_message.derive_fields.push(crate::schema::DeriveField {
+                                entity: derive_field_proto.entity().to_owned(),
+                                name: if derive_field_proto.has_name() {
+                                    Some(derive_field_proto.name().to_owned())
+                                } else {
+                                    None
+                                },
+                                is: if derive_field_proto.has_is() {
+                                    match derive::extract_is(derive_field_proto.is()) {
+                                        Ok(is) => Some(is),
+                                        Err(err) => {
+                                            eprintln!("Error reading derive_field.is at {}: {err}", message.name());
+                                            None
                                         }
-                                    } else {
-                                        None
-                                    },
-                                });
-                            }
+                                    }
+                                } else {
+                                    None
+                                },
+                            });
+                        }
                     }
                 }
                 KEY => {
                     if let protobuf::UnknownValueRef::LengthDelimited(bytes) = value {
                         use protobuf::Message;
                         if let Ok(key_proto) = crate::options_proto::options::Key::parse_from_bytes(bytes)
-                            && key_proto.has_fields() {
-                                translated_message.keys.push(crate::schema::Key {
-                                    fields: key_proto.fields().to_owned(),
-                                });
-                            }
+                            && key_proto.has_fields()
+                        {
+                            translated_message.keys.push(crate::schema::Key {
+                                fields: key_proto.fields().to_owned(),
+                            });
+                        }
                     }
                 }
                 JOIN_FIELD => {
@@ -457,17 +459,17 @@ fn extract_message_graphql_directives_from_options(message: &DescriptorProto, tr
                         use protobuf::Message;
                         if let Ok(join_field_proto) = crate::options_proto::options::JoinField::parse_from_bytes(bytes)
                             && join_field_proto.has_name()
-                                && join_field_proto.has_service()
-                                && join_field_proto.has_method()
-                                && join_field_proto.has_require()
-                            {
-                                translated_message.join_fields.push(crate::schema::JoinField {
-                                    name: join_field_proto.name().to_owned(),
-                                    service: join_field_proto.service().to_owned(),
-                                    method: join_field_proto.method().to_owned(),
-                                    require: join_field_proto.require().to_owned(),
-                                });
-                            }
+                            && join_field_proto.has_service()
+                            && join_field_proto.has_method()
+                            && join_field_proto.has_require()
+                        {
+                            translated_message.join_fields.push(crate::schema::JoinField {
+                                name: join_field_proto.name().to_owned(),
+                                service: join_field_proto.service().to_owned(),
+                                method: join_field_proto.method().to_owned(),
+                                require: join_field_proto.require().to_owned(),
+                            });
+                        }
                     }
                 }
                 _ => {}

@@ -161,11 +161,12 @@ impl Renderer {
         }
 
         if let Some(returning) = insert.returning
-            && !returning.is_empty() {
-                let values = returning.into_iter().map(|r| r.into()).collect();
-                self.write(" RETURNING ");
-                self.visit_columns(values);
-            };
+            && !returning.is_empty()
+        {
+            let values = returning.into_iter().map(|r| r.into()).collect();
+            self.write(" RETURNING ");
+            self.visit_columns(values);
+        };
     }
 
     fn visit_delete(&mut self, delete: Delete<'_>) {
@@ -738,11 +739,12 @@ impl Renderer {
         }
 
         if let Some(returning) = update.returning
-            && !returning.is_empty() {
-                let values = returning.into_iter().map(|r| r.into()).collect();
-                self.write(" RETURNING ");
-                self.visit_columns(values);
-            }
+            && !returning.is_empty()
+        {
+            let values = returning.into_iter().map(|r| r.into()).collect();
+            self.write(" RETURNING ");
+            self.visit_columns(values);
+        }
     }
 
     fn visit_upsert(&mut self, update: Update<'_>) {
@@ -943,10 +945,9 @@ impl Renderer {
             }
         };
 
-        if include_alias
-            && let Some(alias) = table.alias {
-                self.visit_alias(alias);
-            };
+        if include_alias && let Some(alias) = table.alias {
+            self.visit_alias(alias);
+        };
     }
 
     /// A database column identifier
