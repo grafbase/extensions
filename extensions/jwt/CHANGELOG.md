@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.4.0] - 2025-08-21
+
+- Upgraded grafbase-sdk to 0.22
+
 ## [1.3.0] - 2025-07-15
 
 - Added support for static headers returned with 401 responses.

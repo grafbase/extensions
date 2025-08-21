@@ -129,7 +129,7 @@ impl Jwt {
             let ts = Instant::now();
             let (jwks, bytes) = self
                 .jwks_cache
-                .get_or_insert(self.config.url.as_str(), || {
+                .try_get_or_insert(self.config.url.as_str(), || {
                     let request = HttpRequest::get(self.config.url.clone()).build();
                     let response = http::execute(request)?;
                     let bytes = response.into_bytes();
