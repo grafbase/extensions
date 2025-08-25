@@ -9,6 +9,7 @@ repository.workspace = true
 
 [dependencies]
 anyhow = "1.0.97"
+argh = "0.1.12"
 duct = "0.13.7"
 serde = { version = "1.0.219", features = ["derive"] }
 toml = "0.8.20"
