@@ -10,6 +10,7 @@ repository.workspace = true
 [dependencies]
 anyhow = "1.0.97"
 clap = { version = "4.5.32", features = ["derive", "env"] }
+argh = "0.1.12"
 duct = "0.13.7"
 semver = { version = "1.0.26", features = ["serde"] }
 serde = { version = "1.0.219", features = ["derive"] }
