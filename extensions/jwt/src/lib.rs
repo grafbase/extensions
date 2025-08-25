@@ -121,15 +121,17 @@ impl AuthenticationExtension for Jwt {
 
 impl Jwt {
     fn decoder(&mut self) -> Result<Decoder<'_>, ErrorResponse> {
+        // If we don't have the JWKS yet or poll interval expired, we try to load the JWKS.
         if self
             .jwks
             .as_ref()
             .is_none_or(|(_, ts)| ts.elapsed() > self.config.poll_interval)
         {
             let ts = Instant::now();
-            let (jwks, bytes) = self
+            let (on_cache_miss, bytes) = self
                 .jwks_cache
-                .get_or_insert(self.config.url.as_str(), || {
+                .try_get_or_insert(self.config.url.as_str(), || {
+                    log::debug!("Fetching JWKS from {}", self.config.url);
                     let request = HttpRequest::get(self.config.url.clone()).build();
                     let response = http::execute(request)?;
                     let bytes = response.into_bytes();
@@ -140,7 +142,9 @@ impl Jwt {
                     log::error!("Failed to retrieve JWKS: {err}");
                     ErrorResponse::internal_server_error()
                 })?;
-            let jwks: Jwks = match jwks {
+            // Either it's a cache hit and we need to parse the bytes or it's a cache miss and we
+            // parsed the JWKS already.
+            let jwks: Jwks = match on_cache_miss {
                 Some(jwks) => jwks,
                 _ => serde_json::from_slice(&bytes).map_err(|err| {
                     log::error!("Failed to parse JWKS: {err}");
