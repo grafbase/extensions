@@ -20,7 +20,7 @@ jobs:
         uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad # v0.0.9
 
       - name: Install Protoc for the gRPC extension
-        uses: arduino/setup-protoc@f4d5893b897028ff5739576ea0409746887fa536 # v3
+        uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b # v3
 
       - name: Install Rust
         uses: ./.github/actions/install-rust
