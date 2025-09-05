@@ -473,7 +473,7 @@ async fn one_column_required() {
         Filter posts with an array of keys
         """
         lookup: PostManyLookupInput @inaccessible,
-      ): [Post]! @pgLookup @lookup @inaccessible
+      ): [Post] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -1083,7 +1083,7 @@ async fn composite_required() {
         Filter posts with an array of keys
         """
         lookup: PostManyLookupInput @inaccessible,
-      ): [Post]! @pgLookup @lookup @inaccessible
+      ): [Post] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -1685,7 +1685,7 @@ async fn only_column_nullable() {
         Filter posts with an array of keys
         """
         lookup: PostManyLookupInput @inaccessible,
-      ): [Post]! @pgLookup @lookup @inaccessible
+      ): [Post] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -2295,7 +2295,7 @@ async fn composite_one_nullable() {
         Filter posts with an array of keys
         """
         lookup: PostManyLookupInput @inaccessible,
-      ): [Post]! @pgLookup @lookup @inaccessible
+      ): [Post] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {

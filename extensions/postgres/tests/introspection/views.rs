@@ -539,7 +539,7 @@ async fn view_with_int_unique() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique FilteredUser
       """
@@ -586,7 +586,7 @@ async fn view_with_int_unique() {
         Filter filteredUsers with an array of keys
         """
         lookup: FilteredUserManyLookupInput @inaccessible,
-      ): [FilteredUser]! @pgLookup @lookup @inaccessible
+      ): [FilteredUser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -1194,7 +1194,7 @@ async fn materialized_view_with_int_unique() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique FilteredUser
       """
@@ -1241,7 +1241,7 @@ async fn materialized_view_with_int_unique() {
         Filter filteredUsers with an array of keys
         """
         lookup: FilteredUserManyLookupInput @inaccessible,
-      ): [FilteredUser]! @pgLookup @lookup @inaccessible
+      ): [FilteredUser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -1904,7 +1904,7 @@ async fn view_with_composite_key() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique FilteredUser
       """
@@ -1951,7 +1951,7 @@ async fn view_with_composite_key() {
         Filter filteredUsers with an array of keys
         """
         lookup: FilteredUserManyLookupInput @inaccessible,
-      ): [FilteredUser]! @pgLookup @lookup @inaccessible
+      ): [FilteredUser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -2861,7 +2861,7 @@ async fn view_with_relation_from_view_to_table() {
         Filter blogs with an array of keys
         """
         lookup: BlogManyLookupInput @inaccessible,
-      ): [Blog]! @pgLookup @lookup @inaccessible
+      ): [Blog] @pgLookup @lookup @inaccessible
       """
       Query a unique User
       """
@@ -2908,7 +2908,7 @@ async fn view_with_relation_from_view_to_table() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique FilteredUser
       """
@@ -2955,7 +2955,7 @@ async fn view_with_relation_from_view_to_table() {
         Filter filteredUsers with an array of keys
         """
         lookup: FilteredUserManyLookupInput @inaccessible,
-      ): [FilteredUser]! @pgLookup @lookup @inaccessible
+      ): [FilteredUser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -3936,7 +3936,7 @@ async fn view_with_relation_from_table_to_view() {
         Filter blogs with an array of keys
         """
         lookup: BlogManyLookupInput @inaccessible,
-      ): [Blog]! @pgLookup @lookup @inaccessible
+      ): [Blog] @pgLookup @lookup @inaccessible
       """
       Query a unique User
       """
@@ -3983,7 +3983,7 @@ async fn view_with_relation_from_table_to_view() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique FilteredBlog
       """
@@ -4030,7 +4030,7 @@ async fn view_with_relation_from_table_to_view() {
         Filter filteredBlogs with an array of keys
         """
         lookup: FilteredBlogManyLookupInput @inaccessible,
-      ): [FilteredBlog]! @pgLookup @lookup @inaccessible
+      ): [FilteredBlog] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {

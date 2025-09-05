@@ -406,7 +406,7 @@ async fn table_with_generated_always_identity_primary_key() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -909,7 +909,7 @@ async fn table_with_generated_by_default_identity_primary_key() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -1412,7 +1412,7 @@ async fn table_with_serial_primary_key() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -2001,7 +2001,7 @@ async fn table_with_enum_field() {
         Filter as with an array of keys
         """
         lookup: AManyLookupInput @inaccessible,
-      ): [A]! @pgLookup @lookup @inaccessible
+      ): [A] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -2504,7 +2504,7 @@ async fn table_with_int_primary_key() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -3007,7 +3007,7 @@ async fn table_with_int_unique() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -3598,7 +3598,7 @@ async fn table_with_serial_primary_key_string_unique() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -4126,7 +4126,7 @@ async fn table_with_composite_primary_key() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -4857,7 +4857,7 @@ async fn two_schemas_same_table_name() {
         Filter privateUsers with an array of keys
         """
         lookup: PrivateUserManyLookupInput @inaccessible,
-      ): [PrivateUser]! @pgLookup @lookup @inaccessible
+      ): [PrivateUser] @pgLookup @lookup @inaccessible
       """
       Query a unique PublicUser
       """
@@ -4904,7 +4904,7 @@ async fn two_schemas_same_table_name() {
         Filter publicUsers with an array of keys
         """
         lookup: PublicUserManyLookupInput @inaccessible,
-      ): [PublicUser]! @pgLookup @lookup @inaccessible
+      ): [PublicUser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -5563,7 +5563,7 @@ async fn table_with_an_array_column() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -6165,7 +6165,7 @@ async fn table_with_jsonb_column() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -6767,7 +6767,7 @@ async fn table_with_json_column() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -7690,7 +7690,7 @@ async fn two_tables_with_single_column_foreign_key() {
         Filter blogs with an array of keys
         """
         lookup: BlogManyLookupInput @inaccessible,
-      ): [Blog]! @pgLookup @lookup @inaccessible
+      ): [Blog] @pgLookup @lookup @inaccessible
       """
       Query a unique User
       """
@@ -7737,7 +7737,7 @@ async fn two_tables_with_single_column_foreign_key() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -8288,7 +8288,7 @@ async fn foreign_key_to_a_table_without_a_key_should_not_create_a_relation() {
         Filter visibleTables with an array of keys
         """
         lookup: VisibleTableManyLookupInput @inaccessible,
-      ): [VisibleTable]! @pgLookup @lookup @inaccessible
+      ): [VisibleTable] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -9260,7 +9260,7 @@ async fn issue_november_2023() {
         Filter networks with an array of keys
         """
         lookup: NetworkManyLookupInput @inaccessible,
-      ): [Network]! @pgLookup @lookup @inaccessible
+      ): [Network] @pgLookup @lookup @inaccessible
       """
       Query a unique Project
       """
@@ -9307,7 +9307,7 @@ async fn issue_november_2023() {
         Filter projects with an array of keys
         """
         lookup: ProjectManyLookupInput @inaccessible,
-      ): [Project]! @pgLookup @lookup @inaccessible
+      ): [Project] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -9881,7 +9881,7 @@ async fn table_with_comment() {
         Filter commentedTables with an array of keys
         """
         lookup: CommentedTableManyLookupInput @inaccessible,
-      ): [CommentedTable]! @pgLookup @lookup @inaccessible
+      ): [CommentedTable] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -10471,7 +10471,7 @@ async fn table_with_commented_column() {
         Filter commentedColumnTables with an array of keys
         """
         lookup: CommentedColumnTableManyLookupInput @inaccessible,
-      ): [CommentedColumnTable]! @pgLookup @lookup @inaccessible
+      ): [CommentedColumnTable] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -11068,7 +11068,7 @@ async fn enum_with_comment() {
         Filter usesCommentedEnums with an array of keys
         """
         lookup: UsesCommentedEnumManyLookupInput @inaccessible,
-      ): [UsesCommentedEnum]! @pgLookup @lookup @inaccessible
+      ): [UsesCommentedEnum] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -11883,7 +11883,7 @@ async fn table_with_commented_foreign_key() {
         Filter postFkComments with an array of keys
         """
         lookup: PostFkCommentManyLookupInput @inaccessible,
-      ): [PostFkComment]! @pgLookup @lookup @inaccessible
+      ): [PostFkComment] @pgLookup @lookup @inaccessible
       """
       Query a unique UserFkComment
       """
@@ -11930,7 +11930,7 @@ async fn table_with_commented_foreign_key() {
         Filter userFkComments with an array of keys
         """
         lookup: UserFkCommentManyLookupInput @inaccessible,
-      ): [UserFkComment]! @pgLookup @lookup @inaccessible
+      ): [UserFkComment] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {

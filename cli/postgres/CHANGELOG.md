@@ -2,6 +2,10 @@
 
 All notable changes to the Grafbase PostgreSQL CLI tool will be documented in this file.
 
+## [0.3.9] - 2025-09-05
+
+- Generate `@lookup` fields without non-null wrappers, since per the composite schemas spec, lookup fields should be nullable.
+
 ## [0.3.7] - 2025-05-22
 
 ### Added

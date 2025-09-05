@@ -101,7 +101,7 @@ pub fn render<'a>(
             None => format!("{}_lookup", table.client_name()).to_camel_case(),
         };
 
-        let mut field = Field::new(field_name, format!("[{}]!", table.client_name()));
+        let mut field = Field::new(field_name, format!("[{}]", table.client_name()));
 
         field.set_description(format!(
             "Lookup multiple {} for subgraph joins",
