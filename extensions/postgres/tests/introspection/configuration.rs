@@ -405,7 +405,7 @@ async fn globally_disabled_mutations() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique Loser
       """
@@ -452,7 +452,7 @@ async fn globally_disabled_mutations() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
     }
     "#);
 }
@@ -1548,7 +1548,7 @@ async fn disable_mutations_per_schema() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique Loser
       """
@@ -1595,7 +1595,7 @@ async fn disable_mutations_per_schema() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -2246,7 +2246,7 @@ async fn disable_queries_per_schema() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -3107,7 +3107,7 @@ async fn disable_mutations_per_table() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique Loser
       """
@@ -3154,7 +3154,7 @@ async fn disable_mutations_per_table() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
       """
       Query a unique Woof
       """
@@ -3201,7 +3201,7 @@ async fn disable_mutations_per_table() {
         Filter woofs with an array of keys
         """
         lookup: WoofManyLookupInput @inaccessible,
-      ): [Woof]! @pgLookup @lookup @inaccessible
+      ): [Woof] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -4134,7 +4134,7 @@ async fn disable_queries_per_table() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique Woof
       """
@@ -4181,7 +4181,7 @@ async fn disable_queries_per_table() {
         Filter woofs with an array of keys
         """
         lookup: WoofManyLookupInput @inaccessible,
-      ): [Woof]! @pgLookup @lookup @inaccessible
+      ): [Woof] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -4886,7 +4886,7 @@ async fn schema_mutations_setting_takes_precedence_over_global_setting() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique Loser
       """
@@ -4933,7 +4933,7 @@ async fn schema_mutations_setting_takes_precedence_over_global_setting() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -5586,7 +5586,7 @@ async fn schema_queries_setting_takes_precedence_over_global_setting() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -6229,7 +6229,7 @@ async fn table_mutations_setting_takes_precedence_over_global_setting() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique Loser
       """
@@ -6276,7 +6276,7 @@ async fn table_mutations_setting_takes_precedence_over_global_setting() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -6929,7 +6929,7 @@ async fn table_queries_setting_takes_precedence_over_global_setting() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -7795,7 +7795,7 @@ async fn table_mutations_setting_takes_precedence_over_schema_setting() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique Loser
       """
@@ -7842,7 +7842,7 @@ async fn table_mutations_setting_takes_precedence_over_schema_setting() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
       """
       Query a unique Woof
       """
@@ -7889,7 +7889,7 @@ async fn table_mutations_setting_takes_precedence_over_schema_setting() {
         Filter woofs with an array of keys
         """
         lookup: WoofManyLookupInput @inaccessible,
-      ): [Woof]! @pgLookup @lookup @inaccessible
+      ): [Woof] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -8827,7 +8827,7 @@ async fn table_queries_setting_takes_precedence_over_schema_setting() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique Loser
       """
@@ -8874,7 +8874,7 @@ async fn table_queries_setting_takes_precedence_over_schema_setting() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -10426,7 +10426,7 @@ async fn disable_queries_per_view() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique Loser
       """
@@ -10473,7 +10473,7 @@ async fn disable_queries_per_view() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
       """
       Query a unique Meow
       """
@@ -10520,7 +10520,7 @@ async fn disable_queries_per_view() {
         Filter meows with an array of keys
         """
         lookup: MeowManyLookupInput @inaccessible,
-      ): [Meow]! @pgLookup @lookup @inaccessible
+      ): [Meow] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -11086,7 +11086,7 @@ async fn schema_allowlist() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -11577,7 +11577,7 @@ async fn schema_allowlist_should_hide_relations() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -12293,7 +12293,7 @@ async fn schema_denylist() {
         Filter posts with an array of keys
         """
         lookup: PostManyLookupInput @inaccessible,
-      ): [Post]! @pgLookup @lookup @inaccessible
+      ): [Post] @pgLookup @lookup @inaccessible
       """
       Query a unique Loser
       """
@@ -12340,7 +12340,7 @@ async fn schema_denylist() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -12910,7 +12910,7 @@ async fn schema_allowlist_and_denylist_precedence() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -13727,7 +13727,7 @@ async fn schema_multiple_allowlists() {
         Filter posts with an array of keys
         """
         lookup: PostManyLookupInput @inaccessible,
-      ): [Post]! @pgLookup @lookup @inaccessible
+      ): [Post] @pgLookup @lookup @inaccessible
       """
       Query a unique Loser
       """
@@ -13774,7 +13774,7 @@ async fn schema_multiple_allowlists() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -14568,7 +14568,7 @@ async fn schema_multiple_denylists() {
         Filter settings with an array of keys
         """
         lookup: SettingManyLookupInput @inaccessible,
-      ): [Setting]! @pgLookup @lookup @inaccessible
+      ): [Setting] @pgLookup @lookup @inaccessible
       """
       Query a unique User
       """
@@ -14615,7 +14615,7 @@ async fn schema_multiple_denylists() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -15170,7 +15170,7 @@ async fn schema_denylist_should_hide_relations() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -15664,7 +15664,7 @@ async fn table_allowlist() {
         Filter losers with an array of keys
         """
         lookup: LoserManyLookupInput @inaccessible,
-      ): [Loser]! @pgLookup @lookup @inaccessible
+      ): [Loser] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -16370,7 +16370,7 @@ async fn table_denylist() {
         Filter posts with an array of keys
         """
         lookup: PostManyLookupInput @inaccessible,
-      ): [Post]! @pgLookup @lookup @inaccessible
+      ): [Post] @pgLookup @lookup @inaccessible
       """
       Query a unique User
       """
@@ -16417,7 +16417,7 @@ async fn table_denylist() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -16974,7 +16974,7 @@ async fn allowlist_denylist_precedence() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -17729,7 +17729,7 @@ async fn allowlist_with_foreign_key_relationships() {
         Filter comments with an array of keys
         """
         lookup: CommentManyLookupInput @inaccessible,
-      ): [Comment]! @pgLookup @lookup @inaccessible
+      ): [Comment] @pgLookup @lookup @inaccessible
       """
       Query a unique User
       """
@@ -17776,7 +17776,7 @@ async fn allowlist_with_foreign_key_relationships() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -18567,7 +18567,7 @@ async fn multiple_schema_support() {
         Filter users with an array of keys
         """
         lookup: UserManyLookupInput @inaccessible,
-      ): [User]! @pgLookup @lookup @inaccessible
+      ): [User] @pgLookup @lookup @inaccessible
       """
       Query a unique Comment
       """
@@ -18614,7 +18614,7 @@ async fn multiple_schema_support() {
         Filter comments with an array of keys
         """
         lookup: CommentManyLookupInput @inaccessible,
-      ): [Comment]! @pgLookup @lookup @inaccessible
+      ): [Comment] @pgLookup @lookup @inaccessible
     }
 
     type Mutation {
@@ -19076,7 +19076,7 @@ async fn empty_allowlist_behavior() {
         Filter usersPosts with an array of keys
         """
         lookup: UsersPostManyLookupInput @inaccessible,
-      ): [UsersPost]! @pgLookup @lookup @inaccessible
+      ): [UsersPost] @pgLookup @lookup @inaccessible
     }
     "#);
 }
