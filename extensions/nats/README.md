@@ -100,13 +100,13 @@ To publish messages to a NATS topic, use the `@natsPublish` directive:
 directive @natsPublish(
   provider: String! = "default"
   subject: UrlTemplate!
-  body: Body! = { selection: "." }
+  body: Body! = { selection: ".args.input" }
 ) on FIELD_DEFINITION
 ```
 
 - `provider`: The NATS provider to use. This identifies the provider in the GraphQL schema. Default is `default`. You can omit the provider in the configuration and in the schema if using only one provider.
 - `subject`: The subject to publish to. This supports templating using GraphQL arguments: `{{args.myArgument}}`.
-- `body`: The body of the message to publish. If not set, takes the body from the field's `input` argument. Can also be set to a static JSON object.
+- `body`: The body of the message to publish. If not set, takes the body from the field's `input` argument. Can also be set to a static JSON object. The arguments are nested under `args`. This is a [jaq](https://docs.rs/crate/jaq/2.3.0) selection, that uses the same language as [`jq`](https://jqlang.org/manual/).
 
 ### Example
 
