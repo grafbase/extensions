@@ -6,7 +6,7 @@ if [[ ${OS:-} = Windows_NT ]]; then
     exit 1
 fi
 
-LATEST_VERSION="0.3.8"
+LATEST_VERSION="0.3.10"
 
 # Reset
 Color_Off=''
