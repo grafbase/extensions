@@ -4,6 +4,24 @@ This binary crate is a protoc plugin that generates a GraphQL subgraph to be use
 
 ## Installation
 
+### Quick install with script
+
+You can install the latest version using the install script:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/grafbase/extensions/main/cli/protoc-gen-grafbase-subgraph/install.sh | bash
+```
+
+Or download and run manually:
+
+```bash
+curl -O https://raw.githubusercontent.com/grafbase/extensions/main/cli/protoc-gen-grafbase-subgraph/install.sh
+chmod +x install.sh
+./install.sh
+```
+
+### Manual installation
+
 Download the relevant binary from your platform from the [GitHub releases](https://github.com/grafbase/extensions/releases?q=protoc-gen-grafbase-subgraph&expanded=true).
 
 ## Usage with buf
@@ -436,16 +454,22 @@ type Mutation {
 
 ### Releasing
 
-To release a new version of the binary:
+To release a new version:
 
-1. Update the version number in `Cargo.toml`
-2. Create a tag with the format `protoc-gen-grafbase-subgraph-X.Y.Z` (e.g., `protoc-gen-grafbase-subgraph-0.2.0`)
-3. Push the tag to GitHub:
+1. **Bump version**: Run `cargo make bump` to update version in `Cargo.toml` and `install.sh`
+2. **Update changelog**: Edit `CHANGELOG.md` with release notes
+3. **Commit and push**: 
+   ```bash
+   git add Cargo.toml install.sh CHANGELOG.md
+   git commit -m "Bump protoc-gen-grafbase-subgraph to vX.Y.Z"
+   git push origin main
    ```
-   git tag protoc-gen-grafbase-subgraph-X.Y.Z
-   git push origin protoc-gen-grafbase-subgraph-X.Y.Z
-   ```
-4. The GitHub Actions workflow will automatically build the binary for multiple platforms and create a release with the artifacts
+
+The GitHub Actions workflow will automatically:
+- Detect the version change
+- Build binaries for macOS, Windows, Linux (x64/ARM64)
+- Create a GitHub release with tag `protoc-gen-grafbase-subgraph-vX.Y.Z`
+- Upload the binaries as release assets
 
 ## Prior art
 

@@ -1,0 +1,41 @@
+[tasks.bump]
+script = '''
+#!/usr/bin/env bash
+set -e
+
+# Get current version from Cargo.toml
+current_version=$(grep '^version = ' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+echo "Current version: $current_version"
+
+# Read new version from user
+read -p "Enter new version (x.y.z): " new_version
+
+# Validate version format
+if ! [[ $new_version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Error: Version must be in format x.y.z"
+    exit 1
+fi
+
+# Update version in Cargo.toml
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    sed -i '' "s/^version = \".*\"/version = \"$new_version\"/" Cargo.toml
+else
+    # Linux
+    sed -i "s/^version = \".*\"/version = \"$new_version\"/" Cargo.toml
+fi
+
+# Update version in install.sh
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    sed -i '' "s/^LATEST_VERSION=\".*\"/LATEST_VERSION=\"$new_version\"/" install.sh
+else
+    # Linux
+    sed -i "s/^LATEST_VERSION=\".*\"/LATEST_VERSION=\"$new_version\"/" install.sh
+fi
+
+echo "Version bumped to $new_version"
+echo "Updated files:"
+echo "  - Cargo.toml"
+echo "  - install.sh"
+'''
