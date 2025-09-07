@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 0.3.1 - 2025-09-07
+
+- Release with a new install script as a convenient alternative mode of installation (see README).
+
 ## 0.3.0 - 2025-08-13
 
 ### Added

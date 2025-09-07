@@ -2,7 +2,7 @@
 
 set -e
 
-LATEST_VERSION="0.3.0"
+LATEST_VERSION="0.3.1"
 NAME="protoc-gen-grafbase-subgraph"
 
 echo "Installing $NAME v$LATEST_VERSION..."
