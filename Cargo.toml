@@ -57,7 +57,7 @@ anyhow = "1.0.98"
 async-nats = "0.42"
 async-stream = "0.3.6"
 base64 = "0.22.1"
-bytes = { version = "1.10.1", features = ["serde"] }
+bytes = { version = "1.11.1", features = ["serde"] }
 chrono = "0.4.40"
 clap = "4.5.36"
 ctor = "0.5"
