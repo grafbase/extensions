@@ -103,7 +103,7 @@ jobs:
           done
 
       - name: Upload macOS binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: macos-${{ matrix.target }}-binaries
           path: artifacts/*
@@ -146,7 +146,7 @@ jobs:
           RUSTC_WRAPPER: sccache
 
       - name: Upload Windows binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-binaries
           path: artifacts/*.exe
@@ -213,7 +213,7 @@ jobs:
           RUSTC_WRAPPER: sccache
 
       - name: Upload Linux binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-${{ matrix.archs.target }}-binaries
           path: artifacts/*
@@ -235,7 +235,7 @@ jobs:
         run: mkdir -p flat_artifacts
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
 
