@@ -40,7 +40,7 @@ jobs:
         run: |
           cargo clippy --locked
 
-      - uses: uncenter/setup-taplo@4f203fdb4f3b1e289c8382cf90d8397d2338df2e # v1.0.8
+      - uses: uncenter/setup-taplo@b18c8c8302695fe63d6853bc004006215ac52b91 # v2
         with:
           version: "0.9.3"
 
