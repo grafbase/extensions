@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Fixed: the JWKS host cache never expired, so `poll_interval` only re-read the key set fetched at startup and a provider key rotation was not picked up until the gateway restarted. The cache entry now lives for `poll_interval`.
+
 ## [1.3.0] - 2025-07-15
 
 - Added support for static headers returned with 401 responses.

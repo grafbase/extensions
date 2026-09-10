@@ -31,7 +31,13 @@ impl AuthenticationExtension for Jwt {
         let config: Config = config.deserialize()?;
 
         Ok(Self {
-            jwks_cache: Cache::builder("jwks", 1).timeout(config.poll_interval).build(),
+            // `timeout` bounds the wait for a concurrent fetch; it is not the entry lifetime. Without a
+            // TTL the JWKS fetched at startup lives for the whole process, so a provider key rotation is
+            // invisible until a restart and every token signed by the new key is rejected with a 401.
+            // Expire the entry after `poll_interval`, which is what the README promises.
+            jwks_cache: Cache::builder("jwks", 1)
+                .time_to_live(Some(config.poll_interval))
+                .build(),
             jwks: None,
             config,
         })
