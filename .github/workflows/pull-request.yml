@@ -86,7 +86,7 @@ jobs:
           cli-version: ${{ matrix.version.cli }}
 
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@3216b6964cbfe053bb8b9a2ef245bd9300e2061d # v2.62.14
+        uses: taiki-e/install-action@9114bf4d891761788c546334fd37538eae1bf8b3 # v2.87.16
         with:
           tool: nextest
 
